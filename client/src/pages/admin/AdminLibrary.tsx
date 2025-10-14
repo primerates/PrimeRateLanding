@@ -1,821 +1,491 @@
-import { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { Switch } from '@/components/ui/switch';
-import { Slider } from '@/components/ui/slider';
-import { ArrowLeft, Plus, Minus, User, Sun, Moon } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { useState } from 'react';
+import { Sun, Moon, Palette, Sparkles, RotateCcw } from 'lucide-react';
 
-// Dashboard shortcuts menu items
-const dashboardMenuItems = [
-  // Row 1
-  { label: 'Lead', path: '/admin/add-client' },
-  { label: 'Quote', path: '/admin/quotes' },
-  { label: 'Loan Prep', path: '/admin/loan-prep' },
-  { label: 'Loan', path: '/admin/pipeline' },
-  { label: 'Funded', path: '/admin/funded' },
-  // Row 2
-  { label: 'Closed', path: '/admin/records' },
-  { label: 'Dashboard', path: '/admin/reports' },
-  // Row 3
-  { label: 'Library', path: '/admin/library' },
-  { label: 'Settings', path: '/admin/add-comment' },
-];
+interface SliderControlProps {
+  label: string;
+  value: number;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  min?: number;
+  max?: number;
+  gradientBg: string;
+  getBodyStyle: () => React.CSSProperties;
+}
+
+const SliderControl = ({ label, value, onChange, min = 0, max = 360, gradientBg, getBodyStyle }: SliderControlProps) => (
+  <div>
+    <div className="flex items-center justify-between mb-2">
+      <label className="text-sm font-medium" style={getBodyStyle()}>{label}</label>
+      <span className="text-xs" style={getBodyStyle()}>{value}{max === 360 ? '°' : '%'}</span>
+    </div>
+    <input
+      type="range"
+      min={min}
+      max={max}
+      value={value}
+      onChange={onChange}
+      className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+      style={{ background: gradientBg }}
+    />
+  </div>
+);
 
 export default function AdminLibrary() {
-  const [, setLocation] = useLocation();
-  const [isBorrowerOpen, setIsBorrowerOpen] = useState(true);
-  const [hasCoBorrower, setHasCoBorrower] = useState(false);
-  const [shortcutDropdownOpen, setShortcutDropdownOpen] = useState(false);
-  const [isLightMode, setIsLightMode] = useState(false);
-  const [pageBrightness, setPageBrightness] = useState(50); // 0-100 scale for page
-  const [cardBrightness, setCardBrightness] = useState(50); // 0-100 scale for cards
-  const [activeControl, setActiveControl] = useState<'page' | 'card'>('page'); // Which element to control
-  const [isSettingsSaved, setIsSettingsSaved] = useState(false); // Track if settings are saved
-
-  // Form state
-  const [firstName, setFirstName] = useState('');
-  const [middleName, setMiddleName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [ssn, setSsn] = useState('');
-  const [maritalStatus, setMaritalStatus] = useState('Select');
-  const [relationshipToCoBorrower, setRelationshipToCoBorrower] = useState('N/A');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [preferredContactTime, setPreferredContactTime] = useState('Select');
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [showCustomizer, setShowCustomizer] = useState(false);
   
-  // Current Residence fields
-  const [currentResidenceType, setCurrentResidenceType] = useState<'owned' | 'rental' | 'other'>('owned');
-  const [street, setStreet] = useState('');
-  const [unit, setUnit] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [zipCode, setZipCode] = useState('');
-  const [county, setCounty] = useState('');
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
-  const [isPresent, setIsPresent] = useState(false);
+  const [bgHue, setBgHue] = useState(270);
+  const [bgSaturation, setBgSaturation] = useState(50);
+  const [bgLightness, setBgLightness] = useState(15);
+  
+  const [cardHue, setCardHue] = useState(270);
+  const [cardSaturation, setCardSaturation] = useState(30);
+  const [cardLightness, setCardLightness] = useState(25);
 
-  // Load saved brightness settings when switching to light mode
-  useEffect(() => {
-    if (isLightMode) {
-      const savedPageBrightness = localStorage.getItem('library-page-brightness');
-      const savedCardBrightness = localStorage.getItem('library-card-brightness');
-      if (savedPageBrightness) setPageBrightness(Number(savedPageBrightness));
-      if (savedCardBrightness) setCardBrightness(Number(savedCardBrightness));
+  const [borderHue, setBorderHue] = useState(270);
+  const [borderSaturation, setBorderSaturation] = useState(50);
+  const [borderLightness, setBorderLightness] = useState(40);
+  const [borderOpacity, setBorderOpacity] = useState(30);
+  const [borderWidth, setBorderWidth] = useState(1);
+
+  const [headingHue, setHeadingHue] = useState(0);
+  const [headingSaturation, setHeadingSaturation] = useState(0);
+  const [headingLightness, setHeadingLightness] = useState(100);
+  
+  const [bodyHue, setBodyHue] = useState(270);
+  const [bodySaturation, setBodySaturation] = useState(20);
+  const [bodyLightness, setBodyLightness] = useState(70);
+
+  const [accentHue, setAccentHue] = useState(280);
+  const [accentSaturation, setAccentSaturation] = useState(80);
+  const [accentLightness, setAccentLightness] = useState(60);
+
+  const getBackgroundStyle = () => {
+    if (isDarkMode) {
+      return {
+        background: `linear-gradient(to bottom right, hsl(${bgHue}, ${bgSaturation}%, ${bgLightness}%), hsl(${bgHue + 20}, ${bgSaturation + 10}%, ${bgLightness + 5}%), hsl(${bgHue}, ${bgSaturation}%, ${bgLightness}%))`
+      };
+    } else {
+      return {
+        background: `linear-gradient(to bottom right, hsl(${bgHue}, ${bgSaturation}%, ${bgLightness + 80}%), hsl(${bgHue + 20}, ${bgSaturation}%, ${bgLightness + 85}%), hsl(${bgHue + 40}, ${bgSaturation}%, ${bgLightness + 90}%))`
+      };
     }
-  }, [isLightMode]);
-
-  // Save brightness settings
-  const handleKeepSettings = () => {
-    localStorage.setItem('library-page-brightness', pageBrightness.toString());
-    localStorage.setItem('library-card-brightness', cardBrightness.toString());
-    setIsSettingsSaved(true);
   };
 
-  const formatDateOfBirth = (value: string) => {
-    const digitsOnly = value.replace(/\D/g, '');
-    let formatted = '';
-    if (digitsOnly.length > 0) {
-      formatted = digitsOnly.substring(0, 2);
-      if (digitsOnly.length > 2) {
-        formatted += '/' + digitsOnly.substring(2, 4);
-        if (digitsOnly.length > 4) {
-          formatted += '/' + digitsOnly.substring(4, 8);
-        }
-      }
+  const getCardStyle = () => {
+    if (isDarkMode) {
+      return {
+        backgroundColor: `hsla(${cardHue}, ${cardSaturation}%, ${cardLightness}%, 0.5)`,
+        borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness}%, ${borderOpacity / 100})`,
+        borderWidth: `${borderWidth}px`
+      };
+    } else {
+      return {
+        backgroundColor: `hsla(${cardHue}, ${cardSaturation}%, ${cardLightness + 70}%, 0.8)`,
+        borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness + 40}%, ${borderOpacity / 100})`,
+        borderWidth: `${borderWidth}px`
+      };
     }
-    return formatted;
   };
 
-  const formatSSN = (value: string) => {
-    const digitsOnly = value.replace(/\D/g, '');
-    let formatted = '';
-    if (digitsOnly.length > 0) {
-      formatted = digitsOnly.substring(0, 3);
-      if (digitsOnly.length > 3) {
-        formatted += '-' + digitsOnly.substring(3, 5);
-        if (digitsOnly.length > 5) {
-          formatted += '-' + digitsOnly.substring(5, 9);
-        }
-      }
+  const getHeadingStyle = () => {
+    if (isDarkMode) {
+      return {
+        color: `hsl(${headingHue}, ${headingSaturation}%, ${headingLightness}%)`
+      };
+    } else {
+      return {
+        color: `hsl(${headingHue}, ${headingSaturation}%, ${100 - headingLightness}%)`
+      };
     }
-    return formatted;
   };
 
-  const formatDate = (value: string) => {
-    const digitsOnly = value.replace(/\D/g, '');
-    let formatted = '';
-    if (digitsOnly.length > 0) {
-      formatted = digitsOnly.substring(0, 2);
-      if (digitsOnly.length > 2) {
-        formatted += '/' + digitsOnly.substring(2, 4);
-        if (digitsOnly.length > 4) {
-          formatted += '/' + digitsOnly.substring(4, 8);
-        }
-      }
+  const getBodyStyle = () => {
+    if (isDarkMode) {
+      return {
+        color: `hsl(${bodyHue}, ${bodySaturation}%, ${bodyLightness}%)`
+      };
+    } else {
+      return {
+        color: `hsl(${bodyHue}, ${bodySaturation}%, ${100 - bodyLightness + 20}%)`
+      };
     }
-    return formatted;
   };
 
-  // Calculate background colors based on PAGE brightness (0=darkest, 100=brightest)
-  const getBackgroundGradient = () => {
-    if (!isLightMode) return 'from-slate-900 via-purple-900 to-slate-900';
+  const getAccentStyle = () => {
+    return {
+      background: `linear-gradient(to right, hsl(${accentHue}, ${accentSaturation}%, ${accentLightness}%), hsl(${accentHue + 20}, ${accentSaturation}%, ${accentLightness - 10}%))`
+    };
+  };
+
+  const resetToDefaults = () => {
+    setBgHue(270);
+    setBgSaturation(50);
+    setBgLightness(15);
+    setCardHue(270);
+    setCardSaturation(30);
+    setCardLightness(25);
+    setBorderHue(270);
+    setBorderSaturation(50);
+    setBorderLightness(40);
+    setBorderOpacity(30);
+    setBorderWidth(1);
+    setHeadingHue(0);
+    setHeadingSaturation(0);
+    setHeadingLightness(100);
+    setBodyHue(270);
+    setBodySaturation(20);
+    setBodyLightness(70);
+    setAccentHue(280);
+    setAccentSaturation(80);
+    setAccentLightness(60);
+  };
+
+  const randomizeTheme = () => {
+    const randomHue = Math.floor(Math.random() * 360);
+    const complementaryHue = (randomHue + 180) % 360;
     
-    // Map brightness to appropriate slate shades with smoother transitions
-    if (pageBrightness >= 80) return 'from-slate-50 via-purple-50 to-slate-100';
-    if (pageBrightness >= 60) return 'from-slate-100 via-purple-100 to-slate-200';
-    if (pageBrightness >= 40) return 'from-slate-200 via-purple-150 to-slate-300';
-    if (pageBrightness >= 25) return 'from-slate-300 via-purple-200 to-slate-400';
-    if (pageBrightness >= 15) return 'from-slate-400 via-purple-300 to-slate-500';
-    if (pageBrightness >= 8) return 'from-slate-500 via-purple-400 to-slate-600';
-    if (pageBrightness >= 3) return 'from-slate-600 via-purple-500 to-slate-700';
-    return 'from-slate-700 via-purple-600 to-slate-800';
-  };
-
-  // Calculate text colors based on PAGE brightness
-  const getTextColor = () => {
-    if (!isLightMode) return 'text-white';
-    return pageBrightness >= 50 ? 'text-slate-900' : 'text-white';
-  };
-
-  // Calculate label colors based on CARD brightness
-  const getLabelColor = () => {
-    if (!isLightMode) return 'text-purple-200';
-    // Always keep labels dark in light mode for maximum readability
-    return 'text-slate-700 font-medium';
-  };
-
-  // Calculate section title colors based on CARD brightness (for "Borrower" and "Current Residence")
-  const getSectionTitleClasses = () => {
-    if (!isLightMode) return 'bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent';
-    // In light mode, keep gradient at 15% or above, switch to dark text below 15%
-    if (cardBrightness >= 15) {
-      return 'bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent';
-    }
-    return 'text-slate-800 font-bold';
-  };
-
-  // Calculate card background based on CARD brightness
-  const getCardBackground = () => {
-    if (!isLightMode) return 'bg-slate-800/50';
-    if (cardBrightness >= 80) return 'bg-white/80';
-    if (cardBrightness >= 60) return 'bg-slate-50/80';
-    if (cardBrightness >= 40) return 'bg-slate-100/80';
-    if (cardBrightness >= 25) return 'bg-slate-200/80';
-    if (cardBrightness >= 15) return 'bg-slate-300/80';
-    if (cardBrightness >= 8) return 'bg-slate-400/80';
-    if (cardBrightness >= 3) return 'bg-slate-500/80';
-    return 'bg-slate-600/80';
-  };
-
-  // Calculate input background based on CARD brightness
-  const getInputBackground = () => {
-    if (!isLightMode) return 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500';
-    if (cardBrightness >= 80) return 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500';
-    if (cardBrightness >= 60) return 'bg-white text-slate-900 border-purple-300 focus:border-purple-500';
-    if (cardBrightness >= 40) return 'bg-slate-50 text-slate-900 border-purple-400 focus:border-purple-500';
-    if (cardBrightness >= 25) return 'bg-slate-100 text-slate-900 border-purple-400 focus:border-purple-500';
-    if (cardBrightness >= 15) return 'bg-slate-200 text-slate-900 border-purple-400 focus:border-purple-500';
-    if (cardBrightness >= 8) return 'bg-slate-300 text-slate-900 border-purple-500 focus:border-purple-600';
-    if (cardBrightness >= 3) return 'bg-slate-400 text-white border-purple-500 focus:border-purple-600';
-    return 'bg-slate-500 text-white border-purple-600 focus:border-purple-700';
+    setBgHue(randomHue);
+    setBgSaturation(40 + Math.floor(Math.random() * 40));
+    setBgLightness(isDarkMode ? 10 + Math.floor(Math.random() * 15) : 15);
+    
+    setCardHue(randomHue + Math.floor(Math.random() * 40) - 20);
+    setCardSaturation(20 + Math.floor(Math.random() * 40));
+    setCardLightness(isDarkMode ? 20 + Math.floor(Math.random() * 15) : 25);
+    
+    setBorderHue(complementaryHue);
+    setBorderSaturation(50 + Math.floor(Math.random() * 40));
+    setBorderLightness(40 + Math.floor(Math.random() * 30));
+    setBorderOpacity(20 + Math.floor(Math.random() * 40));
+    
+    setAccentHue(randomHue + Math.floor(Math.random() * 60) - 30);
+    setAccentSaturation(70 + Math.floor(Math.random() * 30));
+    setAccentLightness(50 + Math.floor(Math.random() * 20));
   };
 
   return (
-    <div className={`min-h-screen p-6 transition-all duration-300 bg-gradient-to-br ${getBackgroundGradient()}`}>
-      <div className="container mx-auto space-y-6">
+    <div className="min-h-screen p-6 transition-all duration-300" style={getBackgroundStyle()}>
+      <div className="max-w-7xl mx-auto space-y-6">
         
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <h1 className={`text-xl font-black transition-colors ${getTextColor()}`} style={{ fontFamily: 'Orbitron, sans-serif' }} data-testid="heading-library">LoanView GPT</h1>
-            
-            {/* Brightness Slider - Only visible in light mode */}
-            {isLightMode && (
-              <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-purple-100/50 border border-purple-300">
-                <Sun className="h-4 w-4 text-purple-600" />
-                
-                {/* Picker Buttons */}
-                <div className="flex gap-1">
-                  <button
-                    onClick={() => {
-                      setActiveControl('page');
-                      setIsSettingsSaved(false);
-                    }}
-                    className={`px-2 py-1 text-xs font-medium rounded transition-all ${
-                      activeControl === 'page'
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
-                        : 'bg-white text-slate-600 hover:bg-purple-50'
-                    }`}
-                    data-testid="button-page-picker"
-                  >
-                    Page
-                  </button>
-                  <button
-                    onClick={() => {
-                      setActiveControl('card');
-                      setIsSettingsSaved(false);
-                    }}
-                    className={`px-2 py-1 text-xs font-medium rounded transition-all ${
-                      activeControl === 'card'
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
-                        : 'bg-white text-slate-600 hover:bg-purple-50'
-                    }`}
-                    data-testid="button-card-picker"
-                  >
-                    Card
-                  </button>
-                  <button
-                    onClick={handleKeepSettings}
-                    className="px-2 py-1 text-xs font-medium rounded transition-all bg-gradient-to-r from-indigo-900 to-blue-900 text-white hover:from-indigo-800 hover:to-blue-800 shadow-md ml-1"
-                    data-testid="button-keep-settings"
-                    data-keep-settings
-                  >
-                    {isSettingsSaved ? '✓' : 'Keep'}
-                  </button>
-                </div>
-                
-                <Slider
-                  value={[activeControl === 'page' ? pageBrightness : cardBrightness]}
-                  onValueChange={(values) => {
-                    if (activeControl === 'page') {
-                      setPageBrightness(values[0]);
-                    } else {
-                      setCardBrightness(values[0]);
-                    }
-                  }}
-                  min={0}
-                  max={100}
-                  step={1}
-                  className="w-32"
-                  data-testid="slider-brightness"
-                />
-                <span className="text-sm font-medium text-purple-600 min-w-[35px] text-right">
-                  {activeControl === 'page' ? pageBrightness : cardBrightness}%
-                </span>
-              </div>
-            )}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-4xl font-bold mb-2" style={getHeadingStyle()}>
+              Ultimate Theme Customizer
+            </h1>
+            <p style={getBodyStyle()}>
+              Create your perfect personalized dashboard experience
+            </p>
           </div>
+          
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setIsLightMode(!isLightMode)}
-              className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all ${
-                isLightMode
-                  ? 'bg-white border-purple-200 hover:border-purple-300 shadow-sm'
-                  : 'bg-purple-500/20 border-purple-500/30 hover:bg-purple-500/30'
-              }`}
-              title={isLightMode ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className="flex items-center justify-center w-10 h-10 rounded-lg border transition-all backdrop-blur-sm"
+              style={{
+                backgroundColor: isDarkMode ? 'rgba(147, 51, 234, 0.2)' : 'rgba(255, 255, 255, 0.9)',
+                borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness}%, 0.3)`
+              }}
               data-testid="button-theme-toggle"
             >
-              {isLightMode ? (
-                <Moon className="w-5 h-5 text-purple-600" />
-              ) : (
-                <Sun className="w-5 h-5 text-yellow-300" />
-              )}
+              {isDarkMode ? <Sun className="w-5 h-5 text-yellow-300" /> : <Moon className="w-5 h-5 text-purple-600" />}
             </button>
-            <DropdownMenu open={shortcutDropdownOpen} onOpenChange={setShortcutDropdownOpen}>
-              <DropdownMenuTrigger asChild>
-                <button
-                  className={`p-2 rounded-lg border transition-all ${
-                    isLightMode
-                      ? 'bg-purple-100 hover:bg-purple-200 border-purple-300 hover:border-purple-400'
-                      : 'bg-purple-500/20 hover:bg-purple-500/40 border-purple-500/30 hover:border-purple-500/50'
-                  }`}
-                  data-testid="button-shortcut"
-                >
-                  <User className={`h-5 w-5 ${isLightMode ? 'text-purple-700' : 'text-purple-300'}`} />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className={`w-48 backdrop-blur-xl ${
-                isLightMode
-                  ? 'bg-white/95 border-purple-300'
-                  : 'bg-slate-800/95 border-purple-500/30'
-              }`}>
-                {dashboardMenuItems.map((item, index) => (
-                  <div key={item.path}>
-                    <DropdownMenuItem
-                      onClick={() => setLocation(item.path)}
-                      className={`cursor-pointer transition-all ${
-                        isLightMode
-                          ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white'
-                          : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white'
-                      }`}
-                      data-testid={`shortcut-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
-                    >
-                      {item.label}
-                    </DropdownMenuItem>
-                    {(index === 4 || index === 6) && <DropdownMenuSeparator className={isLightMode ? 'bg-purple-300' : 'bg-purple-500/30'} />}
-                  </div>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button
-              variant="ghost"
-              onClick={() => setLocation('/admin/dashboard')}
-              className={`flex items-center gap-2 ${
-                isLightMode
-                  ? 'text-slate-700 hover:text-slate-900 hover:bg-purple-100'
-                  : 'text-purple-200 hover:text-white hover:bg-purple-500/20'
-              }`}
-              data-testid="button-back-to-dashboard"
+
+            <button
+              onClick={randomizeTheme}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all font-medium text-white backdrop-blur-sm"
+              style={getAccentStyle()}
+              data-testid="button-randomize"
             >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Dashboard
-            </Button>
+              <Sparkles className="w-5 h-5" />
+              Surprise Me!
+            </button>
+
+            <button
+              onClick={() => setShowCustomizer(!showCustomizer)}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all font-medium text-white backdrop-blur-sm"
+              style={getAccentStyle()}
+              data-testid="button-toggle-customizer"
+            >
+              <Palette className="w-5 h-5" />
+              {showCustomizer ? 'Hide' : 'Customize'}
+            </button>
           </div>
         </div>
 
-        {/* Main Content - Borrower Card with Dashboard Theme */}
-        <Card className={`backdrop-blur-xl border-l-4 hover:border-purple-400 focus-within:border-purple-400 transition-all duration-300 shadow-2xl ${getCardBackground()} ${
-          isLightMode
-            ? 'border-l-purple-600'
-            : 'border-l-purple-500'
-        }`}>
-            <Collapsible open={isBorrowerOpen} onOpenChange={setIsBorrowerOpen}>
-              <CardHeader className={`border-b ${isLightMode ? 'border-purple-200' : 'border-purple-500/20'}`}>
-                <div className="flex items-center justify-between">
-                  <CardTitle className={`text-2xl transition-colors ${getSectionTitleClasses()}`}>
-                    Borrower
-                  </CardTitle>
-                  <div className="flex items-center gap-2">
-                    {!hasCoBorrower ? (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setHasCoBorrower(true)}
-                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white border-0 shadow-lg hover:shadow-purple-500/50"
-                        data-testid="button-add-coborrower"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Co-Borrower
-                      </Button>
-                    ) : (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setHasCoBorrower(false)}
-                        className="bg-red-600 hover:bg-red-700 text-white border-0"
-                        data-testid="button-remove-coborrower"
-                      >
-                        Remove Co-Borrower
-                      </Button>
-                    )}
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className={`transition-all ${
-                              isLightMode
-                                ? 'bg-purple-100 hover:bg-purple-200 text-purple-700 hover:text-purple-900'
-                                : 'bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 hover:text-white'
-                            }`}
-                            data-testid="button-toggle-borrower"
-                          >
-                            {isBorrowerOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                          </Button>
-                        </CollapsibleTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent className={`backdrop-blur-xl ${
-                        isLightMode
-                          ? 'bg-white/95 border-purple-300'
-                          : 'bg-slate-800/95 border-purple-500/30'
-                      }`}>
-                        <p className={isLightMode ? 'text-purple-700' : 'text-purple-200'}>{isBorrowerOpen ? 'Minimize' : 'Expand'}</p>
-                      </TooltipContent>
-                    </Tooltip>
+        {showCustomizer && (
+          <div className="backdrop-blur-xl rounded-2xl p-6 border shadow-2xl transition-all" style={getCardStyle()}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold" style={getHeadingStyle()}>
+                Advanced Color Controls
+              </h2>
+              <button
+                onClick={resetToDefaults}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors backdrop-blur-sm"
+                style={{
+                  backgroundColor: isDarkMode ? 'rgba(71, 85, 105, 0.5)' : 'rgba(255, 255, 255, 0.9)',
+                  color: isDarkMode ? 'white' : '#1e293b',
+                  border: `1px solid ${isDarkMode ? 'rgba(100, 116, 139, 0.5)' : 'rgba(203, 213, 225, 1)'}`
+                }}
+                data-testid="button-reset"
+              >
+                <RotateCcw className="w-4 h-4" />
+                Reset All
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2" style={getHeadingStyle()}>
+                  <span className="w-2 h-2 rounded-full" style={{backgroundColor: `hsl(${bgHue}, ${bgSaturation}%, 50%)`}}></span>
+                  Background Page
+                </h3>
+                <div className="space-y-3">
+                  <SliderControl
+                    label="Hue"
+                    value={bgHue}
+                    onChange={(e) => setBgHue(Number(e.target.value))}
+                    max={360}
+                    gradientBg="linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))"
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <SliderControl
+                    label="Saturation"
+                    value={bgSaturation}
+                    onChange={(e) => setBgSaturation(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${bgHue}, 0%, 50%), hsl(${bgHue}, 100%, 50%))`}
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <SliderControl
+                    label="Lightness"
+                    value={bgLightness}
+                    onChange={(e) => setBgLightness(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${bgHue}, ${bgSaturation}%, 0%), hsl(${bgHue}, ${bgSaturation}%, 50%), hsl(${bgHue}, ${bgSaturation}%, 100%))`}
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <div className="p-3 rounded-lg border" style={{borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness}%, 0.3)`}}>
+                    <div className="h-16 rounded-lg" style={getBackgroundStyle()}></div>
                   </div>
                 </div>
-              </CardHeader>
-              <CollapsibleContent>
-                <CardContent className="space-y-6 pt-6">
-                  {/* Row 1: First Name, Middle Name, Last Name, Date of Birth, SSN */}
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="firstName" className={`transition-colors ${getLabelColor()}`}>First Name</Label>
-                      <Input
-                        id="firstName"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        className={isLightMode 
-                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                        }
-                        data-testid="input-firstName"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="middleName" className={`transition-colors ${getLabelColor()}`}>Middle Name</Label>
-                      <Input
-                        id="middleName"
-                        value={middleName}
-                        onChange={(e) => setMiddleName(e.target.value)}
-                        className={isLightMode 
-                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                        }
-                        data-testid="input-middleName"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="lastName" className={`transition-colors ${getLabelColor()}`}>Last Name</Label>
-                      <Input
-                        id="lastName"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        className={isLightMode 
-                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                        }
-                        data-testid="input-lastName"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="dateOfBirth" className={`transition-colors ${getLabelColor()}`}>Date of Birth</Label>
-                      <Input
-                        id="dateOfBirth"
-                        value={dateOfBirth}
-                        onChange={(e) => setDateOfBirth(formatDateOfBirth(e.target.value))}
-                        placeholder="MM/DD/YYYY"
-                        maxLength={10}
-                        className={isLightMode 
-                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                        }
-                        data-testid="input-dateOfBirth"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="ssn" className={`transition-colors ${getLabelColor()}`}>SSN</Label>
-                      <Input
-                        id="ssn"
-                        value={ssn}
-                        onChange={(e) => setSsn(formatSSN(e.target.value))}
-                        placeholder="XXX-XX-XXXX"
-                        maxLength={11}
-                        className={isLightMode 
-                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                        }
-                        data-testid="input-ssn"
-                      />
-                    </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2" style={getHeadingStyle()}>
+                  <span className="w-2 h-2 rounded-full" style={{backgroundColor: `hsl(${cardHue}, ${cardSaturation}%, 50%)`}}></span>
+                  Card / Main Area
+                </h3>
+                <div className="space-y-3">
+                  <SliderControl
+                    label="Hue"
+                    value={cardHue}
+                    onChange={(e) => setCardHue(Number(e.target.value))}
+                    max={360}
+                    gradientBg="linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))"
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <SliderControl
+                    label="Saturation"
+                    value={cardSaturation}
+                    onChange={(e) => setCardSaturation(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${cardHue}, 0%, 50%), hsl(${cardHue}, 100%, 50%))`}
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <SliderControl
+                    label="Lightness"
+                    value={cardLightness}
+                    onChange={(e) => setCardLightness(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${cardHue}, ${cardSaturation}%, 0%), hsl(${cardHue}, ${cardSaturation}%, 50%), hsl(${cardHue}, ${cardSaturation}%, 100%))`}
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <div className="p-3 rounded-lg border" style={{borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness}%, 0.3)`}}>
+                    <div className="h-16 rounded-lg border" style={getCardStyle()}></div>
                   </div>
-                  
-                  {/* Row 2: Marital Status, Relationship to Co-Borrower, Phone, Email, Preferred Contact Time */}
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="maritalStatus" className={`transition-colors ${getLabelColor()}`}>Marital Status</Label>
-                      <Select value={maritalStatus} onValueChange={setMaritalStatus}>
-                        <SelectTrigger 
-                          className={isLightMode 
-                            ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500'
-                            : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
-                          }
-                          data-testid="select-maritalStatus"
-                        >
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent className={`backdrop-blur-xl ${
-                          isLightMode
-                            ? 'bg-white/95 border-purple-300'
-                            : 'bg-slate-800/95 border-purple-500/30'
-                        }`}>
-                          <SelectItem value="Select" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Select</SelectItem>
-                          <SelectItem value="single" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Single</SelectItem>
-                          <SelectItem value="married" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Married</SelectItem>
-                          <SelectItem value="divorced" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Divorced</SelectItem>
-                          <SelectItem value="widowed" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Widowed</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                </div>
+              </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="relationshipToCoBorrower" className={`transition-colors ${getLabelColor()}`}>Relationship to Co-borrower</Label>
-                      <Select value={relationshipToCoBorrower} onValueChange={setRelationshipToCoBorrower}>
-                        <SelectTrigger 
-                          className={isLightMode 
-                            ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500'
-                            : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
-                          }
-                          data-testid="select-relationshipToCoBorrower"
-                        >
-                          <SelectValue placeholder="N/A" />
-                        </SelectTrigger>
-                        <SelectContent className={`backdrop-blur-xl ${
-                          isLightMode
-                            ? 'bg-white/95 border-purple-300'
-                            : 'bg-slate-800/95 border-purple-500/30'
-                        }`}>
-                          <SelectItem value="N/A" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>N/A</SelectItem>
-                          <SelectItem value="spouse" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Spouse</SelectItem>
-                          <SelectItem value="partner" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Partner</SelectItem>
-                          <SelectItem value="sibling" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Sibling</SelectItem>
-                          <SelectItem value="parent" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Parent</SelectItem>
-                          <SelectItem value="child" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Child</SelectItem>
-                          <SelectItem value="other" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2" style={getHeadingStyle()}>
+                  <span className="w-2 h-2 rounded-full" style={{backgroundColor: `hsl(${borderHue}, ${borderSaturation}%, ${borderLightness}%)`}}></span>
+                  Border / Frame
+                </h3>
+                <div className="space-y-3">
+                  <SliderControl
+                    label="Hue"
+                    value={borderHue}
+                    onChange={(e) => setBorderHue(Number(e.target.value))}
+                    max={360}
+                    gradientBg="linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))"
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <SliderControl
+                    label="Saturation"
+                    value={borderSaturation}
+                    onChange={(e) => setBorderSaturation(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${borderHue}, 0%, 50%), hsl(${borderHue}, 100%, 50%))`}
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <SliderControl
+                    label="Lightness"
+                    value={borderLightness}
+                    onChange={(e) => setBorderLightness(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${borderHue}, ${borderSaturation}%, 0%), hsl(${borderHue}, ${borderSaturation}%, 50%), hsl(${borderHue}, ${borderSaturation}%, 100%))`}
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <SliderControl
+                    label="Opacity"
+                    value={borderOpacity}
+                    onChange={(e) => setBorderOpacity(Number(e.target.value))}
+                    max={100}
+                    gradientBg="linear-gradient(to right, transparent, white)"
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <SliderControl
+                    label="Width"
+                    value={borderWidth}
+                    onChange={(e) => setBorderWidth(Number(e.target.value))}
+                    max={8}
+                    gradientBg={`hsl(${borderHue}, ${borderSaturation}%, ${borderLightness}%)`}
+                    getBodyStyle={getBodyStyle}
+                  />
+                </div>
+              </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="phone" className={`transition-colors ${getLabelColor()}`}>Phone</Label>
-                      <Input
-                        id="phone"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="(XXX) XXX-XXXX"
-                        className={isLightMode 
-                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                        }
-                        data-testid="input-phone"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className={`transition-colors ${getLabelColor()}`}>Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="email@example.com"
-                        className={isLightMode 
-                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                        }
-                        data-testid="input-email"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="preferredContactTime" className={`transition-colors ${getLabelColor()}`}>Preferred Contact Time</Label>
-                      <Select value={preferredContactTime} onValueChange={setPreferredContactTime}>
-                        <SelectTrigger 
-                          className={isLightMode 
-                            ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500'
-                            : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
-                          }
-                          data-testid="select-preferredContactTime"
-                        >
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent className={`backdrop-blur-xl ${
-                          isLightMode
-                            ? 'bg-white/95 border-purple-300'
-                            : 'bg-slate-800/95 border-purple-500/30'
-                        }`}>
-                          <SelectItem value="Select" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Select</SelectItem>
-                          <SelectItem value="morning" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Morning</SelectItem>
-                          <SelectItem value="afternoon" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Afternoon</SelectItem>
-                          <SelectItem value="evening" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Evening</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2" style={getHeadingStyle()}>
+                  <span className="w-2 h-2 rounded-full" style={{backgroundColor: `hsl(${headingHue}, ${headingSaturation}%, ${headingLightness}%)`}}></span>
+                  Heading Font
+                </h3>
+                <div className="space-y-3">
+                  <SliderControl
+                    label="Hue"
+                    value={headingHue}
+                    onChange={(e) => setHeadingHue(Number(e.target.value))}
+                    max={360}
+                    gradientBg="linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))"
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <SliderControl
+                    label="Saturation"
+                    value={headingSaturation}
+                    onChange={(e) => setHeadingSaturation(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${headingHue}, 0%, 50%), hsl(${headingHue}, 100%, 50%))`}
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <SliderControl
+                    label="Lightness"
+                    value={headingLightness}
+                    onChange={(e) => setHeadingLightness(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${headingHue}, ${headingSaturation}%, 0%), hsl(${headingHue}, ${headingSaturation}%, 50%), hsl(${headingHue}, ${headingSaturation}%, 100%))`}
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <div className="p-3 rounded-lg border" style={{borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness}%, 0.3)`}}>
+                    <h4 className="text-xl font-bold" style={getHeadingStyle()}>Sample Heading</h4>
                   </div>
+                </div>
+              </div>
 
-                  {/* Current Residence Section */}
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
-                    <div className="space-y-2 flex items-center gap-2">
-                      <Label className={`text-xl transition-colors ${getSectionTitleClasses()}`}>Current Residence</Label>
-                    </div>
-                    <div className="flex items-center gap-4 ml-1">
-                      <button
-                        type="button"
-                        onClick={() => setCurrentResidenceType('owned')}
-                        className="flex items-center gap-1.5 group"
-                        data-testid="button-residence-owned"
-                      >
-                        <div className={`w-3 h-3 rounded-full transition-colors ${
-                          currentResidenceType === 'owned' 
-                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50' 
-                            : isLightMode
-                              ? 'border-2 border-purple-400 bg-slate-50 hover:border-purple-500'
-                              : 'border-2 border-purple-400/50 bg-slate-700/50 hover:border-purple-400'
-                        }`}>
-                        </div>
-                        <span className={`text-sm font-medium ${isLightMode ? 'text-slate-700' : 'text-purple-200'}`}>Owned</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setCurrentResidenceType('rental')}
-                        className="flex items-center gap-1.5 group"
-                        data-testid="button-residence-rental"
-                      >
-                        <div className={`w-3 h-3 rounded-full transition-colors ${
-                          currentResidenceType === 'rental' 
-                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50' 
-                            : isLightMode
-                              ? 'border-2 border-purple-400 bg-slate-50 hover:border-purple-500'
-                              : 'border-2 border-purple-400/50 bg-slate-700/50 hover:border-purple-400'
-                        }`}>
-                        </div>
-                        <span className={`text-sm font-medium ${isLightMode ? 'text-slate-700' : 'text-purple-200'}`}>Rental</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setCurrentResidenceType('other')}
-                        className="flex items-center gap-1.5 group"
-                        data-testid="button-residence-other"
-                      >
-                        <div className={`w-3 h-3 rounded-full transition-colors ${
-                          currentResidenceType === 'other' 
-                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50' 
-                            : isLightMode
-                              ? 'border-2 border-purple-400 bg-slate-50 hover:border-purple-500'
-                              : 'border-2 border-purple-400/50 bg-slate-700/50 hover:border-purple-400'
-                        }`}>
-                        </div>
-                        <span className={`text-sm font-medium ${isLightMode ? 'text-slate-700' : 'text-purple-200'}`}>Other</span>
-                      </button>
-                    </div>
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2" style={getHeadingStyle()}>
+                  <span className="w-2 h-2 rounded-full" style={{backgroundColor: `hsl(${bodyHue}, ${bodySaturation}%, ${bodyLightness}%)`}}></span>
+                  Body Font
+                </h3>
+                <div className="space-y-3">
+                  <SliderControl
+                    label="Hue"
+                    value={bodyHue}
+                    onChange={(e) => setBodyHue(Number(e.target.value))}
+                    max={360}
+                    gradientBg="linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))"
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <SliderControl
+                    label="Saturation"
+                    value={bodySaturation}
+                    onChange={(e) => setBodySaturation(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${bodyHue}, 0%, 50%), hsl(${bodyHue}, 100%, 50%))`}
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <SliderControl
+                    label="Lightness"
+                    value={bodyLightness}
+                    onChange={(e) => setBodyLightness(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${bodyHue}, ${bodySaturation}%, 0%), hsl(${bodyHue}, ${bodySaturation}%, 50%), hsl(${bodyHue}, ${bodySaturation}%, 100%))`}
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <div className="p-3 rounded-lg border" style={{borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness}%, 0.3)`}}>
+                    <p style={getBodyStyle()}>Sample body text for preview</p>
                   </div>
+                </div>
+              </div>
 
-                  {/* Address Card with Dashboard Theme */}
-                  <Card className={`backdrop-blur-xl shadow-2xl mt-6 ${
-                    isLightMode
-                      ? 'bg-slate-50/80 border-purple-200'
-                      : 'bg-slate-800/50 border-purple-500/20'
-                  }`}>
-                    <CardContent className="pt-6">
-                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                        <div className="space-y-2 md:col-span-3">
-                          <Label htmlFor="street" className={`font-semibold transition-colors ${getLabelColor()}`}>Street Address</Label>
-                          <Input
-                            id="street"
-                            value={street}
-                            onChange={(e) => setStreet(e.target.value)}
-                            className={isLightMode 
-                              ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                              : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                            }
-                            data-testid="input-street"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="unit" className={`font-semibold transition-colors ${getLabelColor()}`}>Unit/Apt</Label>
-                          <Input
-                            id="unit"
-                            value={unit}
-                            onChange={(e) => setUnit(e.target.value)}
-                            className={isLightMode 
-                              ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                              : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                            }
-                            data-testid="input-unit"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="city" className={`font-semibold transition-colors ${getLabelColor()}`}>City</Label>
-                          <Input
-                            id="city"
-                            value={city}
-                            onChange={(e) => setCity(e.target.value)}
-                            className={isLightMode 
-                              ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                              : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                            }
-                            data-testid="input-city"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="state" className={`font-semibold transition-colors ${getLabelColor()}`}>State</Label>
-                          <Input
-                            id="state"
-                            value={state}
-                            onChange={(e) => setState(e.target.value)}
-                            placeholder="CA"
-                            maxLength={2}
-                            className={isLightMode 
-                              ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                              : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                            }
-                            data-testid="input-state"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="zipCode" className={`font-semibold transition-colors ${getLabelColor()}`}>ZIP Code</Label>
-                          <Input
-                            id="zipCode"
-                            value={zipCode}
-                            onChange={(e) => setZipCode(e.target.value)}
-                            placeholder="12345"
-                            maxLength={5}
-                            className={isLightMode 
-                              ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                              : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                            }
-                            data-testid="input-zipCode"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="county" className={`font-semibold transition-colors ${getLabelColor()}`}>County</Label>
-                          <Input
-                            id="county"
-                            value={county}
-                            onChange={(e) => setCounty(e.target.value)}
-                            className={isLightMode 
-                              ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                              : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                            }
-                            data-testid="input-county"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="fromDate" className={`font-semibold transition-colors ${getLabelColor()}`}>From</Label>
-                          <Input
-                            id="fromDate"
-                            value={fromDate}
-                            onChange={(e) => setFromDate(formatDate(e.target.value))}
-                            placeholder="mm/dd/yyyy"
-                            maxLength={10}
-                            className={`!text-[13px] placeholder:text-[10px] ${
-                              isLightMode 
-                                ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                                : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                            }`}
-                            data-testid="input-fromDate"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="toDate" className={`text-sm font-semibold transition-colors ${getLabelColor()}`}>
-                              {isPresent ? 'Present' : 'To'}
-                            </Label>
-                            <Switch
-                              checked={isPresent}
-                              onCheckedChange={(checked) => {
-                                setIsPresent(checked);
-                                if (checked) {
-                                  setToDate('Present');
-                                } else {
-                                  setToDate('');
-                                }
-                              }}
-                              data-testid="toggle-present"
-                              className="scale-[0.8] data-[state=checked]:bg-purple-500"
-                            />
-                          </div>
-                          <Input
-                            id="toDate"
-                            value={isPresent ? 'Present' : toDate}
-                            onChange={(e) => !isPresent && setToDate(formatDate(e.target.value))}
-                            placeholder="mm/dd/yyyy"
-                            maxLength={10}
-                            readOnly={isPresent}
-                            className={`!text-[13px] placeholder:text-[10px] ${
-                              isLightMode 
-                                ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                                : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                            }`}
-                            data-testid="input-toDate"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="duration" className={`text-sm font-semibold transition-colors ${getLabelColor()}`}>Duration</Label>
-                          <Input
-                            id="duration"
-                            value="0 Yrs 0 Mos"
-                            readOnly
-                            className={`cursor-not-allowed !text-[13px] ${
-                              isLightMode
-                                ? 'bg-purple-50 text-purple-700 border-purple-300'
-                                : 'bg-slate-700/50 text-purple-300 border-purple-500/30'
-                            }`}
-                            data-testid="input-duration"
-                          />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </CardContent>
-              </CollapsibleContent>
-            </Collapsible>
-          </Card>
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2" style={getHeadingStyle()}>
+                  <span className="w-2 h-2 rounded-full" style={{backgroundColor: `hsl(${accentHue}, ${accentSaturation}%, ${accentLightness}%)`}}></span>
+                  Accent Color
+                </h3>
+                <div className="space-y-3">
+                  <SliderControl
+                    label="Hue"
+                    value={accentHue}
+                    onChange={(e) => setAccentHue(Number(e.target.value))}
+                    max={360}
+                    gradientBg="linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))"
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <SliderControl
+                    label="Saturation"
+                    value={accentSaturation}
+                    onChange={(e) => setAccentSaturation(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${accentHue}, 0%, 50%), hsl(${accentHue}, 100%, 50%))`}
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <SliderControl
+                    label="Lightness"
+                    value={accentLightness}
+                    onChange={(e) => setAccentLightness(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${accentHue}, ${accentSaturation}%, 0%), hsl(${accentHue}, ${accentSaturation}%, 50%), hsl(${accentHue}, ${accentSaturation}%, 100%))`}
+                    getBodyStyle={getBodyStyle}
+                  />
+                  <div className="p-3 rounded-lg border" style={{borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness}%, 0.3)`}}>
+                    <div className="h-16 rounded-lg" style={getAccentStyle()}></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="backdrop-blur-xl rounded-2xl p-6 border transition-all" style={getCardStyle()}>
+              <h3 className="text-xl font-bold mb-3" style={getHeadingStyle()}>
+                Sample Card {i}
+              </h3>
+              <p style={getBodyStyle()}>
+                This is a preview of how your content will look with the current theme settings. Adjust the controls above to customize every aspect of your design.
+              </p>
+              <button
+                className="mt-4 px-4 py-2 rounded-lg font-medium text-white"
+                style={getAccentStyle()}
+              >
+                Action Button
+              </button>
+            </div>
+          ))}
+        </div>
+
       </div>
     </div>
   );

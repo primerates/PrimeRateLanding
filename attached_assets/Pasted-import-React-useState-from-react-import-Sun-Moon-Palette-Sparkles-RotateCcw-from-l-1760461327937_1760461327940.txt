@@ -1,0 +1,458 @@
+import React, { useState } from 'react';
+import { Sun, Moon, Palette, Sparkles, RotateCcw } from 'lucide-react';
+
+export default function ThemeCustomizer() {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [showCustomizer, setShowCustomizer] = useState(false);
+  
+  const [bgHue, setBgHue] = useState(270);
+  const [bgSaturation, setBgSaturation] = useState(50);
+  const [bgLightness, setBgLightness] = useState(15);
+  
+  const [cardHue, setCardHue] = useState(270);
+  const [cardSaturation, setCardSaturation] = useState(30);
+  const [cardLightness, setCardLightness] = useState(25);
+
+  const [borderHue, setBorderHue] = useState(270);
+  const [borderSaturation, setBorderSaturation] = useState(50);
+  const [borderLightness, setBorderLightness] = useState(40);
+  const [borderOpacity, setBorderOpacity] = useState(30);
+  const [borderWidth, setBorderWidth] = useState(1);
+
+  const [headingHue, setHeadingHue] = useState(0);
+  const [headingSaturation, setHeadingSaturation] = useState(0);
+  const [headingLightness, setHeadingLightness] = useState(100);
+  
+  const [bodyHue, setBodyHue] = useState(270);
+  const [bodySaturation, setBodySaturation] = useState(20);
+  const [bodyLightness, setBodyLightness] = useState(70);
+
+  const [accentHue, setAccentHue] = useState(280);
+  const [accentSaturation, setAccentSaturation] = useState(80);
+  const [accentLightness, setAccentLightness] = useState(60);
+
+  const getBackgroundStyle = () => {
+    if (isDarkMode) {
+      return {
+        background: `linear-gradient(to bottom right, hsl(${bgHue}, ${bgSaturation}%, ${bgLightness}%), hsl(${bgHue + 20}, ${bgSaturation + 10}%, ${bgLightness + 5}%), hsl(${bgHue}, ${bgSaturation}%, ${bgLightness}%))`
+      };
+    } else {
+      return {
+        background: `linear-gradient(to bottom right, hsl(${bgHue}, ${bgSaturation}%, ${bgLightness + 80}%), hsl(${bgHue + 20}, ${bgSaturation}%, ${bgLightness + 85}%), hsl(${bgHue + 40}, ${bgSaturation}%, ${bgLightness + 90}%))`
+      };
+    }
+  };
+
+  const getCardStyle = () => {
+    if (isDarkMode) {
+      return {
+        backgroundColor: `hsla(${cardHue}, ${cardSaturation}%, ${cardLightness}%, 0.5)`,
+        borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness}%, ${borderOpacity / 100})`,
+        borderWidth: `${borderWidth}px`
+      };
+    } else {
+      return {
+        backgroundColor: `hsla(${cardHue}, ${cardSaturation}%, ${cardLightness + 70}%, 0.8)`,
+        borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness + 40}%, ${borderOpacity / 100})`,
+        borderWidth: `${borderWidth}px`
+      };
+    }
+  };
+
+  const getHeadingStyle = () => {
+    if (isDarkMode) {
+      return {
+        color: `hsl(${headingHue}, ${headingSaturation}%, ${headingLightness}%)`
+      };
+    } else {
+      return {
+        color: `hsl(${headingHue}, ${headingSaturation}%, ${100 - headingLightness}%)`
+      };
+    }
+  };
+
+  const getBodyStyle = () => {
+    if (isDarkMode) {
+      return {
+        color: `hsl(${bodyHue}, ${bodySaturation}%, ${bodyLightness}%)`
+      };
+    } else {
+      return {
+        color: `hsl(${bodyHue}, ${bodySaturation}%, ${100 - bodyLightness + 20}%)`
+      };
+    }
+  };
+
+  const getAccentStyle = () => {
+    return {
+      background: `linear-gradient(to right, hsl(${accentHue}, ${accentSaturation}%, ${accentLightness}%), hsl(${accentHue + 20}, ${accentSaturation}%, ${accentLightness - 10}%))`
+    };
+  };
+
+  const resetToDefaults = () => {
+    setBgHue(270);
+    setBgSaturation(50);
+    setBgLightness(15);
+    setCardHue(270);
+    setCardSaturation(30);
+    setCardLightness(25);
+    setBorderHue(270);
+    setBorderSaturation(50);
+    setBorderLightness(40);
+    setBorderOpacity(30);
+    setBorderWidth(1);
+    setHeadingHue(0);
+    setHeadingSaturation(0);
+    setHeadingLightness(100);
+    setBodyHue(270);
+    setBodySaturation(20);
+    setBodyLightness(70);
+    setAccentHue(280);
+    setAccentSaturation(80);
+    setAccentLightness(60);
+  };
+
+  const randomizeTheme = () => {
+    const randomHue = Math.floor(Math.random() * 360);
+    const complementaryHue = (randomHue + 180) % 360;
+    
+    setBgHue(randomHue);
+    setBgSaturation(40 + Math.floor(Math.random() * 40));
+    setBgLightness(isDarkMode ? 10 + Math.floor(Math.random() * 15) : 15);
+    
+    setCardHue(randomHue + Math.floor(Math.random() * 40) - 20);
+    setCardSaturation(20 + Math.floor(Math.random() * 40));
+    setCardLightness(isDarkMode ? 20 + Math.floor(Math.random() * 15) : 25);
+    
+    setBorderHue(complementaryHue);
+    setBorderSaturation(50 + Math.floor(Math.random() * 40));
+    setBorderLightness(40 + Math.floor(Math.random() * 30));
+    setBorderOpacity(20 + Math.floor(Math.random() * 40));
+    
+    setAccentHue(randomHue + Math.floor(Math.random() * 60) - 30);
+    setAccentSaturation(70 + Math.floor(Math.random() * 30));
+    setAccentLightness(50 + Math.floor(Math.random() * 20));
+  };
+
+  const SliderControl = ({ label, value, onChange, min = 0, max = 360, gradientBg }) => (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <label className="text-sm font-medium" style={getBodyStyle()}>{label}</label>
+        <span className="text-xs" style={getBodyStyle()}>{value}{max === 360 ? '°' : '%'}</span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        value={value}
+        onChange={onChange}
+        className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+        style={{ background: gradientBg }}
+      />
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen p-6 transition-all duration-300" style={getBackgroundStyle()}>
+      <div className="max-w-7xl mx-auto space-y-6">
+        
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-4xl font-bold mb-2" style={getHeadingStyle()}>
+              Ultimate Theme Customizer
+            </h1>
+            <p style={getBodyStyle()}>
+              Create your perfect personalized dashboard experience
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className="flex items-center justify-center w-10 h-10 rounded-lg border transition-all backdrop-blur-sm"
+              style={{
+                backgroundColor: isDarkMode ? 'rgba(147, 51, 234, 0.2)' : 'rgba(255, 255, 255, 0.9)',
+                borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness}%, 0.3)`
+              }}
+            >
+              {isDarkMode ? <Sun className="w-5 h-5 text-yellow-300" /> : <Moon className="w-5 h-5 text-purple-600" />}
+            </button>
+
+            <button
+              onClick={randomizeTheme}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all font-medium text-white backdrop-blur-sm"
+              style={getAccentStyle()}
+            >
+              <Sparkles className="w-5 h-5" />
+              Surprise Me!
+            </button>
+
+            <button
+              onClick={() => setShowCustomizer(!showCustomizer)}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all font-medium text-white backdrop-blur-sm"
+              style={getAccentStyle()}
+            >
+              <Palette className="w-5 h-5" />
+              {showCustomizer ? 'Hide' : 'Customize'}
+            </button>
+          </div>
+        </div>
+
+        {showCustomizer && (
+          <div className="backdrop-blur-xl rounded-2xl p-6 border shadow-2xl transition-all" style={getCardStyle()}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold" style={getHeadingStyle()}>
+                Advanced Color Controls
+              </h2>
+              <button
+                onClick={resetToDefaults}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors backdrop-blur-sm"
+                style={{
+                  backgroundColor: isDarkMode ? 'rgba(71, 85, 105, 0.5)' : 'rgba(255, 255, 255, 0.9)',
+                  color: isDarkMode ? 'white' : '#1e293b',
+                  border: `1px solid ${isDarkMode ? 'rgba(100, 116, 139, 0.5)' : 'rgba(203, 213, 225, 1)'}`
+                }}
+              >
+                <RotateCcw className="w-4 h-4" />
+                Reset All
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2" style={getHeadingStyle()}>
+                  <span className="w-2 h-2 rounded-full" style={{backgroundColor: `hsl(${bgHue}, ${bgSaturation}%, 50%)`}}></span>
+                  Background Page
+                </h3>
+                <div className="space-y-3">
+                  <SliderControl
+                    label="Hue"
+                    value={bgHue}
+                    onChange={(e) => setBgHue(Number(e.target.value))}
+                    max={360}
+                    gradientBg="linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))"
+                  />
+                  <SliderControl
+                    label="Saturation"
+                    value={bgSaturation}
+                    onChange={(e) => setBgSaturation(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${bgHue}, 0%, 50%), hsl(${bgHue}, 100%, 50%))`}
+                  />
+                  <SliderControl
+                    label="Lightness"
+                    value={bgLightness}
+                    onChange={(e) => setBgLightness(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${bgHue}, ${bgSaturation}%, 0%), hsl(${bgHue}, ${bgSaturation}%, 50%), hsl(${bgHue}, ${bgSaturation}%, 100%))`}
+                  />
+                  <div className="p-3 rounded-lg border" style={{borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness}%, 0.3)`}}>
+                    <div className="h-16 rounded-lg" style={getBackgroundStyle()}></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2" style={getHeadingStyle()}>
+                  <span className="w-2 h-2 rounded-full" style={{backgroundColor: `hsl(${cardHue}, ${cardSaturation}%, 50%)`}}></span>
+                  Card / Main Area
+                </h3>
+                <div className="space-y-3">
+                  <SliderControl
+                    label="Hue"
+                    value={cardHue}
+                    onChange={(e) => setCardHue(Number(e.target.value))}
+                    max={360}
+                    gradientBg="linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))"
+                  />
+                  <SliderControl
+                    label="Saturation"
+                    value={cardSaturation}
+                    onChange={(e) => setCardSaturation(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${cardHue}, 0%, 50%), hsl(${cardHue}, 100%, 50%))`}
+                  />
+                  <SliderControl
+                    label="Lightness"
+                    value={cardLightness}
+                    onChange={(e) => setCardLightness(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${cardHue}, ${cardSaturation}%, 0%), hsl(${cardHue}, ${cardSaturation}%, 50%), hsl(${cardHue}, ${cardSaturation}%, 100%))`}
+                  />
+                  <div className="p-3 rounded-lg border" style={{borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness}%, 0.3)`}}>
+                    <div className="h-16 rounded-lg border" style={getCardStyle()}></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2" style={getHeadingStyle()}>
+                  <span className="w-2 h-2 rounded-full" style={{backgroundColor: `hsl(${borderHue}, ${borderSaturation}%, ${borderLightness}%)`}}></span>
+                  Border / Frame
+                </h3>
+                <div className="space-y-3">
+                  <SliderControl
+                    label="Hue"
+                    value={borderHue}
+                    onChange={(e) => setBorderHue(Number(e.target.value))}
+                    max={360}
+                    gradientBg="linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))"
+                  />
+                  <SliderControl
+                    label="Saturation"
+                    value={borderSaturation}
+                    onChange={(e) => setBorderSaturation(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${borderHue}, 0%, 50%), hsl(${borderHue}, 100%, 50%))`}
+                  />
+                  <SliderControl
+                    label="Lightness"
+                    value={borderLightness}
+                    onChange={(e) => setBorderLightness(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${borderHue}, ${borderSaturation}%, 0%), hsl(${borderHue}, ${borderSaturation}%, 50%), hsl(${borderHue}, ${borderSaturation}%, 100%))`}
+                  />
+                  <SliderControl
+                    label="Opacity"
+                    value={borderOpacity}
+                    onChange={(e) => setBorderOpacity(Number(e.target.value))}
+                    max={100}
+                    gradientBg="linear-gradient(to right, transparent, white)"
+                  />
+                  <SliderControl
+                    label="Width"
+                    value={borderWidth}
+                    onChange={(e) => setBorderWidth(Number(e.target.value))}
+                    max={8}
+                    gradientBg={`hsl(${borderHue}, ${borderSaturation}%, ${borderLightness}%)`}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2" style={getHeadingStyle()}>
+                  <span className="w-2 h-2 rounded-full" style={{backgroundColor: `hsl(${headingHue}, ${headingSaturation}%, ${headingLightness}%)`}}></span>
+                  Heading Font
+                </h3>
+                <div className="space-y-3">
+                  <SliderControl
+                    label="Hue"
+                    value={headingHue}
+                    onChange={(e) => setHeadingHue(Number(e.target.value))}
+                    max={360}
+                    gradientBg="linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))"
+                  />
+                  <SliderControl
+                    label="Saturation"
+                    value={headingSaturation}
+                    onChange={(e) => setHeadingSaturation(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${headingHue}, 0%, 50%), hsl(${headingHue}, 100%, 50%))`}
+                  />
+                  <SliderControl
+                    label="Lightness"
+                    value={headingLightness}
+                    onChange={(e) => setHeadingLightness(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${headingHue}, ${headingSaturation}%, 0%), hsl(${headingHue}, ${headingSaturation}%, 50%), hsl(${headingHue}, ${headingSaturation}%, 100%))`}
+                  />
+                  <div className="p-3 rounded-lg border" style={{borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness}%, 0.3)`}}>
+                    <h4 className="text-xl font-bold" style={getHeadingStyle()}>Sample Heading</h4>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2" style={getHeadingStyle()}>
+                  <span className="w-2 h-2 rounded-full" style={{backgroundColor: `hsl(${bodyHue}, ${bodySaturation}%, ${bodyLightness}%)`}}></span>
+                  Body Font
+                </h3>
+                <div className="space-y-3">
+                  <SliderControl
+                    label="Hue"
+                    value={bodyHue}
+                    onChange={(e) => setBodyHue(Number(e.target.value))}
+                    max={360}
+                    gradientBg="linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))"
+                  />
+                  <SliderControl
+                    label="Saturation"
+                    value={bodySaturation}
+                    onChange={(e) => setBodySaturation(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${bodyHue}, 0%, 50%), hsl(${bodyHue}, 100%, 50%))`}
+                  />
+                  <SliderControl
+                    label="Lightness"
+                    value={bodyLightness}
+                    onChange={(e) => setBodyLightness(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${bodyHue}, ${bodySaturation}%, 0%), hsl(${bodyHue}, ${bodySaturation}%, 50%), hsl(${bodyHue}, ${bodySaturation}%, 100%))`}
+                  />
+                  <div className="p-3 rounded-lg border" style={{borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness}%, 0.3)`}}>
+                    <p style={getBodyStyle()}>Sample body text for preview</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2" style={getHeadingStyle()}>
+                  <span className="w-2 h-2 rounded-full" style={{backgroundColor: `hsl(${accentHue}, ${accentSaturation}%, ${accentLightness}%)`}}></span>
+                  Accent Color
+                </h3>
+                <div className="space-y-3">
+                  <SliderControl
+                    label="Hue"
+                    value={accentHue}
+                    onChange={(e) => setAccentHue(Number(e.target.value))}
+                    max={360}
+                    gradientBg="linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))"
+                  />
+                  <SliderControl
+                    label="Saturation"
+                    value={accentSaturation}
+                    onChange={(e) => setAccentSaturation(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${accentHue}, 0%, 50%), hsl(${accentHue}, 100%, 50%))`}
+                  />
+                  <SliderControl
+                    label="Lightness"
+                    value={accentLightness}
+                    onChange={(e) => setAccentLightness(Number(e.target.value))}
+                    max={100}
+                    gradientBg={`linear-gradient(to right, hsl(${accentHue}, ${accentSaturation}%, 0%), hsl(${accentHue}, ${accentSaturation}%, 50%), hsl(${accentHue}, ${accentSaturation}%, 100%))`}
+                  />
+                  <div className="p-3 rounded-lg border" style={{borderColor: `hsla(${borderHue}, ${borderSaturation}%, ${borderLightness}%, 0.3)`}}>
+                    <div className="h-16 rounded-lg" style={getAccentStyle()}></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="backdrop-blur-xl rounded-2xl p-6 border transition-all" style={getCardStyle()}>
+              <h3 className="text-xl font-bold mb-3" style={getHeadingStyle()}>
+                Sample Card {i}
+              </h3>
+              <p style={getBodyStyle()}>
+                This is a preview of how your content will look with the current theme settings. Adjust the controls above to customize every aspect of your design.
+              </p>
+              <button
+                className="mt-4 px-4 py-2 rounded-lg font-medium text-white"
+                style={getAccentStyle()}
+              >
+                Action Button
+              </button>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  );
+}
