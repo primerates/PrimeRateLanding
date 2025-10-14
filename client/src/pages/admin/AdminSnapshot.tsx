@@ -1366,10 +1366,10 @@ export default function AdminSnapshot() {
             <DropdownMenu open={shortcutDropdownOpen} onOpenChange={setShortcutDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="p-1.5 bg-purple-500/20 hover:bg-purple-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all"
+                  className="px-2 py-1.5 bg-purple-500/20 hover:bg-purple-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all"
                   data-testid="button-shortcut"
                 >
-                  <User className="h-4.5 w-4.5 text-purple-300" />
+                  <User className="h-4 w-4 text-purple-300" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
