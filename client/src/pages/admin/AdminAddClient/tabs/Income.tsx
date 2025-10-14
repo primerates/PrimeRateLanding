@@ -29,6 +29,10 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
     const [secondPropertyCardStates, setSecondPropertyCardStates] = useState<Record<string, boolean>>({});
     const [secondEmploymentDates, setSecondEmploymentDates] = useState<Record<string, any>>({});
 
+    // State for self employment forms
+    const [selfEmploymentCards, setSelfEmploymentCards] = useState<string[]>(['default']);
+    const [selfEmploymentPropertyCardStates, setSelfEmploymentPropertyCardStates] = useState<Record<string, boolean>>({});
+
     // State for Social Security form
     const [isSocialSecurityOpen, setIsSocialSecurityOpen] = useState(false);
 
@@ -56,11 +60,19 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         cardId: string;
     }>({ isOpen: false, cardId: '' });
 
+    // Delete self employment dialog state
+    const [deleteSelfEmploymentDialog, setDeleteSelfEmploymentDialog] = useState<{
+        isOpen: boolean;
+        cardId: string;
+    }>({ isOpen: false, cardId: '' });
+
     // Co-borrower state variables
     const [coBorrowerEmployerCards, setCoBorrowerEmployerCards] = useState<string[]>(['default']);
     const [coBorrowerPropertyCardStates, setCoBorrowerPropertyCardStates] = useState<Record<string, boolean>>({});
     const [coBorrowerSecondEmployerCards, setCoBorrowerSecondEmployerCards] = useState<string[]>(['default']);
     const [coBorrowerSecondPropertyCardStates, setCoBorrowerSecondPropertyCardStates] = useState<Record<string, boolean>>({});
+    const [coBorrowerSelfEmploymentCards, setCoBorrowerSelfEmploymentCards] = useState<string[]>(['default']);
+    const [coBorrowerSelfEmploymentPropertyCardStates, setCoBorrowerSelfEmploymentPropertyCardStates] = useState<Record<string, boolean>>({});
     const [coBorrowerEmploymentDates, setCoBorrowerEmploymentDates] = useState<Record<string, any>>({});
     const [coBorrowerSecondEmploymentDates, setCoBorrowerSecondEmploymentDates] = useState<Record<string, any>>({});
     const [isCoBorrowerSocialSecurityOpen, setIsCoBorrowerSocialSecurityOpen] = useState(false);
@@ -77,6 +89,10 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         cardId: string;
     }>({ isOpen: false, cardId: '' });
     const [deleteCoBorrowerSecondEmployerDialog, setDeleteCoBorrowerSecondEmployerDialog] = useState<{
+        isOpen: boolean;
+        cardId: string;
+    }>({ isOpen: false, cardId: '' });
+    const [deleteCoBorrowerSelfEmploymentDialog, setDeleteCoBorrowerSelfEmploymentDialog] = useState<{
         isOpen: boolean;
         cardId: string;
     }>({ isOpen: false, cardId: '' });
@@ -104,6 +120,18 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
     const getCoBorrowerSecondEmployerFieldPath = (cardId: string, fieldName: string) => {
         const cleanCardId = cardId === 'default' ? 'default' : cardId;
         return `coBorrowerIncome.secondEmployers.${cleanCardId}.${fieldName}` as const;
+    };
+
+    // Helper function to generate dynamic field paths for self employment cards
+    const getSelfEmploymentFieldPath = (cardId: string, fieldName: string) => {
+        const cleanCardId = cardId === 'default' ? 'default' : cardId;
+        return `income.selfEmployment.${cleanCardId}.${fieldName}` as const;
+    };
+
+    // Helper function to generate dynamic field paths for co-borrower self employment cards
+    const getCoBorrowerSelfEmploymentFieldPath = (cardId: string, fieldName: string) => {
+        const cleanCardId = cardId === 'default' ? 'default' : cardId;
+        return `coBorrowerIncome.selfEmployment.${cleanCardId}.${fieldName}` as const;
     };
 
     // Update employment duration when dates change
@@ -555,6 +583,37 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         });
     };
 
+    const handleDeleteSelfEmployment = (propertyId: string) => {        
+        // Map propertyId back to original cardId
+        const originalCardId = propertyId === 'self-employment-template-card' ? 'default' : propertyId;
+        
+        // Remove the card from the array
+        const updatedCards = selfEmploymentCards.filter(id => id !== originalCardId);
+        setSelfEmploymentCards(updatedCards);
+        
+        // If this was the last self employment, uncheck the self employment checkbox
+        if (updatedCards.length === 0) {
+            form.setValue('income.incomeTypes.selfEmployment', false);
+        }
+        
+        // Clean up related state
+        setSelfEmploymentPropertyCardStates(prev => {
+            const newState = { ...prev };
+            delete newState[propertyId];
+            return newState;
+        });
+        
+        // Clear form data for this self employment
+        const fieldsToClean = [
+            'businessName', 'phone', 'grossIncome', 'startDate', 'endDate', 
+            'isPresent', 'duration', 'streetAddress', 'unitSuite', 'city', 
+            'state', 'zipCode', 'county', 'formation'
+        ];
+        fieldsToClean.forEach(field => {
+            form.setValue(`income.selfEmployment.${originalCardId}.${field}` as any, '');
+        });
+    };
+
     // Co-borrower event handlers
     const handleCoBorrowerPropertyRentalChange = (checked: boolean) => {
         if (checked) {
@@ -710,6 +769,33 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         });
     };
 
+    const handleDeleteCoBorrowerSelfEmployment = (propertyId: string) => {        
+        // Map propertyId back to original cardId
+        const originalCardId = propertyId === 'co-borrower-self-employment-template-card' ? 'default' : propertyId;
+        
+        const updatedCards = coBorrowerSelfEmploymentCards.filter(id => id !== originalCardId);
+        setCoBorrowerSelfEmploymentCards(updatedCards);
+        
+        if (updatedCards.length === 0) {
+            form.setValue('coBorrowerIncome.incomeTypes.selfEmployment', false);
+        }
+        
+        setCoBorrowerSelfEmploymentPropertyCardStates(prev => {
+            const newState = { ...prev };
+            delete newState[propertyId];
+            return newState;
+        });
+        
+        const fieldsToClean = [
+            'businessName', 'phone', 'grossIncome', 'startDate', 'endDate', 
+            'isPresent', 'duration', 'streetAddress', 'unitSuite', 'city', 
+            'state', 'zipCode', 'county', 'formation'
+        ];
+        fieldsToClean.forEach(field => {
+            form.setValue(`coBorrowerIncome.selfEmployment.${originalCardId}.${field}` as any, '');
+        });
+    };
+
     return (
         <>
             <Card>
@@ -727,12 +813,17 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
                 setEmployerCards={setBorrowerEmployerCards}
                 secondEmployerCards={secondEmployerCards}
                 setSecondEmployerCards={setSecondEmployerCards}
+                selfEmploymentCards={selfEmploymentCards}
+                setSelfEmploymentCards={setSelfEmploymentCards}
                 propertyCardStates={propertyCardStates}
                 setPropertyCardStates={setPropertyCardStates}
                 secondPropertyCardStates={secondPropertyCardStates}
                 setSecondPropertyCardStates={setSecondPropertyCardStates}
+                selfEmploymentPropertyCardStates={selfEmploymentPropertyCardStates}
+                setSelfEmploymentPropertyCardStates={setSelfEmploymentPropertyCardStates}
                 getEmployerFieldPath={getEmployerFieldPath}
                 getSecondEmployerFieldPath={getSecondEmployerFieldPath}
+                getSelfEmploymentFieldPath={getSelfEmploymentFieldPath}
                 employmentDates={employmentDates}
                 setEmploymentDates={setEmploymentDates}
                 secondEmploymentDates={secondEmploymentDates}
@@ -753,6 +844,8 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
                 setDeleteEmployerDialog={setDeleteEmployerDialog}
                 deleteSecondEmployerDialog={deleteSecondEmployerDialog}
                 setDeleteSecondEmployerDialog={setDeleteSecondEmployerDialog}
+                deleteSelfEmploymentDialog={deleteSelfEmploymentDialog}
+                setDeleteSelfEmploymentDialog={setDeleteSelfEmploymentDialog}
                 handlePropertyRentalChange={handlePropertyRentalChange}
                 handleExpandAll={handleExpandAll}
                 handleMinimizeAll={handleMinimizeAll}
@@ -761,6 +854,7 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
                 handleDeleteDisability={handleDeleteDisability}
                 handleDeleteEmployer={handleDeleteEmployer}
                 handleDeleteSecondEmployer={handleDeleteSecondEmployer}
+                handleDeleteSelfEmployment={handleDeleteSelfEmployment}
             />
 
             {/* Co-borrower Income Section - Only show when co-borrower is added */}
@@ -774,12 +868,17 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
                     setEmployerCards={setCoBorrowerEmployerCards}
                     secondEmployerCards={coBorrowerSecondEmployerCards}
                     setSecondEmployerCards={setCoBorrowerSecondEmployerCards}
+                    selfEmploymentCards={coBorrowerSelfEmploymentCards}
+                    setSelfEmploymentCards={setCoBorrowerSelfEmploymentCards}
                     propertyCardStates={coBorrowerPropertyCardStates}
                     setPropertyCardStates={setCoBorrowerPropertyCardStates}
                     secondPropertyCardStates={coBorrowerSecondPropertyCardStates}
                     setSecondPropertyCardStates={setCoBorrowerSecondPropertyCardStates}
+                    selfEmploymentPropertyCardStates={coBorrowerSelfEmploymentPropertyCardStates}
+                    setSelfEmploymentPropertyCardStates={setCoBorrowerSelfEmploymentPropertyCardStates}
                     getEmployerFieldPath={getCoBorrowerEmployerFieldPath}
                     getSecondEmployerFieldPath={getCoBorrowerSecondEmployerFieldPath}
+                    getSelfEmploymentFieldPath={getCoBorrowerSelfEmploymentFieldPath}
                     employmentDates={coBorrowerEmploymentDates}
                     setEmploymentDates={setCoBorrowerEmploymentDates}
                     secondEmploymentDates={coBorrowerSecondEmploymentDates}
@@ -800,6 +899,8 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
                     setDeleteEmployerDialog={setDeleteCoBorrowerEmployerDialog}
                     deleteSecondEmployerDialog={deleteCoBorrowerSecondEmployerDialog}
                     setDeleteSecondEmployerDialog={setDeleteCoBorrowerSecondEmployerDialog}
+                    deleteSelfEmploymentDialog={deleteCoBorrowerSelfEmploymentDialog}
+                    setDeleteSelfEmploymentDialog={setDeleteCoBorrowerSelfEmploymentDialog}
                     handlePropertyRentalChange={handleCoBorrowerPropertyRentalChange}
                     handleExpandAll={handleCoBorrowerExpandAll}
                     handleMinimizeAll={handleCoBorrowerMinimizeAll}
@@ -808,6 +909,7 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
                     handleDeleteDisability={handleDeleteCoBorrowerDisability}
                     handleDeleteEmployer={handleDeleteCoBorrowerEmployer}
                     handleDeleteSecondEmployer={handleDeleteCoBorrowerSecondEmployer}
+                    handleDeleteSelfEmployment={handleDeleteCoBorrowerSelfEmployment}
                 />
             )}
         </>

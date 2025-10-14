@@ -119,3 +119,23 @@ export const US_STATES_OPTIONS: Option[] = [
   { value: 'WI', label: 'Wisconsin' },
   { value: 'WY', label: 'Wyoming' }
 ];
+
+// Formation Options for Self Employment
+export const FORMATION_OPTIONS: Option[] = [
+  { value: 'Sole Proprietorship', label: 'Sole Proprietorship' },
+  { value: 'General Partnership (GP)', label: 'General Partnership (GP)' },
+  { value: 'Limited Partnership (LP)', label: 'Limited Partnership (LP)' },
+  { value: 'Limited Liability Partnership (LLP)', label: 'Limited Liability Partnership (LLP)' },
+  { value: 'LLC taxed as S-Corp', label: 'LLC taxed as S-Corp' },
+  { value: 'LLC taxed as C-Corp', label: 'LLC taxed as C-Corp' },
+  { value: 'C Corporation (C-Corp)', label: 'C Corporation (C-Corp)' },
+  { value: 'S Corporation (S-Corp)', label: 'S Corporation (S-Corp)' },
+  { value: 'Benefit Corporation (B-Corp)', label: 'Benefit Corporation (B-Corp)' },
+  { value: 'Close Corporation', label: 'Close Corporation' },
+  { value: 'Non-Profit Corporation', label: 'Non-Profit Corporation' },
+  { value: 'Professional Corporation (PC)', label: 'Professional Corporation (PC)' },
+  { value: 'Professional LLC (PLLC)', label: 'Professional LLC (PLLC)' },
+  { value: 'Joint Venture', label: 'Joint Venture' },
+  { value: 'CPA', label: 'CPA' },
+  { value: 'Other', label: 'Other' }
+];

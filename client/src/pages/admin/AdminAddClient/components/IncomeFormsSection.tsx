@@ -3,6 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { InsertClient } from '@shared/schema';
 import IncomeTypes from './IncomeTypes';
 import EmploymentForm from './EmploymentForm';
+import SelfEmploymentForm from './SelfEmploymentForm';
 import SocialSecurityForm from './SocialSecurityForm';
 import PensionForm from './PensionForm';
 import DisabilityCard from './DisabilityCard';
@@ -28,14 +29,19 @@ interface IncomeFormsSectionProps {
     setEmployerCards: (cards: string[]) => void;
     secondEmployerCards: string[];
     setSecondEmployerCards: (cards: string[]) => void;
+    selfEmploymentCards: string[];
+    setSelfEmploymentCards: (cards: string[]) => void;
     propertyCardStates: Record<string, boolean>;
     setPropertyCardStates: (updater: (prev: Record<string, boolean>) => Record<string, boolean>) => void;
     secondPropertyCardStates: Record<string, boolean>;
     setSecondPropertyCardStates: (updater: (prev: Record<string, boolean>) => Record<string, boolean>) => void;
+    selfEmploymentPropertyCardStates: Record<string, boolean>;
+    setSelfEmploymentPropertyCardStates: (updater: (prev: Record<string, boolean>) => Record<string, boolean>) => void;
     
     // Employment functions
     getEmployerFieldPath: (cardId: string, fieldName: string) => string;
     getSecondEmployerFieldPath: (cardId: string, fieldName: string) => string;
+    getSelfEmploymentFieldPath: (cardId: string, fieldName: string) => string;
     employmentDates: Record<string, EmploymentDate>;
     setEmploymentDates: (updater: (prev: Record<string, EmploymentDate>) => Record<string, EmploymentDate>) => void;
     secondEmploymentDates: Record<string, EmploymentDate>;
@@ -62,6 +68,8 @@ interface IncomeFormsSectionProps {
     setDeleteEmployerDialog: (dialog: { isOpen: boolean; cardId: string }) => void;
     deleteSecondEmployerDialog: { isOpen: boolean; cardId: string };
     setDeleteSecondEmployerDialog: (dialog: { isOpen: boolean; cardId: string }) => void;
+    deleteSelfEmploymentDialog: { isOpen: boolean; cardId: string };
+    setDeleteSelfEmploymentDialog: (dialog: { isOpen: boolean; cardId: string }) => void;
     
     // Event handlers
     handlePropertyRentalChange: (checked: boolean) => void;
@@ -72,6 +80,7 @@ interface IncomeFormsSectionProps {
     handleDeleteDisability: () => void;
     handleDeleteEmployer: (cardId: string) => void;
     handleDeleteSecondEmployer: (cardId: string) => void;
+    handleDeleteSelfEmployment: (cardId: string) => void;
 }
 
 const IncomeFormsSection = ({
@@ -83,12 +92,17 @@ const IncomeFormsSection = ({
     setEmployerCards,
     secondEmployerCards,
     setSecondEmployerCards,
+    selfEmploymentCards,
+    setSelfEmploymentCards,
     propertyCardStates,
     setPropertyCardStates,
     secondPropertyCardStates,
     setSecondPropertyCardStates,
+    selfEmploymentPropertyCardStates,
+    setSelfEmploymentPropertyCardStates,
     getEmployerFieldPath,
     getSecondEmployerFieldPath,
+    getSelfEmploymentFieldPath,
     employmentDates,
     setEmploymentDates,
     secondEmploymentDates,
@@ -109,6 +123,8 @@ const IncomeFormsSection = ({
     setDeleteEmployerDialog,
     deleteSecondEmployerDialog,
     setDeleteSecondEmployerDialog,
+    deleteSelfEmploymentDialog,
+    setDeleteSelfEmploymentDialog,
     handlePropertyRentalChange,
     handleExpandAll,
     handleMinimizeAll,
@@ -116,7 +132,8 @@ const IncomeFormsSection = ({
     handleDeletePension,
     handleDeleteDisability,
     handleDeleteEmployer,
-    handleDeleteSecondEmployer
+    handleDeleteSecondEmployer,
+    handleDeleteSelfEmployment
 }: IncomeFormsSectionProps) => {
     const form = useFormContext<InsertClient>();
 
@@ -203,6 +220,40 @@ const IncomeFormsSection = ({
                 );
             })}
 
+            {/* Self Employment Form - Show when self employment is selected */}
+            {form.watch(`${fieldPrefix}.incomeTypes.selfEmployment` as any) && (selfEmploymentCards || ['default']).map((cardId) => {
+                const propertyId = cardId === 'default' ? 
+                    (fieldPrefix === 'coBorrowerIncome' ? 'co-borrower-self-employment-template-card' : 'self-employment-template-card') : 
+                    cardId;
+                const isOpen = selfEmploymentPropertyCardStates[propertyId] ?? true;
+
+                return (
+                    <SelfEmploymentForm
+                        key={cardId}
+                        cardId={cardId}
+                        propertyId={propertyId}
+                        isOpen={isOpen}
+                        onOpenChange={(open) => {
+                            setSelfEmploymentPropertyCardStates(prev => ({ ...prev, [propertyId]: open }));
+                        }}
+                        onAddSelfEmployment={() => {
+                            if (selfEmploymentCards.length < 2) {
+                                const newId = `self-employment-${Date.now()}`;
+                                setSelfEmploymentCards([...selfEmploymentCards, newId]);
+                            }
+                        }}
+                        onDeleteSelfEmployment={() => {
+                            setDeleteSelfEmploymentDialog({ isOpen: true, cardId: propertyId });
+                        }}
+                        showAnimation={showIncomeCardAnimation['borrower-self-employment']}
+                        getSelfEmploymentFieldPath={getSelfEmploymentFieldPath}
+                        setShowIncomeCardAnimation={setShowIncomeCardAnimation}
+                        showAddButton={selfEmploymentCards.length < 2}
+                        title={fieldPrefix === 'income' ? 'Borrower Self-Employment' : 'Co-Borrower Self-Employment'}
+                    />
+                );
+            })}
+
             {/* Social Security Form - Show when social security is selected */}
             {form.watch(`${fieldPrefix}.incomeTypes.socialSecurity` as any) && (
                 <SocialSecurityForm
@@ -264,6 +315,18 @@ const IncomeFormsSection = ({
                 testId="dialog-delete-second-employer"
                 confirmButtonTestId="button-delete-second-employer-confirm"
                 cancelButtonTestId="button-delete-second-employer-cancel"
+            />
+
+            {/* Delete Self Employment Confirmation Dialog */}
+            <DeleteConfirmationDialog
+                isOpen={deleteSelfEmploymentDialog.isOpen}
+                onClose={() => setDeleteSelfEmploymentDialog({ isOpen: false, cardId: '' })}
+                onConfirm={() => handleDeleteSelfEmployment(deleteSelfEmploymentDialog.cardId)}
+                title="Delete Self Employment"
+                description="Are you sure you want to delete this self employment? This action cannot be undone and will remove all associated self employment information."
+                testId="dialog-delete-self-employment"
+                confirmButtonTestId="button-delete-self-employment-confirm"
+                cancelButtonTestId="button-delete-self-employment-cancel"
             />
         </>
     );
