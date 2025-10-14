@@ -140,11 +140,13 @@ export default function AdminSnapshot() {
   const [showExpenseNotesDialog, setShowExpenseNotesDialog] = useState(false);
   const [showRevenueNotesDialog, setShowRevenueNotesDialog] = useState(false);
   const [showAttachmentsDialog, setShowAttachmentsDialog] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState<{ id: string | number; type: 'expense' | 'revenue' } | null>(null);
+  const [selectedTransaction, setSelectedTransaction] = useState<{ id: string | number; type: 'expense' | 'revenue' | 'staff' } | null>(null);
   const [showExpenseLogAttachmentsDialog, setShowExpenseLogAttachmentsDialog] = useState(false);
   const [showRevenueLogAttachmentsDialog, setShowRevenueLogAttachmentsDialog] = useState(false);
+  const [showStaffAttachmentsDialog, setShowStaffAttachmentsDialog] = useState(false);
   const [tempExpenseLogId, setTempExpenseLogId] = useState(() => `temp-expense-${Date.now()}`);
   const [tempRevenueLogId, setTempRevenueLogId] = useState(() => `temp-revenue-${Date.now()}`);
+  const [tempStaffId, setTempStaffId] = useState(() => `temp-staff-${Date.now()}`);
   const [shortcutDropdownOpen, setShortcutDropdownOpen] = useState(false);
   const [screenshareLoading, setScreenshareLoading] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
@@ -2084,6 +2086,15 @@ export default function AdminSnapshot() {
                   <h2 className="text-xl font-bold text-white">Staff</h2>
                 </div>
                 <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowStaffAttachmentsDialog(true)}
+                    className="flex items-center justify-center gap-2 px-3 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                    title="Manage Attachments"
+                    data-testid="button-staff-attachments"
+                  >
+                    <Paperclip className="w-5 h-5 text-purple-300" />
+                    <StaffAttachmentCount transactionId={tempStaffId} />
+                  </button>
                   <button
                     onClick={() => setAreStaffCardsMinimized(!areStaffCardsMinimized)}
                     className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
@@ -4935,6 +4946,14 @@ export default function AdminSnapshot() {
           transactionId={tempRevenueLogId}
           transactionType="revenue"
         />
+
+        {/* Staff Attachments Dialog */}
+        <AttachmentsDialog
+          open={showStaffAttachmentsDialog}
+          onClose={() => setShowStaffAttachmentsDialog(false)}
+          transactionId={tempStaffId}
+          transactionType="staff"
+        />
       </div>
     </div>
   );
@@ -4946,7 +4965,7 @@ function AttachmentIndicator({
   onOpenDialog
 }: { 
   transactionId: string | number; 
-  transactionType: 'expense' | 'revenue';
+  transactionType: 'expense' | 'revenue' | 'staff';
   onOpenDialog: () => void;
 }) {
   const { data: attachments = [], isLoading } = useQuery({
@@ -4971,6 +4990,27 @@ function AttachmentIndicator({
     >
       {attachments.length}
     </button>
+  );
+}
+
+function StaffAttachmentCount({ transactionId }: { transactionId: string | number }) {
+  const { data: attachments = [], isLoading } = useQuery({
+    queryKey: ['/api/transactions', 'staff', transactionId, 'attachments'],
+    queryFn: async () => {
+      const res = await fetch(`/api/transactions/${transactionId}/attachments?transactionType=staff`);
+      if (!res.ok) throw new Error('Failed to fetch attachments');
+      const result = await res.json();
+      return result.data || [];
+    },
+  });
+
+  if (isLoading) return null;
+  if (attachments.length === 0) return <span className="text-purple-300">0</span>;
+  
+  return (
+    <span className="text-purple-300 font-semibold">
+      {attachments.length}
+    </span>
   );
 }
 
@@ -5010,7 +5050,7 @@ function AttachmentsDialog({
   open: boolean; 
   onClose: () => void; 
   transactionId?: string | number; 
-  transactionType?: 'expense' | 'revenue';
+  transactionType?: 'expense' | 'revenue' | 'staff';
 }) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);

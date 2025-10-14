@@ -68,6 +68,12 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
       - Row 1: Area, Role (formerly Magnify), Rating, Performance
       - Row 2: Status (formerly Bonus - now dropdown with options: Select, Active, Paused, Not Active), Duration (formerly With Company), Category (formerly Compensation), Earnings
       - Row 3: License Count, Loan Volume, Funding Volume, Clear Filters
+    - **Staff Form Card**:
+      - PDF Attachment System: Paperclip icon next to minimize button for managing staff documents
+      - Displays document count (clickable to open attachment dialog)
+      - Supports PDF, JPG, PNG uploads, camera capture (max 5MB)
+      - Same attachment functionality as Expense/Revenue logs
+      - Documents linked to temporary staff ID before form submission
     - **Visualizations**: Pie charts for Revenue Sources and Expense Breakdown with drill-down capabilities.
     - **Expense & Revenue Logging**: Add entry functionality with transaction tracking, date filtering, sortable tables, and an advanced Transaction Attachments System supporting PDF, JPG, PNG uploads, camera capture, and temporary ID management for attachments.
     - **Marketing Campaign Management**: Direct Mail Batch Creation with 17 required fields, US states selection, completion bar, CSV upload with fuzzy mapping, and batch management actions.
