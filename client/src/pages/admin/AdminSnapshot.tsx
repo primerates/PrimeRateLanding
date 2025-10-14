@@ -1395,6 +1395,35 @@ export default function AdminSnapshot() {
           )}
         </div>
 
+        {/* Second Card - Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <RevenueSourcesChart
+            categoryFilter={categoryFilter}
+            revenueData={revenueData}
+            directMailByState={directMailByState}
+            loanProgramData={loanProgramData}
+            areChartsMinimized={areChartsMinimized}
+            setAreChartsMinimized={setAreChartsMinimized}
+            revenueDetailView={revenueDetailView}
+            setRevenueDetailView={setRevenueDetailView}
+            formatCurrency={formatCurrency}
+            CustomTooltip={CustomTooltip}
+            showCreateBatch={showCreateBatch}
+            onShowBatchWarning={() => setShowBatchWarning(true)}
+          />
+
+          <ExpenseBreakdownChart
+            categoryFilter={categoryFilter}
+            expenseData={expenseData}
+            areChartsMinimized={areChartsMinimized}
+            setAreChartsMinimized={setAreChartsMinimized}
+            formatCurrency={formatCurrency}
+            CustomTooltip={CustomTooltip}
+            showCreateBatch={showCreateBatch}
+            onShowBatchWarning={() => setShowBatchWarning(true)}
+          />
+        </div>
+
         {/* Staff Form Cards - Only shown when Staff category is selected and Add Entry is clicked */}
         {categoryFilter === 'staff' && showStaffForm && (
           <>
@@ -1821,35 +1850,6 @@ export default function AdminSnapshot() {
             </div>
           </>
         )}
-
-        {/* Second Card - Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <RevenueSourcesChart
-            categoryFilter={categoryFilter}
-            revenueData={revenueData}
-            directMailByState={directMailByState}
-            loanProgramData={loanProgramData}
-            areChartsMinimized={areChartsMinimized}
-            setAreChartsMinimized={setAreChartsMinimized}
-            revenueDetailView={revenueDetailView}
-            setRevenueDetailView={setRevenueDetailView}
-            formatCurrency={formatCurrency}
-            CustomTooltip={CustomTooltip}
-            showCreateBatch={showCreateBatch}
-            onShowBatchWarning={() => setShowBatchWarning(true)}
-          />
-
-          <ExpenseBreakdownChart
-            categoryFilter={categoryFilter}
-            expenseData={expenseData}
-            areChartsMinimized={areChartsMinimized}
-            setAreChartsMinimized={setAreChartsMinimized}
-            formatCurrency={formatCurrency}
-            CustomTooltip={CustomTooltip}
-            showCreateBatch={showCreateBatch}
-            onShowBatchWarning={() => setShowBatchWarning(true)}
-          />
-        </div>
 
         {/* Query Card - Only shown when Direct Mail category is selected */}
         {categoryFilter === 'direct-mail' && (
