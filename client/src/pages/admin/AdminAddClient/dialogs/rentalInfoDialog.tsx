@@ -56,13 +56,13 @@ const RentalInfoDialog = () => {
       form.setValue('borrower.residenceAddress.rentalInfo', rentalInfoData);
     } else if (activeRentalSection === 'borrower-prior') {
       form.setValue('borrower.priorResidenceAddress.rentalInfo', rentalInfoData);
-    } else if (activeRentalSection === 'borrower-prior-2') {
+    } else if (activeRentalSection === 'borrower-prior2') {
       form.setValue('borrower.priorResidenceAddress2.rentalInfo', rentalInfoData);
-    } else if (activeRentalSection === 'coborrower-current') {
+    } else if (activeRentalSection === 'coBorrower-current') {
       form.setValue('coBorrower.residenceAddress.rentalInfo' as any, rentalInfoData);
-    } else if (activeRentalSection === 'coborrower-prior') {
+    } else if (activeRentalSection === 'coBorrower-prior') {
       form.setValue('coBorrower.priorResidenceAddress.rentalInfo' as any, rentalInfoData);
-    } else if (activeRentalSection === 'coborrower-prior-2') {
+    } else if (activeRentalSection === 'coBorrower-prior2') {
       form.setValue('coBorrower.priorResidenceAddress2.rentalInfo' as any, rentalInfoData);
     }
     setIsRentalInfoDialogOpen(false);
