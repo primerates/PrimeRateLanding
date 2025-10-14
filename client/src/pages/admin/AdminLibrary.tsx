@@ -196,7 +196,7 @@ export default function AdminLibrary() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <h1 className={`text-xl font-black italic transition-colors ${getTextColor()}`} style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-library">LOANVIEW GPT</h1>
+            <h1 className={`text-xl font-black transition-colors ${getTextColor()}`} style={{ fontFamily: 'Orbitron, sans-serif' }} data-testid="heading-library">LOANVIEW GPT</h1>
             
             {/* Brightness Slider - Only visible in light mode */}
             {isLightMode && (
