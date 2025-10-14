@@ -182,6 +182,7 @@ export default function AdminSnapshot() {
   const [areChartsMinimized, setAreChartsMinimized] = useState(false);
   const [isTransactionsMinimized, setIsTransactionsMinimized] = useState(false);
   const [isFiltersMinimized, setIsFiltersMinimized] = useState(false);
+  const [areStaffCardsMinimized, setAreStaffCardsMinimized] = useState(false);
   const [transactionDateFilter, setTransactionDateFilter] = useState('today');
   
   // Query card state variables (only shown when categoryFilter is 'direct-mail')
@@ -1436,80 +1437,148 @@ export default function AdminSnapshot() {
           <>
             {/* Staff Information Card */}
             <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
-                  <User className="w-5 h-5 text-purple-400" />
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
+                    <User className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <h2 className="text-xl font-bold text-white">Staff</h2>
                 </div>
-                <h2 className="text-xl font-bold text-white">Staff</h2>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-purple-300">
-                    First Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={staffFirstName}
-                    onChange={(e) => setStaffFirstName(e.target.value)}
-                    placeholder="Enter first name"
-                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-purple-300">
-                    Last Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={staffLastName}
-                    onChange={(e) => setStaffLastName(e.target.value)}
-                    placeholder="Enter last name"
-                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2 flex items-center gap-2 text-purple-300">
-                    <Phone className="w-4 h-4" />
-                    Phone *
-                  </label>
-                  <input
-                    type="text"
-                    value={staffPhone}
-                    onChange={(e) => setStaffPhone(e.target.value)}
-                    placeholder="(555) 123-4567"
-                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2 flex items-center gap-2 text-purple-300">
-                    <Mail className="w-4 h-4" />
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    value={staffEmail}
-                    onChange={(e) => setStaffEmail(e.target.value)}
-                    placeholder="email@company.com"
-                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
-                  />
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setAreStaffCardsMinimized(!areStaffCardsMinimized)}
+                    className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                    title={areStaffCardsMinimized ? "Expand" : "Minimize"}
+                    data-testid="button-minimize-staff"
+                  >
+                    {areStaffCardsMinimized ? (
+                      <Plus className="w-5 h-5 text-purple-300" />
+                    ) : (
+                      <Minus className="w-5 h-5 text-purple-300" />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowStaffForm(false);
+                      setIsFiltersMinimized(false);
+                      setAreChartsMinimized(false);
+                      // Clear form fields
+                      setStaffFirstName('');
+                      setStaffLastName('');
+                      setStaffPhone('');
+                      setStaffEmail('');
+                      setEmergencyContactName('');
+                      setEmergencyPhone('');
+                      setPayrollType('');
+                      setLevel('');
+                      setRole('');
+                      setAuthorization('');
+                      setAccess('');
+                      setSpecialAccess('');
+                      setStartDate('');
+                      setBackgroundCheck('');
+                      setCreditReview('');
+                      setIdentification('');
+                      setWorkAuthorization('');
+                      setDrugScreening('');
+                      setEmploymentAgreement('');
+                      setPolicy('');
+                      setNdaAgreement('');
+                      setInterviewGrade('');
+                    }}
+                    className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-red-500/20 to-pink-500/20 hover:from-red-500/40 hover:to-pink-500/40 rounded-lg border border-red-500/30 hover:border-red-500/50 transition-all shadow-lg hover:shadow-red-500/30"
+                    title="Close"
+                    data-testid="button-close-staff"
+                  >
+                    <X className="w-5 h-5 text-red-300" />
+                  </button>
                 </div>
               </div>
+
+              {!areStaffCardsMinimized && (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2 text-purple-300">
+                        First Name *
+                      </label>
+                      <input
+                        type="text"
+                        value={staffFirstName}
+                        onChange={(e) => setStaffFirstName(e.target.value)}
+                        placeholder="Enter first name"
+                        className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2 text-purple-300">
+                        Last Name *
+                      </label>
+                      <input
+                        type="text"
+                        value={staffLastName}
+                        onChange={(e) => setStaffLastName(e.target.value)}
+                        placeholder="Enter last name"
+                        className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2 flex items-center gap-2 text-purple-300">
+                        <Phone className="w-4 h-4" />
+                        Phone *
+                      </label>
+                      <input
+                        type="text"
+                        value={staffPhone}
+                        onChange={(e) => setStaffPhone(e.target.value)}
+                        placeholder="(555) 123-4567"
+                        className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2 flex items-center gap-2 text-purple-300">
+                        <Mail className="w-4 h-4" />
+                        Email *
+                      </label>
+                      <input
+                        type="email"
+                        value={staffEmail}
+                        onChange={(e) => setStaffEmail(e.target.value)}
+                        placeholder="email@company.com"
+                        className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Add Staff Button */}
+                  <button
+                    onClick={() => {
+                      // TODO: Handle staff submission
+                      console.log('Add Staff clicked');
+                    }}
+                    className="w-full mt-6 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold rounded-lg transition-all shadow-lg hover:shadow-purple-500/50"
+                    data-testid="button-add-staff"
+                  >
+                    Add Staff
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Emergency Contact Card */}
-            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-lg bg-red-500/20 border border-red-500/30">
-                  <AlertCircle className="w-5 h-5 text-red-400" />
+            {!areStaffCardsMinimized && (
+              <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 rounded-lg bg-red-500/20 border border-red-500/30">
+                    <AlertCircle className="w-5 h-5 text-red-400" />
+                  </div>
+                  <h2 className="text-xl font-bold text-white">Emergency</h2>
                 </div>
-                <h2 className="text-xl font-bold text-white">Emergency</h2>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-2 text-purple-300">
                     Emergency Contact Name
@@ -1537,9 +1606,11 @@ export default function AdminSnapshot() {
                 </div>
               </div>
             </div>
+            )}
 
             {/* Scope & Permissions Card */}
-            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            {!areStaffCardsMinimized && (
+              <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 rounded-lg bg-blue-500/20 border border-blue-500/30">
                   <Briefcase className="w-5 h-5 text-blue-400" />
@@ -1643,9 +1714,11 @@ export default function AdminSnapshot() {
                 </div>
               </div>
             </div>
+            )}
 
             {/* HR & Compliance Card */}
-            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            {!areStaffCardsMinimized && (
+              <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 rounded-lg bg-green-500/20 border border-green-500/30">
                   <FileText className="w-5 h-5 text-green-400" />
@@ -1854,55 +1927,8 @@ export default function AdminSnapshot() {
                   </select>
                 </div>
               </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={() => {
-                    // TODO: Handle staff submission
-                    console.log('Add Staff clicked');
-                  }}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold rounded-lg transition-all shadow-lg hover:shadow-purple-500/50"
-                  data-testid="button-add-staff"
-                >
-                  Add Staff
-                </button>
-                <button
-                  onClick={() => {
-                    setShowStaffForm(false);
-                    setIsFiltersMinimized(false);
-                    setAreChartsMinimized(false);
-                    // Clear form fields
-                    setStaffFirstName('');
-                    setStaffLastName('');
-                    setStaffPhone('');
-                    setStaffEmail('');
-                    setEmergencyContactName('');
-                    setEmergencyPhone('');
-                    setPayrollType('');
-                    setLevel('');
-                    setRole('');
-                    setAuthorization('');
-                    setAccess('');
-                    setSpecialAccess('');
-                    setStartDate('');
-                    setBackgroundCheck('');
-                    setCreditReview('');
-                    setIdentification('');
-                    setWorkAuthorization('');
-                    setDrugScreening('');
-                    setEmploymentAgreement('');
-                    setPolicy('');
-                    setNdaAgreement('');
-                    setInterviewGrade('');
-                  }}
-                  className="flex-1 px-6 py-3 bg-slate-700/50 hover:bg-slate-600/50 text-white font-semibold rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all"
-                  data-testid="button-cancel-staff"
-                >
-                  Cancel
-                </button>
-              </div>
             </div>
+            )}
           </>
         )}
 
