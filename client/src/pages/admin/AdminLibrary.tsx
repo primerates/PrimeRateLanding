@@ -192,7 +192,7 @@ export default function AdminLibrary() {
 
   return (
     <div className={`min-h-screen p-6 transition-all duration-300 bg-gradient-to-br ${getBackgroundGradient()}`}>
-      <div className="container mx-auto space-y-6">
+      <div className="container mx-auto space-y-3">
         
         {/* Header */}
         <div className="flex items-center justify-between">
