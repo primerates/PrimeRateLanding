@@ -1616,7 +1616,7 @@ export default function AdminSnapshot() {
                 isSearchMinimized ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'
               }`}
             >
-              {/* Row 1: Area, Magnify, Rating, Performance */}
+              {/* Row 1: Area, Role, Rating, Performance */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
               <div>
                 <label className="block text-sm font-medium mb-2 text-purple-300">
@@ -1642,7 +1642,7 @@ export default function AdminSnapshot() {
 
               <div>
                 <label className="block text-sm font-medium mb-2 text-purple-300">
-                  Magnify
+                  Role
                 </label>
                 <select
                   value={searchMagnify}
