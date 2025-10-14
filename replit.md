@@ -122,7 +122,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
   - `ExpenseBreakdownChart.tsx` - Pie chart for expense/geography data
 
 **Core Features**:
-- **Performance Card Interactive Title**: Filter icon next to card title serves as dropdown menu to change card title between: Performance, Dashboard, Analytics, Metrics, Overview, Insights
+- **Performance Card Interactive Title**: Filter icon next to card title serves as dropdown menu to change card title between: Company (default), Partner, Branch
 - **Real-time Financial Metrics**: Displays Gross Income, Revenue, and Expense with trend indicators
 - **Interactive Filters**: 
   - Entity filter (Prime Rate, Branch, Partners) - defaults to Prime Rate

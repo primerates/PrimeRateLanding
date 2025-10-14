@@ -193,7 +193,7 @@ export default function AdminSnapshot() {
   const [staffSortConfig, setStaffSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
 
   // Performance card title state
-  const [performanceCardTitle, setPerformanceCardTitle] = useState('Performance');
+  const [performanceCardTitle, setPerformanceCardTitle] = useState('Company');
 
   // Mock staff data for search results
   const mockStaffData = [
@@ -1520,46 +1520,25 @@ export default function AdminSnapshot() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-48 bg-slate-800 border-purple-500/30">
                   <DropdownMenuItem 
-                    onClick={() => setPerformanceCardTitle('Performance')}
+                    onClick={() => setPerformanceCardTitle('Company')}
                     className="text-purple-200 hover:text-white hover:bg-purple-500/20 cursor-pointer"
-                    data-testid="menu-item-performance"
+                    data-testid="menu-item-company"
                   >
-                    Performance
+                    Company
                   </DropdownMenuItem>
                   <DropdownMenuItem 
-                    onClick={() => setPerformanceCardTitle('Dashboard')}
+                    onClick={() => setPerformanceCardTitle('Partner')}
                     className="text-purple-200 hover:text-white hover:bg-purple-500/20 cursor-pointer"
-                    data-testid="menu-item-dashboard"
+                    data-testid="menu-item-partner"
                   >
-                    Dashboard
+                    Partner
                   </DropdownMenuItem>
                   <DropdownMenuItem 
-                    onClick={() => setPerformanceCardTitle('Analytics')}
+                    onClick={() => setPerformanceCardTitle('Branch')}
                     className="text-purple-200 hover:text-white hover:bg-purple-500/20 cursor-pointer"
-                    data-testid="menu-item-analytics"
+                    data-testid="menu-item-branch"
                   >
-                    Analytics
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={() => setPerformanceCardTitle('Metrics')}
-                    className="text-purple-200 hover:text-white hover:bg-purple-500/20 cursor-pointer"
-                    data-testid="menu-item-metrics"
-                  >
-                    Metrics
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={() => setPerformanceCardTitle('Overview')}
-                    className="text-purple-200 hover:text-white hover:bg-purple-500/20 cursor-pointer"
-                    data-testid="menu-item-overview"
-                  >
-                    Overview
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={() => setPerformanceCardTitle('Insights')}
-                    className="text-purple-200 hover:text-white hover:bg-purple-500/20 cursor-pointer"
-                    data-testid="menu-item-insights"
-                  >
-                    Insights
+                    Branch
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
