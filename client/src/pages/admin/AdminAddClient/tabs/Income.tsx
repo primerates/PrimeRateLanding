@@ -125,13 +125,13 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
     // Helper function to generate dynamic field paths for self employment cards
     const getSelfEmploymentFieldPath = (cardId: string, fieldName: string) => {
         const cleanCardId = cardId === 'default' ? 'default' : cardId;
-        return `income.selfEmployment.${cleanCardId}.${fieldName}` as const;
+        return `income.selfEmployers.${cleanCardId}.${fieldName}` as const;
     };
 
     // Helper function to generate dynamic field paths for co-borrower self employment cards
     const getCoBorrowerSelfEmploymentFieldPath = (cardId: string, fieldName: string) => {
         const cleanCardId = cardId === 'default' ? 'default' : cardId;
-        return `coBorrowerIncome.selfEmployment.${cleanCardId}.${fieldName}` as const;
+        return `coBorrowerIncome.selfEmployers.${cleanCardId}.${fieldName}` as const;
     };
 
     // Update employment duration when dates change
@@ -605,12 +605,11 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         
         // Clear form data for this self employment
         const fieldsToClean = [
-            'businessName', 'phone', 'grossIncome', 'startDate', 'endDate', 
-            'isPresent', 'duration', 'streetAddress', 'unitSuite', 'city', 
-            'state', 'zipCode', 'county', 'formation'
+            'businessName', 'businessPhone', 'businessMonthlyIncome', 'businessAddress.street', 'businessAddress.unit', 'businessAddress.city', 
+            'businessAddress.state', 'businessAddress.zip', 'businessAddress.county', 'formation', 'businessDescription', 'taxesPreparedBy'
         ];
         fieldsToClean.forEach(field => {
-            form.setValue(`income.selfEmployment.${originalCardId}.${field}` as any, '');
+            form.setValue(`income.selfEmployers.${originalCardId}.${field}` as any, '');
         });
     };
 
@@ -787,12 +786,11 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         });
         
         const fieldsToClean = [
-            'businessName', 'phone', 'grossIncome', 'startDate', 'endDate', 
-            'isPresent', 'duration', 'streetAddress', 'unitSuite', 'city', 
-            'state', 'zipCode', 'county', 'formation'
+            'businessName', 'businessPhone', 'businessMonthlyIncome', 'businessAddress.street', 'businessAddress.unit', 'businessAddress.city', 
+            'businessAddress.state', 'businessAddress.zip', 'businessAddress.county', 'formation', 'businessDescription', 'taxesPreparedBy'
         ];
         fieldsToClean.forEach(field => {
-            form.setValue(`coBorrowerIncome.selfEmployment.${originalCardId}.${field}` as any, '');
+            form.setValue(`coBorrowerIncome.selfEmployers.${originalCardId}.${field}` as any, '');
         });
     };
 

@@ -223,8 +223,8 @@ const SelfEmploymentForm = ({
                 {/* Phone */}
                 <PhoneInput
                   label="Phone"
-                  value={form.watch(getSelfEmploymentFieldPath(cardId, 'phone') as any) || ''}
-                  onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'phone') as any, value)}
+                  value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessPhone') as any) || ''}
+                  onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'businessPhone') as any, value)}
                   id={`self-employment-phone-${cardId}`}
                   testId={`input-self-employment-phone-${cardId}`}
                   className="space-y-2"
@@ -235,7 +235,7 @@ const SelfEmploymentForm = ({
                   <Label htmlFor={`self-employment-gross-income-${cardId}`}>Gross Monthly Income</Label>
                   <Controller
                     control={form.control}
-                    name={getSelfEmploymentFieldPath(cardId, 'grossIncome') as any}
+                    name={getSelfEmploymentFieldPath(cardId, 'businessMonthlyIncome') as any}
                     defaultValue=""
                     render={({ field }) => {
                       const numVal = field.value ? String(field.value).replace(/[^\d]/g, '') : '';
@@ -335,8 +335,8 @@ const SelfEmploymentForm = ({
                 <div className="md:col-span-3">
                   <FormInput
                     label="Street Address"
-                    value={form.watch(getSelfEmploymentFieldPath(cardId, 'streetAddress') as any) || ''}
-                    onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'streetAddress') as any, value)}
+                    value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessAddress.street') as any) || ''}
+                    onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'businessAddress.street') as any, value)}
                     id={`self-employment-street-address-${cardId}`}
                     testId={`input-self-employment-street-address-${cardId}`}
                     className="space-y-2"
@@ -346,8 +346,8 @@ const SelfEmploymentForm = ({
                 <div className="md:col-span-1">
                   <FormInput
                     label="Unit/Suite"
-                    value={form.watch(getSelfEmploymentFieldPath(cardId, 'unitSuite') as any) || ''}
-                    onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'unitSuite') as any, value)}
+                    value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessAddress.unit') as any) || ''}
+                    onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'businessAddress.unit') as any, value)}
                     id={`self-employment-unit-suite-${cardId}`}
                     testId={`input-self-employment-unit-suite-${cardId}`}
                     className="space-y-2"
@@ -357,8 +357,8 @@ const SelfEmploymentForm = ({
                 <div className="md:col-span-2">
                   <FormInput
                     label="City"
-                    value={form.watch(getSelfEmploymentFieldPath(cardId, 'city') as any) || ''}
-                    onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'city') as any, value)}
+                    value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessAddress.city') as any) || ''}
+                    onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'businessAddress.city') as any, value)}
                     id={`self-employment-city-${cardId}`}
                     testId={`input-self-employment-city-${cardId}`}
                     className="space-y-2"
@@ -368,8 +368,8 @@ const SelfEmploymentForm = ({
                 <div className="md:col-span-1">
                   <FormSelect
                     label="State"
-                    value={form.watch(getSelfEmploymentFieldPath(cardId, 'state') as any) || ''}
-                    onValueChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'state') as any, value)}
+                    value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessAddress.state') as any) || ''}
+                    onValueChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'businessAddress.state') as any, value)}
                     options={US_STATES_OPTIONS}
                     placeholder="State"
                     testId={`select-self-employment-state-${cardId}`}
@@ -381,8 +381,8 @@ const SelfEmploymentForm = ({
                 <div className="md:col-span-1">
                   <FormInput
                     label="ZIP Code"
-                    value={form.watch(getSelfEmploymentFieldPath(cardId, 'zipCode') as any) || ''}
-                    onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'zipCode') as any, value)}
+                    value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessAddress.zip') as any) || ''}
+                    onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'businessAddress.zip') as any, value)}
                     id={`self-employment-zip-code-${cardId}`}
                     testId={`input-self-employment-zip-code-${cardId}`}
                     className="space-y-2"
@@ -393,8 +393,8 @@ const SelfEmploymentForm = ({
                 <div className="md:col-span-2">
                   <FormInput
                     label="County"
-                    value={form.watch(getSelfEmploymentFieldPath(cardId, 'county') as any) || ''}
-                    onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'county') as any, value)}
+                    value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessAddress.county') as any) || ''}
+                    onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'businessAddress.county') as any, value)}
                     id={`self-employment-county-${cardId}`}
                     testId={`input-self-employment-county-${cardId}`}
                     className="space-y-2"
