@@ -1409,7 +1409,7 @@ export default function AdminSnapshot() {
               className="flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50"
               data-testid="button-add-entry"
             >
-              <Plus className="w-4.5 h-4.5 text-white" />
+              <Plus className="w-3.5 h-3.5 text-white" />
               <span className="text-white text-xs">Add Entry</span>
             </button>
           </div>
