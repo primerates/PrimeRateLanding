@@ -194,6 +194,7 @@ export default function AdminSnapshot() {
   const [dataCategory, setDataCategory] = useState('Select');
   const [batchResults, setBatchResults] = useState<'show-all' | 'profitable' | 'loss'>('show-all');
   const [showBatchWarning, setShowBatchWarning] = useState(false);
+  const [showStaffWarning, setShowStaffWarning] = useState(false);
   const [showFormConflictWarning, setShowFormConflictWarning] = useState(false);
   const [conflictFormType, setConflictFormType] = useState<'expense' | 'revenue'>('expense');
   
@@ -1324,6 +1325,8 @@ export default function AdminSnapshot() {
               onClick={() => {
                 if (showCreateBatch && isFiltersMinimized) {
                   setShowBatchWarning(true);
+                } else if (showStaffForm && isFiltersMinimized) {
+                  setShowStaffWarning(true);
                 } else {
                   setIsFiltersMinimized(!isFiltersMinimized);
                 }
@@ -1410,6 +1413,8 @@ export default function AdminSnapshot() {
             CustomTooltip={CustomTooltip}
             showCreateBatch={showCreateBatch}
             onShowBatchWarning={() => setShowBatchWarning(true)}
+            showStaffForm={showStaffForm}
+            onShowStaffWarning={() => setShowStaffWarning(true)}
           />
 
           <ExpenseBreakdownChart
@@ -1421,6 +1426,8 @@ export default function AdminSnapshot() {
             CustomTooltip={CustomTooltip}
             showCreateBatch={showCreateBatch}
             onShowBatchWarning={() => setShowBatchWarning(true)}
+            showStaffForm={showStaffForm}
+            onShowStaffWarning={() => setShowStaffWarning(true)}
           />
         </div>
 
@@ -3844,6 +3851,27 @@ export default function AdminSnapshot() {
                 onClick={() => setShowBatchWarning(false)}
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
                 data-testid="button-close-batch-warning"
+              >
+                OK
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Staff Warning Dialog */}
+        <Dialog open={showStaffWarning} onOpenChange={setShowStaffWarning}>
+          <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-white">Staff Cards Open</DialogTitle>
+              <DialogDescription className="text-purple-200 pt-2">
+                Please complete or cancel open staff cards
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end mt-4">
+              <Button
+                onClick={() => setShowStaffWarning(false)}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
+                data-testid="button-close-staff-warning"
               >
                 OK
               </Button>

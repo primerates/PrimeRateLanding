@@ -20,6 +20,8 @@ interface RevenueSourcesChartProps {
   CustomTooltip: any;
   showCreateBatch?: boolean;
   onShowBatchWarning?: () => void;
+  showStaffForm?: boolean;
+  onShowStaffWarning?: () => void;
 }
 
 export function RevenueSourcesChart({
@@ -34,7 +36,9 @@ export function RevenueSourcesChart({
   formatCurrency,
   CustomTooltip,
   showCreateBatch = false,
-  onShowBatchWarning = () => {}
+  onShowBatchWarning = () => {},
+  showStaffForm = false,
+  onShowStaffWarning = () => {}
 }: RevenueSourcesChartProps) {
   return (
     <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl" data-testid="card-revenue-sources">
@@ -46,6 +50,8 @@ export function RevenueSourcesChart({
           onClick={() => {
             if (showCreateBatch && areChartsMinimized) {
               onShowBatchWarning();
+            } else if (showStaffForm && areChartsMinimized) {
+              onShowStaffWarning();
             } else {
               setAreChartsMinimized(!areChartsMinimized);
             }

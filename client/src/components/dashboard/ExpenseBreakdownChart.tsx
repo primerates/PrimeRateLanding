@@ -16,6 +16,8 @@ interface ExpenseBreakdownChartProps {
   CustomTooltip: any;
   showCreateBatch?: boolean;
   onShowBatchWarning?: () => void;
+  showStaffForm?: boolean;
+  onShowStaffWarning?: () => void;
 }
 
 export function ExpenseBreakdownChart({
@@ -26,7 +28,9 @@ export function ExpenseBreakdownChart({
   formatCurrency,
   CustomTooltip,
   showCreateBatch = false,
-  onShowBatchWarning = () => {}
+  onShowBatchWarning = () => {},
+  showStaffForm = false,
+  onShowStaffWarning = () => {}
 }: ExpenseBreakdownChartProps) {
   return (
     <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl" data-testid="card-expense-breakdown">
@@ -38,6 +42,8 @@ export function ExpenseBreakdownChart({
           onClick={() => {
             if (showCreateBatch && areChartsMinimized) {
               onShowBatchWarning();
+            } else if (showStaffForm && areChartsMinimized) {
+              onShowStaffWarning();
             } else {
               setAreChartsMinimized(!areChartsMinimized);
             }
