@@ -1697,11 +1697,11 @@ export default function AdminSnapshot() {
               </div>
             </div>
 
-            {/* Row 2: With Company, Compensation, Earnings, Bonus */}
+            {/* Row 2: Duration, Status, Category, Earnings */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
               <div>
                 <label className="block text-sm font-medium mb-2 text-purple-300">
-                  With Company
+                  Duration
                 </label>
                 <select
                   value={searchWithCompany}
@@ -1724,7 +1724,24 @@ export default function AdminSnapshot() {
 
               <div>
                 <label className="block text-sm font-medium mb-2 text-purple-300">
-                  Compensation
+                  Status
+                </label>
+                <select
+                  value={searchBonus}
+                  onChange={(e) => setSearchBonus(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  data-testid="input-search-bonus"
+                >
+                  <option value="">Select</option>
+                  <option value="active">Active</option>
+                  <option value="paused">Paused</option>
+                  <option value="not-active">Not Active</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">
+                  Category
                 </label>
                 <select
                   value={searchCompensation}
@@ -1753,25 +1770,6 @@ export default function AdminSnapshot() {
                     onChange={(e) => handleSearchCurrencyInput(e, 'earnings')}
                     className="w-full pl-8 pr-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
                     data-testid="input-search-earnings"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2 text-purple-300">
-                  Bonus
-                </label>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                    $
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="0"
-                    value={searchBonus}
-                    onChange={(e) => handleSearchCurrencyInput(e, 'bonus')}
-                    className="w-full pl-8 pr-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
-                    data-testid="input-search-bonus"
                   />
                 </div>
               </div>
