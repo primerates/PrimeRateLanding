@@ -133,6 +133,10 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - When Vendor selected: Select, WDO, Water, Inspection, Handyman
   - Time period filter (Today with auto date display, MTD, YTD, From Date, To Date, Compare) - positioned as third filter to the right of Team filter
 - **Header Buttons**: All header buttons (User Shortcut, Screenshare, Live indicator, Add Entry) reduced by 10% in size with adjusted font sizes (text-xs) for compact design
+- **Conditional Card Display**: 
+  - Query Card, Batch List, and Create Batch cards only appear when categoryFilter = 'marketing' AND teamFilter = 'direct-mail'
+  - Staff forms appear when categoryFilter = 'staff'
+  - Revenue/Expense forms appear when categoryFilter = 'financials'
 - **Revenue Sources Visualization**: Pie chart with detailed breakdown by source (Direct Mail, Lead Vendors, Social Media, Repeat Clients, Referrals)
 - **Expense Breakdown**: Pie chart categorizing expenses (Marketing, Staff, Vendors, Services, Supplies)
 - **Drill-down Capabilities**: Click on "Direct Mail" to view state-by-state breakdown and loan program distribution

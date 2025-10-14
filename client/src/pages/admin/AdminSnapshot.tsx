@@ -312,7 +312,7 @@ export default function AdminSnapshot() {
   const [areStaffCardsMinimized, setAreStaffCardsMinimized] = useState(false);
   const [transactionDateFilter, setTransactionDateFilter] = useState('today');
   
-  // Query card state variables (only shown when categoryFilter is 'direct-mail')
+  // Query card state variables (only shown when categoryFilter is 'marketing' and teamFilter is 'direct-mail')
   const [isQueryCardMinimized, setIsQueryCardMinimized] = useState(false);
   const [selectedQueryStates, setSelectedQueryStates] = useState<string[]>([]);
   const [selectedBatchActivities, setSelectedBatchActivities] = useState<string[]>([]);
@@ -332,7 +332,7 @@ export default function AdminSnapshot() {
   const [showStatesDialog, setShowStatesDialog] = useState(false);
   const [selectedBatchStates, setSelectedBatchStates] = useState<string[]>([]);
   
-  // Create New Batch card state (only shown when categoryFilter is 'direct-mail')
+  // Create New Batch card state (only shown when categoryFilter is 'marketing' and teamFilter is 'direct-mail')
   const [showCreateBatch, setShowCreateBatch] = useState(false);
   const [batchNumber, setBatchNumber] = useState('');
   const [batchTitle, setBatchTitle] = useState('');
@@ -2545,7 +2545,7 @@ export default function AdminSnapshot() {
         )}
 
         {/* Query Card - Only shown when Direct Mail category is selected */}
-        {categoryFilter === 'direct-mail' && (
+        {categoryFilter === 'marketing' && teamFilter === 'direct-mail' && (
           <TooltipProvider>
             <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
               <div className="flex items-center justify-between mb-4">
@@ -2936,7 +2936,7 @@ export default function AdminSnapshot() {
         )}
 
         {/* Batch List Table - Only shown when Data Category is "Show All" */}
-        {categoryFilter === 'direct-mail' && dataCategory === 'Show All' && (
+        {categoryFilter === 'marketing' && teamFilter === 'direct-mail' && dataCategory === 'Show All' && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <h3 className="text-xl font-bold text-white mb-6">Batch List</h3>
             {sortedBatches.length === 0 ? (
@@ -3102,7 +3102,7 @@ export default function AdminSnapshot() {
         )}
 
         {/* Create New Batch Card - Only shown when Direct Mail category is selected and Add New Batch is clicked */}
-        {categoryFilter === 'direct-mail' && showCreateBatch && (
+        {categoryFilter === 'marketing' && teamFilter === 'direct-mail' && showCreateBatch && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-white">New Batch</h3>
