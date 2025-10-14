@@ -63,7 +63,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Snapshot Analytics Dashboard**:
     - **Route**: `/admin/reports`
     - **Overview**: Comprehensive dashboard for financial analytics, marketing campaign management (Direct Mail, Lead Vendors, Social Media), expense/revenue tracking, and data visualization. Features interactive filters (Category, Team, Time), real-time financial metrics, and conditional card displays.
-    - **Core Features**: Performance Card with interactive title, filter dropdowns, header buttons, Search Cards (Direct Mail, Staff Page) with minimizable functionality.
+    - **Core Features**: Performance Card with interactive title, filter dropdowns, header buttons, Search Cards (Direct Mail, Staff Page) with minimizable functionality. Both Search cards use matching purple magnify glass icons (`Search` component with `bg-purple-500/20 border-purple-500/30` styling).
     - **Visualizations**: Pie charts for Revenue Sources and Expense Breakdown with drill-down capabilities.
     - **Expense & Revenue Logging**: Add entry functionality with transaction tracking, date filtering, sortable tables, and an advanced Transaction Attachments System supporting PDF, JPG, PNG uploads, camera capture, and temporary ID management for attachments.
     - **Marketing Campaign Management**: Direct Mail Batch Creation with 17 required fields, US states selection, completion bar, CSV upload with fuzzy mapping, and batch management actions.
