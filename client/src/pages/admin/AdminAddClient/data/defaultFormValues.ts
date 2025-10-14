@@ -67,20 +67,20 @@ export const defaultClientFormValues: InsertClient = {
       disability: false,
       other: false
     },
-    employerName: '',
-    jobTitle: '',
-    monthlyIncome: '',
-    yearsEmployedYears: '',
-    yearsEmployedMonths: '',
-    employerAddress: {
-      street: '',
-      unit: '',
-      city: '',
-      state: '',
-      zip: '',
-      county: ''
-    },
-    employerPhone: '',
+    // employerName: '',
+    // jobTitle: '',
+    // monthlyIncome: '',
+    // yearsEmployedYears: '',
+    // yearsEmployedMonths: '',
+    // employerAddress: {
+    //   street: '',
+    //   unit: '',
+    //   city: '',
+    //   state: '',
+    //   zip: '',
+    //   county: ''
+    // },
+    // employerPhone: '',
     // Multiple Main Employers (new structure for dynamic cards)
     employers: {
       default: {
@@ -106,47 +106,47 @@ export const defaultClientFormValues: InsertClient = {
         employerRemote: ''
       }
     },
-    priorEmployerName: '',
-    priorJobTitle: '',
-    priorMonthlyIncome: '',
-    priorYearsEmployedYears: '',
-    priorYearsEmployedMonths: '',
-    priorEmployerAddress: {
-      street: '',
-      unit: '',
-      city: '',
-      state: '',
-      zip: '',
-      county: ''
-    },
-    priorEmployerPhone: '',
-    secondEmployerName: '',
-    secondJobTitle: '',
-    secondMonthlyIncome: '',
-    secondYearsEmployedYears: '',
-    secondYearsEmployedMonths: '',
-    secondEmployerAddress: {
-      street: '',
-      unit: '',
-      city: '',
-      state: '',
-      zip: '',
-      county: ''
-    },
-    secondEmployerPhone: '',
-    businessName: '',
-    businessMonthlyIncome: '',
-    yearsInBusinessYears: '',
-    yearsInBusinessMonths: '',
-    businessAddress: {
-      street: '',
-      unit: '',
-      city: '',
-      state: '',
-      zip: '',
-      county: ''
-    },
-    businessPhone: '',
+    // priorEmployerName: '',
+    // priorJobTitle: '',
+    // priorMonthlyIncome: '',
+    // priorYearsEmployedYears: '',
+    // priorYearsEmployedMonths: '',
+    // priorEmployerAddress: {
+    //   street: '',
+    //   unit: '',
+    //   city: '',
+    //   state: '',
+    //   zip: '',
+    //   county: ''
+    // },
+    // priorEmployerPhone: '',
+    // secondEmployerName: '',
+    // secondJobTitle: '',
+    // secondMonthlyIncome: '',
+    // secondYearsEmployedYears: '',
+    // secondYearsEmployedMonths: '',
+    // secondEmployerAddress: {
+    //   street: '',
+    //   unit: '',
+    //   city: '',
+    //   state: '',
+    //   zip: '',
+    //   county: ''
+    // },
+    // secondEmployerPhone: '',
+    // businessName: '',
+    // businessMonthlyIncome: '',
+    // yearsInBusinessYears: '',
+    // yearsInBusinessMonths: '',
+    // businessAddress: {
+    //   street: '',
+    //   unit: '',
+    //   city: '',
+    //   state: '',
+    //   zip: '',
+    //   county: ''
+    // },
+    // businessPhone: '',
     pensions: [],
     socialSecurityMonthlyAmount: '',
     vaBenefitsMonthlyAmount: '',

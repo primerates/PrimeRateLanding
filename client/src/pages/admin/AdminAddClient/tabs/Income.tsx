@@ -605,7 +605,7 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         
         // Clear form data for this self employment
         const fieldsToClean = [
-            'businessName', 'businessPhone', 'businessMonthlyIncome', 'businessAddress.street', 'businessAddress.unit', 'businessAddress.city', 
+            'businessName', 'businessPhone', 'businessMonthlyIncome', 'formationDate', 'yearsInBusinessYears', 'yearsInBusinessMonths', 'businessAddress.street', 'businessAddress.unit', 'businessAddress.city', 
             'businessAddress.state', 'businessAddress.zip', 'businessAddress.county', 'formation', 'businessDescription', 'taxesPreparedBy'
         ];
         fieldsToClean.forEach(field => {
@@ -786,7 +786,7 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         });
         
         const fieldsToClean = [
-            'businessName', 'businessPhone', 'businessMonthlyIncome', 'businessAddress.street', 'businessAddress.unit', 'businessAddress.city', 
+            'businessName', 'businessPhone', 'businessMonthlyIncome', 'formationDate', 'yearsInBusinessYears', 'yearsInBusinessMonths', 'businessAddress.street', 'businessAddress.unit', 'businessAddress.city', 
             'businessAddress.state', 'businessAddress.zip', 'businessAddress.county', 'formation', 'businessDescription', 'taxesPreparedBy'
         ];
         fieldsToClean.forEach(field => {

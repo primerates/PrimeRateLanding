@@ -5,7 +5,7 @@ import { Plus, Minus } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
 import FormInput from '../FormInput';
@@ -45,6 +45,73 @@ const SelfEmploymentForm = ({
 }: SelfEmploymentFormProps) => {  
   const form = useFormContext<InsertClient>();
 
+
+  // Utility function to calculate years and months in business
+  const calculateYearsInBusiness = (formationDate: string, endDate?: string, isPresent?: boolean) => {
+    if (!formationDate) return { years: '', months: '' };
+    
+    // Parse formation date
+    const parseDate = (dateStr: string) => {
+      if (dateStr.includes('/')) {
+        const [month, day, year] = dateStr.split('/');
+        return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      } else {
+        return new Date(dateStr);
+      }
+    };
+    
+    const start = parseDate(formationDate);
+    if (isNaN(start.getTime())) return { years: '', months: '' };
+    
+    // Use current date if present, otherwise use end date
+    let end: Date;
+    if (isPresent) {
+      end = new Date(); // Current date
+    } else if (endDate) {
+      end = parseDate(endDate);
+      if (isNaN(end.getTime())) return { years: '', months: '' };
+    } else {
+      return { years: '', months: '' };
+    }
+    
+    // Calculate difference in months
+    const diffYears = end.getFullYear() - start.getFullYear();
+    const diffMonths = end.getMonth() - start.getMonth();
+    const totalMonths = Math.max(0, diffYears * 12 + diffMonths);
+    
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+    
+    return {
+      years: years > 0 ? years.toString() : '',
+      months: months > 0 ? months.toString() : ''
+    };
+  };
+
+  // Utility function to update years in business fields
+  const updateYearsInBusinessFields = () => {
+    const formationDate = form.watch(getSelfEmploymentFieldPath(cardId, 'formationDate') as any);
+    const endDate = form.watch(getSelfEmploymentFieldPath(cardId, 'endDate') as any);
+    const isPresent = form.watch(getSelfEmploymentFieldPath(cardId, 'isPresent') as any);
+    
+    const { years, months } = calculateYearsInBusiness(formationDate, endDate, isPresent);
+    
+    // Update the schema fields
+    form.setValue(getSelfEmploymentFieldPath(cardId, 'yearsInBusinessYears') as any, years);
+    form.setValue(getSelfEmploymentFieldPath(cardId, 'yearsInBusinessMonths') as any, months);
+    
+    // Also update the duration field for display
+    let durationText = '';
+    if (years && months) {
+      durationText = `${years} years ${months} months`;
+    } else if (years) {
+      durationText = `${years} years`;
+    } else if (months) {
+      durationText = `${months} months`;
+    }
+    form.setValue(getSelfEmploymentFieldPath(cardId, 'duration') as any, durationText);
+  };
+
   // Dialog states
   const [isBusinessDescriptionOpen, setIsBusinessDescriptionOpen] = useState(false);
   const [isTaxPreparerOpen, setIsTaxPreparerOpen] = useState(false);
@@ -59,7 +126,19 @@ const SelfEmploymentForm = ({
   };
 
   const handleSaveBusinessDescription = (description: string) => {
-    form.setValue(getSelfEmploymentFieldPath(cardId, 'businessDescription') as any, description);
+    // Determine the correct base path (income or coBorrowerIncome)
+    const fullPath = getSelfEmploymentFieldPath(cardId, '');
+    const basePath = fullPath.includes('coBorrowerIncome') ? 'coBorrowerIncome' : 'income';
+    const currentSelfEmployers = form.getValues(`${basePath}.selfEmployers` as any) || {};
+    const cleanCardId = cardId === 'default' ? 'default' : cardId;
+    
+    form.setValue(`${basePath}.selfEmployers` as any, {
+      ...currentSelfEmployers,
+      [cleanCardId]: {
+        ...currentSelfEmployers[cleanCardId],
+        businessDescription: description
+      }
+    });
   };
 
   const handleOpenTaxPreparer = () => {
@@ -71,7 +150,19 @@ const SelfEmploymentForm = ({
   };
 
   const handleSaveTaxPreparer = (preparer: string) => {
-    form.setValue(getSelfEmploymentFieldPath(cardId, 'taxesPreparedBy') as any, preparer);
+    // Determine the correct base path (income or coBorrowerIncome)
+    const fullPath = getSelfEmploymentFieldPath(cardId, '');
+    const basePath = fullPath.includes('coBorrowerIncome') ? 'coBorrowerIncome' : 'income';
+    const currentSelfEmployers = form.getValues(`${basePath}.selfEmployers` as any) || {};
+    const cleanCardId = cardId === 'default' ? 'default' : cardId;
+    
+    form.setValue(`${basePath}.selfEmployers` as any, {
+      ...currentSelfEmployers,
+      [cleanCardId]: {
+        ...currentSelfEmployers[cleanCardId],
+        taxesPreparedBy: preparer
+      }
+    });
   };
 
   return (
@@ -258,13 +349,18 @@ const SelfEmploymentForm = ({
                   />
                 </div>
 
-                {/* Start Date */}
+                {/* Formation Date */}
                 <DateInput
-                  label="Start Date"
-                  value={form.watch(getSelfEmploymentFieldPath(cardId, 'startDate') as any) || ''}
-                  onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'startDate') as any, value)}
-                  id={`self-employment-start-date-${cardId}`}
-                  testId={`input-self-employment-start-date-${cardId}`}
+                  label="Formation Date"
+                  value={form.watch(getSelfEmploymentFieldPath(cardId, 'formationDate') as any) || ''}
+                  onChange={(value) => {
+                    form.setValue(getSelfEmploymentFieldPath(cardId, 'formationDate') as any, value);
+                    
+                    // Auto-calculate years in business when formation date changes
+                    updateYearsInBusinessFields();
+                  }}
+                  id={`self-employment-formation-date-${cardId}`}
+                  testId={`input-self-employment-formation-date-${cardId}`}
                   className="space-y-2"
                 />
 
@@ -279,7 +375,13 @@ const SelfEmploymentForm = ({
                       onCheckedChange={(checked) => {
                         form.setValue(getSelfEmploymentFieldPath(cardId, 'isPresent') as any, checked);
                         if (checked) {
+                          // Clear end date when switching to present
                           form.setValue(getSelfEmploymentFieldPath(cardId, 'endDate') as any, '');
+                          // Update years in business when switching to present
+                          updateYearsInBusinessFields();
+                        } else {
+                          // Auto-calculate years in business when switching away from present
+                          updateYearsInBusinessFields();
                         }
                       }}
                       data-testid={`switch-self-employment-present-${cardId}`}
@@ -303,6 +405,11 @@ const SelfEmploymentForm = ({
                           }
                         }
                         form.setValue(getSelfEmploymentFieldPath(cardId, 'endDate') as any, formatted);
+                        
+                        // Auto-calculate years in business when end date is provided and complete
+                        if (formatted && formatted.length === 10) {
+                          updateYearsInBusinessFields();
+                        }
                       }
                     }}
                     placeholder={form.watch(getSelfEmploymentFieldPath(cardId, 'isPresent') as any) ? 'Present' : 'MM/DD/YYYY'}
@@ -320,6 +427,14 @@ const SelfEmploymentForm = ({
                   onChange={(value) => {
                     if (form.watch(getSelfEmploymentFieldPath(cardId, 'isPresent') as any)) {
                       form.setValue(getSelfEmploymentFieldPath(cardId, 'duration') as any, value);
+                      // Parse manual duration entry and update schema fields
+                      const yearMatch = value.match(/(\d+)\s*years?/i);
+                      const monthMatch = value.match(/(\d+)\s*months?/i);
+                      const years = yearMatch ? yearMatch[1] : '';
+                      const months = monthMatch ? monthMatch[1] : '';
+                      
+                      form.setValue(getSelfEmploymentFieldPath(cardId, 'yearsInBusinessYears') as any, years);
+                      form.setValue(getSelfEmploymentFieldPath(cardId, 'yearsInBusinessMonths') as any, months);
                     }
                   }}
                   id={`self-employment-duration-${cardId}`}
@@ -423,7 +538,13 @@ const SelfEmploymentForm = ({
         isOpen={isBusinessDescriptionOpen}
         onClose={handleCloseBusinessDescription}
         onSave={handleSaveBusinessDescription}
-        currentValue={form.watch(getSelfEmploymentFieldPath(cardId, 'businessDescription') as any) || ''}
+        currentValue={(() => {
+          const fullPath = getSelfEmploymentFieldPath(cardId, '');
+          const basePath = fullPath.includes('coBorrowerIncome') ? 'coBorrowerIncome' : 'income';
+          const cleanCardId = cardId === 'default' ? 'default' : cardId;
+          const selfEmployers = form.watch(`${basePath}.selfEmployers` as any) || {};
+          return selfEmployers[cleanCardId]?.businessDescription || '';
+        })()}
       />
 
       {/* Tax Preparer Dialog */}
@@ -431,7 +552,13 @@ const SelfEmploymentForm = ({
         isOpen={isTaxPreparerOpen}
         onClose={handleCloseTaxPreparer}
         onSave={handleSaveTaxPreparer}
-        currentValue={form.watch(getSelfEmploymentFieldPath(cardId, 'taxesPreparedBy') as any) || 'Select'}
+        currentValue={(() => {
+          const fullPath = getSelfEmploymentFieldPath(cardId, '');
+          const basePath = fullPath.includes('coBorrowerIncome') ? 'coBorrowerIncome' : 'income';
+          const cleanCardId = cardId === 'default' ? 'default' : cardId;
+          const selfEmployers = form.watch(`${basePath}.selfEmployers` as any) || {};
+          return selfEmployers[cleanCardId]?.taxesPreparedBy || 'Select';
+        })()}
       />
     </Card>
   );
