@@ -200,7 +200,7 @@ export default function AdminLibrary() {
             <img 
               src={loanviewLogo} 
               alt="LoanView GPT" 
-              className={`h-12 transition-all ${isLightMode ? '' : 'brightness-0 invert'}`}
+              className={`h-24 transition-all ${isLightMode ? '' : 'brightness-0 invert'}`}
               data-testid="logo-loanview"
             />
             
