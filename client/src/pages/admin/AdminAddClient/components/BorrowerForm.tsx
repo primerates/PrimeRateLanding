@@ -47,8 +47,8 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
     // Use useWatch to watch specific fields without causing infinite loops
     const currentYears = useWatch({ name: `${fieldPrefix}.yearsAtAddress` as any, control: form.control });
     const currentMonths = useWatch({ name: `${fieldPrefix}.monthsAtAddress` as any, control: form.control });
-    const priorYears = useWatch({ name: `${fieldPrefix}.yearsAtPriorAddress` as any, control: form.control });
-    const priorMonths = useWatch({ name: `${fieldPrefix}.monthsAtPriorAddress` as any, control: form.control });
+    const priorYears = useWatch({ name: `${fieldPrefix}.priorYearsAtAddress` as any, control: form.control });
+    const priorMonths = useWatch({ name: `${fieldPrefix}.priorMonthsAtAddress` as any, control: form.control });
 
     // Copy borrower data to co-borrower function
     const copyBorrowerToCoResidence = () => {        

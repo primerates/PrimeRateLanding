@@ -156,11 +156,11 @@ const AddressForm = ({ isPrimary = true, addressType = 'current' }: AddressFormP
     // Update form values for years and months
     useMemo(() => {
         const yearsField = addressType === 'current' ? `${fieldPrefix}.yearsAtAddress` :
-            addressType === 'prior' ? `${fieldPrefix}.yearsAtPriorAddress` :
-                `${fieldPrefix}.yearsAtPriorAddress2`;
+            addressType === 'prior' ? `${fieldPrefix}.priorYearsAtAddress` :
+                `${fieldPrefix}.priorYearsAtAddress2`;
         const monthsField = addressType === 'current' ? `${fieldPrefix}.monthsAtAddress` :
-            addressType === 'prior' ? `${fieldPrefix}.monthsAtPriorAddress` :
-                `${fieldPrefix}.monthsAtPriorAddress2`;
+            addressType === 'prior' ? `${fieldPrefix}.priorMonthsAtAddress` :
+                `${fieldPrefix}.priorMonthsAtAddress2`;
         form.setValue(yearsField as any, years.toString(), { shouldDirty: false });
         form.setValue(monthsField as any, months.toString(), { shouldDirty: false });
     }, [years, months, form, fieldPrefix, addressType]);

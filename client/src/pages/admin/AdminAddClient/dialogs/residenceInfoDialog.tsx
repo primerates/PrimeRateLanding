@@ -33,13 +33,13 @@ const ResidenceInfoDialog = () => {
       form.setValue('borrower.residenceAddress.additionalInfo', residenceInfoText);
     } else if (activeResidenceSection === 'borrower-prior') {
       form.setValue('borrower.priorResidenceAddress.additionalInfo', residenceInfoText);
-    } else if (activeResidenceSection === 'borrower-prior-2') {
+    } else if (activeResidenceSection === 'borrower-prior2') {
       form.setValue('borrower.priorResidenceAddress2.additionalInfo', residenceInfoText);
-    } else if (activeResidenceSection === 'coborrower-current') {
+    } else if (activeResidenceSection === 'coBorrower-current') {
       form.setValue('coBorrower.residenceAddress.additionalInfo' as any, residenceInfoText);
-    } else if (activeResidenceSection === 'coborrower-prior') {
+    } else if (activeResidenceSection === 'coBorrower-prior') {
       form.setValue('coBorrower.priorResidenceAddress.additionalInfo' as any, residenceInfoText);
-    } else if (activeResidenceSection === 'coborrower-prior-2') {
+    } else if (activeResidenceSection === 'coBorrower-prior2') {
       form.setValue('coBorrower.priorResidenceAddress2.additionalInfo' as any, residenceInfoText);
     }
     setIsResidenceInfoDialogOpen(false);
