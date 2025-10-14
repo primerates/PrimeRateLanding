@@ -1404,7 +1404,7 @@ export default function AdminSnapshot() {
                 <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
                   <User className="w-5 h-5 text-purple-400" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">Staff Information</h2>
+                <h2 className="text-2xl font-bold text-white">Staff</h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1470,7 +1470,7 @@ export default function AdminSnapshot() {
                 <div className="p-2 rounded-lg bg-red-500/20 border border-red-500/30">
                   <AlertCircle className="w-5 h-5 text-red-400" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">Emergency Contact</h2>
+                <h2 className="text-2xl font-bold text-white">Emergency</h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1508,7 +1508,7 @@ export default function AdminSnapshot() {
                 <div className="p-2 rounded-lg bg-blue-500/20 border border-blue-500/30">
                   <Briefcase className="w-5 h-5 text-blue-400" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">Scope & Permissions</h2>
+                <h2 className="text-2xl font-bold text-white">Role</h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1614,7 +1614,7 @@ export default function AdminSnapshot() {
                 <div className="p-2 rounded-lg bg-green-500/20 border border-green-500/30">
                   <FileText className="w-5 h-5 text-green-400" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">HR & Compliance</h2>
+                <h2 className="text-2xl font-bold text-white">Compliance</h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
