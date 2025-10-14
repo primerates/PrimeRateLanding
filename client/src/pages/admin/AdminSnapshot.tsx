@@ -189,6 +189,117 @@ export default function AdminSnapshot() {
   const [searchLicenseCount, setSearchLicenseCount] = useState('');
   const [searchLoanVolume, setSearchLoanVolume] = useState('');
   const [searchFundingVolume, setSearchFundingVolume] = useState('');
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [staffSortConfig, setStaffSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
+
+  // Mock staff data for search results
+  const mockStaffData = [
+    {
+      id: 1,
+      name: 'John Smith',
+      area: 'Company',
+      magnify: 'MLO',
+      rating: 'Review',
+      performance: '+25%',
+      withCompany: '5 years',
+      compensation: 'W2',
+      earnings: 145000,
+      bonus: 25000,
+      licenseCount: 3,
+      loanVolume: 127,
+      fundingVolume: 32500000
+    },
+    {
+      id: 2,
+      name: 'Sarah Johnson',
+      area: 'Branch',
+      magnify: 'Processor',
+      rating: 'Attendance',
+      performance: '+42%',
+      withCompany: '3 years',
+      compensation: '1099',
+      earnings: 98000,
+      bonus: 15000,
+      licenseCount: 2,
+      loanVolume: 89,
+      fundingVolume: 18750000
+    },
+    {
+      id: 3,
+      name: 'Michael Chen',
+      area: 'Region',
+      magnify: 'MLO',
+      rating: 'Review',
+      performance: '+18%',
+      withCompany: '7 years',
+      compensation: 'W2',
+      earnings: 167000,
+      bonus: 35000,
+      licenseCount: 5,
+      loanVolume: 156,
+      fundingVolume: 45200000
+    },
+    {
+      id: 4,
+      name: 'Emily Davis',
+      area: 'Partner',
+      magnify: 'Team',
+      rating: 'Review',
+      performance: '+33%',
+      withCompany: '2 years',
+      compensation: 'W2',
+      earnings: 112000,
+      bonus: 18000,
+      licenseCount: 1,
+      loanVolume: 98,
+      fundingVolume: 24300000
+    },
+    {
+      id: 5,
+      name: 'Robert Martinez',
+      area: 'District',
+      magnify: 'MLO',
+      rating: 'Attendance',
+      performance: '-8%',
+      withCompany: '1 year',
+      compensation: '1099',
+      earnings: 78000,
+      bonus: 8000,
+      licenseCount: 2,
+      loanVolume: 54,
+      fundingVolume: 12100000
+    },
+    {
+      id: 6,
+      name: 'Jennifer Wilson',
+      area: 'State',
+      magnify: 'Processor',
+      rating: 'Review',
+      performance: '+51%',
+      withCompany: '4 years',
+      compensation: 'W2',
+      earnings: 128000,
+      bonus: 22000,
+      licenseCount: 4,
+      loanVolume: 142,
+      fundingVolume: 38900000
+    },
+    {
+      id: 7,
+      name: 'David Brown',
+      area: 'City',
+      magnify: 'MLO',
+      rating: 'Attendance',
+      performance: '+15%',
+      withCompany: '8 years',
+      compensation: '1099',
+      earnings: 189000,
+      bonus: 42000,
+      licenseCount: 6,
+      loanVolume: 198,
+      fundingVolume: 52300000
+    }
+  ];
 
   const [isRevenueFormMinimized, setIsRevenueFormMinimized] = useState(false);
   const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
@@ -865,6 +976,28 @@ export default function AdminSnapshot() {
     });
   }, [batchSortColumn, batchSortDirection, batches]);
 
+  // Sorted staff data for search results
+  const sortedStaffData = useMemo(() => {
+    if (!staffSortConfig.key) return mockStaffData;
+    
+    return [...mockStaffData].sort((a: any, b: any) => {
+      const aValue = a[staffSortConfig.key!];
+      const bValue = b[staffSortConfig.key!];
+      
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return staffSortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+      
+      if (aValue < bValue) {
+        return staffSortConfig.direction === 'asc' ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return staffSortConfig.direction === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+  }, [staffSortConfig, mockStaffData]);
+
   const handleDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     let value = e.target.value.replace(/\D/g, '');
     if (value.length >= 2) {
@@ -922,6 +1055,31 @@ export default function AdminSnapshot() {
       else if (field === 'bonus') setSearchBonus('');
       else if (field === 'fundingVolume') setSearchFundingVolume('');
     }
+  };
+
+  const handleStaffSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (staffSortConfig.key === key && staffSortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setStaffSortConfig({ key, direction });
+  };
+
+  const handleSearchStaff = () => {
+    setShowSearchResults(true);
+    console.log('Search Staff clicked with params:', {
+      searchArea,
+      searchMagnify,
+      searchRating,
+      searchPerformance,
+      searchWithCompany,
+      searchCompensation,
+      searchEarnings,
+      searchBonus,
+      searchLicenseCount,
+      searchLoanVolume,
+      searchFundingVolume
+    });
   };
 
   const handleTransactionDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: 'fromDate' | 'toDate') => {
@@ -1471,10 +1629,7 @@ export default function AdminSnapshot() {
                 <h2 className="text-2xl font-bold text-white">Search</h2>
               </div>
               <button 
-                onClick={() => {
-                  // TODO: Handle staff search
-                  console.log('Search Staff clicked');
-                }}
+                onClick={handleSearchStaff}
                 className="px-4 py-2 rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:shadow-purple-500/50"
                 data-testid="button-search-staff"
               >
@@ -1713,6 +1868,227 @@ export default function AdminSnapshot() {
                   Clear Filters
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Staff Search Results Table - Only shown when search is performed */}
+        {categoryFilter === 'staff' && showSearchResults && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <style>{`
+              .scrollbar-custom::-webkit-scrollbar {
+                height: 8px;
+              }
+              .scrollbar-custom::-webkit-scrollbar-track {
+                background: transparent;
+              }
+              .scrollbar-custom::-webkit-scrollbar-thumb {
+                background: transparent;
+                border-radius: 4px;
+              }
+              .scrollbar-custom {
+                scrollbar-width: thin;
+                scrollbar-color: transparent transparent;
+              }
+            `}</style>
+            
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-white">
+                Search Results ({sortedStaffData.length} staff members)
+              </h3>
+              <p className="text-sm text-purple-300">
+                Click column headers to sort
+              </p>
+            </div>
+
+            {/* Custom Scrollbar Track */}
+            <div className="mb-4">
+              <div 
+                className="h-2 rounded-full overflow-hidden bg-slate-700/50"
+                style={{ position: 'relative' }}
+              >
+                <div 
+                  className="h-full rounded-full transition-all bg-gradient-to-r from-purple-500 to-pink-500"
+                  style={{ width: '30%' }}
+                />
+              </div>
+              <p className="text-xs mt-1 text-slate-400">
+                ← Scroll horizontally to view all columns →
+              </p>
+            </div>
+
+            <div 
+              className="overflow-x-auto scrollbar-custom"
+              onScroll={(e) => {
+                const target = e.target as HTMLDivElement;
+                const scrollPercentage = (target.scrollLeft / (target.scrollWidth - target.clientWidth)) * 100;
+                const indicator = target.previousElementSibling?.querySelector('div > div') as HTMLDivElement;
+                if (indicator) {
+                  const thumbWidth = (target.clientWidth / target.scrollWidth) * 100;
+                  indicator.style.width = `${Math.max(thumbWidth, 10)}%`;
+                  indicator.style.transform = `translateX(${scrollPercentage * (100 / thumbWidth - 1)}%)`;
+                }
+              }}
+            >
+              <table className="w-full min-w-max">
+                <thead>
+                  <tr className="border-b border-purple-500/30">
+                    <th 
+                      onClick={() => handleStaffSort('name')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        Name
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleStaffSort('area')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[120px] text-purple-300 hover:text-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        Area
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleStaffSort('magnify')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[120px] text-purple-300 hover:text-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        Magnify
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleStaffSort('rating')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[120px] text-purple-300 hover:text-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        Rating
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleStaffSort('performance')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        Performance
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleStaffSort('withCompany')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        With Company
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleStaffSort('compensation')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        Compensation
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleStaffSort('earnings')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        Earnings
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleStaffSort('bonus')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[120px] text-purple-300 hover:text-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        Bonus
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleStaffSort('licenseCount')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        License Count
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleStaffSort('loanVolume')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        Loan Volume
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleStaffSort('fundingVolume')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        Funding Volume
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedStaffData.map((staff) => (
+                    <tr 
+                      key={staff.id}
+                      className="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors"
+                    >
+                      <td className="py-3 px-4 font-medium text-white">
+                        {staff.name}
+                      </td>
+                      <td className="py-3 px-4 text-slate-300">
+                        {staff.area}
+                      </td>
+                      <td className="py-3 px-4 text-slate-300">
+                        {staff.magnify}
+                      </td>
+                      <td className="py-3 px-4 text-slate-300">
+                        {staff.rating}
+                      </td>
+                      <td className="py-3 px-4 text-slate-300">
+                        {staff.performance}
+                      </td>
+                      <td className="py-3 px-4 text-slate-300">
+                        {staff.withCompany}
+                      </td>
+                      <td className="py-3 px-4 text-slate-300">
+                        {staff.compensation}
+                      </td>
+                      <td className="py-3 px-4 font-semibold text-emerald-500">
+                        {formatCurrency(staff.earnings)}
+                      </td>
+                      <td className="py-3 px-4 font-semibold text-emerald-500">
+                        {formatCurrency(staff.bonus)}
+                      </td>
+                      <td className="py-3 px-4 text-slate-300">
+                        {staff.licenseCount}
+                      </td>
+                      <td className="py-3 px-4 text-slate-300">
+                        {staff.loanVolume}
+                      </td>
+                      <td className="py-3 px-4 font-semibold text-emerald-500">
+                        {formatCurrency(staff.fundingVolume)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
