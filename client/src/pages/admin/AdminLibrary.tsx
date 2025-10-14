@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { ArrowLeft, Plus, Minus, User, Sun, Moon } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import loanviewLogo from '@assets/Loanview GPT Modern Logo Design_1760401338175.png';
 
 // Dashboard shortcuts menu items
 const dashboardMenuItems = [
@@ -196,7 +197,12 @@ export default function AdminLibrary() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <h1 className={`text-xl font-black italic transition-colors ${getTextColor()}`} style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-library">LOANVIEW GPT</h1>
+            <img 
+              src={loanviewLogo} 
+              alt="LoanView GPT" 
+              className={`h-8 transition-all ${isLightMode ? '' : 'brightness-0 invert'}`}
+              data-testid="logo-loanview"
+            />
             
             {/* Brightness Slider - Only visible in light mode */}
             {isLightMode && (
