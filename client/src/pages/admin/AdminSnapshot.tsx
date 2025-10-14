@@ -2611,17 +2611,17 @@ export default function AdminSnapshot() {
                   <div className="grid grid-cols-5 gap-6 mb-6">
                     <div className="space-y-2">
                       <Label className="text-purple-200">Data Category</Label>
-                      <Select value={dataCategory} onValueChange={setDataCategory}>
-                        <SelectTrigger data-testid="select-data-category" className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-800 border-purple-500/30">
-                          <SelectItem value="Select" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Select</SelectItem>
-                          <SelectItem value="Show All" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Show All</SelectItem>
-                          <SelectItem value="Trigger Data" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Trigger Data</SelectItem>
-                          <SelectItem value="Monthly Data" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Monthly Data</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <select 
+                        value={dataCategory}
+                        onChange={(e) => setDataCategory(e.target.value)}
+                        data-testid="select-data-category"
+                        className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      >
+                        <option value="Select">Select</option>
+                        <option value="Show All">Show All</option>
+                        <option value="Trigger Data">Trigger Data</option>
+                        <option value="Monthly Data">Monthly Data</option>
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-purple-200">States</Label>
@@ -2685,52 +2685,49 @@ export default function AdminSnapshot() {
                     </div>
                     <div className="space-y-2">
                       <Label className="text-purple-200">Loan Category</Label>
-                      <Select defaultValue="show-all">
-                        <SelectTrigger data-testid="select-loan-category" className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors">
-                          <SelectValue placeholder="Show All" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-800 border-purple-500/30">
-                          <SelectItem value="show-all" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Show All</SelectItem>
-                          <SelectItem value="va" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">VA</SelectItem>
-                          <SelectItem value="va-jumbo" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">VA Jumbo</SelectItem>
-                          <SelectItem value="conventional" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Conventional</SelectItem>
-                          <SelectItem value="conventional-jumbo" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Conventional Jumbo</SelectItem>
-                          <SelectItem value="fha" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">FHA</SelectItem>
-                          <SelectItem value="second-loan" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Second Loan</SelectItem>
-                          <SelectItem value="non-qm" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Non-QM</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <select 
+                        defaultValue="show-all"
+                        data-testid="select-loan-category"
+                        className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      >
+                        <option value="show-all">Show All</option>
+                        <option value="va">VA</option>
+                        <option value="va-jumbo">VA Jumbo</option>
+                        <option value="conventional">Conventional</option>
+                        <option value="conventional-jumbo">Conventional Jumbo</option>
+                        <option value="fha">FHA</option>
+                        <option value="second-loan">Second Loan</option>
+                        <option value="non-qm">Non-QM</option>
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-purple-200">Loan Purpose</Label>
-                      <Select defaultValue="show-all">
-                        <SelectTrigger data-testid="select-loan-purpose" className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors">
-                          <SelectValue placeholder="Show All" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-800 border-purple-500/30">
-                          <SelectItem value="show-all" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Show All</SelectItem>
-                          <SelectItem value="cash-out" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Cash Out</SelectItem>
-                          <SelectItem value="rate-term" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Rate & Term</SelectItem>
-                          <SelectItem value="purchase" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Purchase</SelectItem>
-                          <SelectItem value="streamline" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Streamline</SelectItem>
-                          <SelectItem value="irrrl" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">IRRRL</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <select 
+                        defaultValue="show-all"
+                        data-testid="select-loan-purpose"
+                        className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      >
+                        <option value="show-all">Show All</option>
+                        <option value="cash-out">Cash Out</option>
+                        <option value="rate-term">Rate & Term</option>
+                        <option value="purchase">Purchase</option>
+                        <option value="streamline">Streamline</option>
+                        <option value="irrrl">IRRRL</option>
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-purple-200">Property Use</Label>
-                      <Select defaultValue="show-all">
-                        <SelectTrigger data-testid="select-property-use" className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors">
-                          <SelectValue placeholder="Show All" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-800 border-purple-500/30">
-                          <SelectItem value="show-all" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Show All</SelectItem>
-                          <SelectItem value="primary-residence" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Primary Residence</SelectItem>
-                          <SelectItem value="second-home" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Second Home</SelectItem>
-                          <SelectItem value="investment-property" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Investment Property</SelectItem>
-                          <SelectItem value="home-purchase" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Home Purchase</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <select 
+                        defaultValue="show-all"
+                        data-testid="select-property-use"
+                        className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      >
+                        <option value="show-all">Show All</option>
+                        <option value="primary-residence">Primary Residence</option>
+                        <option value="second-home">Second Home</option>
+                        <option value="investment-property">Investment Property</option>
+                        <option value="home-purchase">Home Purchase</option>
+                      </select>
                     </div>
                   </div>
 
@@ -2738,58 +2735,54 @@ export default function AdminSnapshot() {
                   <div className="grid grid-cols-5 gap-6 mb-6">
                     <div className="space-y-2">
                       <Label className="text-purple-200">Property Type</Label>
-                      <Select defaultValue="show-all">
-                        <SelectTrigger data-testid="select-property-type" className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors">
-                          <SelectValue placeholder="Show All" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-800 border-purple-500/30">
-                          <SelectItem value="show-all" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Show All</SelectItem>
-                          <SelectItem value="single-family" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Single Family</SelectItem>
-                          <SelectItem value="condo" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Condo</SelectItem>
-                          <SelectItem value="townhouse" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Townhouse</SelectItem>
-                          <SelectItem value="duplex-multi-family" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Duplex, Multi-Family</SelectItem>
-                          <SelectItem value="other" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <select 
+                        defaultValue="show-all"
+                        data-testid="select-property-type"
+                        className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      >
+                        <option value="show-all">Show All</option>
+                        <option value="single-family">Single Family</option>
+                        <option value="condo">Condo</option>
+                        <option value="townhouse">Townhouse</option>
+                        <option value="duplex-multi-family">Duplex, Multi-Family</option>
+                        <option value="other">Other</option>
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-purple-200">Lenders</Label>
-                      <Select defaultValue="show-all">
-                        <SelectTrigger data-testid="select-lenders" className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors">
-                          <SelectValue placeholder="Show All" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-800 border-purple-500/30">
-                          <SelectItem value="show-all" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Show All</SelectItem>
-                          <SelectItem value="uwm" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">UWM</SelectItem>
-                          <SelectItem value="pennymac" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Pennymac</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <select 
+                        defaultValue="show-all"
+                        data-testid="select-lenders"
+                        className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      >
+                        <option value="show-all">Show All</option>
+                        <option value="uwm">UWM</option>
+                        <option value="pennymac">Pennymac</option>
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-purple-200">Data Vendors</Label>
-                      <Select defaultValue="show-all">
-                        <SelectTrigger data-testid="select-data-vendors" className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors">
-                          <SelectValue placeholder="Show All" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-800 border-purple-500/30">
-                          <SelectItem value="show-all" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Show All</SelectItem>
-                          <SelectItem value="in-house" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">In-House</SelectItem>
-                          <SelectItem value="tbd" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">TBD</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <select 
+                        defaultValue="show-all"
+                        data-testid="select-data-vendors"
+                        className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      >
+                        <option value="show-all">Show All</option>
+                        <option value="in-house">In-House</option>
+                        <option value="tbd">TBD</option>
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-purple-200">Mail Vendors</Label>
-                      <Select defaultValue="show-all">
-                        <SelectTrigger data-testid="select-mail-vendors" className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors">
-                          <SelectValue placeholder="Show All" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-800 border-purple-500/30">
-                          <SelectItem value="show-all" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">Show All</SelectItem>
-                          <SelectItem value="in-house" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">In-House</SelectItem>
-                          <SelectItem value="tbd" className="hover:bg-purple-500 hover:text-white focus:bg-purple-500 focus:text-white">TBD</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <select 
+                        defaultValue="show-all"
+                        data-testid="select-mail-vendors"
+                        className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      >
+                        <option value="show-all">Show All</option>
+                        <option value="in-house">In-House</option>
+                        <option value="tbd">TBD</option>
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-purple-200">Batch Activity To Date</Label>
