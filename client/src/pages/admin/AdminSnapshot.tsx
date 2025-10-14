@@ -1583,7 +1583,7 @@ export default function AdminSnapshot() {
               </div>
               <button 
                 onClick={handleSearchStaff}
-                className="px-4 py-2 rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:shadow-purple-500/50"
+                className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:shadow-purple-500/50"
                 data-testid="button-search-staff"
               >
                 Search Staff
