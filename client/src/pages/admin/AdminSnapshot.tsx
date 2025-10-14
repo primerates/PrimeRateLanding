@@ -1476,23 +1476,26 @@ export default function AdminSnapshot() {
             </button>
           </div>
 
-          {!isFiltersMinimized && (
-            <>
-              <DashboardFilters
-                entityFilter={entityFilter}
-                setEntityFilter={setEntityFilter}
-                categoryFilter={categoryFilter}
-                setCategoryFilter={setCategoryFilter}
-                teamFilter={teamFilter}
-                setTeamFilter={setTeamFilter}
-                timeFilter={timeFilter}
-                setTimeFilter={setTimeFilter}
-                timeFilterFromDate={timeFilterFromDate}
-                handleTimeFilterDateInput={handleTimeFilterDateInput}
-                timeFilterToDate={timeFilterToDate}
-              />
+          <div 
+            className={`transition-all duration-500 ease-in-out overflow-hidden ${
+              isFiltersMinimized ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'
+            }`}
+          >
+            <DashboardFilters
+              entityFilter={entityFilter}
+              setEntityFilter={setEntityFilter}
+              categoryFilter={categoryFilter}
+              setCategoryFilter={setCategoryFilter}
+              teamFilter={teamFilter}
+              setTeamFilter={setTeamFilter}
+              timeFilter={timeFilter}
+              setTimeFilter={setTimeFilter}
+              timeFilterFromDate={timeFilterFromDate}
+              handleTimeFilterDateInput={handleTimeFilterDateInput}
+              timeFilterToDate={timeFilterToDate}
+            />
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Gross Income */}
             <div className="bg-gradient-to-br from-green-500/20 to-emerald-600/20 rounded-xl p-6 border border-green-500/30 hover:border-green-500/50 transition-all" data-testid="card-gross-income">
               <div className="flex items-center justify-between mb-2">
@@ -1532,8 +1535,7 @@ export default function AdminSnapshot() {
               </div>
             </div>
           </div>
-            </>
-          )}
+          </div>
         </div>
 
         {/* Second Card - Charts */}
