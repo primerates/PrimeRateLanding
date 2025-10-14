@@ -125,13 +125,14 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Performance Card Interactive Title**: Filter icon next to card title serves as dropdown menu to change card title between: Prime Rate (default), Partner, Branch
 - **Real-time Financial Metrics**: Displays Gross Income, Revenue, and Expense with trend indicators
 - **Interactive Filters**: 
-  - Category filter (Financials, Marketing, Staff, Vendor) - positioned as first filter in Prime Rate/Performance card
-  - Team filter (dynamically changes based on category selection) - positioned as second filter
+  - Category filter (Financials, Marketing, Staff, Vendor) - **defaults to Marketing** - positioned as first filter in Prime Rate/Performance card
+  - Team filter (dynamically changes based on category selection) - **defaults to Direct Mail** - positioned as second filter
     - When Financials selected: Select, P & L
     - When Marketing selected: Direct Mail, Lead Vendor, Social Media
     - When Staff selected: Team, Team Lead, MLO, Processor, UW, Funder
     - When Vendor selected: Select, WDO, Water, Inspection, Handyman
   - Time period filter (Today with auto date display, MTD, YTD, From Date, To Date, Compare) - positioned as third filter to the right of Team filter
+- **Header Buttons**: All header buttons (User Shortcut, Screenshare, Live indicator, Add Entry) reduced by 10% in size with adjusted font sizes (text-xs) for compact design
 - **Revenue Sources Visualization**: Pie chart with detailed breakdown by source (Direct Mail, Lead Vendors, Social Media, Repeat Clients, Referrals)
 - **Expense Breakdown**: Pie chart categorizing expenses (Marketing, Staff, Vendors, Services, Supplies)
 - **Drill-down Capabilities**: Click on "Direct Mail" to view state-by-state breakdown and loan program distribution

@@ -129,8 +129,8 @@ export default function AdminSnapshot() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [entityFilter, setEntityFilter] = useState('prime-rate');
-  const [categoryFilter, setCategoryFilter] = useState('financials');
-  const [teamFilter, setTeamFilter] = useState('select');
+  const [categoryFilter, setCategoryFilter] = useState('marketing');
+  const [teamFilter, setTeamFilter] = useState('direct-mail');
   const [timeFilter, setTimeFilter] = useState('today');
   const [timeFilterFromDate, setTimeFilterFromDate] = useState('');
   const [timeFilterToDate, setTimeFilterToDate] = useState('');
@@ -1366,10 +1366,10 @@ export default function AdminSnapshot() {
             <DropdownMenu open={shortcutDropdownOpen} onOpenChange={setShortcutDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="p-2 bg-purple-500/20 hover:bg-purple-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all"
+                  className="p-1.5 bg-purple-500/20 hover:bg-purple-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all"
                   data-testid="button-shortcut"
                 >
-                  <User className="h-5 w-5 text-purple-300" />
+                  <User className="h-4.5 w-4.5 text-purple-300" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
@@ -1390,27 +1390,27 @@ export default function AdminSnapshot() {
             <button
               onClick={handleScreenshare}
               disabled={screenshareLoading}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 hover:bg-purple-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-3.5 py-1.5 bg-purple-500/20 hover:bg-purple-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all disabled:opacity-50"
               data-testid="button-screenshare"
             >
-              <Monitor className={`h-4 w-4 text-purple-300 transition-transform duration-500 ${screenshareLoading ? 'animate-spin' : ''}`} />
-              <span className="text-purple-200 text-sm">{screenshareLoading ? 'Starting...' : 'Screenshare'}</span>
+              <Monitor className={`h-3.5 w-3.5 text-purple-300 transition-transform duration-500 ${screenshareLoading ? 'animate-spin' : ''}`} />
+              <span className="text-purple-200 text-xs">{screenshareLoading ? 'Starting...' : 'Screenshare'}</span>
             </button>
             
-            <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-purple-200 text-sm">Live</span>
+            <div className="flex items-center gap-2 px-3.5 py-1.5 bg-purple-500/20 rounded-lg border border-purple-500/30">
+              <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-purple-200 text-xs">Live</span>
             </div>
             <button 
               onClick={() => {
                 setShowAddModal(true);
                 setIsFiltersMinimized(true); // Minimize Dashboard card for cleaner data entry
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50"
+              className="flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50"
               data-testid="button-add-entry"
             >
-              <Plus className="w-5 h-5 text-white" />
-              <span className="text-white text-sm">Add Entry</span>
+              <Plus className="w-4.5 h-4.5 text-white" />
+              <span className="text-white text-xs">Add Entry</span>
             </button>
           </div>
         </div>
