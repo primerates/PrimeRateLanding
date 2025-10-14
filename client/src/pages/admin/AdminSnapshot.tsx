@@ -193,7 +193,7 @@ export default function AdminSnapshot() {
   const [staffSortConfig, setStaffSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
 
   // Performance card title state
-  const [performanceCardTitle, setPerformanceCardTitle] = useState('Company');
+  const [performanceCardTitle, setPerformanceCardTitle] = useState('Prime Rate');
 
   // Mock staff data for search results
   const mockStaffData = [
@@ -1471,11 +1471,11 @@ export default function AdminSnapshot() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-48 bg-slate-800 border-purple-500/30">
                   <DropdownMenuItem 
-                    onClick={() => setPerformanceCardTitle('Company')}
+                    onClick={() => setPerformanceCardTitle('Prime Rate')}
                     className="text-purple-200 hover:text-white hover:bg-purple-500/20 cursor-pointer"
-                    data-testid="menu-item-company"
+                    data-testid="menu-item-prime-rate"
                   >
-                    Company
+                    Prime Rate
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     onClick={() => setPerformanceCardTitle('Partner')}
