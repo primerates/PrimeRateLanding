@@ -1169,7 +1169,7 @@ export default function AdminSnapshot() {
         {/* Header with Back Button */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-black italic text-white" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-analytics-dashboard">LOANVIEW GPT</h1>
+            <h1 className="text-xl font-black text-white" style={{ fontFamily: 'Orbitron, sans-serif' }} data-testid="heading-analytics-dashboard">LoanView GPT</h1>
           </div>
           <div className="flex items-center gap-3">
             <DropdownMenu open={shortcutDropdownOpen} onOpenChange={setShortcutDropdownOpen}>
