@@ -6,6 +6,7 @@ import PropertyManagement from '../components/PropertyManagement';
 import PropertyForm from '../components/PropertyForm';
 import DeleteConfirmationDialog from '../dialogs/DeleteConfirmationDialog';
 import ChangeSubjectPropertyDialog from '../dialogs/ChangeSubjectPropertyDialog';
+import ValuationDialog from '../dialogs/ValuationDialog';
 
 interface PropertyTabProps {
   showPropertyAnimation?: boolean;
@@ -36,6 +37,23 @@ const PropertyTab = ({
         isOpen: boolean;
         newSubjectPropertyIndex: number | null;
     }>({ isOpen: false, newSubjectPropertyIndex: null });
+    
+    // Valuation hover tooltip state
+    const [valuationHover, setValuationHover] = useState<{
+        isVisible: boolean;
+        service: 'zillow' | 'redfin' | 'realtor' | null;
+        propertyIndex: number | null;
+        value: string;
+        position: { x: number; y: number };
+    }>({ isVisible: false, service: null, propertyIndex: null, value: '', position: { x: 0, y: 0 } });
+    
+    // Valuation dialog state
+    const [valuationDialog, setValuationDialog] = useState<{
+        isOpen: boolean;
+        service: 'zillow' | 'redfin' | 'realtor' | null;
+        propertyIndex: number | null;
+        currentValue: string;
+    }>({ isOpen: false, service: null, propertyIndex: null, currentValue: '' });
 
     // Check if a property type exists in form data
     const hasPropertyType = (type: 'primary' | 'second-home' | 'investment' | 'home-purchase'): boolean => {
@@ -143,6 +161,62 @@ const PropertyTab = ({
         setSubjectConfirmDialog({ isOpen: false, newSubjectPropertyIndex: null });
     };
 
+    // Valuation hover handlers
+    const handleValuationHover = (service: string, propertyIndex: number, event: React.MouseEvent) => {
+        if (service !== 'zillow' && service !== 'redfin' && service !== 'realtor') return;
+        const savedValue = form.watch(`property.properties.${propertyIndex}.valuations.${service}`) || '';
+        const rect = event.currentTarget.getBoundingClientRect();
+        // Position tooltip well above the button to avoid mouse interference
+        const tooltipHeight = 150;
+        const extraSpacing = 100; // Increased spacing to prevent flickering
+        setValuationHover({
+            isVisible: true,
+            service: service as 'zillow' | 'redfin' | 'realtor',
+            propertyIndex,
+            value: savedValue,
+            position: { 
+                x: rect.left + window.scrollX - 50, // Offset slightly left to avoid cursor
+                y: rect.top + window.scrollY - tooltipHeight - extraSpacing 
+            }
+        });
+    };
+
+    const handleValuationHoverLeave = () => {
+        setValuationHover({ isVisible: false, service: null, propertyIndex: null, value: '', position: { x: 0, y: 0 } });
+    };
+
+    // Valuation dialog handlers
+    const openValuationDialog = (service: string, propertyIndex: number) => {
+        if (service !== 'zillow' && service !== 'redfin' && service !== 'realtor') return;
+        
+        const currentValue = form.watch(`property.properties.${propertyIndex}.valuations.${service}`) || '';
+        setValuationDialog({
+            isOpen: true,
+            service: service as 'zillow' | 'redfin' | 'realtor',
+            propertyIndex,
+            currentValue
+        });
+    };
+
+    const closeValuationDialog = () => {
+        setValuationDialog({ isOpen: false, service: null, propertyIndex: null, currentValue: '' });
+    };
+
+    const saveValuation = (value: string) => {
+        if (valuationDialog.propertyIndex !== null && valuationDialog.service) {
+            form.setValue(`property.properties.${valuationDialog.propertyIndex}.valuations.${valuationDialog.service}`, value);
+            closeValuationDialog();
+        }
+    };
+
+    const saveAndApplyValuation = (value: string) => {
+        if (valuationDialog.propertyIndex !== null && valuationDialog.service) {
+            form.setValue(`property.properties.${valuationDialog.propertyIndex}.valuations.${valuationDialog.service}`, value);
+            form.setValue(`property.properties.${valuationDialog.propertyIndex}.estimatedValue`, value);
+            closeValuationDialog();
+        }
+    };
+
     return (
         <div className="space-y-6">
             <PropertyHeader
@@ -196,9 +270,9 @@ const PropertyTab = ({
                             }}
                             showAnimation={showPropertyAnimation}
                             getValueComparisonColor={() => ({ shadowColor: 'none' as const })}
-                            openValuationDialog={() => {}}
-                            handleValuationHover={() => {}}
-                            handleValuationHoverLeave={() => {}}
+                            openValuationDialog={openValuationDialog}
+                            handleValuationHover={handleValuationHover}
+                            handleValuationHoverLeave={handleValuationHoverLeave}
                             openValuationSummary={() => {}}
                             additionalLoans={[]}
                             getDyn={() => undefined}
@@ -230,6 +304,44 @@ const PropertyTab = ({
                 onClose={() => handleSubjectPropertyConfirmation(false)}
                 onConfirm={() => handleSubjectPropertyConfirmation(true)}
             />
+            
+            <ValuationDialog
+                isOpen={valuationDialog.isOpen}
+                service={valuationDialog.service}
+                currentValue={valuationDialog.currentValue}
+                onClose={closeValuationDialog}
+                onSave={saveValuation}
+                onSaveAndApply={saveAndApplyValuation}
+            />
+            
+            {/* Valuation Hover Tooltip */}
+            {valuationHover.isVisible && (
+                <div
+                    className="fixed z-50 bg-white dark:bg-gray-800 border-2 border-orange-500 rounded-md shadow-lg p-6 max-w-md w-80"
+                    style={{
+                        left: valuationHover.position.x,
+                        top: valuationHover.position.y,
+                        pointerEvents: 'none' // Prevent tooltip from interfering with mouse events
+                    }}
+                    data-testid="tooltip-valuation-hover"
+                >
+                    <div className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                        {valuationHover.service === 'zillow' && 'Zillow Valuation'}
+                        {valuationHover.service === 'redfin' && 'Redfin Valuation'}
+                        {valuationHover.service === 'realtor' && 'Realtor.com Valuation'}
+                    </div>
+                    <div className="text-base text-gray-600 dark:text-gray-400 mt-2">
+                        {valuationHover.value ? (
+                            <span className="font-mono text-green-600 dark:text-green-400">{valuationHover.value}</span>
+                        ) : (
+                            <span className="italic text-gray-500">No value saved</span>
+                        )}
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-500 mt-3 pt-2 border-t border-gray-200 dark:border-gray-600">
+                        Click to open full editor
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

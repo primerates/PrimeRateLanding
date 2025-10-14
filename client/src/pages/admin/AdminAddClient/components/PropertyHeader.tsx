@@ -105,14 +105,12 @@ const PropertyHeader = ({
     );
   };
 
-  // Property count calculation
+  // Property count calculation - count all properties except home purchase
   const getPropertyCount = () => {
-    const primaryCards = primaryResidenceCards.length;
-    const secondHomeCardsCount = secondHomeCards.length;
     const formProperties = form.watch('property.properties') || [];
-    const investmentCards = formProperties.filter(p => p.use === 'investment').length;
+    const countableProperties = formProperties.filter(p => p.use !== 'home-purchase');
     
-    return primaryCards + secondHomeCardsCount + investmentCards;
+    return countableProperties.length;
   };
 
   return (

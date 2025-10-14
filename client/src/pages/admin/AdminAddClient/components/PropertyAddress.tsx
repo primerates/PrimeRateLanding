@@ -79,8 +79,8 @@ const PropertyAddress = ({
       
       <FormSelect
         label="Property Type *"
-        value={form.watch(getPropertyFieldPath('propertyType') as any) || ''}
-        onValueChange={(value) => form.setValue(getPropertyFieldPath('propertyType') as any, value)}
+        value={form.watch(`property.properties.${propertyIndex}.propertyType` as any) || ''}
+        onValueChange={(value) => form.setValue(`property.properties.${propertyIndex}.propertyType` as any, value)}
         options={[
           { value: 'single-family', label: 'Single Family' },
           { value: 'townhome', label: 'Townhome' },
