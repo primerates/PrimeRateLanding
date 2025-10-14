@@ -39,9 +39,7 @@ export function DashboardFilters({
           >
             <span>
               {categoryFilter === 'financials' && 'Financials'}
-              {categoryFilter === 'direct-mail' && 'Direct Mail'}
-              {categoryFilter === 'lead-vendor' && 'Lead Vendor'}
-              {categoryFilter === 'social-media' && 'Social Media'}
+              {categoryFilter === 'marketing' && 'Marketing'}
               {categoryFilter === 'staff' && 'Staff'}
               {categoryFilter === 'vendor' && 'Vendor'}
             </span>
@@ -61,33 +59,13 @@ export function DashboardFilters({
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              setCategoryFilter('direct-mail');
-              setTeamFilter('va');
+              setCategoryFilter('marketing');
+              setTeamFilter('direct-mail');
             }}
             className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-            data-testid="option-category-direct-mail"
+            data-testid="option-category-marketing"
           >
-            Direct Mail
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              setCategoryFilter('lead-vendor');
-              setTeamFilter('select');
-            }}
-            className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-            data-testid="option-category-lead-vendor"
-          >
-            Lead Vendor
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              setCategoryFilter('social-media');
-              setTeamFilter('facebook');
-            }}
-            className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-            data-testid="option-category-social-media"
-          >
-            Social Media
+            Marketing
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
@@ -122,18 +100,9 @@ export function DashboardFilters({
             <span>
               {teamFilter === 'select' && 'Select'}
               {teamFilter === 'pl' && 'P & L'}
-              {teamFilter === 'va' && 'VA'}
-              {teamFilter === 'va-jumbo' && 'VA Jumbo'}
-              {teamFilter === 'fnm' && 'FNM'}
-              {teamFilter === 'fnm-jumbo' && 'FNM Jumbo'}
-              {teamFilter === 'fha' && 'FHA'}
-              {teamFilter === 'non-qm' && 'Non-QM'}
-              {teamFilter === 'tbd' && 'TBD'}
-              {teamFilter === 'facebook' && 'Facebook'}
-              {teamFilter === 'x' && 'X'}
-              {teamFilter === 'ig' && 'IG'}
-              {teamFilter === 'tiktok' && 'Tik Tok'}
-              {teamFilter === 'youtube' && 'YouTube'}
+              {teamFilter === 'direct-mail' && 'Direct Mail'}
+              {teamFilter === 'lead-vendor' && 'Lead Vendor'}
+              {teamFilter === 'social-media' && 'Social Media'}
               {teamFilter === 'team' && 'Team'}
               {teamFilter === 'team-lead' && 'Team Lead'}
               {teamFilter === 'mlo' && 'MLO'}
@@ -167,106 +136,28 @@ export function DashboardFilters({
               </DropdownMenuItem>
             </>
           )}
-          {categoryFilter === 'direct-mail' && (
+          {categoryFilter === 'marketing' && (
             <>
               <DropdownMenuItem
-                onClick={() => setTeamFilter('va')}
+                onClick={() => setTeamFilter('direct-mail')}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-va"
+                data-testid="option-team-direct-mail"
               >
-                VA
+                Direct Mail
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setTeamFilter('va-jumbo')}
+                onClick={() => setTeamFilter('lead-vendor')}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-va-jumbo"
+                data-testid="option-team-lead-vendor"
               >
-                VA Jumbo
+                Lead Vendor
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setTeamFilter('fnm')}
+                onClick={() => setTeamFilter('social-media')}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-fnm"
+                data-testid="option-team-social-media"
               >
-                FNM
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setTeamFilter('fnm-jumbo')}
-                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-fnm-jumbo"
-              >
-                FNM Jumbo
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setTeamFilter('fha')}
-                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-fha"
-              >
-                FHA
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setTeamFilter('non-qm')}
-                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-non-qm"
-              >
-                Non-QM
-              </DropdownMenuItem>
-            </>
-          )}
-          {categoryFilter === 'lead-vendor' && (
-            <>
-              <DropdownMenuItem
-                onClick={() => setTeamFilter('select')}
-                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-select"
-              >
-                Select
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setTeamFilter('tbd')}
-                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-tbd"
-              >
-                TBD
-              </DropdownMenuItem>
-            </>
-          )}
-          {categoryFilter === 'social-media' && (
-            <>
-              <DropdownMenuItem
-                onClick={() => setTeamFilter('facebook')}
-                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-facebook"
-              >
-                Facebook
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setTeamFilter('x')}
-                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-x"
-              >
-                X
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setTeamFilter('ig')}
-                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-ig"
-              >
-                IG
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setTeamFilter('tiktok')}
-                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-tiktok"
-              >
-                Tik Tok
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setTeamFilter('youtube')}
-                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-youtube"
-              >
-                YouTube
+                Social Media
               </DropdownMenuItem>
             </>
           )}
