@@ -1627,78 +1627,232 @@ export default function AdminSnapshot() {
                 <label className="block text-sm font-medium mb-2 text-purple-300">
                   Area
                 </label>
-                <select
-                  value={searchArea}
-                  onChange={(e) => setSearchArea(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                  data-testid="select-search-area"
-                >
-                  <option value="">Select</option>
-                  <option value="company">Company</option>
-                  <option value="region">Region</option>
-                  <option value="district">District</option>
-                  <option value="state">State</option>
-                  <option value="city">City</option>
-                  <option value="location">Location</option>
-                  <option value="partner">Partner</option>
-                  <option value="branch">Branch</option>
-                </select>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="w-full bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all text-left flex items-center justify-between text-sm"
+                      data-testid="select-search-area"
+                    >
+                      <span>{searchArea || 'Select'}</span>
+                      <ChevronDown className="h-4 w-4 ml-2" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-full bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+                    <DropdownMenuItem
+                      onClick={() => setSearchArea('')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Select
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchArea('Company')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Company
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchArea('Region')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Region
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchArea('District')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      District
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchArea('State')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      State
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchArea('City')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      City
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchArea('Location')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Location
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchArea('Partner')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Partner
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchArea('Branch')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Branch
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-2 text-purple-300">
                   Magnify
                 </label>
-                <select
-                  value={searchMagnify}
-                  onChange={(e) => setSearchMagnify(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                  data-testid="select-search-magnify"
-                >
-                  <option value="">Select</option>
-                  <option value="team">Team</option>
-                  <option value="mlo">MLO</option>
-                  <option value="processor">Processor</option>
-                </select>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="w-full bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all text-left flex items-center justify-between text-sm"
+                      data-testid="select-search-magnify"
+                    >
+                      <span>{searchMagnify || 'Select'}</span>
+                      <ChevronDown className="h-4 w-4 ml-2" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-full bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+                    <DropdownMenuItem
+                      onClick={() => setSearchMagnify('')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Select
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchMagnify('Team')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Team
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchMagnify('MLO')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      MLO
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchMagnify('Processor')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Processor
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-2 text-purple-300">
                   Rating
                 </label>
-                <select
-                  value={searchRating}
-                  onChange={(e) => setSearchRating(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                  data-testid="select-search-rating"
-                >
-                  <option value="">Select</option>
-                  <option value="review">Review</option>
-                  <option value="attendance">Attendance</option>
-                </select>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="w-full bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all text-left flex items-center justify-between text-sm"
+                      data-testid="select-search-rating"
+                    >
+                      <span>{searchRating || 'Select'}</span>
+                      <ChevronDown className="h-4 w-4 ml-2" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-full bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+                    <DropdownMenuItem
+                      onClick={() => setSearchRating('')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Select
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchRating('Review')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Review
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchRating('Attendance')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Attendance
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-2 text-purple-300">
                   Performance
                 </label>
-                <select
-                  value={searchPerformance}
-                  onChange={(e) => setSearchPerformance(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                  data-testid="select-search-performance"
-                >
-                  <option value="">Select</option>
-                  <option value="plus50">50% +</option>
-                  <option value="plus40">40% +</option>
-                  <option value="plus30">30% +</option>
-                  <option value="plus20">20% +</option>
-                  <option value="plus10">10% +</option>
-                  <option value="minus10">-10%</option>
-                  <option value="minus20">-20%</option>
-                  <option value="minus30">-30%</option>
-                  <option value="minus40">-40%</option>
-                </select>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="w-full bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all text-left flex items-center justify-between text-sm"
+                      data-testid="select-search-performance"
+                    >
+                      <span>{searchPerformance || 'Select'}</span>
+                      <ChevronDown className="h-4 w-4 ml-2" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-full bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+                    <DropdownMenuItem
+                      onClick={() => setSearchPerformance('')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Select
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchPerformance('50% +')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      50% +
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchPerformance('40% +')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      40% +
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchPerformance('30% +')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      30% +
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchPerformance('20% +')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      20% +
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchPerformance('10% +')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      10% +
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchPerformance('-10%')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      -10%
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchPerformance('-20%')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      -20%
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchPerformance('-30%')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      -30%
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchPerformance('-40%')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      -40%
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
 
@@ -1708,39 +1862,116 @@ export default function AdminSnapshot() {
                 <label className="block text-sm font-medium mb-2 text-purple-300">
                   With Company
                 </label>
-                <select
-                  value={searchWithCompany}
-                  onChange={(e) => setSearchWithCompany(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                  data-testid="select-search-with-company"
-                >
-                  <option value="">Select</option>
-                  <option value="lt1">Less than 1 year</option>
-                  <option value="1plus">1 year +</option>
-                  <option value="2plus">2 years +</option>
-                  <option value="4plus">4 years +</option>
-                  <option value="5plus">5 years +</option>
-                  <option value="7plus">7 years +</option>
-                  <option value="8plus">8 years +</option>
-                  <option value="10plus">10 years +</option>
-                  <option value="15plus">15 years +</option>
-                </select>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="w-full bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all text-left flex items-center justify-between text-sm"
+                      data-testid="select-search-with-company"
+                    >
+                      <span>{searchWithCompany || 'Select'}</span>
+                      <ChevronDown className="h-4 w-4 ml-2" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-full bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+                    <DropdownMenuItem
+                      onClick={() => setSearchWithCompany('')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Select
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchWithCompany('Less than 1 year')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Less than 1 year
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchWithCompany('1 year +')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      1 year +
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchWithCompany('2 years +')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      2 years +
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchWithCompany('4 years +')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      4 years +
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchWithCompany('5 years +')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      5 years +
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchWithCompany('7 years +')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      7 years +
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchWithCompany('8 years +')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      8 years +
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchWithCompany('10 years +')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      10 years +
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchWithCompany('15 years +')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      15 years +
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-2 text-purple-300">
                   Compensation
                 </label>
-                <select
-                  value={searchCompensation}
-                  onChange={(e) => setSearchCompensation(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                  data-testid="select-search-compensation"
-                >
-                  <option value="">Select</option>
-                  <option value="w2">W2</option>
-                  <option value="1099">1099</option>
-                </select>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="w-full bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all text-left flex items-center justify-between text-sm"
+                      data-testid="select-search-compensation"
+                    >
+                      <span>{searchCompensation || 'Select'}</span>
+                      <ChevronDown className="h-4 w-4 ml-2" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-full bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+                    <DropdownMenuItem
+                      onClick={() => setSearchCompensation('')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      Select
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchCompensation('W2')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      W2
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSearchCompensation('1099')}
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    >
+                      1099
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               <div>
