@@ -197,12 +197,18 @@ export default function AdminLibrary() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <img 
-              src={loanviewLogo} 
-              alt="LoanView GPT" 
-              className={`h-32 transition-all ${isLightMode ? '' : 'brightness-0 invert'}`}
-              data-testid="logo-loanview"
-            />
+            <div className={`px-6 py-3 rounded-xl backdrop-blur-xl border transition-all ${
+              isLightMode 
+                ? 'bg-white/80 border-purple-300' 
+                : 'bg-slate-800/50 border-purple-500/20'
+            }`}>
+              <img 
+                src={loanviewLogo} 
+                alt="LoanView GPT" 
+                className={`h-12 transition-all ${isLightMode ? '' : 'brightness-0 invert'}`}
+                data-testid="logo-loanview"
+              />
+            </div>
             
             {/* Brightness Slider - Only visible in light mode */}
             {isLightMode && (
