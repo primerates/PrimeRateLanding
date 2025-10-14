@@ -8,12 +8,14 @@ interface SubjectPropertyQuestionProps {
   propertyId: string;
   propertyIndex: number;
   showAnimation?: boolean;
+  setSubjectProperty: (propertyIndex: number) => void;
 }
 
 const SubjectPropertyQuestion = ({
   propertyId,
   propertyIndex,
-  showAnimation = false
+  showAnimation = false,
+  setSubjectProperty
 }: SubjectPropertyQuestionProps) => {
   const form = useFormContext<InsertClient>();
 
@@ -35,7 +37,7 @@ const SubjectPropertyQuestion = ({
                   name={`subject-${propertyId}`}
                   checked={form.watch(getPropertyFieldPath('isSubject') as any) === true}
                   onChange={() => {
-                    form.setValue(getPropertyFieldPath('isSubject') as any, true);
+                    setSubjectProperty(propertyIndex);
                   }}
                   data-testid={`radio-subject-yes-${propertyId}`}
                 />

@@ -29,6 +29,7 @@ interface PropertyFormProps {
   setIsCurrentSecondLoanPreviewOpen: (open: boolean) => void;
   setIsCurrentThirdLoanPreviewOpen: (open: boolean) => void;
   title: string;
+  setSubjectProperty: (propertyIndex: number) => void;
 }
 
 const PropertyForm = ({
@@ -48,7 +49,8 @@ const PropertyForm = ({
   setIsCurrentLoanPreviewOpen,
   setIsCurrentSecondLoanPreviewOpen,
   setIsCurrentThirdLoanPreviewOpen,
-  title
+  title,
+  setSubjectProperty
 }: PropertyFormProps) => {
   const form = useFormContext<InsertClient>();
 
@@ -75,7 +77,17 @@ const PropertyForm = ({
         <CollapsibleTrigger asChild>
           <CardHeader className="cursor-pointer hover:bg-gray-50 transition-colors">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg font-semibold">{title}</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+                {title}
+                {form.watch(`property.properties.${propertyIndex}.isSubject`) && (
+                  <span 
+                    className="text-white px-2 py-1 rounded text-xs font-medium" 
+                    style={{ backgroundColor: '#1a3373' }}
+                  >
+                    Subject Property
+                  </span>
+                )}
+              </CardTitle>
               <div className="flex items-center gap-2">
                 <Button
                   type="button"
@@ -108,6 +120,7 @@ const PropertyForm = ({
                 propertyId={propertyId}
                 propertyIndex={propertyIndex}
                 showAnimation={showAnimation}
+                setSubjectProperty={setSubjectProperty}
               />
 
               {/* Property Address */}

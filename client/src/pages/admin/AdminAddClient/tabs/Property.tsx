@@ -5,6 +5,7 @@ import PropertyHeader from '../components/PropertyHeader';
 import PropertyManagement from '../components/PropertyManagement';
 import PropertyForm from '../components/PropertyForm';
 import DeleteConfirmationDialog from '../dialogs/DeleteConfirmationDialog';
+import ChangeSubjectPropertyDialog from '../dialogs/ChangeSubjectPropertyDialog';
 
 interface PropertyTabProps {
   showPropertyAnimation?: boolean;
@@ -30,6 +31,11 @@ const PropertyTab = ({
         propertyIndex?: number;
         propertyTitle?: string;
     }>({ isOpen: false });
+    
+    const [subjectConfirmDialog, setSubjectConfirmDialog] = useState<{
+        isOpen: boolean;
+        newSubjectPropertyIndex: number | null;
+    }>({ isOpen: false, newSubjectPropertyIndex: null });
 
     // Check if a property type exists in form data
     const hasPropertyType = (type: 'primary' | 'second-home' | 'investment' | 'home-purchase'): boolean => {
@@ -84,6 +90,44 @@ const PropertyTab = ({
             });
         }
         setDeletePropertyDialog({ isOpen: false });
+    };
+
+    // Handle subject property setting with confirmation
+    const setSubjectProperty = (propertyIndex: number) => {
+        const currentProperties = form.watch('property.properties') || [];
+        
+        // Check if another property is already selected as subject
+        const currentSubjectPropertyIndex = currentProperties.findIndex(property => property.isSubject === true);
+        
+        if (currentSubjectPropertyIndex !== -1 && currentSubjectPropertyIndex !== propertyIndex) {
+            // Show confirmation dialog
+            setSubjectConfirmDialog({
+                isOpen: true,
+                newSubjectPropertyIndex: propertyIndex
+            });
+            return;
+        }
+        
+        // No existing subject property or same property selected, proceed with change
+        const updatedProperties = currentProperties.map((property, index) => ({
+            ...property,
+            isSubject: index === propertyIndex,
+        }));
+        form.setValue('property.properties', updatedProperties);
+    };
+
+    // Handle subject property confirmation
+    const handleSubjectPropertyConfirmation = (confirmed: boolean) => {
+        if (confirmed && subjectConfirmDialog.newSubjectPropertyIndex !== null) {
+            const currentProperties = form.watch('property.properties') || [];
+            const updatedProperties = currentProperties.map((property, index) => ({
+                ...property,
+                isSubject: index === subjectConfirmDialog.newSubjectPropertyIndex,
+            }));
+            form.setValue('property.properties', updatedProperties);
+        }
+        // Close dialog
+        setSubjectConfirmDialog({ isOpen: false, newSubjectPropertyIndex: null });
     };
 
     return (
@@ -150,6 +194,7 @@ const PropertyTab = ({
                             setIsCurrentThirdLoanPreviewOpen={() => {}}
                             title={property.use === 'primary' ? 'Primary Residence' : 
                                 `${property.use ? property.use.charAt(0).toUpperCase() + property.use.slice(1).replace('-', ' ') : 'Unknown'}`}
+                            setSubjectProperty={setSubjectProperty}
                         />
                     );
                 });
@@ -165,6 +210,12 @@ const PropertyTab = ({
                 testId="dialog-delete-property"
                 confirmButtonTestId="button-confirm-delete-property"
                 cancelButtonTestId="button-cancel-delete-property"
+            />
+            
+            <ChangeSubjectPropertyDialog
+                isOpen={subjectConfirmDialog.isOpen}
+                onClose={() => handleSubjectPropertyConfirmation(false)}
+                onConfirm={() => handleSubjectPropertyConfirmation(true)}
             />
         </div>
     );
