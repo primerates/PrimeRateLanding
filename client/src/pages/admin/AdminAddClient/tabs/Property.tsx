@@ -58,7 +58,20 @@ const PropertyTab = ({
                     id: `property-${type}-${Date.now()}`,
                     use: type,
                     propertyType: '',
-                    isSubject: false
+                    isSubject: false,
+                    address: {
+                        street: '',
+                        unit: '',
+                        city: '',
+                        state: '',
+                        zip: '',
+                        county: ''
+                    },
+                    purchasePrice: '',
+                    ownedSince: '',
+                    ownedHeldBy: undefined,
+                    estimatedValue: '',
+                    appraisedValue: ''
                 };
                 form.setValue('property.properties', [...currentProperties, newProperty]);
             }

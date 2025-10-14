@@ -16,7 +16,7 @@ const PropertyAddress = ({
   const form = useFormContext<InsertClient>();
 
   const getPropertyFieldPath = (field: string) => {
-    return `property.properties.${propertyIndex}.${field}`;
+    return `property.properties.${propertyIndex}.address.${field}`;
   };
 
   return (
