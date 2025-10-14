@@ -1,0 +1,363 @@
+import React, { useState } from 'react';
+import { User, X, ArrowUpDown } from 'lucide-react';
+
+const StaffFormDesign = () => {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [searchParams, setSearchParams] = useState({
+    area: '',
+    magnify: '',
+    rating: '',
+    performance: '',
+    withCompany: '',
+    compensation: '',
+    earnings: '',
+    bonus: '',
+    licenseCount: '',
+    loanVolume: '',
+    fundingVolume: ''
+  });
+
+  const handleCurrencyInput = (e, field) => {
+    let value = e.target.value.replace(/[^0-9]/g, '');
+    if (value) {
+      value = parseInt(value).toLocaleString('en-US');
+      setSearchParams({ ...searchParams, [field]: value });
+    } else {
+      setSearchParams({ ...searchParams, [field]: '' });
+    }
+  };
+
+  const hasSearchCriteria = Object.values(searchParams).some(val => val !== '');
+
+  return (
+    <div className={`min-h-screen p-6 transition-colors duration-300 ${
+      isDarkMode 
+        ? 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900' 
+        : 'bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50'
+    }`}>
+      <div className="max-w-7xl mx-auto space-y-6">
+        
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+              Staff Management
+            </h1>
+            <p className={isDarkMode ? 'text-purple-300' : 'text-purple-600'}>
+              Search and manage staff members
+            </p>
+          </div>
+        </div>
+
+        <div className={`backdrop-blur-xl rounded-2xl p-6 border shadow-2xl ${
+          isDarkMode 
+            ? 'bg-slate-800/50 border-purple-500/20' 
+            : 'bg-white/80 border-purple-200'
+        }`}>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className={`p-2 rounded-lg ${
+                isDarkMode 
+                  ? 'bg-indigo-500/20 border border-indigo-500/30' 
+                  : 'bg-indigo-100 border border-indigo-200'
+              }`}>
+                <User className={`w-5 h-5 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />
+              </div>
+              <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                Search
+              </h2>
+            </div>
+            <button className={`px-4 py-2 rounded-lg font-medium transition-all text-white shadow-lg ${
+              isDarkMode
+                ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:shadow-purple-500/50'
+                : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:shadow-purple-500/30'
+            }`}>
+              Search Staff
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-purple-300' : 'text-purple-700'}`}>
+                Area
+              </label>
+              <select
+                value={searchParams.area}
+                onChange={(e) => setSearchParams({ ...searchParams, area: e.target.value })}
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}
+              >
+                <option value="">Select</option>
+                <option value="company">Company</option>
+                <option value="region">Region</option>
+                <option value="district">District</option>
+                <option value="state">State</option>
+                <option value="city">City</option>
+                <option value="location">Location</option>
+                <option value="partner">Partner</option>
+                <option value="branch">Branch</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-purple-300' : 'text-purple-700'}`}>
+                Magnify
+              </label>
+              <select
+                value={searchParams.magnify}
+                onChange={(e) => setSearchParams({ ...searchParams, magnify: e.target.value })}
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}
+              >
+                <option value="">Select</option>
+                <option value="team">Team</option>
+                <option value="mlo">MLO</option>
+                <option value="processor">Processor</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-purple-300' : 'text-purple-700'}`}>
+                Rating
+              </label>
+              <select
+                value={searchParams.rating}
+                onChange={(e) => setSearchParams({ ...searchParams, rating: e.target.value })}
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}
+              >
+                <option value="">Select</option>
+                <option value="review">Review</option>
+                <option value="attendance">Attendance</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-purple-300' : 'text-purple-700'}`}>
+                Performance
+              </label>
+              <select
+                value={searchParams.performance}
+                onChange={(e) => setSearchParams({ ...searchParams, performance: e.target.value })}
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}
+              >
+                <option value="">Select</option>
+                <option value="plus50">50% +</option>
+                <option value="plus40">40% +</option>
+                <option value="plus30">30% +</option>
+                <option value="plus20">20% +</option>
+                <option value="plus10">10% +</option>
+                <option value="minus10">-10%</option>
+                <option value="minus20">-20%</option>
+                <option value="minus30">-30%</option>
+                <option value="minus40">-40%</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-purple-300' : 'text-purple-700'}`}>
+                With Company
+              </label>
+              <select
+                value={searchParams.withCompany}
+                onChange={(e) => setSearchParams({ ...searchParams, withCompany: e.target.value })}
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}
+              >
+                <option value="">Select</option>
+                <option value="lt1">Less than 1 year</option>
+                <option value="1plus">1 year +</option>
+                <option value="2plus">2 years +</option>
+                <option value="4plus">4 years +</option>
+                <option value="5plus">5 years +</option>
+                <option value="7plus">7 years +</option>
+                <option value="8plus">8 years +</option>
+                <option value="10plus">10 years +</option>
+                <option value="15plus">15 years +</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-purple-300' : 'text-purple-700'}`}>
+                Compensation
+              </label>
+              <select
+                value={searchParams.compensation}
+                onChange={(e) => setSearchParams({ ...searchParams, compensation: e.target.value })}
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}
+              >
+                <option value="">Select</option>
+                <option value="w2">W2</option>
+                <option value="1099">1099</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-purple-300' : 'text-purple-700'}`}>
+                Earnings
+              </label>
+              <div className="relative">
+                <span className={`absolute left-4 top-1/2 -translate-y-1/2 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                  $
+                </span>
+                <input
+                  type="text"
+                  placeholder="0"
+                  value={searchParams.earnings}
+                  onChange={(e) => handleCurrencyInput(e, 'earnings')}
+                  className={`w-full pl-8 pr-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                    isDarkMode
+                      ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500'
+                      : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500 placeholder-slate-400'
+                  }`}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-purple-300' : 'text-purple-700'}`}>
+                Bonus
+              </label>
+              <div className="relative">
+                <span className={`absolute left-4 top-1/2 -translate-y-1/2 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                  $
+                </span>
+                <input
+                  type="text"
+                  placeholder="0"
+                  value={searchParams.bonus}
+                  onChange={(e) => handleCurrencyInput(e, 'bonus')}
+                  className={`w-full pl-8 pr-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                    isDarkMode
+                      ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500'
+                      : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500 placeholder-slate-400'
+                  }`}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-purple-300' : 'text-purple-700'}`}>
+                License Count
+              </label>
+              <input
+                type="number"
+                placeholder="0"
+                value={searchParams.licenseCount}
+                onChange={(e) => setSearchParams({ ...searchParams, licenseCount: e.target.value })}
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500 placeholder-slate-400'
+                }`}
+              />
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-purple-300' : 'text-purple-700'}`}>
+                Loan Volume
+              </label>
+              <input
+                type="number"
+                placeholder="0"
+                value={searchParams.loanVolume}
+                onChange={(e) => setSearchParams({ ...searchParams, loanVolume: e.target.value })}
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500 placeholder-slate-400'
+                }`}
+              />
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-purple-300' : 'text-purple-700'}`}>
+                Funding Volume
+              </label>
+              <div className="relative">
+                <span className={`absolute left-4 top-1/2 -translate-y-1/2 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                  $
+                </span>
+                <input
+                  type="text"
+                  placeholder="0"
+                  value={searchParams.fundingVolume}
+                  onChange={(e) => handleCurrencyInput(e, 'fundingVolume')}
+                  className={`w-full pl-8 pr-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                    isDarkMode
+                      ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500'
+                      : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500 placeholder-slate-400'
+                  }`}
+                />
+              </div>
+            </div>
+
+            <div className="flex items-end">
+              <button 
+                onClick={() => setSearchParams({
+                  area: '',
+                  magnify: '',
+                  rating: '',
+                  performance: '',
+                  withCompany: '',
+                  compensation: '',
+                  earnings: '',
+                  bonus: '',
+                  licenseCount: '',
+                  loanVolume: '',
+                  fundingVolume: ''
+                })}
+                className={`w-full px-4 py-2.5 rounded-lg font-medium transition-colors ${
+                isDarkMode
+                  ? 'bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700'
+                  : 'bg-white text-slate-900 border border-slate-300 hover:bg-slate-50'
+              }`}>
+                Clear Filters
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {hasSearchCriteria && (
+          <div className={`backdrop-blur-xl rounded-2xl p-6 border shadow-2xl ${
+            isDarkMode 
+              ? 'bg-slate-800/50 border-purple-500/20' 
+              : 'bg-white/80 border-purple-200'
+          }`}>
+            <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+              Search results will appear here
+            </h3>
+            <p className={isDarkMode ? 'text-purple-300' : 'text-purple-600'}>
+              Select search criteria to view staff members
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default StaffFormDesign;

@@ -177,6 +177,19 @@ export default function AdminSnapshot() {
   const [ndaAgreement, setNdaAgreement] = useState('');
   const [interviewGrade, setInterviewGrade] = useState('');
   
+  // Staff Search form state
+  const [searchArea, setSearchArea] = useState('');
+  const [searchMagnify, setSearchMagnify] = useState('');
+  const [searchRating, setSearchRating] = useState('');
+  const [searchPerformance, setSearchPerformance] = useState('');
+  const [searchWithCompany, setSearchWithCompany] = useState('');
+  const [searchCompensation, setSearchCompensation] = useState('');
+  const [searchEarnings, setSearchEarnings] = useState('');
+  const [searchBonus, setSearchBonus] = useState('');
+  const [searchLicenseCount, setSearchLicenseCount] = useState('');
+  const [searchLoanVolume, setSearchLoanVolume] = useState('');
+  const [searchFundingVolume, setSearchFundingVolume] = useState('');
+
   const [isRevenueFormMinimized, setIsRevenueFormMinimized] = useState(false);
   const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
   const [areChartsMinimized, setAreChartsMinimized] = useState(false);
@@ -896,6 +909,21 @@ export default function AdminSnapshot() {
     setNewRevenue({ ...newRevenue, revenue: formatted });
   };
 
+  const handleSearchCurrencyInput = (e: React.ChangeEvent<HTMLInputElement>, field: 'earnings' | 'bonus' | 'fundingVolume') => {
+    let value = e.target.value.replace(/[^0-9]/g, '');
+    if (value) {
+      const numValue = parseInt(value);
+      const formatted = numValue.toLocaleString('en-US');
+      if (field === 'earnings') setSearchEarnings(formatted);
+      else if (field === 'bonus') setSearchBonus(formatted);
+      else if (field === 'fundingVolume') setSearchFundingVolume(formatted);
+    } else {
+      if (field === 'earnings') setSearchEarnings('');
+      else if (field === 'bonus') setSearchBonus('');
+      else if (field === 'fundingVolume') setSearchFundingVolume('');
+    }
+  };
+
   const handleTransactionDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: 'fromDate' | 'toDate') => {
     let value = e.target.value.replace(/\D/g, '');
     if (value.length >= 2) {
@@ -1431,6 +1459,263 @@ export default function AdminSnapshot() {
             onShowStaffWarning={() => setShowStaffWarning(true)}
           />
         </div>
+
+        {/* Staff Search Card - Only shown when Staff category is selected */}
+        {categoryFilter === 'staff' && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-indigo-500/20 border border-indigo-500/30">
+                  <User className="w-5 h-5 text-indigo-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Search</h2>
+              </div>
+              <button 
+                onClick={() => {
+                  // TODO: Handle staff search
+                  console.log('Search Staff clicked');
+                }}
+                className="px-4 py-2 rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:shadow-purple-500/50"
+                data-testid="button-search-staff"
+              >
+                Search Staff
+              </button>
+            </div>
+
+            {/* Row 1: Area, Magnify, Rating, Performance */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">
+                  Area
+                </label>
+                <select
+                  value={searchArea}
+                  onChange={(e) => setSearchArea(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  data-testid="select-search-area"
+                >
+                  <option value="">Select</option>
+                  <option value="company">Company</option>
+                  <option value="region">Region</option>
+                  <option value="district">District</option>
+                  <option value="state">State</option>
+                  <option value="city">City</option>
+                  <option value="location">Location</option>
+                  <option value="partner">Partner</option>
+                  <option value="branch">Branch</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">
+                  Magnify
+                </label>
+                <select
+                  value={searchMagnify}
+                  onChange={(e) => setSearchMagnify(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  data-testid="select-search-magnify"
+                >
+                  <option value="">Select</option>
+                  <option value="team">Team</option>
+                  <option value="mlo">MLO</option>
+                  <option value="processor">Processor</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">
+                  Rating
+                </label>
+                <select
+                  value={searchRating}
+                  onChange={(e) => setSearchRating(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  data-testid="select-search-rating"
+                >
+                  <option value="">Select</option>
+                  <option value="review">Review</option>
+                  <option value="attendance">Attendance</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">
+                  Performance
+                </label>
+                <select
+                  value={searchPerformance}
+                  onChange={(e) => setSearchPerformance(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  data-testid="select-search-performance"
+                >
+                  <option value="">Select</option>
+                  <option value="plus50">50% +</option>
+                  <option value="plus40">40% +</option>
+                  <option value="plus30">30% +</option>
+                  <option value="plus20">20% +</option>
+                  <option value="plus10">10% +</option>
+                  <option value="minus10">-10%</option>
+                  <option value="minus20">-20%</option>
+                  <option value="minus30">-30%</option>
+                  <option value="minus40">-40%</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Row 2: With Company, Compensation, Earnings, Bonus */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">
+                  With Company
+                </label>
+                <select
+                  value={searchWithCompany}
+                  onChange={(e) => setSearchWithCompany(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  data-testid="select-search-with-company"
+                >
+                  <option value="">Select</option>
+                  <option value="lt1">Less than 1 year</option>
+                  <option value="1plus">1 year +</option>
+                  <option value="2plus">2 years +</option>
+                  <option value="4plus">4 years +</option>
+                  <option value="5plus">5 years +</option>
+                  <option value="7plus">7 years +</option>
+                  <option value="8plus">8 years +</option>
+                  <option value="10plus">10 years +</option>
+                  <option value="15plus">15 years +</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">
+                  Compensation
+                </label>
+                <select
+                  value={searchCompensation}
+                  onChange={(e) => setSearchCompensation(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  data-testid="select-search-compensation"
+                >
+                  <option value="">Select</option>
+                  <option value="w2">W2</option>
+                  <option value="1099">1099</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">
+                  Earnings
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    $
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="0"
+                    value={searchEarnings}
+                    onChange={(e) => handleSearchCurrencyInput(e, 'earnings')}
+                    className="w-full pl-8 pr-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                    data-testid="input-search-earnings"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">
+                  Bonus
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    $
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="0"
+                    value={searchBonus}
+                    onChange={(e) => handleSearchCurrencyInput(e, 'bonus')}
+                    className="w-full pl-8 pr-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                    data-testid="input-search-bonus"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Row 3: License Count, Loan Volume, Funding Volume, Clear Filters */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">
+                  License Count
+                </label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={searchLicenseCount}
+                  onChange={(e) => setSearchLicenseCount(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                  data-testid="input-search-license-count"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">
+                  Loan Volume
+                </label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={searchLoanVolume}
+                  onChange={(e) => setSearchLoanVolume(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                  data-testid="input-search-loan-volume"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">
+                  Funding Volume
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    $
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="0"
+                    value={searchFundingVolume}
+                    onChange={(e) => handleSearchCurrencyInput(e, 'fundingVolume')}
+                    className="w-full pl-8 pr-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                    data-testid="input-search-funding-volume"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-end">
+                <button 
+                  onClick={() => {
+                    setSearchArea('');
+                    setSearchMagnify('');
+                    setSearchRating('');
+                    setSearchPerformance('');
+                    setSearchWithCompany('');
+                    setSearchCompensation('');
+                    setSearchEarnings('');
+                    setSearchBonus('');
+                    setSearchLicenseCount('');
+                    setSearchLoanVolume('');
+                    setSearchFundingVolume('');
+                  }}
+                  className="w-full px-4 py-2.5 rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
+                  data-testid="button-clear-search-filters"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Staff Form Cards - Only shown when Staff category is selected and Add Entry is clicked */}
         {categoryFilter === 'staff' && showStaffForm && (
