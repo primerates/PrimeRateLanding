@@ -1,9 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
 import PropertyHeader from '../components/PropertyHeader';
 import PropertyManagement from '../components/PropertyManagement';
+import PropertyForm from '../components/PropertyForm';
+import DeleteConfirmationDialog from '../dialogs/DeleteConfirmationDialog';
 
 interface PropertyTabProps {
   showPropertyAnimation?: boolean;
@@ -24,6 +25,11 @@ const PropertyTab = ({
 }: PropertyTabProps) => {
     const form = useFormContext<InsertClient>();
     const [propertyCardStates, setPropertyCardStates] = useState<Record<string, boolean>>({});
+    const [deletePropertyDialog, setDeletePropertyDialog] = useState<{
+        isOpen: boolean;
+        propertyIndex?: number;
+        propertyTitle?: string;
+    }>({ isOpen: false });
 
     // Check if a property type exists in form data
     const hasPropertyType = (type: 'primary' | 'second-home' | 'investment' | 'home-purchase'): boolean => {
@@ -34,27 +40,50 @@ const PropertyTab = ({
     // Handle property type checkbox changes
     const handlePropertyTypeChange = (checked: boolean, type: 'primary' | 'second-home' | 'investment' | 'home-purchase') => {
         if (!checked) {
-            // Prevent unchecking if cards already exist for that type
-            if (type === 'primary' && primaryResidenceCards.length > 0) return;
-            if (type === 'second-home' && secondHomeCards.length > 0) return;  
-            if (type === 'investment' && investmentCards.length > 0) return;
-            if (type === 'home-purchase' && hasPropertyType('home-purchase')) return;
-            
-            // Remove properties of this type from form data
-            const currentProperties = form.watch('property.properties') || [];
-            const filteredProperties = currentProperties.filter(p => p.use !== type);
-            form.setValue('property.properties', filteredProperties);
+            // Prevent unchecking - checkboxes can only be unchecked by removing properties via the remove button
+            return;
         } else {
-            // Add a new property of this type
+            // Add a new property of this type only if it doesn't already exist
             const currentProperties = form.watch('property.properties') || [];
-            const newProperty = {
-                id: `property-${type}-${Date.now()}`,
-                use: type,
-                propertyType: '',
-                isSubject: false
-            };
-            form.setValue('property.properties', [...currentProperties, newProperty]);
+            const hasExistingProperty = currentProperties.some(p => p.use === type);
+            
+            if (!hasExistingProperty) {
+                const newProperty = {
+                    id: `property-${type}-${Date.now()}`,
+                    use: type,
+                    propertyType: '',
+                    isSubject: false
+                };
+                form.setValue('property.properties', [...currentProperties, newProperty]);
+            }
         }
+    };
+
+    // Handle property deletion with confirmation
+    const handleDeleteProperty = (index: number, propertyTitle: string) => {
+        setDeletePropertyDialog({
+            isOpen: true,
+            propertyIndex: index,
+            propertyTitle
+        });
+    };
+
+    const confirmDeleteProperty = () => {
+        if (deletePropertyDialog.propertyIndex !== undefined) {
+            const currentProperties = form.watch('property.properties') || [];
+            const filteredProperties = currentProperties.filter((_, i) => i !== deletePropertyDialog.propertyIndex);
+            form.setValue('property.properties', filteredProperties);
+            
+            // Also remove from card states
+            const propertyId = currentProperties[deletePropertyDialog.propertyIndex]?.id || 
+                              `property-${currentProperties[deletePropertyDialog.propertyIndex]?.use}-${deletePropertyDialog.propertyIndex}`;
+            setPropertyCardStates(prev => {
+                const newState = { ...prev };
+                delete newState[propertyId];
+                return newState;
+            });
+        }
+        setDeletePropertyDialog({ isOpen: false });
     };
 
     return (
@@ -76,14 +105,67 @@ const PropertyTab = ({
                 investmentCards={investmentCards}
             />
             
-            <Card>
-                <CardHeader>
-                    <CardTitle>Property Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-muted-foreground">Additional property functionality will be implemented here.</p>
-                </CardContent>
-            </Card>
+            {/* Property Forms - Show when property types are selected */}
+            {(() => {
+                const currentProperties = form.watch('property.properties') || [];
+                
+                // Sort properties to put Home Purchase first, then Primary, Second Home, Investment
+                const sortedProperties = [...currentProperties].sort((a, b) => {
+                    const order = { 'home-purchase': 0, 'primary': 1, 'second-home': 2, 'investment': 3 };
+                    return (order[a.use] ?? 4) - (order[b.use] ?? 4);
+                });
+                
+                return sortedProperties.map((property, index) => {
+                    // Find the original index in currentProperties for proper field paths
+                    const originalIndex = currentProperties.findIndex(p => p.id === property.id || 
+                        (p.use === property.use && JSON.stringify(p) === JSON.stringify(property)));
+                    
+                    const propertyId = property.id || `property-${property.use}-${index}`;
+                    const isOpen = propertyCardStates[propertyId] ?? false;
+                    
+                    return (
+                        <PropertyForm
+                            key={propertyId}
+                            propertyId={propertyId}
+                            propertyIndex={originalIndex}
+                            isOpen={isOpen}
+                            onOpenChange={(open) => {
+                                setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }));
+                            }}
+                            onDeleteProperty={() => {
+                                const propertyTitle = property.use === 'primary' ? 'Primary Residence' : 
+                                                    `${property.use ? property.use.charAt(0).toUpperCase() + property.use.slice(1).replace('-', ' ') : 'Unknown'}`;
+                                handleDeleteProperty(originalIndex, propertyTitle);
+                            }}
+                            showAnimation={showPropertyAnimation}
+                            getValueComparisonColor={() => ({ shadowColor: 'none' as const })}
+                            openValuationDialog={() => {}}
+                            handleValuationHover={() => {}}
+                            handleValuationHoverLeave={() => {}}
+                            openValuationSummary={() => {}}
+                            additionalLoans={[]}
+                            getDyn={() => undefined}
+                            setIsCurrentLoanPreviewOpen={() => {}}
+                            setIsCurrentSecondLoanPreviewOpen={() => {}}
+                            setIsCurrentThirdLoanPreviewOpen={() => {}}
+                            title={property.use === 'primary' ? 'Primary Residence' : 
+                                `${property.use ? property.use.charAt(0).toUpperCase() + property.use.slice(1).replace('-', ' ') : 'Unknown'}`}
+                        />
+                    );
+                });
+            })()}
+            
+            <DeleteConfirmationDialog
+                isOpen={deletePropertyDialog.isOpen}
+                onClose={() => setDeletePropertyDialog({ isOpen: false })}
+                onConfirm={confirmDeleteProperty}
+                title="Remove Property"
+                description={`Are you sure you want to remove the ${deletePropertyDialog.propertyTitle} property? This action cannot be undone and will remove all associated property information.`}
+                confirmButtonText="Remove"
+                testId="dialog-delete-property"
+                confirmButtonTestId="button-confirm-delete-property"
+                cancelButtonTestId="button-cancel-delete-property"
+            />
         </div>
     );
 };
