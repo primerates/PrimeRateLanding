@@ -2562,7 +2562,7 @@ export default function AdminSnapshot() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-purple-300">
-                    Interview Grade
+                    Source
                   </label>
                   <select 
                     value={interviewGrade}
@@ -2570,10 +2570,10 @@ export default function AdminSnapshot() {
                     className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
                   >
                     <option value="">Select</option>
-                    <option value="pending">Pending</option>
-                    <option value="cleared">Cleared</option>
-                    <option value="failed">Failed</option>
-                    <option value="na">Not Applicable</option>
+                    <option value="referral">Referral</option>
+                    <option value="return">Return</option>
+                    <option value="recruiter">Recruiter</option>
+                    <option value="indeed">Indeed</option>
                   </select>
                 </div>
               </div>

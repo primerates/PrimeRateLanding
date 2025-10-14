@@ -74,6 +74,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
       - Supports PDF, JPG, PNG uploads, camera capture (max 5MB)
       - Same attachment functionality as Expense/Revenue logs
       - Documents linked to temporary staff ID before form submission
+      - **Compliance Card Fields**: Background Check, Credit Review, Identification, Work Authorization, Drug Screening, Employment Agreement, Policy, NDA Agreement, Source (formerly Interview Grade - dropdown with options: Select, Referral, Return, Recruiter, Indeed)
     - **Visualizations**: Pie charts for Revenue Sources and Expense Breakdown with drill-down capabilities.
     - **Expense & Revenue Logging**: Add entry functionality with transaction tracking, date filtering, sortable tables, and an advanced Transaction Attachments System supporting PDF, JPG, PNG uploads, camera capture, and temporary ID management for attachments.
     - **Marketing Campaign Management**: Direct Mail Batch Creation with 17 required fields, US states selection, completion bar, CSV upload with fuzzy mapping, and batch management actions.
