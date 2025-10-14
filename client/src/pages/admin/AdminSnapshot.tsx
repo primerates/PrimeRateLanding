@@ -1854,6 +1854,54 @@ export default function AdminSnapshot() {
                   </select>
                 </div>
               </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => {
+                    // TODO: Handle staff submission
+                    console.log('Add Staff clicked');
+                  }}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold rounded-lg transition-all shadow-lg hover:shadow-purple-500/50"
+                  data-testid="button-add-staff"
+                >
+                  Add Staff
+                </button>
+                <button
+                  onClick={() => {
+                    setShowStaffForm(false);
+                    setIsFiltersMinimized(false);
+                    setAreChartsMinimized(false);
+                    // Clear form fields
+                    setStaffFirstName('');
+                    setStaffLastName('');
+                    setStaffPhone('');
+                    setStaffEmail('');
+                    setEmergencyContactName('');
+                    setEmergencyPhone('');
+                    setPayrollType('');
+                    setLevel('');
+                    setRole('');
+                    setAuthorization('');
+                    setAccess('');
+                    setSpecialAccess('');
+                    setStartDate('');
+                    setBackgroundCheck('');
+                    setCreditReview('');
+                    setIdentification('');
+                    setWorkAuthorization('');
+                    setDrugScreening('');
+                    setEmploymentAgreement('');
+                    setPolicy('');
+                    setNdaAgreement('');
+                    setInterviewGrade('');
+                  }}
+                  className="flex-1 px-6 py-3 bg-slate-700/50 hover:bg-slate-600/50 text-white font-semibold rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all"
+                  data-testid="button-cancel-staff"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </>
         )}
