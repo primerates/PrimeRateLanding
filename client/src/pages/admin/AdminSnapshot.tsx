@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { queryClient } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2, Camera, Phone, Mail, Briefcase, Calendar, Shield } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2, Camera, Phone, Mail, Briefcase, Calendar, Shield, Search } from 'lucide-react';
 import { RevenueSourcesChart } from '@/components/dashboard/RevenueSourcesChart';
 import { ExpenseBreakdownChart } from '@/components/dashboard/ExpenseBreakdownChart';
 import { DashboardFilters } from '@/components/dashboard/DashboardFilters';
@@ -2573,12 +2573,17 @@ export default function AdminSnapshot() {
           </>
         )}
 
-        {/* Query Card - Only shown when Direct Mail category is selected */}
+        {/* Search Card - Only shown when Direct Mail category is selected */}
         {categoryFilter === 'marketing' && teamFilter === 'direct-mail' && (
           <TooltipProvider>
             <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-white">Query</h3>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
+                    <Search className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Search</h3>
+                </div>
                 <TooltipComponent>
                   <TooltipTrigger asChild>
                     <button

@@ -134,9 +134,13 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
   - Time period filter (Today with auto date display, MTD, YTD, From Date, To Date, Compare) - positioned as third filter to the right of Team filter
 - **Header Buttons**: All header buttons (User Shortcut, Screenshare, Live indicator, Add Entry) reduced by 10% in size with adjusted font sizes (text-xs) for compact design
 - **Conditional Card Display**: 
-  - Query Card, Batch List, and Create Batch cards only appear when categoryFilter = 'marketing' AND teamFilter = 'direct-mail'
+  - Search Card (Direct Mail), Batch List, and Create Batch cards only appear when categoryFilter = 'marketing' AND teamFilter = 'direct-mail'
   - Staff forms appear when categoryFilter = 'staff'
   - Revenue/Expense forms appear when categoryFilter = 'financials'
+- **Search Card (Direct Mail)**: 
+  - Card title: "Search" with purple-themed search icon (magnify glass) to the left
+  - Icon styling: w-5 h-5 in rounded container with bg-purple-500/20 and border-purple-500/30
+  - Matches the icon theme and size of dashboard cards
 - **Search Card (Staff Page)**: 
   - Minimizable card with Plus/Minus button for expand/collapse (500ms smooth animation)
   - Auto-minimizes when "Add Entry" staff forms open
