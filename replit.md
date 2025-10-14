@@ -117,7 +117,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 **Architecture** (October 2025 Refactoring):
 - **Main Component**: AdminSnapshot.tsx (4,066 lines, reduced from 4,563)
 - **Extracted Components**:
-  - `DashboardFilters.tsx` - Entity, Category, and Team filter dropdowns with purple accent glassmorphism styling
+  - `DashboardFilters.tsx` - Time, Category, and Team filter dropdowns with purple accent glassmorphism styling (Time filter moved from header to first card)
   - `RevenueSourcesChart.tsx` - Pie chart with drill-down (Direct Mail state breakdown + loan programs)
   - `ExpenseBreakdownChart.tsx` - Pie chart for expense/geography data
 
@@ -125,9 +125,10 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Performance Card Interactive Title**: Filter icon next to card title serves as dropdown menu to change card title between: Company (default), Partner, Branch
 - **Real-time Financial Metrics**: Displays Gross Income, Revenue, and Expense with trend indicators
 - **Interactive Filters**: 
-  - Entity filter (Prime Rate, Branch, Partners) - defaults to Prime Rate
+  - Entity filter (Prime Rate, Branch, Partners) - positioned in header, defaults to Prime Rate
+  - Time period filter - positioned as first filter in Company/Performance card (Today with auto date display, MTD, YTD, From Date, To Date, Compare)
   - Category filter (Financials, Direct Mail, Lead Vendor, Social Media, Staff, Vendor)
-  - Time period filter with dropdown (Today with auto date display, MTD, YTD, From Date, To Date, Compare)
+  - Team filter (dynamically changes based on category selection)
 - **Revenue Sources Visualization**: Pie chart with detailed breakdown by source (Direct Mail, Lead Vendors, Social Media, Repeat Clients, Referrals)
 - **Expense Breakdown**: Pie chart categorizing expenses (Marketing, Staff, Vendors, Services, Supplies)
 - **Drill-down Capabilities**: Click on "Direct Mail" to view state-by-state breakdown and loan program distribution

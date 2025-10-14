@@ -8,6 +8,11 @@ interface DashboardFiltersProps {
   setCategoryFilter: (value: string) => void;
   teamFilter: string;
   setTeamFilter: (value: string) => void;
+  timeFilter: string;
+  setTimeFilter: (value: string) => void;
+  timeFilterFromDate: string;
+  handleTimeFilterDateInput: (e: React.ChangeEvent<HTMLInputElement>, field: 'from' | 'to') => void;
+  timeFilterToDate: string;
 }
 
 export function DashboardFilters({
@@ -16,49 +21,103 @@ export function DashboardFilters({
   categoryFilter,
   setCategoryFilter,
   teamFilter,
-  setTeamFilter
+  setTeamFilter,
+  timeFilter,
+  setTimeFilter,
+  timeFilterFromDate,
+  handleTimeFilterDateInput,
+  timeFilterToDate
 }: DashboardFiltersProps) {
   return (
     <div className="flex flex-wrap items-center gap-4 mb-6">
-      {/* Entity Filter Dropdown */}
+      {/* Time Filter Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all min-w-[140px] text-left flex items-center justify-between text-sm"
-            data-testid="select-entity-filter"
+            className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 hover:bg-purple-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all text-sm"
+            data-testid="button-time-filter"
           >
-            <span>
-              {entityFilter === 'prime-rate' && 'Prime Rate'}
-              {entityFilter === 'branch' && 'Branch'}
-              {entityFilter === 'partners' && 'Partners'}
+            <span className="text-purple-200">
+              {timeFilter === 'today' && new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
+              {timeFilter === 'mtd' && 'MTD'}
+              {timeFilter === 'ytd' && 'YTD'}
+              {timeFilter === 'fromDate' && 'From Date'}
+              {timeFilter === 'toDate' && 'To Date'}
+              {timeFilter === 'compare' && 'Compare'}
             </span>
-            <ChevronDown className="h-4 w-4 ml-2" />
+            <ChevronDown className="h-4 w-4 text-purple-300" />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-[140px] bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+        <DropdownMenuContent align="end" className="w-48 bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
           <DropdownMenuItem
-            onClick={() => setEntityFilter('prime-rate')}
+            onClick={() => setTimeFilter('today')}
             className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-            data-testid="option-entity-prime-rate"
+            data-testid="option-today"
           >
-            Prime Rate
+            Today ({new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })})
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => setEntityFilter('branch')}
+            onClick={() => setTimeFilter('mtd')}
             className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-            data-testid="option-entity-branch"
+            data-testid="option-mtd"
           >
-            Branch
+            MTD
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => setEntityFilter('partners')}
+            onClick={() => setTimeFilter('ytd')}
             className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-            data-testid="option-entity-partners"
+            data-testid="option-ytd"
           >
-            Partners
+            YTD
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setTimeFilter('fromDate')}
+            className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+            data-testid="option-from-date"
+          >
+            From Date
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setTimeFilter('toDate')}
+            className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+            data-testid="option-to-date"
+          >
+            To Date
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setTimeFilter('compare')}
+            className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+            data-testid="option-compare"
+          >
+            Compare
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* Date input fields for From Date and To Date */}
+      {timeFilter === 'fromDate' && (
+        <input
+          type="text"
+          placeholder="MM/DD/YYYY"
+          value={timeFilterFromDate}
+          onChange={(e) => handleTimeFilterDateInput(e, 'from')}
+          className="bg-slate-700/50 text-white px-3 py-1 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm w-32"
+          data-testid="input-time-filter-from-date"
+          maxLength={10}
+        />
+      )}
+      
+      {timeFilter === 'toDate' && (
+        <input
+          type="text"
+          placeholder="MM/DD/YYYY"
+          value={timeFilterToDate}
+          onChange={(e) => handleTimeFilterDateInput(e, 'to')}
+          className="bg-slate-700/50 text-white px-3 py-1 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm w-32"
+          data-testid="input-time-filter-to-date"
+          maxLength={10}
+        />
+      )}
       
       {/* Category Filter Dropdown */}
       <DropdownMenu>
