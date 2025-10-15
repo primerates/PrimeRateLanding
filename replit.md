@@ -70,7 +70,8 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - **Search Card System** (Financials):
       - **Manual Access**: Magnifying glass icon in Performance card opens category-specific search cards
       - **Conflict Prevention**: If expense/revenue log form is open, magnifying glass displays warning instead of opening search card
-      - **Expense Search Card** (Financials/Expense): Search icon, 12 fields across 3 rows
+      - **Expense Search Card** (Financials/Expense): Search icon, date filter dropdown, 12 fields across 3 rows
+        - **Date Filter Dropdown**: Today/MTD/YTD/Date Range selector positioned left of Clear Filters button; when Date Range selected, shows From Date and To Date inputs
         - Row 1: Log Date (date field), Transaction Date (date field), Clear Date (date field), Amount
         - Row 2: Invoice #, Check #, Payment Method, Payment Term
         - Row 3: Category, Area, Paid To, Payee
@@ -81,6 +82,8 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
         - **Flywheel Scrollbar**: Custom horizontal scrollbar with purple-to-pink gradient indicator matching Staff/Direct Mail implementation - draggable indicator syncs with table scroll, click-to-jump on track, instruction text "← Drag or click the scrollbar to navigate →"
         - **Search Filtering**: Transactions table automatically filters to show only matching records based on filled search parameters (exact match on all fields)
         - **Auto-Close Search**: When user clicks "Add Entry" while search card is open, search card automatically closes before opening expense log form
+        - **Direct Expense Entry**: When in Expense tab (Financials/Expense), clicking "Add Entry" directly opens Expense Log form (bypasses Add Entry modal)
+        - **Transactions Visibility**: Transactions card only appears when Search card has values and user clicks "Search Expense" button; starts hidden by default
       - **Revenue Search Card** (Financials/Revenue): DollarSign icon, 8 fields across 2 rows - Payment Date, Source, Amount, Reference #, Payment Method, Purpose, Term, Status
       - **Auto-Hide Logic**: Cards mutually exclusive - switching between Expense/Revenue auto-hides the other; both hide when Team ≠ Expense/Revenue
       - **Button Standardization**: Clear Filters (left) and Search buttons match at px-3.5 py-1.5 text-sm height

@@ -420,7 +420,7 @@ export default function AdminSnapshot() {
   const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
   const [areChartsMinimized, setAreChartsMinimized] = useState(false);
   const [isTransactionsMinimized, setIsTransactionsMinimized] = useState(false);
-  const [showTransactionsCard, setShowTransactionsCard] = useState(true);
+  const [showTransactionsCard, setShowTransactionsCard] = useState(false); // Only show when Search has values
   const [visibleTransactionColumns, setVisibleTransactionColumns] = useState<string[]>(['all']);
   const [isFiltersMinimized, setIsFiltersMinimized] = useState(false); // Always start expanded
   const [areStaffCardsMinimized, setAreStaffCardsMinimized] = useState(false);
@@ -1615,8 +1615,18 @@ export default function AdminSnapshot() {
             </div>
             <button 
               onClick={() => {
-                setShowAddModal(true);
-                setIsFiltersMinimized(true); // Minimize Dashboard card for cleaner data entry
+                // If in Expense tab, directly open Expense Log form
+                if (categoryFilter === 'financials' && teamFilter === 'expense-add') {
+                  setEntryType('expense');
+                  setShowExpenseForm(true);
+                  setIsExpenseTableMinimized(false); // Ensure form is expanded
+                  setAreChartsMinimized(true); // Minimize charts to reduce clutter
+                  setShowFinancialsSearch(false); // Close search card
+                  setIsFiltersMinimized(true); // Minimize Dashboard card for cleaner data entry
+                } else {
+                  setShowAddModal(true);
+                  setIsFiltersMinimized(true); // Minimize Dashboard card for cleaner data entry
+                }
               }}
               className="flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50"
               data-testid="button-add-entry"
@@ -3282,6 +3292,18 @@ export default function AdminSnapshot() {
                 <h2 className="text-xl font-bold text-white">Search</h2>
               </div>
               <div className="flex items-center gap-2">
+                {/* Date Filter Dropdown */}
+                <select 
+                  value={transactionDateFilter}
+                  onChange={(e) => setTransactionDateFilter(e.target.value)}
+                  className="bg-slate-700/50 text-purple-300 px-3 py-1.5 text-sm rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors cursor-pointer"
+                  data-testid="select-transaction-date-filter"
+                >
+                  <option value="today">Today</option>
+                  <option value="mtd">MTD</option>
+                  <option value="ytd">YTD</option>
+                  <option value="dateRange">Date Range</option>
+                </select>
                 <button 
                   onClick={() => {
                     setFinancialsSearchParams({
@@ -3301,6 +3323,7 @@ export default function AdminSnapshot() {
                       services: '',
                       role: ''
                     });
+                    setShowTransactionsCard(false); // Hide Transactions card when filters are cleared
                   }}
                   className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
                   data-testid="button-clear-filters-financials"
@@ -3358,6 +3381,36 @@ export default function AdminSnapshot() {
             
             {!isFinancialsSearchMinimized && (
               <div>
+                {/* Date Range Inputs - shown when Date Range is selected */}
+                {transactionDateFilter === 'dateRange' && (
+                  <div className="flex items-center gap-4 mb-4 pb-4 border-b border-purple-500/30">
+                    <div className="flex items-center gap-2">
+                      <label className="text-purple-300 text-sm">From Date:</label>
+                      <input
+                        type="text"
+                        placeholder="MM/DD/YYYY"
+                        value={transactionDateRange.fromDate}
+                        onChange={(e) => handleTransactionDateInput(e, 'fromDate')}
+                        className="bg-slate-700/50 text-white px-3 py-1.5 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm"
+                        data-testid="input-from-date"
+                        maxLength={10}
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label className="text-purple-300 text-sm">To Date:</label>
+                      <input
+                        type="text"
+                        placeholder="MM/DD/YYYY"
+                        value={transactionDateRange.toDate}
+                        onChange={(e) => handleTransactionDateInput(e, 'toDate')}
+                        className="bg-slate-700/50 text-white px-3 py-1.5 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm"
+                        data-testid="input-to-date"
+                        maxLength={10}
+                      />
+                    </div>
+                  </div>
+                )}
+                
                 {/* Row 1 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                   <div>
@@ -4699,56 +4752,9 @@ export default function AdminSnapshot() {
                 </button>
               </div>
             </div>
-
-            {/* Date Filter Dropdown */}
-            {!isTransactionsMinimized && (
-              <div className="mb-4">
-                <select 
-                  value={transactionDateFilter}
-                  onChange={(e) => setTransactionDateFilter(e.target.value)}
-                  className="bg-transparent text-purple-300 px-0 py-1 focus:outline-none border-none cursor-pointer"
-                  data-testid="select-transaction-date-filter"
-                >
-                  <option value="today">Today</option>
-                  <option value="mtd">MTD</option>
-                  <option value="ytd">YTD</option>
-                  <option value="dateRange">Date Range</option>
-                </select>
-
-                {/* Date Range Inputs */}
-                {transactionDateFilter === 'dateRange' && (
-                  <div className="flex items-center gap-4 mt-3">
-                    <div className="flex items-center gap-2">
-                      <label className="text-purple-300 text-sm">From Date:</label>
-                      <input
-                        type="text"
-                        placeholder="MM/DD/YYYY"
-                        value={transactionDateRange.fromDate}
-                        onChange={(e) => handleTransactionDateInput(e, 'fromDate')}
-                        className="bg-slate-700/50 text-white px-3 py-1 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm"
-                        data-testid="input-from-date"
-                        maxLength={10}
-                      />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <label className="text-purple-300 text-sm">To Date:</label>
-                      <input
-                        type="text"
-                        placeholder="MM/DD/YYYY"
-                        value={transactionDateRange.toDate}
-                        onChange={(e) => handleTransactionDateInput(e, 'toDate')}
-                        className="bg-slate-700/50 text-white px-3 py-1 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm"
-                        data-testid="input-to-date"
-                        maxLength={10}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
             
             {/* Separation line */}
-            <div className="border-t border-purple-500/30 mb-6"></div>
+            {!isTransactionsMinimized && <div className="border-t border-purple-500/30 my-6"></div>}
 
             {!isTransactionsMinimized && (
               <>
