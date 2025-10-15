@@ -1522,6 +1522,7 @@ export default function AdminSnapshot() {
                 onClick={() => {
                   // Open appropriate search card based on category
                   if (categoryFilter === 'marketing') {
+                    setShowQueryCard(true);
                     setIsQueryCardMinimized(false);
                   } else if (categoryFilter === 'staff') {
                     setIsSearchMinimized(false);
