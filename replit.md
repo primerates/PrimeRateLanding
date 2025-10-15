@@ -70,7 +70,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - **Search Card System** (Financials):
       - **Manual Access**: Magnifying glass icon in Performance card opens category-specific search cards
       - **Conflict Prevention**: If expense/revenue log form is open, magnifying glass displays warning instead of opening search card
-      - **Expense Search Card** (Financials/Expense): Search icon, 12 fields across 3 rows - Transaction Date, Amount, Payee, Category, Invoice #, Check #, Payment Method, Payment Term, Paid To, Clear Date (date field), Area, Paid To
+      - **Expense Search Card** (Financials/Expense): Search icon, 12 fields across 3 rows - Transaction Date, Amount, Payee, Category, Invoice #, Check #, Payment Method, Payment Term, Paid To, Clear Date (date field), Area, Log Date (date field)
       - **Revenue Search Card** (Financials/Revenue): DollarSign icon, 8 fields across 2 rows - Payment Date, Source, Amount, Reference #, Payment Method, Purpose, Term, Status
       - **Auto-Hide Logic**: Cards mutually exclusive - switching between Expense/Revenue auto-hides the other; both hide when Team ≠ Expense/Revenue
       - **Button Standardization**: Clear Filters (left) and Search buttons match at px-3.5 py-1.5 text-sm height
