@@ -99,6 +99,10 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
       - **Button Standardization**: Clear Filters (left) and Search buttons match at px-3.5 py-1.5 text-sm height
     - **Staff Card Auto-Minimize System**: When Staff category is selected with Team ≠ "Select" and user clicks Add Entry → Add Staff Member, the system automatically minimizes Performance card while closing all Search cards for optimal workflow focus
     - **Manual Search Card Access**: For both Staff and Marketing categories, Search cards do not auto-display when Team is selected - users must click the magnifying glass icon in the Performance card to open Search
+    - **Marketing Mutual Exclusivity** (Marketing/Direct Mail):
+      - **New Batch and Search Card**: Cannot be open simultaneously - only one can be visible at a time
+      - **Conflict Prevention**: When New Batch card is open and user clicks magnifying glass icon, displays warning: "Please complete or close the open new batch entry"
+      - **Auto-Close Logic**: When Search card is open and user clicks "Add Entry" → "Add New Batch", Search card automatically closes before New Batch card opens
     - **Marketing Batch List Flow**: When Marketing/Direct Mail is selected, Batch List only appears after user opens Search card and clicks "Search Batch" button
 
 ### Background Selector System
