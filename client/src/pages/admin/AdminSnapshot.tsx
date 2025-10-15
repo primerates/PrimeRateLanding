@@ -361,6 +361,7 @@ export default function AdminSnapshot() {
   const [isTransactionsMinimized, setIsTransactionsMinimized] = useState(false);
   const [isFiltersMinimized, setIsFiltersMinimized] = useState(false);
   const [areStaffCardsMinimized, setAreStaffCardsMinimized] = useState(false);
+  const [isStaffResultsMinimized, setIsStaffResultsMinimized] = useState(false);
   const [transactionDateFilter, setTransactionDateFilter] = useState('today');
   
   // Query card state variables (only shown when categoryFilter is 'marketing' and teamFilter is 'direct-mail')
@@ -1924,71 +1925,94 @@ export default function AdminSnapshot() {
               <h3 className="text-xl font-bold text-white">
                 Search Results ({sortedStaffData.length} staff members • {activeStaffColumns.length} columns)
               </h3>
-            </div>
-
-            {/* Custom Scrollbar Track */}
-            <div className="mb-4">
-              <div 
-                className="h-2 rounded-full overflow-hidden cursor-pointer bg-slate-700/50"
-                style={{ position: 'relative' }}
-                onClick={(e) => {
-                  const tableContainer = e.currentTarget.parentElement?.nextElementSibling as HTMLDivElement;
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const clickX = e.clientX - rect.left;
-                  const percentage = clickX / rect.width;
-                  tableContainer.scrollLeft = percentage * (tableContainer.scrollWidth - tableContainer.clientWidth);
-                }}
-              >
-                <div 
-                  id="scroll-indicator"
-                  className="h-full rounded-full transition-all bg-gradient-to-r from-purple-500 to-pink-500"
-                  style={{ width: '30%', cursor: 'grab' }}
-                  onMouseDown={(e) => {
-                    e.stopPropagation();
-                    const indicator = e.currentTarget;
-                    const track = indicator.parentElement as HTMLDivElement;
-                    const tableContainer = track.parentElement?.nextElementSibling as HTMLDivElement;
-                    
-                    indicator.style.cursor = 'grabbing';
-                    const startX = e.clientX;
-                    const startScrollLeft = tableContainer.scrollLeft;
-                    const trackWidth = track.offsetWidth;
-                    const scrollWidth = tableContainer.scrollWidth - tableContainer.clientWidth;
-                    
-                    const handleMouseMove = (e: MouseEvent) => {
-                      const deltaX = e.clientX - startX;
-                      const scrollDelta = (deltaX / trackWidth) * scrollWidth;
-                      tableContainer.scrollLeft = startScrollLeft + scrollDelta;
-                    };
-                    
-                    const handleMouseUp = () => {
-                      indicator.style.cursor = 'grab';
-                      document.removeEventListener('mousemove', handleMouseMove);
-                      document.removeEventListener('mouseup', handleMouseUp);
-                    };
-                    
-                    document.addEventListener('mousemove', handleMouseMove);
-                    document.addEventListener('mouseup', handleMouseUp);
-                  }}
-                />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsStaffResultsMinimized(!isStaffResultsMinimized)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title={isStaffResultsMinimized ? "Expand" : "Minimize"}
+                  data-testid="button-toggle-staff-results"
+                >
+                  {isStaffResultsMinimized ? (
+                    <Plus className="w-5 h-5 text-purple-300" />
+                  ) : (
+                    <Minus className="w-5 h-5 text-purple-300" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowSearchResults(false)}
+                  className="text-purple-300 hover:text-white transition-colors"
+                  data-testid="button-close-staff-results"
+                >
+                  <X className="w-6 h-6" />
+                </button>
               </div>
-              <p className="text-xs mt-1 text-slate-400">
-                ← Drag or click the scrollbar to navigate →
-              </p>
             </div>
 
-            <div 
-              className="overflow-x-auto scrollbar-custom"
-              onScroll={(e) => {
-                const scrollPercentage = e.currentTarget.scrollLeft / (e.currentTarget.scrollWidth - e.currentTarget.clientWidth);
-                const indicator = document.getElementById('scroll-indicator');
-                if (indicator) {
-                  const thumbWidth = (e.currentTarget.clientWidth / e.currentTarget.scrollWidth) * 100;
-                  indicator.style.width = `${Math.max(thumbWidth, 10)}%`;
-                  indicator.style.transform = `translateX(${scrollPercentage * (100 / thumbWidth - 1)}%)`;
-                }
-              }}
-            >
+            {!isStaffResultsMinimized && (
+              <>
+                {/* Custom Scrollbar Track */}
+                <div className="mb-4">
+                  <div 
+                    className="h-2 rounded-full overflow-hidden cursor-pointer bg-slate-700/50"
+                    style={{ position: 'relative' }}
+                    onClick={(e) => {
+                      const tableContainer = e.currentTarget.parentElement?.nextElementSibling as HTMLDivElement;
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const clickX = e.clientX - rect.left;
+                      const percentage = clickX / rect.width;
+                      tableContainer.scrollLeft = percentage * (tableContainer.scrollWidth - tableContainer.clientWidth);
+                    }}
+                  >
+                    <div 
+                      id="scroll-indicator"
+                      className="h-full rounded-full transition-all bg-gradient-to-r from-purple-500 to-pink-500"
+                      style={{ width: '30%', cursor: 'grab' }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        const indicator = e.currentTarget;
+                        const track = indicator.parentElement as HTMLDivElement;
+                        const tableContainer = track.parentElement?.nextElementSibling as HTMLDivElement;
+                        
+                        indicator.style.cursor = 'grabbing';
+                        const startX = e.clientX;
+                        const startScrollLeft = tableContainer.scrollLeft;
+                        const trackWidth = track.offsetWidth;
+                        const scrollWidth = tableContainer.scrollWidth - tableContainer.clientWidth;
+                        
+                        const handleMouseMove = (e: MouseEvent) => {
+                          const deltaX = e.clientX - startX;
+                          const scrollDelta = (deltaX / trackWidth) * scrollWidth;
+                          tableContainer.scrollLeft = startScrollLeft + scrollDelta;
+                        };
+                        
+                        const handleMouseUp = () => {
+                          indicator.style.cursor = 'grab';
+                          document.removeEventListener('mousemove', handleMouseMove);
+                          document.removeEventListener('mouseup', handleMouseUp);
+                        };
+                        
+                        document.addEventListener('mousemove', handleMouseMove);
+                        document.addEventListener('mouseup', handleMouseUp);
+                      }}
+                    />
+                  </div>
+                  <p className="text-xs mt-1 text-slate-400">
+                    ← Drag or click the scrollbar to navigate →
+                  </p>
+                </div>
+
+                <div 
+                  className="overflow-x-auto scrollbar-custom"
+                  onScroll={(e) => {
+                    const scrollPercentage = e.currentTarget.scrollLeft / (e.currentTarget.scrollWidth - e.currentTarget.clientWidth);
+                    const indicator = document.getElementById('scroll-indicator');
+                    if (indicator) {
+                      const thumbWidth = (e.currentTarget.clientWidth / e.currentTarget.scrollWidth) * 100;
+                      indicator.style.width = `${Math.max(thumbWidth, 10)}%`;
+                      indicator.style.transform = `translateX(${scrollPercentage * (100 / thumbWidth - 1)}%)`;
+                    }
+                  }}
+                >
               <table className="w-full min-w-max">
                 <thead>
                   <tr className="border-b border-purple-500/30">
@@ -2100,7 +2124,9 @@ export default function AdminSnapshot() {
                   ))}
                 </tbody>
               </table>
-            </div>
+                </div>
+              </>
+            )}
           </div>
         )}
 

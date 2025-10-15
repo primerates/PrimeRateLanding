@@ -74,6 +74,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
       - Column Title Sync: If Search Card field labels change, table column headers automatically update to match
       - Attachment Management: Paperclip column shows document count for each staff entry, clickable to manage attachments
       - Actions Menu: 3-dot menu (MoreVertical) in "Actions" column provides options to attach documents, edit, or delete staff entries
+      - Header Controls: Minimize button (Plus/Minus icon) to collapse/expand table content, X close button to hide results table
       - Custom Interactive Scrollbar: Purple/pink gradient indicator with click-to-jump and drag-to-scroll functionality
       - Features: Draggable scrollbar indicator, click track to jump to position, auto-sizing based on content width
       - Cursor states: grab/grabbing for better UX
