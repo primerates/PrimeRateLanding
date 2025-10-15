@@ -5165,7 +5165,7 @@ export default function AdminSnapshot() {
                   </select>
                 </div>
 
-                {/* Second Row: Revenue Term, Payment From, Payment Form, Amount */}
+                {/* Second Row: Revenue Term, Payment From, Payment Method, Amount */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                   <select
                     value={newRevenue.revenueTerm}
@@ -5193,7 +5193,7 @@ export default function AdminSnapshot() {
                     className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
                     data-testid="select-payment-form"
                   >
-                    <option value="" disabled>Payment Form</option>
+                    <option value="" disabled>Payment Method</option>
                     <option value="Select">Select</option>
                     <option value="TBD">TBD</option>
                   </select>
@@ -5348,10 +5348,10 @@ export default function AdminSnapshot() {
                       <th 
                         className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                         onClick={() => handleSort('paymentForm')}
-                        data-testid="header-payment-form"
+                        data-testid="header-payment-method"
                       >
                         <div className="flex items-center gap-1">
-                          Payment Form
+                          Payment Method
                           <ArrowUpDown className="w-4 h-4" />
                         </div>
                       </th>
