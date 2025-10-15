@@ -78,6 +78,12 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
       - Custom Interactive Scrollbar: Purple/pink gradient indicator with click-to-jump and drag-to-scroll functionality
       - Features: Draggable scrollbar indicator, click track to jump to position, auto-sizing based on content width
       - Cursor states: grab/grabbing for better UX
+    - **Staff Category Cards**:
+      - **Team Dropdown**: First option is "Select" (default when Staff category is selected)
+      - **Prime Rate Card**: Always shown when Staff category is selected; minimized when Team = "Select", expanded when Team changes to any other value
+      - **Pipeline Card**: Only shown when Team is NOT "Select"; displays active loans, pending items, and monthly volume metrics
+      - **Access Card**: Only shown when Team is NOT "Select"; displays system access and permission levels
+      - Card visibility logic: When Team = "Select" → show only minimized Prime Rate card; When Team = any other option → show expanded Prime Rate, Pipeline, and Access cards
     - **Staff Form Card**:
       - PDF Attachment System: Paperclip icon next to minimize button for managing staff documents
       - Displays document count (clickable to open attachment dialog)

@@ -70,7 +70,7 @@ export function DashboardFilters({
           <DropdownMenuItem
             onClick={() => {
               setCategoryFilter('staff');
-              setTeamFilter('team');
+              setTeamFilter('select');
             }}
             className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
             data-testid="option-category-staff"
@@ -179,6 +179,13 @@ export function DashboardFilters({
           )}
           {categoryFilter === 'staff' && (
             <>
+              <DropdownMenuItem
+                onClick={() => setTeamFilter('select')}
+                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                data-testid="option-team-select"
+              >
+                Select
+              </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setTeamFilter('team')}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"

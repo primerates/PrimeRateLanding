@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { queryClient } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2, Camera, Phone, Mail, Briefcase, Calendar, Shield, Search } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Users, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2, Camera, Phone, Mail, Briefcase, Calendar, Shield, Search } from 'lucide-react';
 import { RevenueSourcesChart } from '@/components/dashboard/RevenueSourcesChart';
 import { ExpenseBreakdownChart } from '@/components/dashboard/ExpenseBreakdownChart';
 import { DashboardFilters } from '@/components/dashboard/DashboardFilters';
@@ -424,8 +424,20 @@ export default function AdminSnapshot() {
   const [areStaffCardsMinimized, setAreStaffCardsMinimized] = useState(false);
   const [isStaffResultsMinimized, setIsStaffResultsMinimized] = useState(false);
   const [isBatchListMinimized, setIsBatchListMinimized] = useState(false);
+  const [isPrimeRateMinimized, setIsPrimeRateMinimized] = useState(true); // Minimized when Team = "Select"
   const [showBatchList, setShowBatchList] = useState(true);
   const [transactionDateFilter, setTransactionDateFilter] = useState('today');
+  
+  // Auto-minimize/expand Prime Rate card based on Team selection in Staff category
+  useEffect(() => {
+    if (categoryFilter === 'staff') {
+      if (teamFilter === 'select') {
+        setIsPrimeRateMinimized(true);
+      } else {
+        setIsPrimeRateMinimized(false);
+      }
+    }
+  }, [teamFilter, categoryFilter]);
   
   // Query card state variables (only shown when categoryFilter is 'marketing' and teamFilter is 'direct-mail')
   const [isQueryCardMinimized, setIsQueryCardMinimized] = useState(false);
@@ -2169,6 +2181,106 @@ export default function AdminSnapshot() {
                 </div>
               </>
             )}
+          </div>
+        )}
+
+        {/* Prime Rate Card - Always shown when Staff category is selected */}
+        {categoryFilter === 'staff' && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-blue-500/20 border border-blue-500/30">
+                  <TrendingUp className="w-5 h-5 text-blue-400" />
+                </div>
+                <h2 className="text-xl font-bold text-white">Prime Rate</h2>
+              </div>
+              <button
+                onClick={() => setIsPrimeRateMinimized(!isPrimeRateMinimized)}
+                className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                title={isPrimeRateMinimized ? "Expand" : "Minimize"}
+                data-testid="button-toggle-prime-rate"
+              >
+                {isPrimeRateMinimized ? (
+                  <Plus className="w-5 h-5 text-purple-300" />
+                ) : (
+                  <Minus className="w-5 h-5 text-purple-300" />
+                )}
+              </button>
+            </div>
+
+            {!isPrimeRateMinimized && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                    <p className="text-purple-300 text-sm mb-1">Current Rate</p>
+                    <p className="text-2xl font-bold text-white">6.875%</p>
+                  </div>
+                  <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                    <p className="text-purple-300 text-sm mb-1">30-Yr Fixed</p>
+                    <p className="text-2xl font-bold text-white">7.125%</p>
+                  </div>
+                  <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                    <p className="text-purple-300 text-sm mb-1">15-Yr Fixed</p>
+                    <p className="text-2xl font-bold text-white">6.625%</p>
+                  </div>
+                </div>
+                <p className="text-purple-300 text-sm">Prime rate information and current mortgage rates</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Pipeline Card - Only shown when Team is not "Select" */}
+        {categoryFilter === 'staff' && teamFilter !== 'select' && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 rounded-lg bg-green-500/20 border border-green-500/30">
+                <Users className="w-5 h-5 text-green-400" />
+              </div>
+              <h2 className="text-xl font-bold text-white">Pipeline</h2>
+            </div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                  <p className="text-purple-300 text-sm mb-1">Active Loans</p>
+                  <p className="text-2xl font-bold text-white">24</p>
+                </div>
+                <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                  <p className="text-purple-300 text-sm mb-1">Pending</p>
+                  <p className="text-2xl font-bold text-white">12</p>
+                </div>
+                <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                  <p className="text-purple-300 text-sm mb-1">This Month</p>
+                  <p className="text-2xl font-bold text-white">$2.4M</p>
+                </div>
+              </div>
+              <p className="text-purple-300 text-sm">Staff pipeline and loan volume metrics</p>
+            </div>
+          </div>
+        )}
+
+        {/* Access Card - Only shown when Team is not "Select" */}
+        {categoryFilter === 'staff' && teamFilter !== 'select' && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
+                <Shield className="w-5 h-5 text-purple-400" />
+              </div>
+              <h2 className="text-xl font-bold text-white">Access</h2>
+            </div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                  <p className="text-purple-300 text-sm mb-1">System Access</p>
+                  <p className="text-lg font-semibold text-white">Full Access</p>
+                </div>
+                <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                  <p className="text-purple-300 text-sm mb-1">Permissions</p>
+                  <p className="text-lg font-semibold text-white">Admin Level</p>
+                </div>
+              </div>
+              <p className="text-purple-300 text-sm">Staff access permissions and authorization levels</p>
+            </div>
           </div>
         )}
 
