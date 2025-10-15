@@ -61,6 +61,12 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - **Key Features**: Interactive filters, real-time financial metrics, conditional card displays, customizable search cards with dynamic column systems for results tables.
     - **Design**: Purple-to-pink gradient scrollbars, themed icons, consistent dropdown styling across all admin features.
     - **Functionality**: Transaction Attachments System for expenses/revenue, PDF attachment system for staff and batches.
+    - **Search Card System**:
+      - **Manual Access**: Magnifying glass icon in Performance card opens category-specific search cards
+      - **Expense Search Card** (Financials/Expense): Search icon, 12 fields across 3 rows - Date, Amount, Payee, Payment For, Invoice #, Check #, Payment Method, Payment Term, Vendor, Services, Area, Role
+      - **Revenue Search Card** (Financials/Revenue): DollarSign icon, 8 fields across 2 rows - Payment Date, Source, Amount, Reference #, Payment Method, Purpose, Term, Status
+      - **Auto-Hide Logic**: Cards mutually exclusive - switching between Expense/Revenue auto-hides the other; both hide when Team ≠ Expense/Revenue
+      - **Button Standardization**: Clear Filters (left) and Search buttons match at px-3.5 py-1.5 text-sm height
 
 ### Background Selector System
 Allows customization of dashboard and login page backgrounds with various presets, supporting mode toggling, visual previews, and persistence.

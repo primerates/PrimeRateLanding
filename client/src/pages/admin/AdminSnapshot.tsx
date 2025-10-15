@@ -466,11 +466,17 @@ export default function AdminSnapshot() {
     // Financials Search card logic - only show when Team is "Expense", hide otherwise
     if (categoryFilter === 'financials') {
       if (teamFilter === 'expense-add') {
-        // Keep search card visible only when Expense is selected
-        // User can manually open it via magnifying glass when Expense is selected
-      } else {
-        // Hide Search card when Team is not "Expense"
+        // Keep expense search card visible only when Expense is selected
+        // Hide revenue search when switching to expense
+        setShowRevenueSearch(false);
+      } else if (teamFilter === 'revenue-add') {
+        // Keep revenue search card visible only when Revenue is selected
+        // Hide expense search when switching to revenue
         setShowFinancialsSearch(false);
+      } else {
+        // Hide both search cards when Team is not "Expense" or "Revenue"
+        setShowFinancialsSearch(false);
+        setShowRevenueSearch(false);
       }
     }
   }, [teamFilter, categoryFilter]);
@@ -486,7 +492,7 @@ export default function AdminSnapshot() {
   const [showFormConflictWarning, setShowFormConflictWarning] = useState(false);
   const [conflictFormType, setConflictFormType] = useState<'expense' | 'revenue'>('expense');
   
-  // Financials search card state
+  // Financials search card state (Expense)
   const [showFinancialsSearch, setShowFinancialsSearch] = useState(false);
   const [isFinancialsSearchMinimized, setIsFinancialsSearchMinimized] = useState(false);
   const [financialsSearchParams, setFinancialsSearchParams] = useState({
@@ -502,6 +508,20 @@ export default function AdminSnapshot() {
     services: '',
     area: '',
     role: ''
+  });
+  
+  // Revenue search card state
+  const [showRevenueSearch, setShowRevenueSearch] = useState(false);
+  const [isRevenueSearchMinimized, setIsRevenueSearchMinimized] = useState(false);
+  const [revenueSearchParams, setRevenueSearchParams] = useState({
+    paymentDate: '',
+    source: '',
+    amount: '',
+    referenceNum: '',
+    paymentMethod: '',
+    purpose: '',
+    term: '',
+    status: ''
   });
   
   // Batch List sorting state
@@ -1599,6 +1619,9 @@ export default function AdminSnapshot() {
                   } else if (categoryFilter === 'financials' && teamFilter === 'expense-add') {
                     setShowFinancialsSearch(true);
                     setIsFinancialsSearchMinimized(false);
+                  } else if (categoryFilter === 'financials' && teamFilter === 'revenue-add') {
+                    setShowRevenueSearch(true);
+                    setIsRevenueSearchMinimized(false);
                   }
                 }}
                 className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
@@ -3480,6 +3503,214 @@ export default function AdminSnapshot() {
                     >
                       <option value="">Select</option>
                       <option value="tbd">TBD</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Revenue Search Card - Only shown when Financials category with Revenue team is selected and showRevenueSearch is true */}
+        {categoryFilter === 'financials' && teamFilter === 'revenue-add' && showRevenueSearch && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
+                  <DollarSign className="w-5 h-5 text-purple-400" />
+                </div>
+                <h2 className="text-xl font-bold text-white">Search</h2>
+              </div>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => {
+                    setRevenueSearchParams({
+                      paymentDate: '',
+                      source: '',
+                      amount: '',
+                      referenceNum: '',
+                      paymentMethod: '',
+                      purpose: '',
+                      term: '',
+                      status: ''
+                    });
+                  }}
+                  className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
+                  data-testid="button-clear-filters-revenue"
+                >
+                  Clear Filters
+                </button>
+                <button 
+                  onClick={() => {
+                    console.log('Search Revenue clicked');
+                  }}
+                  className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:shadow-purple-500/50"
+                  data-testid="button-search-revenue"
+                >
+                  Search Revenue
+                </button>
+                <button
+                  onClick={() => setIsRevenueSearchMinimized(!isRevenueSearchMinimized)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title={isRevenueSearchMinimized ? "Expand" : "Minimize"}
+                  data-testid="button-toggle-revenue-search"
+                >
+                  {isRevenueSearchMinimized ? (
+                    <Plus className="w-5 h-5 text-purple-300" />
+                  ) : (
+                    <Minus className="w-5 h-5 text-purple-300" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowRevenueSearch(false)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title="Close Search"
+                  data-testid="button-close-search-revenue"
+                >
+                  <X className="w-5 h-5 text-purple-300" />
+                </button>
+              </div>
+            </div>
+            
+            {!isRevenueSearchMinimized && (
+              <div>
+                {/* Row 1 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Payment Date</label>
+                    <input
+                      type="text"
+                      placeholder="MM/DD/YYYY"
+                      value={revenueSearchParams.paymentDate}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (value.length >= 2) {
+                          value = value.slice(0, 2) + '/' + value.slice(2);
+                        }
+                        if (value.length >= 5) {
+                          value = value.slice(0, 5) + '/' + value.slice(5);
+                        }
+                        if (value.length > 10) {
+                          value = value.slice(0, 10);
+                        }
+                        setRevenueSearchParams({ ...revenueSearchParams, paymentDate: value });
+                      }}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                      data-testid="input-revenue-payment-date"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Source</label>
+                    <select
+                      value={revenueSearchParams.source}
+                      onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, source: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-revenue-source"
+                    >
+                      <option value="">Select</option>
+                      <option value="tbd">TBD</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Amount</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">$</span>
+                      <input
+                        type="text"
+                        placeholder="0"
+                        value={revenueSearchParams.amount}
+                        onChange={(e) => {
+                          let value = e.target.value.replace(/[^0-9]/g, '');
+                          if (value) {
+                            value = parseInt(value).toLocaleString('en-US');
+                            setRevenueSearchParams({ ...revenueSearchParams, amount: value });
+                          } else {
+                            setRevenueSearchParams({ ...revenueSearchParams, amount: '' });
+                          }
+                        }}
+                        className="w-full pl-8 pr-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                        data-testid="input-revenue-amount"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Reference #</label>
+                    <input
+                      type="text"
+                      placeholder="Enter reference number"
+                      value={revenueSearchParams.referenceNum}
+                      onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, referenceNum: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                      data-testid="input-revenue-reference"
+                    />
+                  </div>
+                </div>
+
+                {/* Row 2 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Payment Method</label>
+                    <select
+                      value={revenueSearchParams.paymentMethod}
+                      onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, paymentMethod: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-revenue-payment-method"
+                    >
+                      <option value="">Select</option>
+                      <option value="zelle">Zelle</option>
+                      <option value="venmo">Venmo</option>
+                      <option value="wire">Wire</option>
+                      <option value="check">Check</option>
+                      <option value="cash">Cash</option>
+                      <option value="directdeposit">Direct Deposit</option>
+                      <option value="creditcard">Credit Card</option>
+                      <option value="ach">ACH</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Purpose</label>
+                    <select
+                      value={revenueSearchParams.purpose}
+                      onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, purpose: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-revenue-purpose"
+                    >
+                      <option value="">Select</option>
+                      <option value="tbd">TBD</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Term</label>
+                    <select
+                      value={revenueSearchParams.term}
+                      onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, term: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-revenue-term"
+                    >
+                      <option value="">Select</option>
+                      <option value="onetime">One-Time</option>
+                      <option value="recurring">Recurring</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Status</label>
+                    <select
+                      value={revenueSearchParams.status}
+                      onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, status: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-revenue-status"
+                    >
+                      <option value="">Select</option>
+                      <option value="pending">Pending</option>
+                      <option value="received">Received</option>
+                      <option value="processed">Processed</option>
+                      <option value="cancelled">Cancelled</option>
                     </select>
                   </div>
                 </div>
