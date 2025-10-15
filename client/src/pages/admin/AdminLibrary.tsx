@@ -9,7 +9,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { ArrowLeft, Plus, Minus, User, Sun, Moon, Palette, X, Check } from 'lucide-react';
+import { ArrowLeft, Plus, Minus, User, Palette, X, Check } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 
 // Dashboard shortcuts menu items
@@ -275,8 +275,6 @@ export default function AdminLibrary() {
             {/* Brightness Slider - Only visible in light mode */}
             {isLightMode && (
               <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-purple-100/50 border border-purple-300">
-                <Sun className="h-4 w-4 text-purple-600" />
-                
                 {/* Picker Buttons */}
                 <div className="flex gap-1">
                   <button
@@ -341,27 +339,15 @@ export default function AdminLibrary() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsThemeSettingsOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all hover:scale-105"
-              data-testid="button-theme-settings"
-            >
-              <Palette className="w-5 h-5" />
-              <span className="font-semibold">Theme Settings</span>
-            </button>
-            <button
-              onClick={() => setIsLightMode(!isLightMode)}
               className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all ${
                 isLightMode
                   ? 'bg-white border-purple-200 hover:border-purple-300 shadow-sm'
                   : 'bg-purple-500/20 border-purple-500/30 hover:bg-purple-500/30'
               }`}
-              title={isLightMode ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+              title="Theme Settings"
               data-testid="button-theme-toggle"
             >
-              {isLightMode ? (
-                <Moon className="w-5 h-5 text-purple-600" />
-              ) : (
-                <Sun className="w-5 h-5 text-yellow-300" />
-              )}
+              <Palette className={`w-5 h-5 ${isLightMode ? 'text-purple-600' : 'text-purple-300'}`} />
             </button>
             <DropdownMenu open={shortcutDropdownOpen} onOpenChange={setShortcutDropdownOpen}>
               <DropdownMenuTrigger asChild>
