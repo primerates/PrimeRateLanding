@@ -4561,6 +4561,7 @@ export default function AdminSnapshot() {
                           setShowRevenueForm(true);
                           setIsRevenueFormMinimized(false); // Ensure form is expanded when adding new revenue
                           setAreChartsMinimized(true); // Minimize charts to reduce clutter
+                          setTeamFilter('revenue-add'); // Update Team dropdown to match selection
                           setShowAddModal(false);
                         }
                       }}
@@ -4585,6 +4586,7 @@ export default function AdminSnapshot() {
                           setEntryType('expense');
                           setShowExpenseForm(true);
                           setAreChartsMinimized(true); // Minimize charts to reduce clutter
+                          setTeamFilter('expense-add'); // Update Team dropdown to match selection
                           setShowAddModal(false);
                         }
                       }}
