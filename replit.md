@@ -68,6 +68,11 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
       - Row 1: Area, Role (formerly Magnify), Rating, Performance
       - Row 2: Status (formerly Bonus - now dropdown with options: Select, Active, Paused, Not Active), Duration (formerly With Company), Category (formerly Compensation), Earnings
       - Row 3: License Count, Loan Volume, Funding Volume, Clear Filters
+    - **Staff Search Results Table**:
+      - Custom Interactive Scrollbar: Purple/pink gradient indicator with click-to-jump and drag-to-scroll functionality
+      - Features: Draggable scrollbar indicator, click track to jump to position, auto-sizing based on content width
+      - Cursor states: grab/grabbing for better UX
+      - Instruction text: "← Drag or click the scrollbar to navigate →"
     - **Staff Form Card**:
       - PDF Attachment System: Paperclip icon next to minimize button for managing staff documents
       - Displays document count (clickable to open attachment dialog)

@@ -1884,27 +1884,61 @@ export default function AdminSnapshot() {
             {/* Custom Scrollbar Track */}
             <div className="mb-4">
               <div 
-                className="h-2 rounded-full overflow-hidden bg-slate-700/50"
+                className="h-2 rounded-full overflow-hidden cursor-pointer bg-slate-700/50"
                 style={{ position: 'relative' }}
+                onClick={(e) => {
+                  const tableContainer = e.currentTarget.parentElement?.nextElementSibling as HTMLDivElement;
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const clickX = e.clientX - rect.left;
+                  const percentage = clickX / rect.width;
+                  tableContainer.scrollLeft = percentage * (tableContainer.scrollWidth - tableContainer.clientWidth);
+                }}
               >
                 <div 
+                  id="scroll-indicator"
                   className="h-full rounded-full transition-all bg-gradient-to-r from-purple-500 to-pink-500"
-                  style={{ width: '30%' }}
+                  style={{ width: '30%', cursor: 'grab' }}
+                  onMouseDown={(e) => {
+                    e.stopPropagation();
+                    const indicator = e.currentTarget;
+                    const track = indicator.parentElement as HTMLDivElement;
+                    const tableContainer = track.parentElement?.nextElementSibling as HTMLDivElement;
+                    
+                    indicator.style.cursor = 'grabbing';
+                    const startX = e.clientX;
+                    const startScrollLeft = tableContainer.scrollLeft;
+                    const trackWidth = track.offsetWidth;
+                    const scrollWidth = tableContainer.scrollWidth - tableContainer.clientWidth;
+                    
+                    const handleMouseMove = (e: MouseEvent) => {
+                      const deltaX = e.clientX - startX;
+                      const scrollDelta = (deltaX / trackWidth) * scrollWidth;
+                      tableContainer.scrollLeft = startScrollLeft + scrollDelta;
+                    };
+                    
+                    const handleMouseUp = () => {
+                      indicator.style.cursor = 'grab';
+                      document.removeEventListener('mousemove', handleMouseMove);
+                      document.removeEventListener('mouseup', handleMouseUp);
+                    };
+                    
+                    document.addEventListener('mousemove', handleMouseMove);
+                    document.addEventListener('mouseup', handleMouseUp);
+                  }}
                 />
               </div>
               <p className="text-xs mt-1 text-slate-400">
-                ← Scroll horizontally to view all columns →
+                ← Drag or click the scrollbar to navigate →
               </p>
             </div>
 
             <div 
               className="overflow-x-auto scrollbar-custom"
               onScroll={(e) => {
-                const target = e.target as HTMLDivElement;
-                const scrollPercentage = (target.scrollLeft / (target.scrollWidth - target.clientWidth)) * 100;
-                const indicator = target.previousElementSibling?.querySelector('div > div') as HTMLDivElement;
+                const scrollPercentage = e.currentTarget.scrollLeft / (e.currentTarget.scrollWidth - e.currentTarget.clientWidth);
+                const indicator = document.getElementById('scroll-indicator');
                 if (indicator) {
-                  const thumbWidth = (target.clientWidth / target.scrollWidth) * 100;
+                  const thumbWidth = (e.currentTarget.clientWidth / e.currentTarget.scrollWidth) * 100;
                   indicator.style.width = `${Math.max(thumbWidth, 10)}%`;
                   indicator.style.transform = `translateX(${scrollPercentage * (100 / thumbWidth - 1)}%)`;
                 }
