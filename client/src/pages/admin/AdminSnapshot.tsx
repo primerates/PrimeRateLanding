@@ -1857,22 +1857,18 @@ export default function AdminSnapshot() {
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <style>{`
               .scrollbar-custom::-webkit-scrollbar {
-                height: 12px;
+                height: 8px;
               }
               .scrollbar-custom::-webkit-scrollbar-track {
-                background: rgba(100, 116, 139, 0.2);
-                border-radius: 6px;
+                background: transparent;
               }
               .scrollbar-custom::-webkit-scrollbar-thumb {
-                background: linear-gradient(to right, #a855f7, #ec4899);
-                border-radius: 6px;
-              }
-              .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-                background: linear-gradient(to right, #9333ea, #db2777);
+                background: transparent;
+                border-radius: 4px;
               }
               .scrollbar-custom {
                 scrollbar-width: thin;
-                scrollbar-color: #a855f7 rgba(100, 116, 139, 0.2);
+                scrollbar-color: transparent transparent;
               }
             `}</style>
             
