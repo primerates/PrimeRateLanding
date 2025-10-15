@@ -452,11 +452,21 @@ export default function AdminSnapshot() {
         setShowStaffSearch(false);
       }
     }
+    
+    // Marketing Search card logic - auto-show when Team is not "Select", auto-hide when Team is "Select"
+    if (categoryFilter === 'marketing') {
+      if (teamFilter !== 'select') {
+        setShowQueryCard(true);
+      } else {
+        // Hide Search card when Team = "Select", but user can still open it via magnifying glass
+        setShowQueryCard(false);
+      }
+    }
   }, [teamFilter, categoryFilter]);
   
-  // Query card state variables (only shown when categoryFilter is 'marketing' and teamFilter is 'direct-mail')
+  // Query card state variables (only shown when categoryFilter is 'marketing' and teamFilter is not 'select')
   const [isQueryCardMinimized, setIsQueryCardMinimized] = useState(false);
-  const [showQueryCard, setShowQueryCard] = useState(true);
+  const [showQueryCard, setShowQueryCard] = useState(false); // Start hidden when Team = "Select"
   const [showBatchWarning, setShowBatchWarning] = useState(false);
   
   // Staff search card state
@@ -1651,8 +1661,8 @@ export default function AdminSnapshot() {
           </div>
         </div>
 
-        {/* Second Card - Charts - Only shown when Staff with non-Select Team, Marketing, or Financials with Revenue/Expense */}
-        {((categoryFilter === 'staff' && teamFilter !== 'select') || categoryFilter === 'marketing' || (categoryFilter === 'financials' && (teamFilter === 'revenue-add' || teamFilter === 'expense-add'))) && (
+        {/* Second Card - Charts - Only shown when Staff with non-Select Team, Marketing with non-Select Team, or Financials with Revenue/Expense */}
+        {((categoryFilter === 'staff' && teamFilter !== 'select') || (categoryFilter === 'marketing' && teamFilter !== 'select') || (categoryFilter === 'financials' && (teamFilter === 'revenue-add' || teamFilter === 'expense-add'))) && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <RevenueSourcesChart
               categoryFilter={categoryFilter}
@@ -2822,8 +2832,8 @@ export default function AdminSnapshot() {
           </>
         )}
 
-        {/* Search Card - Only shown when Direct Mail category is selected */}
-        {categoryFilter === 'marketing' && teamFilter === 'direct-mail' && showQueryCard && (
+        {/* Search Card - Only shown when Marketing category is selected and showQueryCard is true */}
+        {categoryFilter === 'marketing' && showQueryCard && (
           <TooltipProvider>
             <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
               <div className="flex items-center justify-between mb-4">
@@ -3185,8 +3195,8 @@ export default function AdminSnapshot() {
           </TooltipProvider>
         )}
 
-        {/* Batch List Table - Only shown when Search Batch is clicked */}
-        {categoryFilter === 'marketing' && teamFilter === 'direct-mail' && showBatchList && (
+        {/* Batch List Table - Only shown when Marketing is selected with non-Select Team and Search Batch is clicked */}
+        {categoryFilter === 'marketing' && teamFilter !== 'select' && showBatchList && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
@@ -3411,8 +3421,8 @@ export default function AdminSnapshot() {
           </div>
         )}
 
-        {/* Create New Batch Card - Only shown when Direct Mail category is selected and Add New Batch is clicked */}
-        {categoryFilter === 'marketing' && teamFilter === 'direct-mail' && showCreateBatch && (
+        {/* Create New Batch Card - Only shown when Marketing with non-Select Team is selected and Add New Batch is clicked */}
+        {categoryFilter === 'marketing' && teamFilter !== 'select' && showCreateBatch && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-white">New Batch</h3>

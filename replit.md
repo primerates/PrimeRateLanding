@@ -101,6 +101,11 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - **Visualizations**: Pie charts for Revenue Sources and Expense Breakdown with drill-down capabilities.
     - **Expense & Revenue Logging**: Add entry functionality with transaction tracking, date filtering, sortable tables, and an advanced Transaction Attachments System supporting PDF, JPG, PNG uploads, camera capture, and temporary ID management for attachments. Form conflict warning prevents chart card expansion while expense or revenue log is open, displaying popup: "Please complete or cancel the open expense log." or "Please complete or cancel the open revenue log."
     - **Marketing Campaign Management**: Direct Mail Batch Creation with 17 required fields, US states selection, completion bar, CSV upload with fuzzy mapping, and batch management actions.
+    - **Marketing Category Cards**:
+      - **Direct Mail Dropdown**: First option is "Select" (default when Marketing category is selected)
+      - **Search Card**: Auto-shows when Direct Mail is NOT "Select"; can be manually opened via magnifying glass icon in Performance card even when Direct Mail = "Select"
+      - **Batch List**: Only shown when Direct Mail is NOT "Select" and user clicks "Search Batch" button
+      - Card visibility logic: When Direct Mail = "Select" → only Performance card shown (no chart cards, Search, or Batch List by default; Search can be opened via magnifying glass icon); When Direct Mail = any other option → Performance, chart cards (titled Activity/Geography), Search, and Batch List (when searched) shown
     - **Search Card (Marketing)**: Features a "Search Batch" button matching Staff page's "Search Staff" button styling (`px-3.5 py-1.5 text-sm rounded-lg` with purple-to-pink gradient). Data Category defaults to "Select". Data Category selections (Show All, Trigger Data, Monthly Data) only take effect when user clicks "Search Batch" button, which opens the Batch List table.
     - **Batch List Table**:
       - Themed Icon: FileText icon in purple box matching Search card design
