@@ -84,7 +84,17 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
         - **Auto-Close Search**: When user clicks "Add Entry" while search card is open, search card automatically closes before opening expense log form
         - **Direct Expense Entry**: When in Expense tab (Financials/Expense), clicking "Add Entry" directly opens Expense Log form (bypasses Add Entry modal)
         - **Transactions Visibility**: Transactions card only appears when Search card has values and user clicks "Search Expense" button; starts hidden by default
-      - **Revenue Search Card** (Financials/Revenue): DollarSign icon, 8 fields across 2 rows - Payment Date, Source, Amount, Reference #, Payment Method, Purpose, Term, Status
+      - **Revenue Search Card** (Financials/Revenue): DollarSign icon, date filter dropdown, 8 fields across 2 rows
+        - **Date Filter Dropdown**: Today/MTD/YTD/Date Range selector positioned left of Clear Filters button; when Date Range selected, shows From Date and To Date inputs
+        - Row 1: Log Date, Transaction Date, Clear Date, Reference #
+        - Row 2: Revenue Category, Revenue Source, Payment Method, Amount
+        - **Mutual Exclusivity**: Revenue Search Card and Revenue Log card cannot be open simultaneously - opening one automatically closes the other
+      - **Revenue Transactions Table**: Complete feature parity with Expense Transactions
+        - **Field Mapping**: Log Date → logDate, Transaction Date → transactionDate, Clear Date → clearanceDate, Reference # → paymentForm, Revenue Category → revenueCategory, Revenue Source → revenueTerm, Payment Method → paymentFrom, Amount → revenue (emerald-500 green)
+        - **State Management**: visibleRevenueColumns state tracks which columns to display, isRevenueColumnVisible helper function checks visibility
+        - **Flywheel Scrollbar**: Purple-to-pink gradient indicator with drag functionality and click-to-jump navigation
+        - **Dynamic Columns**: Table displays only columns matching filled Revenue Search fields
+        - **Transactions Visibility**: Card only appears when Revenue Search has values and user clicks "Search Revenue" button
       - **Auto-Hide Logic**: Cards mutually exclusive - switching between Expense/Revenue auto-hides the other; both hide when Team ≠ Expense/Revenue
       - **Button Standardization**: Clear Filters (left) and Search buttons match at px-3.5 py-1.5 text-sm height
     - **Staff Card Auto-Minimize System**: When Staff category is selected with Team ≠ "Select" and user clicks Add Entry → Add Staff Member, the system automatically minimizes Performance card while closing all Search cards for optimal workflow focus

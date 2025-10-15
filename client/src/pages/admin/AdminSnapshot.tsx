@@ -1712,6 +1712,7 @@ export default function AdminSnapshot() {
                   } else if (categoryFilter === 'financials' && teamFilter === 'revenue-add') {
                     setShowRevenueSearch(true);
                     setIsRevenueSearchMinimized(false);
+                    setShowRevenueForm(false); // Close Revenue Log when Search Card opens (mutual exclusivity)
                   }
                 }}
                 className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
@@ -5617,6 +5618,7 @@ export default function AdminSnapshot() {
                           setIsRevenueFormMinimized(false); // Ensure form is expanded when adding new revenue
                           setAreChartsMinimized(true); // Minimize charts to reduce clutter
                           setTeamFilter('revenue-add'); // Update Team dropdown to match selection
+                          setShowRevenueSearch(false); // Close Search Card when Revenue Log opens (mutual exclusivity)
                           setShowAddModal(false);
                         }
                       }}
