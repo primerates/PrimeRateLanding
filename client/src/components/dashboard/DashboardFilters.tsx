@@ -94,12 +94,14 @@ export function DashboardFilters({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all min-w-[130px] text-left flex items-center justify-between text-sm"
+            className="bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all min-w-[160px] text-left flex items-center justify-between text-sm"
             data-testid="select-team-filter"
           >
             <span>
               {teamFilter === 'select' && 'Select'}
-              {teamFilter === 'pl' && 'P & L'}
+              {teamFilter === 'revenue-add' && 'Revenue (add)'}
+              {teamFilter === 'expense-add' && 'Expense (add)'}
+              {teamFilter === 'pl-statement' && 'P&L Statement'}
               {teamFilter === 'direct-mail' && 'Direct Mail'}
               {teamFilter === 'lead-vendor' && 'Lead Vendor'}
               {teamFilter === 'social-media' && 'Social Media'}
@@ -117,7 +119,7 @@ export function DashboardFilters({
             <ChevronDown className="h-4 w-4 ml-2" />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-[130px] bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+        <DropdownMenuContent align="start" className="w-[160px] bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
           {categoryFilter === 'financials' && (
             <>
               <DropdownMenuItem
@@ -128,11 +130,25 @@ export function DashboardFilters({
                 Select
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setTeamFilter('pl')}
+                onClick={() => setTeamFilter('revenue-add')}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-pl"
+                data-testid="option-team-revenue-add"
               >
-                P & L
+                Revenue (add)
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTeamFilter('expense-add')}
+                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                data-testid="option-team-expense-add"
+              >
+                Expense (add)
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTeamFilter('pl-statement')}
+                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                data-testid="option-team-pl-statement"
+              >
+                P&L Statement
               </DropdownMenuItem>
             </>
           )}
