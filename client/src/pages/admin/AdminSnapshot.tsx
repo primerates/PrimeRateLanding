@@ -4720,7 +4720,7 @@ export default function AdminSnapshot() {
         )}
 
         {/* Transactions Table - Separate Card */}
-        {showExpenseForm && showTransactionsCard && (
+        {categoryFilter === 'financials' && teamFilter === 'expense-add' && showTransactionsCard && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-roll-down">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
