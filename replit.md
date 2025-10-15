@@ -69,6 +69,9 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
       - Row 2: Status (formerly Bonus - now dropdown with options: Select, Active, Paused, Not Active), Duration (formerly With Company), Category (formerly Compensation), Earnings
       - Row 3: License Count, Loan Volume, Funding Volume, Clear Filters
     - **Staff Search Results Table**:
+      - Dynamic Column System: Table columns automatically sync with Search Card field labels and only display columns with active search criteria
+      - Column Visibility: Last Name and First Name always shown; other columns (Area, Role, Rating, Performance, Status, Duration, Category, Earnings, License Count, Loan Volume, Funding Volume) appear only when corresponding search field has a value (dropdowns: non-empty selection; inputs: any value)
+      - Column Title Sync: If Search Card field labels change, table column headers automatically update to match
       - Custom Interactive Scrollbar: Purple/pink gradient indicator with click-to-jump and drag-to-scroll functionality
       - Features: Draggable scrollbar indicator, click track to jump to position, auto-sizing based on content width
       - Cursor states: grab/grabbing for better UX

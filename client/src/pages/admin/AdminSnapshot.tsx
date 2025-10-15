@@ -198,6 +198,47 @@ export default function AdminSnapshot() {
   // Performance card title state
   const [performanceCardTitle, setPerformanceCardTitle] = useState('Prime Rate');
 
+  // Staff search field configuration - maps search fields to table columns
+  const staffFieldConfig = [
+    { key: 'area', label: 'Area', searchValue: searchArea, isDropdown: true },
+    { key: 'role', label: 'Role', searchValue: searchMagnify, isDropdown: true },
+    { key: 'rating', label: 'Rating', searchValue: searchRating, isDropdown: true },
+    { key: 'performance', label: 'Performance', searchValue: searchPerformance, isDropdown: true },
+    { key: 'status', label: 'Status', searchValue: searchBonus, isDropdown: true },
+    { key: 'duration', label: 'Duration', searchValue: searchWithCompany, isDropdown: true },
+    { key: 'category', label: 'Category', searchValue: searchCompensation, isDropdown: true },
+    { key: 'earnings', label: 'Earnings', searchValue: searchEarnings, isDropdown: false },
+    { key: 'licenseCount', label: 'License Count', searchValue: searchLicenseCount, isDropdown: false },
+    { key: 'loanVolume', label: 'Loan Volume', searchValue: searchLoanVolume, isDropdown: false },
+    { key: 'fundingVolume', label: 'Funding Volume', searchValue: searchFundingVolume, isDropdown: false },
+  ];
+
+  // Compute active columns based on search criteria
+  const activeStaffColumns = useMemo(() => {
+    // Always include Last Name and First Name
+    const columns = [
+      { key: 'lastName', label: 'Last Name' },
+      { key: 'firstName', label: 'First Name' }
+    ];
+    
+    // Add columns that have active search criteria
+    staffFieldConfig.forEach(field => {
+      if (field.isDropdown) {
+        // For dropdowns, check if value is not empty (not "Select")
+        if (field.searchValue && field.searchValue !== '') {
+          columns.push({ key: field.key, label: field.label });
+        }
+      } else {
+        // For input fields, check if there's any value
+        if (field.searchValue && field.searchValue.toString().trim() !== '') {
+          columns.push({ key: field.key, label: field.label });
+        }
+      }
+    });
+    
+    return columns;
+  }, [searchArea, searchMagnify, searchRating, searchPerformance, searchBonus, searchWithCompany, searchCompensation, searchEarnings, searchLicenseCount, searchLoanVolume, searchFundingVolume]);
+
   // Mock staff data for search results
   const mockStaffData = [
     {
@@ -205,13 +246,13 @@ export default function AdminSnapshot() {
       firstName: 'John',
       lastName: 'Smith',
       area: 'Company',
-      magnify: 'MLO',
+      role: 'MLO',
       rating: 'Review',
       performance: '+25%',
-      withCompany: '5 years',
-      compensation: 'W2',
+      status: 'Active',
+      duration: '5 years',
+      category: 'W2',
       earnings: 145000,
-      bonus: 25000,
       licenseCount: 3,
       loanVolume: 127,
       fundingVolume: 32500000
@@ -221,13 +262,13 @@ export default function AdminSnapshot() {
       firstName: 'Sarah',
       lastName: 'Johnson',
       area: 'Branch',
-      magnify: 'Processor',
+      role: 'Processor',
       rating: 'Attendance',
       performance: '+42%',
-      withCompany: '3 years',
-      compensation: '1099',
+      status: 'Active',
+      duration: '3 years',
+      category: '1099',
       earnings: 98000,
-      bonus: 15000,
       licenseCount: 2,
       loanVolume: 89,
       fundingVolume: 18750000
@@ -237,13 +278,13 @@ export default function AdminSnapshot() {
       firstName: 'Michael',
       lastName: 'Chen',
       area: 'Region',
-      magnify: 'MLO',
+      role: 'MLO',
       rating: 'Review',
       performance: '+18%',
-      withCompany: '7 years',
-      compensation: 'W2',
+      status: 'Active',
+      duration: '7 years',
+      category: 'W2',
       earnings: 167000,
-      bonus: 35000,
       licenseCount: 5,
       loanVolume: 156,
       fundingVolume: 45200000
@@ -253,13 +294,13 @@ export default function AdminSnapshot() {
       firstName: 'Emily',
       lastName: 'Davis',
       area: 'Partner',
-      magnify: 'Team',
+      role: 'Team',
       rating: 'Review',
       performance: '+33%',
-      withCompany: '2 years',
-      compensation: 'W2',
+      status: 'Paused',
+      duration: '2 years',
+      category: 'W2',
       earnings: 112000,
-      bonus: 18000,
       licenseCount: 1,
       loanVolume: 98,
       fundingVolume: 24300000
@@ -269,13 +310,13 @@ export default function AdminSnapshot() {
       firstName: 'Robert',
       lastName: 'Martinez',
       area: 'District',
-      magnify: 'MLO',
+      role: 'MLO',
       rating: 'Attendance',
       performance: '-8%',
-      withCompany: '1 year',
-      compensation: '1099',
+      status: 'Active',
+      duration: '1 year',
+      category: '1099',
       earnings: 78000,
-      bonus: 8000,
       licenseCount: 2,
       loanVolume: 54,
       fundingVolume: 12100000
@@ -285,13 +326,13 @@ export default function AdminSnapshot() {
       firstName: 'Jennifer',
       lastName: 'Wilson',
       area: 'State',
-      magnify: 'Processor',
+      role: 'Processor',
       rating: 'Review',
       performance: '+51%',
-      withCompany: '4 years',
-      compensation: 'W2',
+      status: 'Active',
+      duration: '4 years',
+      category: 'W2',
       earnings: 128000,
-      bonus: 22000,
       licenseCount: 4,
       loanVolume: 142,
       fundingVolume: 38900000
@@ -301,13 +342,13 @@ export default function AdminSnapshot() {
       firstName: 'David',
       lastName: 'Brown',
       area: 'City',
-      magnify: 'MLO',
+      role: 'MLO',
       rating: 'Attendance',
       performance: '+15%',
-      withCompany: '8 years',
-      compensation: '1099',
+      status: 'Not Active',
+      duration: '8 years',
+      category: '1099',
       earnings: 189000,
-      bonus: 42000,
       licenseCount: 6,
       loanVolume: 198,
       fundingVolume: 52300000
@@ -1881,7 +1922,7 @@ export default function AdminSnapshot() {
             
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-white">
-                Search Results ({sortedStaffData.length} staff members)
+                Search Results ({sortedStaffData.length} staff members • {activeStaffColumns.length} columns)
               </h3>
               <p className="text-sm text-purple-300">
                 Click column headers to sort
@@ -1954,123 +1995,18 @@ export default function AdminSnapshot() {
               <table className="w-full min-w-max">
                 <thead>
                   <tr className="border-b border-purple-500/30">
-                    <th 
-                      onClick={() => handleStaffSort('lastName')}
-                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
-                    >
-                      <div className="flex items-center gap-2">
-                        Last Name
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      onClick={() => handleStaffSort('firstName')}
-                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
-                    >
-                      <div className="flex items-center gap-2">
-                        First Name
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      onClick={() => handleStaffSort('area')}
-                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[120px] text-purple-300 hover:text-purple-200"
-                    >
-                      <div className="flex items-center gap-2">
-                        Area
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      onClick={() => handleStaffSort('magnify')}
-                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[120px] text-purple-300 hover:text-purple-200"
-                    >
-                      <div className="flex items-center gap-2">
-                        Magnify
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      onClick={() => handleStaffSort('rating')}
-                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[120px] text-purple-300 hover:text-purple-200"
-                    >
-                      <div className="flex items-center gap-2">
-                        Rating
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      onClick={() => handleStaffSort('performance')}
-                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
-                    >
-                      <div className="flex items-center gap-2">
-                        Performance
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      onClick={() => handleStaffSort('withCompany')}
-                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200"
-                    >
-                      <div className="flex items-center gap-2">
-                        With Company
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      onClick={() => handleStaffSort('compensation')}
-                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200"
-                    >
-                      <div className="flex items-center gap-2">
-                        Compensation
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      onClick={() => handleStaffSort('earnings')}
-                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
-                    >
-                      <div className="flex items-center gap-2">
-                        Earnings
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      onClick={() => handleStaffSort('bonus')}
-                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[120px] text-purple-300 hover:text-purple-200"
-                    >
-                      <div className="flex items-center gap-2">
-                        Bonus
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      onClick={() => handleStaffSort('licenseCount')}
-                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
-                    >
-                      <div className="flex items-center gap-2">
-                        License Count
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      onClick={() => handleStaffSort('loanVolume')}
-                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
-                    >
-                      <div className="flex items-center gap-2">
-                        Loan Volume
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      onClick={() => handleStaffSort('fundingVolume')}
-                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200"
-                    >
-                      <div className="flex items-center gap-2">
-                        Funding Volume
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
+                    {activeStaffColumns.map((column) => (
+                      <th 
+                        key={column.key}
+                        onClick={() => handleStaffSort(column.key)}
+                        className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
+                      >
+                        <div className="flex items-center gap-2">
+                          {column.label}
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
@@ -2079,45 +2015,28 @@ export default function AdminSnapshot() {
                       key={staff.id}
                       className="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors"
                     >
-                      <td className="py-3 px-4 font-medium text-white">
-                        {staff.lastName}
-                      </td>
-                      <td className="py-3 px-4 font-medium text-white">
-                        {staff.firstName}
-                      </td>
-                      <td className="py-3 px-4 text-slate-300">
-                        {staff.area}
-                      </td>
-                      <td className="py-3 px-4 text-slate-300">
-                        {staff.magnify}
-                      </td>
-                      <td className="py-3 px-4 text-slate-300">
-                        {staff.rating}
-                      </td>
-                      <td className="py-3 px-4 text-slate-300">
-                        {staff.performance}
-                      </td>
-                      <td className="py-3 px-4 text-slate-300">
-                        {staff.withCompany}
-                      </td>
-                      <td className="py-3 px-4 text-slate-300">
-                        {staff.compensation}
-                      </td>
-                      <td className="py-3 px-4 font-semibold text-emerald-500">
-                        {formatCurrency(staff.earnings)}
-                      </td>
-                      <td className="py-3 px-4 font-semibold text-emerald-500">
-                        {formatCurrency(staff.bonus)}
-                      </td>
-                      <td className="py-3 px-4 text-slate-300">
-                        {staff.licenseCount}
-                      </td>
-                      <td className="py-3 px-4 text-slate-300">
-                        {staff.loanVolume}
-                      </td>
-                      <td className="py-3 px-4 font-semibold text-emerald-500">
-                        {formatCurrency(staff.fundingVolume)}
-                      </td>
+                      {activeStaffColumns.map((column) => {
+                        const value = staff[column.key as keyof typeof staff];
+                        const isNameColumn = column.key === 'lastName' || column.key === 'firstName';
+                        const isMoneyColumn = column.key === 'earnings' || column.key === 'fundingVolume';
+                        
+                        return (
+                          <td 
+                            key={column.key}
+                            className={`py-3 px-4 ${
+                              isNameColumn 
+                                ? 'font-medium text-white' 
+                                : isMoneyColumn
+                                ? 'font-semibold text-emerald-500'
+                                : 'text-slate-300'
+                            }`}
+                          >
+                            {isMoneyColumn && typeof value === 'number' 
+                              ? formatCurrency(value) 
+                              : value}
+                          </td>
+                        );
+                      })}
                     </tr>
                   ))}
                 </tbody>
