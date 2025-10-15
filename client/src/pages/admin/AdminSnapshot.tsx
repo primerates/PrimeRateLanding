@@ -4573,7 +4573,7 @@ export default function AdminSnapshot() {
                     className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
                     data-testid="select-paid-by"
                   >
-                    <option value="" disabled>Paid By</option>
+                    <option value="" disabled>Payment Method</option>
                     <option value="Select">Select</option>
                     <option value="TBD">TBD</option>
                   </select>
