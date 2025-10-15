@@ -241,6 +241,54 @@ export default function AdminSnapshot() {
     return columns;
   }, [searchArea, searchMagnify, searchRating, searchPerformance, searchBonus, searchWithCompany, searchCompensation, searchEarnings, searchLicenseCount, searchLoanVolume, searchFundingVolume]);
 
+  // Compute active batch columns based on search criteria
+  const activeBatchColumns = useMemo(() => {
+    // Always include default columns
+    const columns = [
+      { key: 'createdDate', label: 'Created' },
+      { key: 'batchNumber', label: 'Batch 1' },
+      { key: 'batchTitle', label: 'Batch Title' },
+      { key: 'records', label: 'Records' },
+      { key: 'cost', label: 'Total Cost' }
+    ];
+    
+    // Batch search field configuration - inline to avoid initialization issues
+    const batchFieldConfig = [
+      { key: 'dataCategory', label: 'Data Category', searchValue: dataCategory, isDropdown: true },
+      { key: 'states', label: 'States', searchValue: selectedQueryStates.length > 0 ? selectedQueryStates.join(', ') : '', isDropdown: true },
+      { key: 'loanCategory', label: 'Loan Category', searchValue: '', isDropdown: true },
+      { key: 'loanPurpose', label: 'Loan Purpose', searchValue: '', isDropdown: true },
+      { key: 'propertyUse', label: 'Property Use', searchValue: '', isDropdown: true },
+      { key: 'propertyType', label: 'Property Type', searchValue: '', isDropdown: true },
+      { key: 'lenders', label: 'Lenders', searchValue: '', isDropdown: true },
+      { key: 'dataVendors', label: 'Data Vendors', searchValue: '', isDropdown: true },
+      { key: 'mailVendors', label: 'Mail Vendors', searchValue: '', isDropdown: true },
+      { key: 'batchActivity', label: 'Batch Activity To Date', searchValue: selectedBatchActivities.length > 0 ? selectedBatchActivities.join(', ') : '', isDropdown: true },
+      { key: 'ficoRange', label: 'FICO Range Above', searchValue: ficoRangeAbove, isDropdown: false },
+      { key: 'tenYearBond', label: '10 Yr Bond Above', searchValue: '', isDropdown: false },
+      { key: 'parRate', label: 'Par Rate Above', searchValue: parRateAbove, isDropdown: false },
+      { key: 'cashOut', label: 'Cash Out Above', searchValue: cashOutAbove, isDropdown: false },
+      { key: 'batchFinancials', label: 'Batch Financials', searchValue: batchResults, isDropdown: true },
+    ];
+    
+    // Add columns that have active search criteria
+    batchFieldConfig.forEach(field => {
+      if (field.isDropdown) {
+        // For dropdowns, check if value is not empty and not "Select"
+        if (field.searchValue && field.searchValue !== '' && field.searchValue !== 'Select') {
+          columns.push({ key: field.key, label: field.label });
+        }
+      } else {
+        // For input fields, check if there's any value
+        if (field.searchValue && field.searchValue.toString().trim() !== '') {
+          columns.push({ key: field.key, label: field.label });
+        }
+      }
+    });
+    
+    return columns;
+  }, [dataCategory, selectedQueryStates, selectedBatchActivities, ficoRangeAbove, parRateAbove, cashOutAbove, batchResults]);
+
   // Mock staff data for search results
   const mockStaffData = [
     {
@@ -3037,175 +3085,186 @@ export default function AdminSnapshot() {
                     <p className="text-purple-300">No batches created yet</p>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                <table className="w-full border-collapse min-w-max">
-                  <thead>
-                    <tr className="border-b border-purple-500/30">
-                      <th 
-                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
-                        onClick={() => handleBatchSort('createdDate')}
-                        data-testid="sort-date"
+                  <>
+                    {/* Custom Scrollbar Track */}
+                    <div className="mb-4">
+                      <div 
+                        className="h-2 rounded-full overflow-hidden cursor-pointer bg-slate-700/50"
+                        style={{ position: 'relative' }}
+                        onClick={(e) => {
+                          const tableContainer = e.currentTarget.parentElement?.nextElementSibling as HTMLDivElement;
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const clickX = e.clientX - rect.left;
+                          const percentage = clickX / rect.width;
+                          tableContainer.scrollLeft = percentage * (tableContainer.scrollWidth - tableContainer.clientWidth);
+                        }}
                       >
-                        <div className="flex items-center gap-2">
-                          Created
-                          <ArrowUpDown className="h-4 w-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
-                        onClick={() => handleBatchSort('batchNumber')}
-                        data-testid="sort-batch-number"
-                      >
-                        <div className="flex items-center gap-2">
-                          Batch #
-                          <ArrowUpDown className="h-4 w-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
-                        onClick={() => handleBatchSort('batchTitle')}
-                        data-testid="sort-batch-title"
-                      >
-                        <div className="flex items-center gap-2">
-                          Batch Title
-                          <ArrowUpDown className="h-4 w-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
-                        onClick={() => handleBatchSort('category')}
-                        data-testid="sort-category"
-                      >
-                        <div className="flex items-center gap-2">
-                          Category
-                          <ArrowUpDown className="h-4 w-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
-                        onClick={() => handleBatchSort('tenYearBond')}
-                        data-testid="sort-ten-year-bond"
-                      >
-                        <div className="flex items-center gap-2">
-                          10 Yr Bond
-                          <ArrowUpDown className="h-4 w-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
-                        onClick={() => handleBatchSort('parRate')}
-                        data-testid="sort-par-rate"
-                      >
-                        <div className="flex items-center gap-2">
-                          Par Rate
-                          <ArrowUpDown className="h-4 w-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
-                        onClick={() => handleBatchSort('records')}
-                        data-testid="sort-records"
-                      >
-                        <div className="flex items-center gap-2">
-                          Records
-                          <ArrowUpDown className="h-4 w-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
-                        onClick={() => handleBatchSort('states')}
-                        data-testid="sort-states"
-                      >
-                        <div className="flex items-center gap-2">
-                          States
-                          <ArrowUpDown className="h-4 w-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
-                        onClick={() => handleBatchSort('cost')}
-                        data-testid="sort-cost"
-                      >
-                        <div className="flex items-center gap-2">
-                          Total Cost
-                          <ArrowUpDown className="h-4 w-4" />
-                        </div>
-                      </th>
-                      <th className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 whitespace-nowrap">
-                        <Paperclip className="w-4 h-4" />
-                      </th>
-                      <th className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 whitespace-nowrap">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sortedBatches.map((batch: any) => {
-                      const totalCost = (parseInt(batch.dataCost) || 0) + (parseInt(batch.mailCost) || 0) + (parseInt(batch.printCost) || 0) + (parseInt(batch.supplyCost) || 0);
-                      const stateCount = batch.states?.length || 0;
-                      return (
-                        <tr key={batch.id} className="border-b border-purple-500/20 hover:bg-slate-700/30 transition-colors">
-                          <td className="p-3 text-white whitespace-nowrap">{batch.createdDate}</td>
-                          <td className="p-3 text-purple-300 whitespace-nowrap">{batch.batchNumber}</td>
-                          <td className="p-3 text-white whitespace-nowrap">{batch.batchTitle}</td>
-                          <td className="p-3 text-purple-300 whitespace-nowrap">{batch.category}</td>
-                          <td className="p-3 text-white whitespace-nowrap">{batch.tenYearBond}%</td>
-                          <td className="p-3 text-white whitespace-nowrap">{batch.parRate}%</td>
-                          <td className="p-3 text-purple-300 whitespace-nowrap">{(batch.records || 0).toLocaleString()}</td>
-                          <td className="p-3 text-white whitespace-nowrap">
-                            <button
-                              onClick={() => {
-                                setSelectedBatchStates(batch.states || []);
-                                setShowStatesDialog(true);
-                              }}
-                              className="text-purple-400 hover:text-purple-300 underline cursor-pointer transition-colors"
-                              data-testid={`states-count-${batch.id}`}
-                            >
-                              {stateCount}
-                            </button>
-                          </td>
-                          <td className="p-3 text-green-400 whitespace-nowrap font-semibold">${totalCost.toLocaleString()}</td>
-                          <td className="p-3">
-                            <button
-                              onClick={() => {
-                                setSelectedBatchId(batch.id);
-                                setShowBatchAttachmentsDialog(true);
-                              }}
-                              className="flex items-center gap-1 text-purple-300 hover:text-white transition-colors"
-                              data-testid={`button-batch-attachments-${batch.id}`}
-                            >
-                              <Paperclip className="w-4 h-4" />
-                              <BatchAttachmentCount transactionId={batch.id} />
-                            </button>
-                          </td>
-                          <td className="p-3 relative">
-                            <button
-                              onClick={() => setOpenBatchActionMenu(openBatchActionMenu === batch.id ? null : batch.id)}
-                              className="text-purple-300 hover:text-white transition-colors"
-                              data-testid={`button-batch-action-menu-${batch.id}`}
-                            >
-                              <MoreVertical className="w-5 h-5" />
-                            </button>
+                        <div 
+                          id="batch-scroll-indicator"
+                          className="h-full rounded-full transition-all bg-gradient-to-r from-purple-500 to-pink-500"
+                          style={{ width: '30%', cursor: 'grab' }}
+                          onMouseDown={(e) => {
+                            e.stopPropagation();
+                            const indicator = e.currentTarget;
+                            const track = indicator.parentElement as HTMLDivElement;
+                            const tableContainer = track.parentElement?.nextElementSibling as HTMLDivElement;
                             
-                            {/* Action Menu Popup */}
-                            {openBatchActionMenu === batch.id && (
-                              <div className="absolute right-0 mt-2 w-32 bg-slate-800 rounded-lg border border-purple-500/30 shadow-xl z-50 overflow-hidden">
-                                <button
-                                  onClick={() => handleDeleteBatch(batch.id)}
-                                  className="w-full px-4 py-2 text-left text-red-400 hover:bg-red-500/20 transition-colors"
-                                  data-testid={`button-delete-batch-${batch.id}`}
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-                  </div>
+                            indicator.style.cursor = 'grabbing';
+                            const startX = e.clientX;
+                            const startScrollLeft = tableContainer.scrollLeft;
+                            const trackWidth = track.offsetWidth;
+                            const scrollWidth = tableContainer.scrollWidth - tableContainer.clientWidth;
+                            
+                            const handleMouseMove = (e: MouseEvent) => {
+                              const deltaX = e.clientX - startX;
+                              const scrollDelta = (deltaX / trackWidth) * scrollWidth;
+                              tableContainer.scrollLeft = startScrollLeft + scrollDelta;
+                            };
+                            
+                            const handleMouseUp = () => {
+                              indicator.style.cursor = 'grab';
+                              document.removeEventListener('mousemove', handleMouseMove);
+                              document.removeEventListener('mouseup', handleMouseUp);
+                            };
+                            
+                            document.addEventListener('mousemove', handleMouseMove);
+                            document.addEventListener('mouseup', handleMouseUp);
+                          }}
+                        />
+                      </div>
+                      <p className="text-xs mt-1 text-slate-400">
+                        ← Drag or click the scrollbar to navigate →
+                      </p>
+                    </div>
+
+                    <div 
+                      className="overflow-x-auto scrollbar-custom"
+                      onScroll={(e) => {
+                        const scrollPercentage = e.currentTarget.scrollLeft / (e.currentTarget.scrollWidth - e.currentTarget.clientWidth);
+                        const indicator = document.getElementById('batch-scroll-indicator');
+                        if (indicator) {
+                          const thumbWidth = (e.currentTarget.clientWidth / e.currentTarget.scrollWidth) * 100;
+                          indicator.style.width = `${Math.max(thumbWidth, 10)}%`;
+                          indicator.style.transform = `translateX(${scrollPercentage * (100 / thumbWidth - 1)}%)`;
+                        }
+                      }}
+                    >
+                      <table className="w-full min-w-max">
+                        <thead>
+                          <tr className="border-b border-purple-500/30">
+                            {activeBatchColumns.map((column) => (
+                              <th 
+                                key={column.key}
+                                onClick={() => handleBatchSort(column.key)}
+                                className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
+                              >
+                                <div className="flex items-center gap-2">
+                                  {column.label}
+                                  <ArrowUpDown className="w-4 h-4" />
+                                </div>
+                              </th>
+                            ))}
+                            <th className="text-center text-purple-300 font-semibold py-3 px-4">
+                              <Paperclip className="w-4 h-4 mx-auto" />
+                            </th>
+                            <th className="text-left text-purple-300 font-semibold py-3 px-4">
+                              Actions
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {sortedBatches.map((batch: any) => {
+                            const totalCost = (parseInt(batch.dataCost) || 0) + (parseInt(batch.mailCost) || 0) + (parseInt(batch.printCost) || 0) + (parseInt(batch.supplyCost) || 0);
+                            const stateCount = batch.states?.length || 0;
+                            
+                            return (
+                              <tr key={batch.id} className="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors">
+                                {activeBatchColumns.map((column) => {
+                                  let value: any = batch[column.key];
+                                  
+                                  // Format values based on column type
+                                  if (column.key === 'cost') {
+                                    value = `$${totalCost.toLocaleString()}`;
+                                  } else if (column.key === 'records') {
+                                    value = (batch.records || 0).toLocaleString();
+                                  } else if (column.key === 'states' && stateCount > 0) {
+                                    return (
+                                      <td key={column.key} className="py-3 px-4 text-slate-300">
+                                        <button
+                                          onClick={() => {
+                                            setSelectedBatchStates(batch.states || []);
+                                            setShowStatesDialog(true);
+                                          }}
+                                          className="text-purple-400 hover:text-purple-300 underline cursor-pointer transition-colors"
+                                          data-testid={`states-count-${batch.id}`}
+                                        >
+                                          {stateCount}
+                                        </button>
+                                      </td>
+                                    );
+                                  } else if (column.key === 'tenYearBond' || column.key === 'parRate') {
+                                    value = value ? `${value}%` : '';
+                                  }
+                                  
+                                  const isCostColumn = column.key === 'cost';
+                                  const isTitleColumn = column.key === 'batchTitle' || column.key === 'batchNumber';
+                                  
+                                  return (
+                                    <td 
+                                      key={column.key}
+                                      className={`py-3 px-4 ${
+                                        isTitleColumn 
+                                          ? 'font-medium text-white' 
+                                          : isCostColumn
+                                          ? 'font-semibold text-emerald-500'
+                                          : 'text-slate-300'
+                                      }`}
+                                    >
+                                      {value}
+                                    </td>
+                                  );
+                                })}
+                                <td className="py-3 px-4">
+                                  <button
+                                    onClick={() => {
+                                      setSelectedBatchId(batch.id);
+                                      setShowBatchAttachmentsDialog(true);
+                                    }}
+                                    className="flex items-center gap-1 text-purple-300 hover:text-white transition-colors mx-auto"
+                                    data-testid={`button-batch-attachments-${batch.id}`}
+                                  >
+                                    <BatchAttachmentCount transactionId={batch.id} />
+                                  </button>
+                                </td>
+                                <td className="py-3 px-4 relative">
+                                  <button
+                                    onClick={() => setOpenBatchActionMenu(openBatchActionMenu === batch.id ? null : batch.id)}
+                                    className="text-purple-300 hover:text-white transition-colors"
+                                    data-testid={`button-batch-action-menu-${batch.id}`}
+                                  >
+                                    <MoreVertical className="w-5 h-5" />
+                                  </button>
+                                  
+                                  {/* Action Menu Popup */}
+                                  {openBatchActionMenu === batch.id && (
+                                    <div className="absolute right-0 mt-2 w-32 bg-slate-800 rounded-lg border border-purple-500/30 shadow-xl z-50 overflow-hidden">
+                                      <button
+                                        onClick={() => handleDeleteBatch(batch.id)}
+                                        className="w-full px-4 py-2 text-left text-red-400 hover:bg-red-500/20 transition-colors"
+                                        data-testid={`button-delete-batch-${batch.id}`}
+                                      >
+                                        Delete
+                                      </button>
+                                    </div>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
                 )}
               </>
             )}
