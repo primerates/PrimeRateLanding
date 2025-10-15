@@ -197,6 +197,15 @@ export default function AdminSnapshot() {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [staffSortConfig, setStaffSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
 
+  // Marketing search state (Query card - Direct Mail)
+  const [selectedQueryStates, setSelectedQueryStates] = useState<string[]>([]);
+  const [selectedBatchActivities, setSelectedBatchActivities] = useState<string[]>([]);
+  const [cashOutAbove, setCashOutAbove] = useState('');
+  const [ficoRangeAbove, setFicoRangeAbove] = useState('');
+  const [parRateAbove, setParRateAbove] = useState('');
+  const [dataCategory, setDataCategory] = useState('Select');
+  const [batchResults, setBatchResults] = useState<'' | 'profitable' | 'loss'>('');
+
   // Performance card title state
   const [performanceCardTitle, setPerformanceCardTitle] = useState('Prime Rate');
 
@@ -418,13 +427,6 @@ export default function AdminSnapshot() {
   
   // Query card state variables (only shown when categoryFilter is 'marketing' and teamFilter is 'direct-mail')
   const [isQueryCardMinimized, setIsQueryCardMinimized] = useState(false);
-  const [selectedQueryStates, setSelectedQueryStates] = useState<string[]>([]);
-  const [selectedBatchActivities, setSelectedBatchActivities] = useState<string[]>([]);
-  const [cashOutAbove, setCashOutAbove] = useState('');
-  const [ficoRangeAbove, setFicoRangeAbove] = useState('');
-  const [parRateAbove, setParRateAbove] = useState('');
-  const [dataCategory, setDataCategory] = useState('Select');
-  const [batchResults, setBatchResults] = useState<'' | 'profitable' | 'loss'>('');
   const [showBatchWarning, setShowBatchWarning] = useState(false);
   const [showStaffWarning, setShowStaffWarning] = useState(false);
   const [showFormConflictWarning, setShowFormConflictWarning] = useState(false);
