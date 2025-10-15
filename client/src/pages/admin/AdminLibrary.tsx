@@ -225,6 +225,15 @@ export default function AdminLibrary() {
     return 'text-slate-800 font-bold';
   };
 
+  // Get Add Co-Borrower button styles based on theme
+  const getAddCoBorrowerButtonClasses = () => {
+    if (selectedTheme === 'sunset') {
+      return 'bg-gradient-to-r from-orange-400 to-red-400 hover:from-orange-300 hover:to-red-300 text-black font-semibold border-0 shadow-lg hover:shadow-orange-500/50';
+    }
+    // Default purple-pink gradient for other themes
+    return 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white border-0 shadow-lg hover:shadow-purple-500/50';
+  };
+
   // Calculate card background based on CARD brightness
   const getCardBackground = () => {
     if (!isLightMode) return currentThemeColors.cardBg;
@@ -422,7 +431,7 @@ export default function AdminLibrary() {
                         variant="outline"
                         size="sm"
                         onClick={() => setHasCoBorrower(true)}
-                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white border-0 shadow-lg hover:shadow-purple-500/50"
+                        className={getAddCoBorrowerButtonClasses()}
                         data-testid="button-add-coborrower"
                       >
                         <Plus className="h-4 w-4 mr-2" />
