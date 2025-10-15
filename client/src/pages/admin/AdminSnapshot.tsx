@@ -3296,7 +3296,7 @@ export default function AdminSnapshot() {
                 {/* Row 1 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Date</label>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Transaction Date</label>
                     <input
                       type="text"
                       placeholder="MM/DD/YYYY"
@@ -3355,7 +3355,7 @@ export default function AdminSnapshot() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Payment For</label>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Category</label>
                     <select
                       value={financialsSearchParams.paymentFor}
                       onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, paymentFor: e.target.value })}
@@ -3430,7 +3430,7 @@ export default function AdminSnapshot() {
                 {/* Row 3 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Vendor</label>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Paid To</label>
                     <select
                       value={financialsSearchParams.vendor}
                       onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, vendor: e.target.value })}
@@ -3443,16 +3443,27 @@ export default function AdminSnapshot() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Services</label>
-                    <select
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Clear Date</label>
+                    <input
+                      type="text"
+                      placeholder="MM/DD/YYYY"
                       value={financialsSearchParams.services}
-                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, services: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                      data-testid="select-financials-services"
-                    >
-                      <option value="">Select</option>
-                      <option value="tbd">TBD</option>
-                    </select>
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (value.length >= 2) {
+                          value = value.slice(0, 2) + '/' + value.slice(2);
+                        }
+                        if (value.length >= 5) {
+                          value = value.slice(0, 5) + '/' + value.slice(5);
+                        }
+                        if (value.length > 10) {
+                          value = value.slice(0, 10);
+                        }
+                        setFinancialsSearchParams({ ...financialsSearchParams, services: value });
+                      }}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                      data-testid="input-financials-services"
+                    />
                   </div>
 
                   <div>
@@ -3471,7 +3482,7 @@ export default function AdminSnapshot() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Role</label>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Paid To</label>
                     <select
                       value={financialsSearchParams.role}
                       onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, role: e.target.value })}
