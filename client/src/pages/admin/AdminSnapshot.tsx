@@ -3688,103 +3688,8 @@ export default function AdminSnapshot() {
             
             {!isRevenueSearchMinimized && (
               <div>
-                {/* Row 1 */}
+                {/* Row 1: Log Date, Transaction Date, Clear Date, Reference # */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Transaction Date</label>
-                    <input
-                      type="text"
-                      placeholder="MM/DD/YYYY"
-                      value={revenueSearchParams.paymentDate}
-                      onChange={(e) => {
-                        let value = e.target.value.replace(/\D/g, '');
-                        if (value.length >= 2) {
-                          value = value.slice(0, 2) + '/' + value.slice(2);
-                        }
-                        if (value.length >= 5) {
-                          value = value.slice(0, 5) + '/' + value.slice(5);
-                        }
-                        if (value.length > 10) {
-                          value = value.slice(0, 10);
-                        }
-                        setRevenueSearchParams({ ...revenueSearchParams, paymentDate: value });
-                      }}
-                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
-                      data-testid="input-revenue-payment-date"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Revenue Category</label>
-                    <select
-                      value={revenueSearchParams.source}
-                      onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, source: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                      data-testid="select-revenue-source"
-                    >
-                      <option value="">Select</option>
-                      <option value="tbd">TBD</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Amount</label>
-                    <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">$</span>
-                      <input
-                        type="text"
-                        placeholder="0"
-                        value={revenueSearchParams.amount}
-                        onChange={(e) => {
-                          let value = e.target.value.replace(/[^0-9]/g, '');
-                          if (value) {
-                            value = parseInt(value).toLocaleString('en-US');
-                            setRevenueSearchParams({ ...revenueSearchParams, amount: value });
-                          } else {
-                            setRevenueSearchParams({ ...revenueSearchParams, amount: '' });
-                          }
-                        }}
-                        className="w-full pl-8 pr-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
-                        data-testid="input-revenue-amount"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Reference #</label>
-                    <input
-                      type="text"
-                      placeholder="Enter reference number"
-                      value={revenueSearchParams.referenceNum}
-                      onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, referenceNum: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
-                      data-testid="input-revenue-reference"
-                    />
-                  </div>
-                </div>
-
-                {/* Row 2 */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Payment Method</label>
-                    <select
-                      value={revenueSearchParams.paymentMethod}
-                      onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, paymentMethod: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                      data-testid="select-revenue-payment-method"
-                    >
-                      <option value="">Select</option>
-                      <option value="zelle">Zelle</option>
-                      <option value="venmo">Venmo</option>
-                      <option value="wire">Wire</option>
-                      <option value="check">Check</option>
-                      <option value="cash">Cash</option>
-                      <option value="directdeposit">Direct Deposit</option>
-                      <option value="creditcard">Credit Card</option>
-                      <option value="ach">ACH</option>
-                    </select>
-                  </div>
-
                   <div>
                     <label className="block text-sm font-medium mb-2 text-purple-300">Log Date</label>
                     <input
@@ -3806,6 +3711,30 @@ export default function AdminSnapshot() {
                       }}
                       className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
                       data-testid="input-revenue-log-date"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Transaction Date</label>
+                    <input
+                      type="text"
+                      placeholder="MM/DD/YYYY"
+                      value={revenueSearchParams.paymentDate}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (value.length >= 2) {
+                          value = value.slice(0, 2) + '/' + value.slice(2);
+                        }
+                        if (value.length >= 5) {
+                          value = value.slice(0, 5) + '/' + value.slice(5);
+                        }
+                        if (value.length > 10) {
+                          value = value.slice(0, 10);
+                        }
+                        setRevenueSearchParams({ ...revenueSearchParams, paymentDate: value });
+                      }}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                      data-testid="input-revenue-payment-date"
                     />
                   </div>
 
@@ -3834,6 +3763,34 @@ export default function AdminSnapshot() {
                   </div>
 
                   <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Reference #</label>
+                    <input
+                      type="text"
+                      placeholder="Enter reference number"
+                      value={revenueSearchParams.referenceNum}
+                      onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, referenceNum: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                      data-testid="input-revenue-reference"
+                    />
+                  </div>
+                </div>
+
+                {/* Row 2: Revenue Category, Payment Source, Payment Method, Amount */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Revenue Category</label>
+                    <select
+                      value={revenueSearchParams.source}
+                      onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, source: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-revenue-source"
+                    >
+                      <option value="">Select</option>
+                      <option value="tbd">TBD</option>
+                    </select>
+                  </div>
+
+                  <div>
                     <label className="block text-sm font-medium mb-2 text-purple-300">Payment Source</label>
                     <select
                       value={revenueSearchParams.status}
@@ -3845,6 +3802,49 @@ export default function AdminSnapshot() {
                       <option value="first-american">First American</option>
                       <option value="reltco">Reltco</option>
                     </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Payment Method</label>
+                    <select
+                      value={revenueSearchParams.paymentMethod}
+                      onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, paymentMethod: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-revenue-payment-method"
+                    >
+                      <option value="">Select</option>
+                      <option value="zelle">Zelle</option>
+                      <option value="venmo">Venmo</option>
+                      <option value="wire">Wire</option>
+                      <option value="check">Check</option>
+                      <option value="cash">Cash</option>
+                      <option value="directdeposit">Direct Deposit</option>
+                      <option value="creditcard">Credit Card</option>
+                      <option value="ach">ACH</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Amount</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">$</span>
+                      <input
+                        type="text"
+                        placeholder="0"
+                        value={revenueSearchParams.amount}
+                        onChange={(e) => {
+                          let value = e.target.value.replace(/[^0-9]/g, '');
+                          if (value) {
+                            value = parseInt(value).toLocaleString('en-US');
+                            setRevenueSearchParams({ ...revenueSearchParams, amount: value });
+                          } else {
+                            setRevenueSearchParams({ ...revenueSearchParams, amount: '' });
+                          }
+                        }}
+                        className="w-full pl-8 pr-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                        data-testid="input-revenue-amount"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
