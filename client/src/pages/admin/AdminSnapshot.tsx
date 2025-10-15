@@ -3691,7 +3691,7 @@ export default function AdminSnapshot() {
                 {/* Row 1 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Payment Date</label>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Transaction Date</label>
                     <input
                       type="text"
                       placeholder="MM/DD/YYYY"
@@ -3715,7 +3715,7 @@ export default function AdminSnapshot() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Source</label>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Revenue Category</label>
                     <select
                       value={revenueSearchParams.source}
                       onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, source: e.target.value })}
@@ -3786,16 +3786,27 @@ export default function AdminSnapshot() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Purpose</label>
-                    <select
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Log Date</label>
+                    <input
+                      type="text"
+                      placeholder="MM/DD/YYYY"
                       value={revenueSearchParams.purpose}
-                      onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, purpose: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                      data-testid="select-revenue-purpose"
-                    >
-                      <option value="">Select</option>
-                      <option value="tbd">TBD</option>
-                    </select>
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (value.length >= 2) {
+                          value = value.slice(0, 2) + '/' + value.slice(2);
+                        }
+                        if (value.length >= 5) {
+                          value = value.slice(0, 5) + '/' + value.slice(5);
+                        }
+                        if (value.length > 10) {
+                          value = value.slice(0, 10);
+                        }
+                        setRevenueSearchParams({ ...revenueSearchParams, purpose: value });
+                      }}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                      data-testid="input-revenue-log-date"
+                    />
                   </div>
 
                   <div>
