@@ -1734,8 +1734,8 @@ export default function AdminSnapshot() {
           </div>
         )}
 
-        {/* Staff Search Card - Only shown when Staff category is selected */}
-        {categoryFilter === 'staff' && showStaffSearch && (
+        {/* Staff Search Card - Only shown when Staff category is selected AND Team is not "Select" */}
+        {categoryFilter === 'staff' && teamFilter !== 'select' && showStaffSearch && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">

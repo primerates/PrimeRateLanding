@@ -89,7 +89,8 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
       - **Prime Rate Card**: Only shown when Team = "MLO"; displays below chart cards with three boxes showing interest rates (Current Rate 6.875%, 30-Yr Fixed 7.125%, 15-Yr Fixed 6.625%)
       - **Pipeline Card**: Only shown when Team is NOT "Select"; displays active loans, pending items, and monthly volume metrics
       - **Access Card**: Only shown when Team is NOT "Select"; displays system access and permission levels
-      - Card visibility logic: When Team = "Select" → no additional cards; When Team = "MLO" → Prime Rate card appears below charts; When Team = any other option → show Pipeline and Access cards
+      - **Search Card**: Only shown when Team is NOT "Select"; provides staff search functionality
+      - Card visibility logic: When Team = "Select" → only Performance and chart cards shown (no Pipeline, Access, or Search); When Team = "MLO" → Performance, charts, Prime Rate card, Pipeline, Access, and Search shown; When Team = any other option → Performance, charts, Pipeline, Access, and Search shown (no Prime Rate)
     - **Staff Form Card**:
       - PDF Attachment System: Paperclip icon next to minimize button for managing staff documents
       - Displays document count (clickable to open attachment dialog)
