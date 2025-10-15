@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { queryClient, apiRequest } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Users, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2, Camera, Phone, Mail, Briefcase, Calendar, Shield, Search } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Users, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2, Camera, Phone, Mail, Briefcase, Calendar, Shield, Search, Stamp } from 'lucide-react';
 import { RevenueSourcesChart } from '@/components/dashboard/RevenueSourcesChart';
 import { ExpenseBreakdownChart } from '@/components/dashboard/ExpenseBreakdownChart';
 import { DashboardFilters } from '@/components/dashboard/DashboardFilters';
@@ -1383,7 +1383,9 @@ export default function AdminSnapshot() {
         paymentTerm: '',
         notes: '',
         checkNumber: '',
-        invoiceNumber: ''
+        invoiceNumber: '',
+        area: '',
+        payee: ''
       });
       setShowExpenseForm(false);
     }
@@ -1401,7 +1403,9 @@ export default function AdminSnapshot() {
       paymentTerm: expense.paymentTerm || '',
       notes: expense.notes || '',
       checkNumber: expense.checkNumber || '',
-      invoiceNumber: expense.invoiceNumber || ''
+      invoiceNumber: expense.invoiceNumber || '',
+      area: expense.area || '',
+      payee: expense.payee || ''
     });
     setIsEditMode(true);
     setEditingExpenseId(expense.id);
@@ -4488,7 +4492,12 @@ export default function AdminSnapshot() {
         {showExpenseForm && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-in">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-white">Expense log</h3>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
+                  <Stamp className="w-5 h-5 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white">Expense log</h3>
+              </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowExpenseLogAttachmentsDialog(true)}
@@ -4639,7 +4648,12 @@ export default function AdminSnapshot() {
         {showExpenseForm && showTransactionsCard && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-roll-down">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-white">Transactions</h3>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
+                  <FileText className="w-5 h-5 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white">Transactions</h3>
+              </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsTransactionsMinimized(!isTransactionsMinimized)}
@@ -4715,8 +4729,71 @@ export default function AdminSnapshot() {
             <div className="border-t border-purple-500/30 mb-6"></div>
 
             {!isTransactionsMinimized && (
-              <div className="overflow-x-auto">
-                <table className="w-full">
+              <>
+                {/* Custom Scrollbar Track */}
+                <div className="mb-4">
+                  <div 
+                    className="h-2 rounded-full overflow-hidden cursor-pointer bg-slate-700/50"
+                    style={{ position: 'relative' }}
+                    onClick={(e) => {
+                      const tableContainer = e.currentTarget.parentElement?.nextElementSibling as HTMLDivElement;
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const clickX = e.clientX - rect.left;
+                      const percentage = clickX / rect.width;
+                      tableContainer.scrollLeft = percentage * (tableContainer.scrollWidth - tableContainer.clientWidth);
+                    }}
+                  >
+                    <div 
+                      id="transactions-scroll-indicator"
+                      className="h-full rounded-full transition-all bg-gradient-to-r from-purple-500 to-pink-500"
+                      style={{ width: '30%', cursor: 'grab' }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        const indicator = e.currentTarget;
+                        const track = indicator.parentElement as HTMLDivElement;
+                        const tableContainer = track.parentElement?.nextElementSibling as HTMLDivElement;
+                        
+                        indicator.style.cursor = 'grabbing';
+                        const startX = e.clientX;
+                        const startScrollLeft = tableContainer.scrollLeft;
+                        const trackWidth = track.offsetWidth;
+                        const scrollWidth = tableContainer.scrollWidth - tableContainer.clientWidth;
+                        
+                        const handleMouseMove = (e: MouseEvent) => {
+                          const deltaX = e.clientX - startX;
+                          const scrollDelta = (deltaX / trackWidth) * scrollWidth;
+                          tableContainer.scrollLeft = startScrollLeft + scrollDelta;
+                        };
+                        
+                        const handleMouseUp = () => {
+                          indicator.style.cursor = 'grab';
+                          document.removeEventListener('mousemove', handleMouseMove);
+                          document.removeEventListener('mouseup', handleMouseUp);
+                        };
+                        
+                        document.addEventListener('mousemove', handleMouseMove);
+                        document.addEventListener('mouseup', handleMouseUp);
+                      }}
+                    />
+                  </div>
+                  <p className="text-xs mt-1 text-slate-400">
+                    ← Drag or click the scrollbar to navigate →
+                  </p>
+                </div>
+
+                <div 
+                  className="overflow-x-auto scrollbar-custom"
+                  onScroll={(e) => {
+                    const scrollPercentage = e.currentTarget.scrollLeft / (e.currentTarget.scrollWidth - e.currentTarget.clientWidth);
+                    const indicator = document.getElementById('transactions-scroll-indicator');
+                    if (indicator) {
+                      const thumbWidth = (e.currentTarget.clientWidth / e.currentTarget.scrollWidth) * 100;
+                      indicator.style.width = `${Math.max(thumbWidth, 10)}%`;
+                      indicator.style.transform = `translateX(${scrollPercentage * (100 / thumbWidth - 1)}%)`;
+                    }
+                  }}
+                >
+                <table className="w-full min-w-max">
                   <thead>
                     <tr className="border-b border-purple-500/30">
                       {isColumnVisible('logDate') && (
@@ -4944,7 +5021,8 @@ export default function AdminSnapshot() {
                     ))}
                   </tbody>
                 </table>
-              </div>
+                </div>
+              </>
             )}
           </div>
         )}

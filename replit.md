@@ -78,6 +78,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
         - **Field Mapping**: Log Date → logDate, Transaction Date → transactionDate, Clear Date → clearanceDate, Amount → expense (emerald-500 green), Invoice # → invoiceNumber, Check # → checkNumber, Payment Method → paidWith, Payment Term → paymentTerm, Category → expenseCategory, Area → area, Paid To → paidTo, Payee → payee
         - **State Management**: visibleTransactionColumns state tracks which columns to display, isColumnVisible helper function checks visibility
         - **Success Notification**: Toast message "Transaction has been recorded" displays when expense is successfully logged
+        - **Flywheel Scrollbar**: Custom horizontal scrollbar with purple-to-pink gradient indicator matching Staff/Direct Mail implementation - draggable indicator syncs with table scroll, click-to-jump on track, instruction text "← Drag or click the scrollbar to navigate →"
       - **Revenue Search Card** (Financials/Revenue): DollarSign icon, 8 fields across 2 rows - Payment Date, Source, Amount, Reference #, Payment Method, Purpose, Term, Status
       - **Auto-Hide Logic**: Cards mutually exclusive - switching between Expense/Revenue auto-hides the other; both hide when Team ≠ Expense/Revenue
       - **Button Standardization**: Clear Filters (left) and Search buttons match at px-3.5 py-1.5 text-sm height
