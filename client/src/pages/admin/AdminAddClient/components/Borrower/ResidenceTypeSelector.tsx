@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
-import { RESIDENCE_TYPE_OPTIONS, type Option } from '../data/formOptions';
+import { RESIDENCE_TYPE_OPTIONS, type Option } from '../../data/formOptions';
 
 interface ResidenceTypeSelectorProps {
   fieldPath: string;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
-import BorrowerHeaderForm from '../components/BorrowerHeaderForm';
-import BorrowerForm from '../components/BorrowerForm';
+import BorrowerHeaderForm from '../components/Borrower/BorrowerHeaderForm';
+import BorrowerForm from '../components/Borrower/BorrowerForm';
 interface BorrowerTabProps {
     animations?: {
         showEntry: boolean;

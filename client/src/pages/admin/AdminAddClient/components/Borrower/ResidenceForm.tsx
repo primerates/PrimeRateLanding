@@ -2,8 +2,8 @@ import {  Info } from 'lucide-react';
 import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 import { Label } from '@/components/ui/label';
 import ResidenceTypeSelector from './ResidenceTypeSelector';
-import ResidenceInfoDialog from '../dialogs/residenceInfoDialog';
-import RentalInfoDialog from '../dialogs/rentalInfoDialog';
+import ResidenceInfoDialog from '../../dialogs/residenceInfoDialog';
+import RentalInfoDialog from '../../dialogs/rentalInfoDialog';
 import { useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
 

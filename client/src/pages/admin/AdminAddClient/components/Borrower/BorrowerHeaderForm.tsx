@@ -1,15 +1,15 @@
 import { useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
-import FormSelect from './FormSelect';
-import { STAGE_OPTIONS, getStageColor } from '../data/formOptions';
+import FormSelect from '../FormSelect';
+import { STAGE_OPTIONS, getStageColor } from '../../data/formOptions';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
-import DateInput from './DateInput';
-import FormInput from './FormInput';
-import ManageableSelect from './ManageableSelect';
-import { BUILT_IN_SOURCES } from '../data/formOptions';
+import DateInput from '../DateInput';
+import FormInput from '../FormInput';
+import ManageableSelect from '../ManageableSelect';
+import { BUILT_IN_SOURCES } from '../../data/formOptions';
 import { Card, CardContent } from '@/components/ui/card';
 
 const BorrowerHeaderForm = () => {
