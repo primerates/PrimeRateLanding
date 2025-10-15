@@ -90,7 +90,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
       - **Pipeline Card**: Only shown when Team is NOT "Select"; displays active loans, pending items, and monthly volume metrics
       - **Access Card**: Only shown when Team is NOT "Select"; displays system access and permission levels
       - **Search Card**: Only shown when Team is NOT "Select"; provides staff search functionality
-      - Card visibility logic: When Team = "Select" → only Performance and chart cards shown (no Pipeline, Access, or Search); When Team = "MLO" → Performance, charts, Prime Rate card, Pipeline, Access, and Search shown; When Team = any other option → Performance, charts, Pipeline, Access, and Search shown (no Prime Rate)
+      - Card visibility logic: When Team = "Select" → only Performance card shown (no chart cards, Pipeline, Access, or Search); When Team = "MLO" → Performance, chart cards (titled Pipeline/Access), Prime Rate card, Pipeline card, Access card, and Search shown; When Team = any other option → Performance, chart cards (titled Pipeline/Access), Pipeline card, Access card, and Search shown (no Prime Rate card)
     - **Staff Form Card**:
       - PDF Attachment System: Paperclip icon next to minimize button for managing staff documents
       - Displays document count (clickable to open attachment dialog)

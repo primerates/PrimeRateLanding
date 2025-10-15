@@ -1641,8 +1641,8 @@ export default function AdminSnapshot() {
           </div>
         </div>
 
-        {/* Second Card - Charts - Only shown when Staff, Marketing are selected, or when Financials with Revenue/Expense */}
-        {(categoryFilter === 'staff' || categoryFilter === 'marketing' || (categoryFilter === 'financials' && (teamFilter === 'revenue-add' || teamFilter === 'expense-add'))) && (
+        {/* Second Card - Charts - Only shown when Staff with non-Select Team, Marketing, or Financials with Revenue/Expense */}
+        {((categoryFilter === 'staff' && teamFilter !== 'select') || categoryFilter === 'marketing' || (categoryFilter === 'financials' && (teamFilter === 'revenue-add' || teamFilter === 'expense-add'))) && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <RevenueSourcesChart
               categoryFilter={categoryFilter}
