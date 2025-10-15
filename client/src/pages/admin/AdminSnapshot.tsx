@@ -438,13 +438,9 @@ export default function AdminSnapshot() {
     }
     // Note: 'select' keeps whatever state it has (starts expanded by default)
     
-    // Prime Rate card logic (Staff category only)
-    if (categoryFilter === 'staff') {
-      if (teamFilter === 'select') {
-        setIsPrimeRateMinimized(true);
-      } else {
-        setIsPrimeRateMinimized(false);
-      }
+    // Prime Rate card logic (Staff category with MLO team only)
+    if (categoryFilter === 'staff' && teamFilter === 'mlo') {
+      setIsPrimeRateMinimized(false);
     }
   }, [teamFilter, categoryFilter]);
   
@@ -1692,6 +1688,52 @@ export default function AdminSnapshot() {
           </div>
         )}
 
+        {/* Prime Rate Card - Only shown when Staff category is selected AND Team is MLO */}
+        {categoryFilter === 'staff' && teamFilter === 'mlo' && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-blue-500/20 border border-blue-500/30">
+                  <TrendingUp className="w-5 h-5 text-blue-400" />
+                </div>
+                <h2 className="text-xl font-bold text-white">Prime Rate</h2>
+              </div>
+              <button
+                onClick={() => setIsPrimeRateMinimized(!isPrimeRateMinimized)}
+                className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                title={isPrimeRateMinimized ? "Expand" : "Minimize"}
+                data-testid="button-toggle-prime-rate"
+              >
+                {isPrimeRateMinimized ? (
+                  <Plus className="w-5 h-5 text-purple-300" />
+                ) : (
+                  <Minus className="w-5 h-5 text-purple-300" />
+                )}
+              </button>
+            </div>
+
+            {!isPrimeRateMinimized && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                    <p className="text-purple-300 text-sm mb-1">Current Rate</p>
+                    <p className="text-2xl font-bold text-white">6.875%</p>
+                  </div>
+                  <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                    <p className="text-purple-300 text-sm mb-1">30-Yr Fixed</p>
+                    <p className="text-2xl font-bold text-white">7.125%</p>
+                  </div>
+                  <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                    <p className="text-purple-300 text-sm mb-1">15-Yr Fixed</p>
+                    <p className="text-2xl font-bold text-white">6.625%</p>
+                  </div>
+                </div>
+                <p className="text-purple-300 text-sm">Prime rate information and current mortgage rates</p>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Staff Search Card - Only shown when Staff category is selected */}
         {categoryFilter === 'staff' && showStaffSearch && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
@@ -2203,52 +2245,6 @@ export default function AdminSnapshot() {
               </table>
                 </div>
               </>
-            )}
-          </div>
-        )}
-
-        {/* Prime Rate Card - Only shown when Staff category is selected (hidden for Select and Vendor) */}
-        {categoryFilter === 'staff' && (
-          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-blue-500/20 border border-blue-500/30">
-                  <TrendingUp className="w-5 h-5 text-blue-400" />
-                </div>
-                <h2 className="text-xl font-bold text-white">Prime Rate</h2>
-              </div>
-              <button
-                onClick={() => setIsPrimeRateMinimized(!isPrimeRateMinimized)}
-                className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
-                title={isPrimeRateMinimized ? "Expand" : "Minimize"}
-                data-testid="button-toggle-prime-rate"
-              >
-                {isPrimeRateMinimized ? (
-                  <Plus className="w-5 h-5 text-purple-300" />
-                ) : (
-                  <Minus className="w-5 h-5 text-purple-300" />
-                )}
-              </button>
-            </div>
-
-            {!isPrimeRateMinimized && (
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
-                    <p className="text-purple-300 text-sm mb-1">Current Rate</p>
-                    <p className="text-2xl font-bold text-white">6.875%</p>
-                  </div>
-                  <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
-                    <p className="text-purple-300 text-sm mb-1">30-Yr Fixed</p>
-                    <p className="text-2xl font-bold text-white">7.125%</p>
-                  </div>
-                  <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
-                    <p className="text-purple-300 text-sm mb-1">15-Yr Fixed</p>
-                    <p className="text-2xl font-bold text-white">6.625%</p>
-                  </div>
-                </div>
-                <p className="text-purple-300 text-sm">Prime rate information and current mortgage rates</p>
-              </div>
             )}
           </div>
         )}

@@ -86,10 +86,10 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
       - Cursor states: grab/grabbing for better UX
     - **Staff Category Cards**:
       - **Team Dropdown**: First option is "Select" (default when Staff category is selected)
-      - **Prime Rate Card**: Always shown when Staff category is selected; minimized when Team = "Select", expanded when Team changes to any other value
+      - **Prime Rate Card**: Only shown when Team = "MLO"; displays below chart cards with three boxes showing interest rates (Current Rate 6.875%, 30-Yr Fixed 7.125%, 15-Yr Fixed 6.625%)
       - **Pipeline Card**: Only shown when Team is NOT "Select"; displays active loans, pending items, and monthly volume metrics
       - **Access Card**: Only shown when Team is NOT "Select"; displays system access and permission levels
-      - Card visibility logic: When Team = "Select" → show only minimized Prime Rate card; When Team = any other option → show expanded Prime Rate, Pipeline, and Access cards
+      - Card visibility logic: When Team = "Select" → no additional cards; When Team = "MLO" → Prime Rate card appears below charts; When Team = any other option → show Pipeline and Access cards
     - **Staff Form Card**:
       - PDF Attachment System: Paperclip icon next to minimize button for managing staff documents
       - Displays document count (clickable to open attachment dialog)
