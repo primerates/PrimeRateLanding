@@ -5127,7 +5127,7 @@ export default function AdminSnapshot() {
 
             {!isRevenueFormMinimized && (
               <>
-                {/* First Row: Log Date, Transaction Date, Clear Date, Revenue Category */}
+                {/* First Row: Log Date, Transaction Date, Clear Date, Reference # */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                   <input
                     type="text"
@@ -5153,19 +5153,17 @@ export default function AdminSnapshot() {
                     className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
                     data-testid="input-revenue-clear-date"
                   />
-                  <select
+                  <input
+                    type="text"
                     value={newRevenue.revenueCategory}
                     onChange={(e) => setNewRevenue({ ...newRevenue, revenueCategory: e.target.value })}
-                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                    data-testid="select-revenue-category"
-                  >
-                    <option value="" disabled>Revenue Category</option>
-                    <option value="Select">Select</option>
-                    <option value="TBD">TBD</option>
-                  </select>
+                    placeholder="Reference #"
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors placeholder-slate-500"
+                    data-testid="input-reference-number"
+                  />
                 </div>
 
-                {/* Second Row: Revenue Category, Payment From, Payment Method, Amount */}
+                {/* Second Row: Revenue Category, Revenue Source, Payment Method, Amount */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                   <select
                     value={newRevenue.revenueTerm}
@@ -5182,9 +5180,9 @@ export default function AdminSnapshot() {
                     value={newRevenue.paymentFrom}
                     onChange={(e) => setNewRevenue({ ...newRevenue, paymentFrom: e.target.value })}
                     className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                    data-testid="select-payment-from"
+                    data-testid="select-revenue-source"
                   >
-                    <option value="" disabled>Payment From</option>
+                    <option value="" disabled>Revenue Source</option>
                     <option value="Select">Select</option>
                     <option value="TBD">TBD</option>
                   </select>
@@ -5319,10 +5317,10 @@ export default function AdminSnapshot() {
                       <th 
                         className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                         onClick={() => handleSort('revenueCategory')}
-                        data-testid="header-revenue-category"
+                        data-testid="header-reference-number"
                       >
                         <div className="flex items-center gap-1">
-                          Revenue Category
+                          Reference #
                           <ArrowUpDown className="w-4 h-4" />
                         </div>
                       </th>
@@ -5339,10 +5337,10 @@ export default function AdminSnapshot() {
                       <th 
                         className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                         onClick={() => handleSort('paymentFrom')}
-                        data-testid="header-payment-from"
+                        data-testid="header-revenue-source"
                       >
                         <div className="flex items-center gap-1">
-                          Payment From
+                          Revenue Source
                           <ArrowUpDown className="w-4 h-4" />
                         </div>
                       </th>
