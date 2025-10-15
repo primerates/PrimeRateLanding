@@ -5165,7 +5165,7 @@ export default function AdminSnapshot() {
                   </select>
                 </div>
 
-                {/* Second Row: Revenue Term, Payment From, Payment Method, Amount */}
+                {/* Second Row: Revenue Category, Payment From, Payment Method, Amount */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                   <select
                     value={newRevenue.revenueTerm}
@@ -5173,9 +5173,10 @@ export default function AdminSnapshot() {
                     className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
                     data-testid="select-revenue-term"
                   >
-                    <option value="" disabled>Revenue Term</option>
-                    <option value="Monthly Payment">Monthly Payment</option>
-                    <option value="One-Time Payment">One-Time Payment</option>
+                    <option value="" disabled>Revenue Category</option>
+                    <option value="Select">Select</option>
+                    <option value="First American">First American</option>
+                    <option value="Reltco">Reltco</option>
                   </select>
                   <select
                     value={newRevenue.paymentFrom}
@@ -5328,10 +5329,10 @@ export default function AdminSnapshot() {
                       <th 
                         className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                         onClick={() => handleSort('revenueTerm')}
-                        data-testid="header-revenue-term"
+                        data-testid="header-revenue-category"
                       >
                         <div className="flex items-center gap-1">
-                          Revenue Term
+                          Revenue Category
                           <ArrowUpDown className="w-4 h-4" />
                         </div>
                       </th>
