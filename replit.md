@@ -94,11 +94,12 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
       - Header Controls: Minimize button (Plus/Minus icon) to collapse/expand table, X close button to hide batch list
       - Custom Interactive Scrollbar: Purple/pink gradient indicator with click-to-jump and drag-to-scroll functionality (matching Staff Results Table design)
       - Dynamic Column System: Table columns automatically sync with Search Card field labels and only display columns with active search criteria
-      - Default Columns: Created, Batch 1, Batch Title, Records, Total Cost (always visible), plus Paperclip and Actions columns
+      - Default Columns: Created, Batch 1, Batch Title, Records, Total Cost (always visible and sortable), plus icon-only Paperclip and Actions columns (non-sortable)
       - Conditional Columns: Additional columns (Data Category, States, Loan Category, Loan Purpose, Property Use, Property Type, Lenders, Data Vendors, Mail Vendors, Batch Activity To Date, FICO Range Above, 10 Yr Bond Above, Par Rate Above, Cash Out Above, Batch Financials) only appear when corresponding search field has a non-"Select" dropdown value or input field has a value
-      - Attachment System: Paperclip column showing document count for each batch, clickable to manage batch attachments
+      - Attachment System: Icon-only Paperclip column (no text label) showing document count for each batch, clickable to manage batch attachments
+      - Actions Column: Icon-only column with three-dot (MoreVertical) menu for batch actions (delete, etc.)
       - Supports PDF, JPG, PNG uploads and camera capture (max 5MB) per batch
-      - Sortable columns with visual indicators
+      - Sortable data columns with visual indicators (ArrowUpDown icon)
     - **Dropdown Styling Standard**: All dropdowns use native HTML `<select>` elements with consistent styling: `w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors`. Native `<option>` elements display browser default blue hover effect on grey background with white text. This styling pattern matches across Direct Mail search fields (including Batch Financials: Select, Profitable, Loss) and Staff Role card dropdowns (Payroll Type, Level, Role, Authorization, Access).
     - **Technology Stack**: Recharts for data visualization, Papa Parse for CSV processing.
 
