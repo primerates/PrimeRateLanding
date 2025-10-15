@@ -3145,9 +3145,7 @@ export default function AdminSnapshot() {
                                     value = `$${totalCost.toLocaleString()}`;
                                   } else if (column.key === 'records') {
                                     // Display actual count from excelData array, not the stored records field
-                                    const actualCount = batch.excelData?.length || batch.records || 0;
-                                    console.log(`Batch "${batch.batchTitle}" - excelData length:`, batch.excelData?.length, 'records field:', batch.records, 'total excelData items:', batch.excelData);
-                                    value = actualCount.toLocaleString();
+                                    value = (batch.excelData?.length || batch.records || 0).toLocaleString();
                                   } else if (column.key === 'states' && stateCount > 0) {
                                     return (
                                       <td key={column.key} className="py-3 px-4 text-slate-300">
