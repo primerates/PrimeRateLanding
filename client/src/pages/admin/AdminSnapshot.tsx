@@ -1516,26 +1516,44 @@ export default function AdminSnapshot() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            <button
-              onClick={() => {
-                if (showCreateBatch && isFiltersMinimized) {
-                  setShowBatchWarning(true);
-                } else if (showStaffForm && isFiltersMinimized) {
-                  setShowStaffWarning(true);
-                } else {
-                  setIsFiltersMinimized(!isFiltersMinimized);
-                }
-              }}
-              className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
-              title={isFiltersMinimized ? "Expand" : "Minimize"}
-              data-testid="button-toggle-filters"
-            >
-              {isFiltersMinimized ? (
-                <Plus className="w-5 h-5 text-purple-300" />
-              ) : (
-                <Minus className="w-5 h-5 text-purple-300" />
-              )}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  // Open appropriate search card based on category
+                  if (categoryFilter === 'marketing') {
+                    setIsQueryCardMinimized(false);
+                  } else if (categoryFilter === 'staff') {
+                    setIsSearchMinimized(false);
+                  }
+                  // For financials, we'll add a search card later if needed
+                }}
+                className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                title="Open Search"
+                data-testid="button-open-search"
+              >
+                <Search className="w-5 h-5 text-purple-300" />
+              </button>
+              <button
+                onClick={() => {
+                  if (showCreateBatch && isFiltersMinimized) {
+                    setShowBatchWarning(true);
+                  } else if (showStaffForm && isFiltersMinimized) {
+                    setShowStaffWarning(true);
+                  } else {
+                    setIsFiltersMinimized(!isFiltersMinimized);
+                  }
+                }}
+                className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                title={isFiltersMinimized ? "Expand" : "Minimize"}
+                data-testid="button-toggle-filters"
+              >
+                {isFiltersMinimized ? (
+                  <Plus className="w-5 h-5 text-purple-300" />
+                ) : (
+                  <Minus className="w-5 h-5 text-purple-300" />
+                )}
+              </button>
+            </div>
           </div>
 
           <div 
@@ -1668,6 +1686,14 @@ export default function AdminSnapshot() {
                   ) : (
                     <Minus className="w-5 h-5 text-purple-300" />
                   )}
+                </button>
+                <button
+                  onClick={() => setIsSearchMinimized(true)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title="Close Search"
+                  data-testid="button-close-search-staff"
+                >
+                  <X className="w-5 h-5 text-purple-300" />
                 </button>
               </div>
             </div>
@@ -2691,6 +2717,14 @@ export default function AdminSnapshot() {
                       <p>{isQueryCardMinimized ? 'Expand' : 'Minimize'}</p>
                     </TooltipContent>
                   </TooltipComponent>
+                  <button
+                    onClick={() => setIsQueryCardMinimized(true)}
+                    className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                    title="Close Search"
+                    data-testid="button-close-search-marketing"
+                  >
+                    <X className="w-5 h-5 text-purple-300" />
+                  </button>
                 </div>
               </div>
               {!isQueryCardMinimized && (
