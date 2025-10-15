@@ -202,7 +202,8 @@ export default function AdminSnapshot() {
   const mockStaffData = [
     {
       id: 1,
-      name: 'John Smith',
+      firstName: 'John',
+      lastName: 'Smith',
       area: 'Company',
       magnify: 'MLO',
       rating: 'Review',
@@ -217,7 +218,8 @@ export default function AdminSnapshot() {
     },
     {
       id: 2,
-      name: 'Sarah Johnson',
+      firstName: 'Sarah',
+      lastName: 'Johnson',
       area: 'Branch',
       magnify: 'Processor',
       rating: 'Attendance',
@@ -232,7 +234,8 @@ export default function AdminSnapshot() {
     },
     {
       id: 3,
-      name: 'Michael Chen',
+      firstName: 'Michael',
+      lastName: 'Chen',
       area: 'Region',
       magnify: 'MLO',
       rating: 'Review',
@@ -247,7 +250,8 @@ export default function AdminSnapshot() {
     },
     {
       id: 4,
-      name: 'Emily Davis',
+      firstName: 'Emily',
+      lastName: 'Davis',
       area: 'Partner',
       magnify: 'Team',
       rating: 'Review',
@@ -262,7 +266,8 @@ export default function AdminSnapshot() {
     },
     {
       id: 5,
-      name: 'Robert Martinez',
+      firstName: 'Robert',
+      lastName: 'Martinez',
       area: 'District',
       magnify: 'MLO',
       rating: 'Attendance',
@@ -277,7 +282,8 @@ export default function AdminSnapshot() {
     },
     {
       id: 6,
-      name: 'Jennifer Wilson',
+      firstName: 'Jennifer',
+      lastName: 'Wilson',
       area: 'State',
       magnify: 'Processor',
       rating: 'Review',
@@ -292,7 +298,8 @@ export default function AdminSnapshot() {
     },
     {
       id: 7,
-      name: 'David Brown',
+      firstName: 'David',
+      lastName: 'Brown',
       area: 'City',
       magnify: 'MLO',
       rating: 'Attendance',
@@ -1948,11 +1955,20 @@ export default function AdminSnapshot() {
                 <thead>
                   <tr className="border-b border-purple-500/30">
                     <th 
-                      onClick={() => handleStaffSort('name')}
-                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200"
+                      onClick={() => handleStaffSort('lastName')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
                     >
                       <div className="flex items-center gap-2">
-                        Name
+                        Last Name
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleStaffSort('firstName')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        First Name
                         <ArrowUpDown className="w-4 h-4" />
                       </div>
                     </th>
@@ -2064,7 +2080,10 @@ export default function AdminSnapshot() {
                       className="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors"
                     >
                       <td className="py-3 px-4 font-medium text-white">
-                        {staff.name}
+                        {staff.lastName}
+                      </td>
+                      <td className="py-3 px-4 font-medium text-white">
+                        {staff.firstName}
                       </td>
                       <td className="py-3 px-4 text-slate-300">
                         {staff.area}
