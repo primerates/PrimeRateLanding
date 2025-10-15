@@ -7,6 +7,7 @@ import PropertyForm from '../components/PropertyForm';
 import DeleteConfirmationDialog from '../dialogs/DeleteConfirmationDialog';
 import ChangeSubjectPropertyDialog from '../dialogs/ChangeSubjectPropertyDialog';
 import ValuationDialog from '../dialogs/ValuationDialog';
+import ValuationSummaryDialog from '../dialogs/ValuationSummaryDialog';
 
 interface PropertyTabProps {
   showPropertyAnimation?: boolean;
@@ -54,6 +55,12 @@ const PropertyTab = ({
         propertyIndex: number | null;
         currentValue: string;
     }>({ isOpen: false, service: null, propertyIndex: null, currentValue: '' });
+
+    // Valuation summary dialog state
+    const [valuationSummaryDialog, setValuationSummaryDialog] = useState<{
+        isOpen: boolean;
+        propertyIndex: number | null;
+    }>({ isOpen: false, propertyIndex: null });
 
     // Check if a property type exists in form data
     const hasPropertyType = (type: 'primary' | 'second-home' | 'investment' | 'home-purchase'): boolean => {
@@ -274,6 +281,15 @@ const PropertyTab = ({
         }
     };
 
+    // Valuation summary dialog handlers
+    const openValuationSummary = (propertyIndex: number) => {
+        setValuationSummaryDialog({ isOpen: true, propertyIndex });
+    };
+
+    const closeValuationSummary = () => {
+        setValuationSummaryDialog({ isOpen: false, propertyIndex: null });
+    };
+
     return (
         <div className="space-y-6">
             <PropertyHeader
@@ -330,7 +346,7 @@ const PropertyTab = ({
                             openValuationDialog={openValuationDialog}
                             handleValuationHover={handleValuationHover}
                             handleValuationHoverLeave={handleValuationHoverLeave}
-                            openValuationSummary={() => {}}
+                            openValuationSummary={() => openValuationSummary(originalIndex)}
                             additionalLoans={[]}
                             getDyn={() => undefined}
                             setIsCurrentLoanPreviewOpen={() => {}}
@@ -369,6 +385,12 @@ const PropertyTab = ({
                 onClose={closeValuationDialog}
                 onSave={saveValuation}
                 onSaveAndApply={saveAndApplyValuation}
+            />
+
+            <ValuationSummaryDialog
+                isOpen={valuationSummaryDialog.isOpen}
+                propertyIndex={valuationSummaryDialog.propertyIndex}
+                onClose={closeValuationSummary}
             />
             
             {/* Valuation Hover Tooltip */}
