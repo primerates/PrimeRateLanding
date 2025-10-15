@@ -424,6 +424,7 @@ export default function AdminSnapshot() {
   const [showRevenueTransactionsCard, setShowRevenueTransactionsCard] = useState(false); // Only show when Revenue Search has values
   const [isRevenueTransactionsMinimized, setIsRevenueTransactionsMinimized] = useState(false);
   const [visibleTransactionColumns, setVisibleTransactionColumns] = useState<string[]>(['all']);
+  const [visibleRevenueColumns, setVisibleRevenueColumns] = useState<string[]>(['all']);
   const [isFiltersMinimized, setIsFiltersMinimized] = useState(false); // Always start expanded
   const [areStaffCardsMinimized, setAreStaffCardsMinimized] = useState(false);
   const [isStaffResultsMinimized, setIsStaffResultsMinimized] = useState(false);
@@ -1294,6 +1295,11 @@ export default function AdminSnapshot() {
   const isColumnVisible = (column: string) => {
     if (visibleTransactionColumns.includes('all')) return true;
     return visibleTransactionColumns.includes(column);
+  };
+
+  const isRevenueColumnVisible = (column: string) => {
+    if (visibleRevenueColumns.includes('all')) return true;
+    return visibleRevenueColumns.includes(column);
   };
 
   // Filter expenses based on search parameters
@@ -3692,25 +3698,38 @@ export default function AdminSnapshot() {
                 </button>
                 <button 
                   onClick={() => {
-                    // Calculate visible columns based on filled search fields
+                    // Calculate visible columns based on filled search fields with proper mapping
                     const visibleCols: string[] = [];
-                    if (revenueSearchParams.purpose) visibleCols.push('logDate'); // purpose maps to Log Date
+                    
+                    // Map revenue search params to actual column names
+                    // Row 1 search fields (based on the search card structure):
+                    // - Log Date field uses 'purpose' param → maps to 'logDate' column
+                    // - Transaction Date field uses 'paymentDate' param → maps to 'transactionDate' column  
+                    // - Clear Date field uses 'term' param → maps to 'clearanceDate' column
+                    // - Reference # field uses 'referenceNum' param → maps to 'paymentForm' column
+                    // Row 2 search fields:
+                    // - Revenue Category field uses 'source' param → maps to 'revenueCategory' column
+                    // - Revenue Source field uses 'status' param → maps to 'revenueTerm' column
+                    // - Payment Method field uses 'paymentMethod' param → maps to 'paymentFrom' column
+                    // - Amount field uses 'amount' param → maps to 'revenue' column
+                    
+                    if (revenueSearchParams.purpose) visibleCols.push('logDate');
                     if (revenueSearchParams.paymentDate) visibleCols.push('transactionDate');
-                    if (revenueSearchParams.term) visibleCols.push('clearanceDate'); // term maps to Clear Date
-                    if (revenueSearchParams.source) visibleCols.push('revenueCategory'); // source maps to Revenue Category
-                    if (revenueSearchParams.status) visibleCols.push('revenueTerm'); // status maps to Revenue Source
-                    if (revenueSearchParams.paymentMethod) visibleCols.push('paymentFrom'); // paymentMethod maps to Payment Method
-                    if (revenueSearchParams.amount) visibleCols.push('revenue'); // amount maps to Amount
-                    if (revenueSearchParams.referenceNum) visibleCols.push('paymentForm'); // referenceNum maps to Reference #
+                    if (revenueSearchParams.term) visibleCols.push('clearanceDate');
+                    if (revenueSearchParams.referenceNum) visibleCols.push('paymentForm');
+                    if (revenueSearchParams.source) visibleCols.push('revenueCategory');
+                    if (revenueSearchParams.status) visibleCols.push('revenueTerm');
+                    if (revenueSearchParams.paymentMethod) visibleCols.push('paymentFrom');
+                    if (revenueSearchParams.amount) visibleCols.push('revenue');
                     
                     // Always show Actions column
                     visibleCols.push('actions');
                     
                     // If no fields filled, show all columns
                     if (visibleCols.length === 1) { // only 'actions' was added
-                      setVisibleTransactionColumns(['all']);
+                      setVisibleRevenueColumns(['all']);
                     } else {
-                      setVisibleTransactionColumns(visibleCols);
+                      setVisibleRevenueColumns(visibleCols);
                     }
                     
                     // Show the Transactions card
@@ -5387,7 +5406,7 @@ export default function AdminSnapshot() {
                 <table className="w-full min-w-max">
                   <thead>
                     <tr className="border-b border-purple-500/30">
-                      {isColumnVisible('logDate') && (
+                      {isRevenueColumnVisible('logDate') && (
                         <th 
                           className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                           onClick={() => handleSort('logDate')}
@@ -5399,7 +5418,7 @@ export default function AdminSnapshot() {
                           </div>
                         </th>
                       )}
-                      {isColumnVisible('transactionDate') && (
+                      {isRevenueColumnVisible('transactionDate') && (
                         <th 
                           className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                           onClick={() => handleSort('transactionDate')}
@@ -5411,7 +5430,7 @@ export default function AdminSnapshot() {
                           </div>
                         </th>
                       )}
-                      {isColumnVisible('clearanceDate') && (
+                      {isRevenueColumnVisible('clearanceDate') && (
                         <th 
                           className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                           onClick={() => handleSort('clearanceDate')}
@@ -5423,7 +5442,7 @@ export default function AdminSnapshot() {
                           </div>
                         </th>
                       )}
-                      {isColumnVisible('paymentForm') && (
+                      {isRevenueColumnVisible('paymentForm') && (
                         <th 
                           className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                           onClick={() => handleSort('paymentForm')}
@@ -5435,7 +5454,7 @@ export default function AdminSnapshot() {
                           </div>
                         </th>
                       )}
-                      {isColumnVisible('revenueCategory') && (
+                      {isRevenueColumnVisible('revenueCategory') && (
                         <th 
                           className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                           onClick={() => handleSort('revenueCategory')}
@@ -5447,7 +5466,7 @@ export default function AdminSnapshot() {
                           </div>
                         </th>
                       )}
-                      {isColumnVisible('revenueTerm') && (
+                      {isRevenueColumnVisible('revenueTerm') && (
                         <th 
                           className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                           onClick={() => handleSort('revenueTerm')}
@@ -5459,7 +5478,7 @@ export default function AdminSnapshot() {
                           </div>
                         </th>
                       )}
-                      {isColumnVisible('paymentFrom') && (
+                      {isRevenueColumnVisible('paymentFrom') && (
                         <th 
                           className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                           onClick={() => handleSort('paymentFrom')}
@@ -5471,7 +5490,7 @@ export default function AdminSnapshot() {
                           </div>
                         </th>
                       )}
-                      {isColumnVisible('revenue') && (
+                      {isRevenueColumnVisible('revenue') && (
                         <th 
                           className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                           onClick={() => handleSort('revenue')}
@@ -5486,7 +5505,7 @@ export default function AdminSnapshot() {
                       <th className="text-center text-purple-300 font-semibold py-3 px-2">
                         <Paperclip className="w-4 h-4 mx-auto" />
                       </th>
-                      {isColumnVisible('actions') && (
+                      {isRevenueColumnVisible('actions') && (
                         <th className="text-left text-purple-300 font-semibold py-3 px-2">
                           Actions
                         </th>
@@ -5500,14 +5519,14 @@ export default function AdminSnapshot() {
                         className="border-b border-purple-500/10 hover:bg-slate-700/30 transition-colors"
                         data-testid={`revenue-row-${entry.id}`}
                       >
-                        {isColumnVisible('logDate') && <td className="py-3 px-2 text-purple-200">{entry.logDate}</td>}
-                        {isColumnVisible('transactionDate') && <td className="py-3 px-2 text-purple-200">{entry.transactionDate}</td>}
-                        {isColumnVisible('clearanceDate') && <td className="py-3 px-2 text-purple-200">{entry.clearanceDate}</td>}
-                        {isColumnVisible('paymentForm') && <td className="py-3 px-2 text-purple-200">{entry.paymentForm}</td>}
-                        {isColumnVisible('revenueCategory') && <td className="py-3 px-2 text-purple-200">{entry.revenueCategory}</td>}
-                        {isColumnVisible('revenueTerm') && <td className="py-3 px-2 text-purple-200">{entry.revenueTerm || '-'}</td>}
-                        {isColumnVisible('paymentFrom') && <td className="py-3 px-2 text-purple-200">{entry.paymentFrom}</td>}
-                        {isColumnVisible('revenue') && <td className="py-3 px-2 text-emerald-500">{entry.revenue}</td>}
+                        {isRevenueColumnVisible('logDate') && <td className="py-3 px-2 text-purple-200">{entry.logDate}</td>}
+                        {isRevenueColumnVisible('transactionDate') && <td className="py-3 px-2 text-purple-200">{entry.transactionDate}</td>}
+                        {isRevenueColumnVisible('clearanceDate') && <td className="py-3 px-2 text-purple-200">{entry.clearanceDate}</td>}
+                        {isRevenueColumnVisible('paymentForm') && <td className="py-3 px-2 text-purple-200">{entry.paymentForm}</td>}
+                        {isRevenueColumnVisible('revenueCategory') && <td className="py-3 px-2 text-purple-200">{entry.revenueCategory}</td>}
+                        {isRevenueColumnVisible('revenueTerm') && <td className="py-3 px-2 text-purple-200">{entry.revenueTerm || '-'}</td>}
+                        {isRevenueColumnVisible('paymentFrom') && <td className="py-3 px-2 text-purple-200">{entry.paymentFrom}</td>}
+                        {isRevenueColumnVisible('revenue') && <td className="py-3 px-2 text-emerald-500">{entry.revenue}</td>}
                         <td className="py-3 px-2 text-center">
                           <AttachmentIndicator 
                             transactionId={entry.id} 
@@ -5518,7 +5537,7 @@ export default function AdminSnapshot() {
                             }}
                           />
                         </td>
-                        {isColumnVisible('actions') && (
+                        {isRevenueColumnVisible('actions') && (
                           <td className="py-3 px-2 relative">
                             <button
                               onClick={() => setOpenActionMenu(openActionMenu === entry.id ? null : entry.id)}
