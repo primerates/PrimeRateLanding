@@ -9,7 +9,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { ArrowLeft, Plus, Minus, User, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, Plus, Minus, User, Sun, Moon, Palette, X, Check } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 
 // Dashboard shortcuts menu items
@@ -28,6 +28,95 @@ const dashboardMenuItems = [
   { label: 'Settings', path: '/admin/add-comment' },
 ];
 
+// Theme presets
+const themes = {
+  professional: {
+    name: 'Professional Dashboard',
+    description: 'Clean, modern blue and slate design',
+    preview: {
+      primary: 'from-blue-600 to-slate-700',
+      secondary: 'from-slate-100 to-blue-50',
+      accent: 'bg-blue-600'
+    },
+    colors: {
+      pageGradient: 'from-slate-900 via-blue-900 to-slate-900',
+      cardBg: 'bg-slate-800/50',
+      inputBg: 'bg-slate-700/50 text-white border-blue-500/30 focus:border-blue-500',
+      labelColor: 'text-blue-200',
+      titleGradient: 'bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent',
+      borderAccent: 'border-l-blue-500'
+    }
+  },
+  cyberpunk: {
+    name: 'Cyberpunk',
+    description: 'Futuristic purple, pink, and cyan',
+    preview: {
+      primary: 'from-cyan-400 to-purple-500',
+      secondary: 'from-purple-900 to-pink-900',
+      accent: 'bg-purple-600'
+    },
+    colors: {
+      pageGradient: 'from-slate-900 via-purple-900 to-slate-900',
+      cardBg: 'bg-slate-800/50',
+      inputBg: 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500',
+      labelColor: 'text-purple-200',
+      titleGradient: 'bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent',
+      borderAccent: 'border-l-purple-500'
+    }
+  },
+  navy: {
+    name: 'Professional Navy',
+    description: 'Corporate light theme with navy accents',
+    preview: {
+      primary: 'from-blue-600 to-blue-800',
+      secondary: 'from-slate-100 to-blue-50',
+      accent: 'bg-blue-900'
+    },
+    colors: {
+      pageGradient: 'from-slate-900 via-blue-900 to-slate-900',
+      cardBg: 'bg-slate-800/50',
+      inputBg: 'bg-slate-700/50 text-white border-blue-500/30 focus:border-blue-500',
+      labelColor: 'text-blue-200',
+      titleGradient: 'bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent',
+      borderAccent: 'border-l-blue-600'
+    }
+  },
+  emerald: {
+    name: 'Emerald Forest',
+    description: 'Nature-inspired green and teal',
+    preview: {
+      primary: 'from-emerald-500 to-teal-600',
+      secondary: 'from-slate-100 to-emerald-50',
+      accent: 'bg-emerald-600'
+    },
+    colors: {
+      pageGradient: 'from-slate-900 via-emerald-900 to-slate-900',
+      cardBg: 'bg-slate-800/50',
+      inputBg: 'bg-slate-700/50 text-white border-emerald-500/30 focus:border-emerald-500',
+      labelColor: 'text-emerald-200',
+      titleGradient: 'bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent',
+      borderAccent: 'border-l-emerald-500'
+    }
+  },
+  sunset: {
+    name: 'Sunset Blaze',
+    description: 'Warm orange and red tones',
+    preview: {
+      primary: 'from-orange-500 to-red-600',
+      secondary: 'from-slate-100 to-orange-50',
+      accent: 'bg-orange-600'
+    },
+    colors: {
+      pageGradient: 'from-slate-900 via-orange-900 to-slate-900',
+      cardBg: 'bg-slate-800/50',
+      inputBg: 'bg-slate-700/50 text-white border-orange-500/30 focus:border-orange-500',
+      labelColor: 'text-orange-200',
+      titleGradient: 'bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent',
+      borderAccent: 'border-l-orange-500'
+    }
+  }
+};
+
 export default function AdminLibrary() {
   const [, setLocation] = useLocation();
   const [isBorrowerOpen, setIsBorrowerOpen] = useState(true);
@@ -38,6 +127,10 @@ export default function AdminLibrary() {
   const [cardBrightness, setCardBrightness] = useState(50); // 0-100 scale for cards
   const [activeControl, setActiveControl] = useState<'page' | 'card'>('page'); // Which element to control
   const [isSettingsSaved, setIsSettingsSaved] = useState(false); // Track if settings are saved
+  
+  // Theme settings state
+  const [selectedTheme, setSelectedTheme] = useState<keyof typeof themes>('cyberpunk');
+  const [isThemeSettingsOpen, setIsThemeSettingsOpen] = useState(false);
 
   // Form state
   const [firstName, setFirstName] = useState('');
@@ -125,9 +218,12 @@ export default function AdminLibrary() {
     return formatted;
   };
 
+  // Get current theme colors
+  const currentThemeColors = themes[selectedTheme].colors;
+
   // Calculate background colors based on PAGE brightness (0=darkest, 100=brightest)
   const getBackgroundGradient = () => {
-    if (!isLightMode) return 'from-slate-900 via-purple-900 to-slate-900';
+    if (!isLightMode) return currentThemeColors.pageGradient;
     
     // Map brightness to appropriate slate shades with smoother transitions
     if (pageBrightness >= 80) return 'from-slate-50 via-purple-50 to-slate-100';
@@ -148,24 +244,24 @@ export default function AdminLibrary() {
 
   // Calculate label colors based on CARD brightness
   const getLabelColor = () => {
-    if (!isLightMode) return 'text-purple-200';
+    if (!isLightMode) return currentThemeColors.labelColor;
     // Always keep labels dark in light mode for maximum readability
     return 'text-slate-700 font-medium';
   };
 
   // Calculate section title colors based on CARD brightness (for "Borrower" and "Current Residence")
   const getSectionTitleClasses = () => {
-    if (!isLightMode) return 'bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent';
+    if (!isLightMode) return currentThemeColors.titleGradient;
     // In light mode, keep gradient at 15% or above, switch to dark text below 15%
     if (cardBrightness >= 15) {
-      return 'bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent';
+      return currentThemeColors.titleGradient;
     }
     return 'text-slate-800 font-bold';
   };
 
   // Calculate card background based on CARD brightness
   const getCardBackground = () => {
-    if (!isLightMode) return 'bg-slate-800/50';
+    if (!isLightMode) return currentThemeColors.cardBg;
     if (cardBrightness >= 80) return 'bg-white/80';
     if (cardBrightness >= 60) return 'bg-slate-50/80';
     if (cardBrightness >= 40) return 'bg-slate-100/80';
@@ -178,7 +274,7 @@ export default function AdminLibrary() {
 
   // Calculate input background based on CARD brightness
   const getInputBackground = () => {
-    if (!isLightMode) return 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500';
+    if (!isLightMode) return currentThemeColors.inputBg;
     if (cardBrightness >= 80) return 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500';
     if (cardBrightness >= 60) return 'bg-white text-slate-900 border-purple-300 focus:border-purple-500';
     if (cardBrightness >= 40) return 'bg-slate-50 text-slate-900 border-purple-400 focus:border-purple-500';
@@ -266,6 +362,14 @@ export default function AdminLibrary() {
           </div>
           <div className="flex items-center gap-3">
             <button
+              onClick={() => setIsThemeSettingsOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all hover:scale-105"
+              data-testid="button-theme-settings"
+            >
+              <Palette className="w-5 h-5" />
+              <span className="font-semibold">Theme Settings</span>
+            </button>
+            <button
               onClick={() => setIsLightMode(!isLightMode)}
               className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all ${
                 isLightMode
@@ -334,10 +438,10 @@ export default function AdminLibrary() {
         </div>
 
         {/* Main Content - Borrower Card with Dashboard Theme */}
-        <Card className={`backdrop-blur-xl border-l-4 hover:border-purple-400 focus-within:border-purple-400 transition-all duration-300 shadow-2xl ${getCardBackground()} ${
+        <Card className={`backdrop-blur-xl border-l-4 transition-all duration-300 shadow-2xl ${getCardBackground()} ${
           isLightMode
             ? 'border-l-purple-600'
-            : 'border-l-purple-500'
+            : currentThemeColors.borderAccent
         }`}>
             <Collapsible open={isBorrowerOpen} onOpenChange={setIsBorrowerOpen}>
               <CardHeader className={`border-b ${isLightMode ? 'border-purple-200' : 'border-purple-500/20'}`}>
@@ -817,6 +921,115 @@ export default function AdminLibrary() {
             </Collapsible>
           </Card>
       </div>
+
+      {/* Theme Settings Modal */}
+      {isThemeSettingsOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold mb-1">Theme Settings</h2>
+                  <p className="text-blue-100 text-sm">Choose your preferred visual style</p>
+                </div>
+                <button
+                  onClick={() => setIsThemeSettingsOpen(false)}
+                  className="bg-white/20 hover:bg-white/30 rounded-full p-2 transition-all"
+                  data-testid="button-close-theme-settings"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            {/* Theme Options */}
+            <div className="p-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                {Object.entries(themes).map(([key, theme]) => {
+                  const isSelected = selectedTheme === key;
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => setSelectedTheme(key as keyof typeof themes)}
+                      className={`relative p-6 rounded-xl border-2 transition-all duration-300 hover:scale-105 ${
+                        isSelected
+                          ? 'border-blue-600 shadow-xl ring-4 ring-blue-200'
+                          : 'border-slate-200 hover:border-blue-300 shadow-md'
+                      }`}
+                      data-testid={`theme-option-${key}`}
+                    >
+                      {/* Preview */}
+                      <div className="mb-4 relative overflow-hidden rounded-lg h-32">
+                        {/* Background */}
+                        <div className={`absolute inset-0 bg-gradient-to-br ${theme.preview.secondary}`}></div>
+                        
+                        {/* Header bar */}
+                        <div className={`absolute top-0 left-0 right-0 h-10 bg-gradient-to-r ${theme.preview.primary}`}></div>
+                        
+                        {/* Card elements */}
+                        <div className="absolute top-14 left-3 right-3 space-y-2">
+                          <div className="bg-white rounded-md h-4 w-3/4 shadow-sm"></div>
+                          <div className="bg-white rounded-md h-4 w-1/2 shadow-sm"></div>
+                        </div>
+                        
+                        {/* Accent element */}
+                        <div className={`absolute bottom-3 right-3 w-12 h-12 ${theme.preview.accent} rounded-lg shadow-md`}></div>
+                      </div>
+
+                      {/* Theme Info */}
+                      <div className="text-left">
+                        <h3 className="font-bold text-lg text-slate-800 mb-1 flex items-center justify-between">
+                          {theme.name}
+                          {isSelected && (
+                            <div className="bg-blue-600 text-white rounded-full p-1">
+                              <Check className="w-4 h-4" />
+                            </div>
+                          )}
+                        </h3>
+                        <p className="text-sm text-slate-600">{theme.description}</p>
+                      </div>
+
+                      {/* Selected indicator */}
+                      {isSelected && (
+                        <div className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                          ACTIVE
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Info Box */}
+              <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex gap-3">
+                  <Palette className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm text-slate-700">
+                      <strong className="text-blue-900">Your theme preference</strong> will be applied to the borrower card and change the color scheme across the dashboard.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="bg-slate-50 p-6 border-t border-slate-200 flex justify-between items-center">
+              <p className="text-sm text-slate-600">
+                Currently selected: <strong className="text-slate-900">{themes[selectedTheme].name}</strong>
+              </p>
+              <button
+                onClick={() => setIsThemeSettingsOpen(false)}
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all"
+                data-testid="button-done-theme-settings"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

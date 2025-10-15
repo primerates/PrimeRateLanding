@@ -57,11 +57,17 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Comments & Posts Management**: Manages client testimonials and internal posts with real-time preview, statistics, and sortable tables.
 - **Loan Management System**: Manages client loan applications, supporting multiple loan categories, rate configurations, and quote generation.
 - **PDF Document Extraction System (Quote Tile)**: Supports drag-and-drop PDF upload for various document types (Paystub, Bank Statement, Tax Return, Mortgage Statement, Credit Report) using AWS Textract for OCR and Anthropic Claude for AI-powered structured data extraction.
+- **Library/Testing Sandbox**: Testing environment featuring:
+    - **Theme Settings System**: Self-contained color scheme selector with 5 preset themes (Professional Dashboard, Cyberpunk, Professional Navy, Emerald Forest, Sunset Blaze)
+    - **Theme Preview Cards**: Visual previews showing gradient colors, backgrounds, and accent elements for each theme
+    - **Real-time Application**: Selected themes instantly update borrower card colors including page gradients, card backgrounds, input styles, label colors, title gradients, and border accents
+    - **Light/Dark Mode Toggle**: Works in conjunction with theme settings and brightness controls
+    - **Brightness Controls**: Separate sliders for page and card brightness in light mode
 - **Snapshot Analytics Dashboard**: Comprehensive dashboard for financial analytics, marketing campaign management, expense/revenue tracking, and data visualization.
     - **Key Features**: Interactive filters, real-time financial metrics, conditional card displays, customizable search cards with dynamic column systems for results tables.
     - **Design**: Purple-to-pink gradient scrollbars, themed icons, consistent dropdown styling across all admin features.
     - **Functionality**: Transaction Attachments System for expenses/revenue, PDF attachment system for staff and batches.
-    - **Search Card System**:
+    - **Search Card System** (Financials):
       - **Manual Access**: Magnifying glass icon in Performance card opens category-specific search cards
       - **Conflict Prevention**: If expense/revenue log form is open, magnifying glass displays warning instead of opening search card
       - **Expense Search Card** (Financials/Expense): Search icon, 12 fields across 3 rows - Date, Amount, Payee, Payment For, Invoice #, Check #, Payment Method, Payment Term, Vendor, Services, Area, Role

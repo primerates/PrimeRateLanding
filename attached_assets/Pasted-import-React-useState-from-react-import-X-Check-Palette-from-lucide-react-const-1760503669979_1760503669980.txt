@@ -1,0 +1,195 @@
+import React, { useState } from 'react';
+import { X, Check, Palette } from 'lucide-react';
+
+const themes = {
+  professional: {
+    name: 'Professional Dashboard',
+    description: 'Clean, modern blue and slate design',
+    preview: {
+      primary: 'from-blue-600 to-slate-700',
+      secondary: 'from-slate-100 to-blue-50',
+      accent: 'bg-blue-600'
+    }
+  },
+  cyberpunk: {
+    name: 'Cyberpunk',
+    description: 'Futuristic purple, pink, and cyan',
+    preview: {
+      primary: 'from-cyan-400 to-purple-500',
+      secondary: 'from-purple-900 to-pink-900',
+      accent: 'bg-purple-600'
+    }
+  },
+  navy: {
+    name: 'Professional Navy',
+    description: 'Corporate light theme with navy accents',
+    preview: {
+      primary: 'from-blue-600 to-blue-800',
+      secondary: 'from-slate-100 to-blue-50',
+      accent: 'bg-blue-900'
+    }
+  }
+};
+
+export default function ThemeSettings({ currentTheme = 'professional', onThemeChange, onClose }) {
+  const [selectedTheme, setSelectedTheme] = useState(currentTheme);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleThemeSelect = (themeKey) => {
+    setSelectedTheme(themeKey);
+    if (onThemeChange) {
+      onThemeChange(themeKey);
+    }
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    if (onClose) {
+      onClose();
+    }
+  };
+
+  // Button to open settings
+  const SettingsButton = () => (
+    <button
+      onClick={() => setIsOpen(true)}
+      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all hover:scale-105"
+    >
+      <Palette className="w-5 h-5" />
+      <span className="font-semibold">Theme Settings</span>
+    </button>
+  );
+
+  // Modal/Panel
+  const SettingsPanel = () => (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-bold mb-1">Theme Settings</h2>
+              <p className="text-blue-100 text-sm">Choose your preferred visual style</p>
+            </div>
+            <button
+              onClick={handleClose}
+              className="bg-white/20 hover:bg-white/30 rounded-full p-2 transition-all"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+
+        {/* Theme Options */}
+        <div className="p-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {Object.entries(themes).map(([key, theme]) => {
+              const isSelected = selectedTheme === key;
+              return (
+                <button
+                  key={key}
+                  onClick={() => handleThemeSelect(key)}
+                  className={`relative p-6 rounded-xl border-2 transition-all duration-300 hover:scale-105 ${
+                    isSelected
+                      ? 'border-blue-600 shadow-xl ring-4 ring-blue-200'
+                      : 'border-slate-200 hover:border-blue-300 shadow-md'
+                  }`}
+                >
+                  {/* Preview */}
+                  <div className="mb-4 relative overflow-hidden rounded-lg h-32">
+                    {/* Background */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${theme.preview.secondary}`}></div>
+                    
+                    {/* Header bar */}
+                    <div className={`absolute top-0 left-0 right-0 h-10 bg-gradient-to-r ${theme.preview.primary}`}></div>
+                    
+                    {/* Card elements */}
+                    <div className="absolute top-14 left-3 right-3 space-y-2">
+                      <div className="bg-white rounded-md h-4 w-3/4 shadow-sm"></div>
+                      <div className="bg-white rounded-md h-4 w-1/2 shadow-sm"></div>
+                    </div>
+                    
+                    {/* Accent element */}
+                    <div className={`absolute bottom-3 right-3 w-12 h-12 ${theme.preview.accent} rounded-lg shadow-md`}></div>
+                  </div>
+
+                  {/* Theme Info */}
+                  <div className="text-left">
+                    <h3 className="font-bold text-lg text-slate-800 mb-1 flex items-center justify-between">
+                      {theme.name}
+                      {isSelected && (
+                        <div className="bg-blue-600 text-white rounded-full p-1">
+                          <Check className="w-4 h-4" />
+                        </div>
+                      )}
+                    </h3>
+                    <p className="text-sm text-slate-600">{theme.description}</p>
+                  </div>
+
+                  {/* Selected indicator */}
+                  {isSelected && (
+                    <div className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                      ACTIVE
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Info Box */}
+          <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex gap-3">
+              <Palette className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm text-slate-700">
+                  <strong className="text-blue-900">Your theme preference</strong> will be applied across all pages and tools in your dashboard.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="bg-slate-50 p-6 border-t border-slate-200 flex justify-between items-center">
+          <p className="text-sm text-slate-600">
+            Currently selected: <strong className="text-slate-900">{themes[selectedTheme].name}</strong>
+          </p>
+          <button
+            onClick={handleClose}
+            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all"
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <SettingsButton />
+      {isOpen && <SettingsPanel />}
+    </>
+  );
+}
+
+// Usage Example (commented out for component):
+/*
+function App() {
+  const [currentTheme, setCurrentTheme] = useState('professional');
+
+  return (
+    <div>
+      <ThemeSettings 
+        currentTheme={currentTheme}
+        onThemeChange={(theme) => {
+          setCurrentTheme(theme);
+          console.log('Theme changed to:', theme);
+          // Here you would apply the theme to your app
+        }}
+      />
+    </div>
+  );
+}
+*/
