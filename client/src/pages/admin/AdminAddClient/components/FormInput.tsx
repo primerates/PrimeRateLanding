@@ -13,6 +13,7 @@ interface FormInputProps {
   maxLength?: number;
   required?: boolean;
   readOnly?: boolean;
+  disabled?: boolean;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
@@ -28,6 +29,7 @@ const FormInput = ({
   maxLength,
   required = false,
   readOnly = false,
+  disabled = false,
   onBlur
 }: FormInputProps) => {
   
@@ -50,7 +52,8 @@ const FormInput = ({
         placeholder={placeholder}
         maxLength={maxLength}
         readOnly={readOnly}
-        className={readOnly ? 'bg-muted' : ''}
+        disabled={disabled}
+        className={readOnly || disabled ? 'bg-muted' : ''}
         data-testid={testId}
       />
     </div>

@@ -21,6 +21,7 @@ interface FormSelectProps {
   infoDescription?: string;
   onInfoClick?: () => void;
   infoButtonTestId?: string;
+  disabled?: boolean;
 }
 
 const FormSelect = ({
@@ -37,7 +38,8 @@ const FormSelect = ({
   infoTitle = 'Information',
   infoDescription = '',
   onInfoClick,
-  infoButtonTestId
+  infoButtonTestId,
+  disabled = false
 }: FormSelectProps) => {
   return (
     <div className={className}>
@@ -66,10 +68,11 @@ const FormSelect = ({
       <Select
         value={value}
         onValueChange={onValueChange}
+        disabled={disabled}
       >
         <SelectTrigger
           data-testid={testId}
-          className={getOptionColor ? getOptionColor(value) : ''}
+          className={`${getOptionColor ? getOptionColor(value) : ''} ${disabled ? 'bg-muted' : ''}`}
         >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>

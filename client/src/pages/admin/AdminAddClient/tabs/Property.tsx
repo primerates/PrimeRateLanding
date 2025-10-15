@@ -61,6 +61,43 @@ const PropertyTab = ({
         return currentProperties.some(property => property.use === type);
     };
 
+    // Auto-copy borrower residence address to primary residence property
+    const autoCopyBorrowerAddressToPrimaryProperty = () => {
+        const borrowerAddress = form.getValues('borrower.residenceAddress');
+        const properties = form.watch('property.properties') || [];
+        const primaryPropertyIndex = properties.findIndex(p => p.use === 'primary');
+        
+        if (primaryPropertyIndex >= 0 && borrowerAddress) {
+            form.setValue(`property.properties.${primaryPropertyIndex}.address`, {
+                street: borrowerAddress.street || '',
+                unit: borrowerAddress.unit || '',
+                city: borrowerAddress.city || '',
+                state: borrowerAddress.state || '',
+                zip: borrowerAddress.zip || '',
+                county: borrowerAddress.county || ''
+            });
+        }
+    };
+
+    // Auto-copy co-borrower residence address to co-borrower property
+    const autoCopyCoBorrowerAddressToProperty = () => {
+        const coBorrowerAddress = form.getValues('coBorrower.residenceAddress');
+        const properties = form.watch('property.properties') || [];
+        // Find a non-primary property for co-borrower (second home or investment)
+        const coBorrowerPropertyIndex = properties.findIndex(p => p.use !== 'primary');
+        
+        if (coBorrowerPropertyIndex >= 0 && coBorrowerAddress) {
+            form.setValue(`property.properties.${coBorrowerPropertyIndex}.address`, {
+                street: coBorrowerAddress.street || '',
+                unit: coBorrowerAddress.unit || '',
+                city: coBorrowerAddress.city || '',
+                state: coBorrowerAddress.state || '',
+                zip: coBorrowerAddress.zip || '',
+                county: coBorrowerAddress.county || ''
+            });
+        }
+    };
+
     // Handle property type checkbox changes
     const handlePropertyTypeChange = (checked: boolean, type: 'primary' | 'second-home' | 'investment' | 'home-purchase') => {
         if (!checked) {
@@ -92,6 +129,26 @@ const PropertyTab = ({
                     appraisedValue: ''
                 };
                 form.setValue('property.properties', [...currentProperties, newProperty]);
+                
+                // Auto-expand the newly created property card
+                setPropertyCardStates(prev => ({ ...prev, [newProperty.id]: true }));
+                
+                // Auto-copy address data when properties are selected
+                if (type === 'primary') {
+                    setTimeout(() => {
+                        const borrowerAddress = form.getValues('borrower.residenceAddress');
+                        if (borrowerAddress && (borrowerAddress.street || borrowerAddress.city || borrowerAddress.state)) {
+                            autoCopyBorrowerAddressToPrimaryProperty();
+                        }
+                    }, 100);
+                } else if (type === 'second-home' || type === 'investment') {
+                    setTimeout(() => {
+                        const coBorrowerAddress = form.getValues('coBorrower.residenceAddress');
+                        if (coBorrowerAddress && (coBorrowerAddress.street || coBorrowerAddress.city || coBorrowerAddress.state)) {
+                            autoCopyCoBorrowerAddressToProperty();
+                        }
+                    }, 100);
+                }
             }
         }
     };
@@ -269,7 +326,7 @@ const PropertyTab = ({
                                 handleDeleteProperty(originalIndex, propertyTitle);
                             }}
                             showAnimation={showPropertyAnimation}
-                            getValueComparisonColor={() => ({ shadowColor: 'none' as const })}
+                            getValueComparisonColor={() => ({ iconClass: 'text-black hover:text-gray-600', shadowColor: 'none' as const })}
                             openValuationDialog={openValuationDialog}
                             handleValuationHover={handleValuationHover}
                             handleValuationHoverLeave={handleValuationHoverLeave}
