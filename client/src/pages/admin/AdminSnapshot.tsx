@@ -3296,6 +3296,30 @@ export default function AdminSnapshot() {
                 {/* Row 1 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                   <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Log Date</label>
+                    <input
+                      type="text"
+                      placeholder="MM/DD/YYYY"
+                      value={financialsSearchParams.role}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (value.length >= 2) {
+                          value = value.slice(0, 2) + '/' + value.slice(2);
+                        }
+                        if (value.length >= 5) {
+                          value = value.slice(0, 5) + '/' + value.slice(5);
+                        }
+                        if (value.length > 10) {
+                          value = value.slice(0, 10);
+                        }
+                        setFinancialsSearchParams({ ...financialsSearchParams, role: value });
+                      }}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                      data-testid="input-financials-role"
+                    />
+                  </div>
+
+                  <div>
                     <label className="block text-sm font-medium mb-2 text-purple-300">Transaction Date</label>
                     <input
                       type="text"
@@ -3320,6 +3344,30 @@ export default function AdminSnapshot() {
                   </div>
 
                   <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Clear Date</label>
+                    <input
+                      type="text"
+                      placeholder="MM/DD/YYYY"
+                      value={financialsSearchParams.services}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (value.length >= 2) {
+                          value = value.slice(0, 2) + '/' + value.slice(2);
+                        }
+                        if (value.length >= 5) {
+                          value = value.slice(0, 5) + '/' + value.slice(5);
+                        }
+                        if (value.length > 10) {
+                          value = value.slice(0, 10);
+                        }
+                        setFinancialsSearchParams({ ...financialsSearchParams, services: value });
+                      }}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                      data-testid="input-financials-services"
+                    />
+                  </div>
+
+                  <div>
                     <label className="block text-sm font-medium mb-2 text-purple-300">Amount</label>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">$</span>
@@ -3340,31 +3388,6 @@ export default function AdminSnapshot() {
                         data-testid="input-financials-amount"
                       />
                     </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Payee</label>
-                    <input
-                      type="text"
-                      placeholder="Enter payee name"
-                      value={financialsSearchParams.payee}
-                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, payee: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
-                      data-testid="input-financials-payee"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Category</label>
-                    <select
-                      value={financialsSearchParams.paymentFor}
-                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, paymentFor: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                      data-testid="select-financials-payment-for"
-                    >
-                      <option value="">Select</option>
-                      <option value="tbd">TBD</option>
-                    </select>
                   </div>
                 </div>
 
@@ -3430,40 +3453,16 @@ export default function AdminSnapshot() {
                 {/* Row 3 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Paid To</label>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Category</label>
                     <select
-                      value={financialsSearchParams.vendor}
-                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, vendor: e.target.value })}
+                      value={financialsSearchParams.paymentFor}
+                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, paymentFor: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                      data-testid="select-financials-vendor"
+                      data-testid="select-financials-payment-for"
                     >
                       <option value="">Select</option>
                       <option value="tbd">TBD</option>
                     </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Clear Date</label>
-                    <input
-                      type="text"
-                      placeholder="MM/DD/YYYY"
-                      value={financialsSearchParams.services}
-                      onChange={(e) => {
-                        let value = e.target.value.replace(/\D/g, '');
-                        if (value.length >= 2) {
-                          value = value.slice(0, 2) + '/' + value.slice(2);
-                        }
-                        if (value.length >= 5) {
-                          value = value.slice(0, 5) + '/' + value.slice(5);
-                        }
-                        if (value.length > 10) {
-                          value = value.slice(0, 10);
-                        }
-                        setFinancialsSearchParams({ ...financialsSearchParams, services: value });
-                      }}
-                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
-                      data-testid="input-financials-services"
-                    />
                   </div>
 
                   <div>
@@ -3482,26 +3481,27 @@ export default function AdminSnapshot() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Log Date</label>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Paid To</label>
+                    <select
+                      value={financialsSearchParams.vendor}
+                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, vendor: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-financials-vendor"
+                    >
+                      <option value="">Select</option>
+                      <option value="tbd">TBD</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Payee</label>
                     <input
                       type="text"
-                      placeholder="MM/DD/YYYY"
-                      value={financialsSearchParams.role}
-                      onChange={(e) => {
-                        let value = e.target.value.replace(/\D/g, '');
-                        if (value.length >= 2) {
-                          value = value.slice(0, 2) + '/' + value.slice(2);
-                        }
-                        if (value.length >= 5) {
-                          value = value.slice(0, 5) + '/' + value.slice(5);
-                        }
-                        if (value.length > 10) {
-                          value = value.slice(0, 10);
-                        }
-                        setFinancialsSearchParams({ ...financialsSearchParams, role: value });
-                      }}
+                      placeholder="Enter payee name"
+                      value={financialsSearchParams.payee}
+                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, payee: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
-                      data-testid="input-financials-role"
+                      data-testid="input-financials-payee"
                     />
                   </div>
                 </div>
