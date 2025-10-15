@@ -1663,6 +1663,12 @@ export default function AdminSnapshot() {
               onShowBatchWarning={() => setShowBatchWarning(true)}
               showStaffForm={showStaffForm}
               onShowStaffWarning={() => setShowStaffWarning(true)}
+              showExpenseForm={showExpenseForm}
+              showRevenueForm={showRevenueForm}
+              onShowFormConflictWarning={(type) => {
+                setConflictFormType(type);
+                setShowFormConflictWarning(true);
+              }}
             />
 
             <ExpenseBreakdownChart
@@ -1676,6 +1682,12 @@ export default function AdminSnapshot() {
               onShowBatchWarning={() => setShowBatchWarning(true)}
               showStaffForm={showStaffForm}
               onShowStaffWarning={() => setShowStaffWarning(true)}
+              showExpenseForm={showExpenseForm}
+              showRevenueForm={showRevenueForm}
+              onShowFormConflictWarning={(type) => {
+                setConflictFormType(type);
+                setShowFormConflictWarning(true);
+              }}
             />
           </div>
         )}
@@ -4868,7 +4880,7 @@ export default function AdminSnapshot() {
                 {conflictFormType === 'expense' ? 'Expense Log Open' : 'Revenue Log Open'}
               </DialogTitle>
               <DialogDescription className="text-purple-200 pt-2">
-                Please complete or cancel the open {conflictFormType} card log
+                Please complete or cancel the open {conflictFormType} log.
               </DialogDescription>
             </DialogHeader>
             <div className="flex justify-end mt-4">

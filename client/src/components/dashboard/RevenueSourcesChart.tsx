@@ -22,6 +22,9 @@ interface RevenueSourcesChartProps {
   onShowBatchWarning?: () => void;
   showStaffForm?: boolean;
   onShowStaffWarning?: () => void;
+  showExpenseForm?: boolean;
+  showRevenueForm?: boolean;
+  onShowFormConflictWarning?: (type: 'expense' | 'revenue') => void;
 }
 
 export function RevenueSourcesChart({
@@ -38,7 +41,10 @@ export function RevenueSourcesChart({
   showCreateBatch = false,
   onShowBatchWarning = () => {},
   showStaffForm = false,
-  onShowStaffWarning = () => {}
+  onShowStaffWarning = () => {},
+  showExpenseForm = false,
+  showRevenueForm = false,
+  onShowFormConflictWarning = () => {}
 }: RevenueSourcesChartProps) {
   return (
     <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl" data-testid="card-revenue-sources">
@@ -52,6 +58,10 @@ export function RevenueSourcesChart({
               onShowBatchWarning();
             } else if (showStaffForm && areChartsMinimized) {
               onShowStaffWarning();
+            } else if (showExpenseForm && areChartsMinimized) {
+              onShowFormConflictWarning('expense');
+            } else if (showRevenueForm && areChartsMinimized) {
+              onShowFormConflictWarning('revenue');
             } else {
               setAreChartsMinimized(!areChartsMinimized);
             }

@@ -18,6 +18,9 @@ interface ExpenseBreakdownChartProps {
   onShowBatchWarning?: () => void;
   showStaffForm?: boolean;
   onShowStaffWarning?: () => void;
+  showExpenseForm?: boolean;
+  showRevenueForm?: boolean;
+  onShowFormConflictWarning?: (type: 'expense' | 'revenue') => void;
 }
 
 export function ExpenseBreakdownChart({
@@ -30,7 +33,10 @@ export function ExpenseBreakdownChart({
   showCreateBatch = false,
   onShowBatchWarning = () => {},
   showStaffForm = false,
-  onShowStaffWarning = () => {}
+  onShowStaffWarning = () => {},
+  showExpenseForm = false,
+  showRevenueForm = false,
+  onShowFormConflictWarning = () => {}
 }: ExpenseBreakdownChartProps) {
   return (
     <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl" data-testid="card-expense-breakdown">
@@ -44,6 +50,10 @@ export function ExpenseBreakdownChart({
               onShowBatchWarning();
             } else if (showStaffForm && areChartsMinimized) {
               onShowStaffWarning();
+            } else if (showExpenseForm && areChartsMinimized) {
+              onShowFormConflictWarning('expense');
+            } else if (showRevenueForm && areChartsMinimized) {
+              onShowFormConflictWarning('revenue');
             } else {
               setAreChartsMinimized(!areChartsMinimized);
             }
