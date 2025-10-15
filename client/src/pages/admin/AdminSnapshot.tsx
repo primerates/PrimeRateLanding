@@ -3791,12 +3791,12 @@ export default function AdminSnapshot() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Payment Source</label>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Revenue Source</label>
                     <select
                       value={revenueSearchParams.status}
                       onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, status: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                      data-testid="select-revenue-payment-source"
+                      data-testid="select-revenue-source-field"
                     >
                       <option value="">Select</option>
                       <option value="first-american">First American</option>
