@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { queryClient } from '@/lib/queryClient';
+import { queryClient, apiRequest } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Users, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2, Camera, Phone, Mail, Briefcase, Calendar, Shield, Search } from 'lucide-react';
@@ -750,6 +750,21 @@ export default function AdminSnapshot() {
     { key: 'state', label: 'State', description: 'State abbreviation' },
     { key: 'zip', label: 'Zip Code', description: 'Postal code' }
   ];
+
+  const handleLogout = async () => {
+    try {
+      await apiRequest('POST', '/api/admin/logout');
+      
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out.",
+      });
+      setLocation('/');
+    } catch (error) {
+      // Even if logout fails, redirect to home page
+      setLocation('/');
+    }
+  };
 
   const autoMapColumns = (columns: string[]) => {
     const mapping: Partial<ColumnMapping> = {};
@@ -1530,7 +1545,13 @@ export default function AdminSnapshot() {
                 {dashboardMenuItems.map((item, index) => (
                   <div key={item.path}>
                     <DropdownMenuItem
-                      onClick={() => setLocation(item.path)}
+                      onClick={() => {
+                        if (item.path === '/logout') {
+                          handleLogout();
+                        } else {
+                          setLocation(item.path);
+                        }
+                      }}
                       className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
                       data-testid={`shortcut-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                     >
