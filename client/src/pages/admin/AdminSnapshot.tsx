@@ -5692,6 +5692,7 @@ export default function AdminSnapshot() {
                   <button
                     onClick={() => {
                       setShowCreateBatch(true);
+                      setShowQueryCard(false); // Close Search card (mutual exclusivity)
                       setIsQueryCardMinimized(true); // Minimize Query card
                       setIsFiltersMinimized(true); // Minimize Performance card
                       setAreChartsMinimized(true); // Minimize Charts
