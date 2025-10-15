@@ -462,6 +462,17 @@ export default function AdminSnapshot() {
         setShowQueryCard(false);
       }
     }
+    
+    // Financials Search card logic - only show when Team is "Expense", hide otherwise
+    if (categoryFilter === 'financials') {
+      if (teamFilter === 'expense-add') {
+        // Keep search card visible only when Expense is selected
+        // User can manually open it via magnifying glass when Expense is selected
+      } else {
+        // Hide Search card when Team is not "Expense"
+        setShowFinancialsSearch(false);
+      }
+    }
   }, [teamFilter, categoryFilter]);
   
   // Query card state variables (only shown when categoryFilter is 'marketing' and teamFilter is not 'select')
@@ -1585,7 +1596,7 @@ export default function AdminSnapshot() {
                   } else if (categoryFilter === 'staff') {
                     setShowStaffSearch(true);
                     setIsSearchMinimized(false);
-                  } else if (categoryFilter === 'financials') {
+                  } else if (categoryFilter === 'financials' && teamFilter === 'expense-add') {
                     setShowFinancialsSearch(true);
                     setIsFinancialsSearchMinimized(false);
                   }
@@ -3215,8 +3226,8 @@ export default function AdminSnapshot() {
           </TooltipProvider>
         )}
 
-        {/* Financials Search Card - Only shown when Financials category is selected and showFinancialsSearch is true */}
-        {categoryFilter === 'financials' && showFinancialsSearch && (
+        {/* Financials Search Card - Only shown when Financials category with Expense team is selected and showFinancialsSearch is true */}
+        {categoryFilter === 'financials' && teamFilter === 'expense-add' && showFinancialsSearch && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">

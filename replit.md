@@ -56,77 +56,11 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 ### Admin Features
 - **Comments & Posts Management**: Manages client testimonials and internal posts with real-time preview, statistics, and sortable tables.
 - **Loan Management System**: Manages client loan applications, supporting multiple loan categories, rate configurations, and quote generation.
-- **PDF Document Extraction System (Quote Tile)**:
-    - **Route**: `/admin/quotes`
-    - **Features**: Drag-and-drop PDF upload (max 10MB) for various document types (Paystub, Bank Statement, Tax Return, Mortgage Statement, Credit Report). Uses AWS Textract for multi-page OCR and Anthropic Claude (`claude-sonnet-4-20250514`) for AI-powered structured data extraction (Borrower info, Income data, Loan details, Bank statements, Tax returns, Credit reports). Data is displayed in a custom grid.
-    - **Technology Stack**: `pdf-parse`, AWS Textract, Anthropic Claude, in-memory storage, React with TanStack Query.
-- **Snapshot Analytics Dashboard**:
-    - **Route**: `/admin/reports`
-    - **Overview**: Comprehensive dashboard for financial analytics, marketing campaign management (Direct Mail, Lead Vendors, Social Media), expense/revenue tracking, and data visualization. Features interactive filters (Category, Team, Time), real-time financial metrics, and conditional card displays.
-    - **Category Dropdown Behavior**:
-      - **Default Selection**: "Select" (first option, default on page load with Performance card always expanded)
-      - **Select**: Performance card expanded, no Pipeline/Access cards, no charts displayed
-      - **Vendor**: Performance card minimized, no other cards displayed
-      - **Staff/Marketing**: Performance card expanded, two pie chart cards displayed (Revenue Sources, Expense Breakdown)
-      - **Financials**: Performance card expanded, charts only display when Team is set to "Revenue" or "Expense" (not "Select" or "P&L Statement")
-    - **Core Features**: Performance Card with interactive title, filter dropdowns, header buttons, Search Cards (Direct Mail, Staff Page) with minimizable functionality. Both Search cards use matching purple magnify glass icons (`Search` component with `bg-purple-500/20 border-purple-500/30` styling).
-    - **Staff Search Card Fields**: 
-      - Row 1: Area, Role (formerly Magnify), Rating, Performance
-      - Row 2: Status (formerly Bonus - now dropdown with options: Select, Active, Paused, Not Active), Duration (formerly With Company), Category (formerly Compensation), Earnings
-      - Row 3: License Count, Loan Volume, Funding Volume, Clear Filters
-    - **Staff Search Results Table**:
-      - Dynamic Column System: Table columns automatically sync with Search Card field labels and only display columns with active search criteria
-      - Column Visibility: Last Name and First Name always shown; other columns (Area, Role, Rating, Performance, Status, Duration, Category, Earnings, License Count, Loan Volume, Funding Volume) appear only when corresponding search field has a value (dropdowns: non-empty selection; inputs: any value)
-      - Column Title Sync: If Search Card field labels change, table column headers automatically update to match
-      - Attachment Management: Paperclip column shows document count for each staff entry, clickable to manage attachments
-      - Actions Menu: 3-dot menu (MoreVertical) in "Actions" column provides options to attach documents, edit, or delete staff entries
-      - Header Controls: Minimize button (Plus/Minus icon) to collapse/expand table content, X close button to hide results table
-      - Custom Interactive Scrollbar: Purple/pink gradient indicator with click-to-jump and drag-to-scroll functionality
-      - Features: Draggable scrollbar indicator, click track to jump to position, auto-sizing based on content width
-      - Cursor states: grab/grabbing for better UX
-    - **Staff Category Cards**:
-      - **Team Dropdown**: First option is "Select" (default when Staff category is selected)
-      - **Prime Rate Card**: Only shown when Team = "MLO"; displays below chart cards with three boxes showing interest rates (Current Rate 6.875%, 30-Yr Fixed 7.125%, 15-Yr Fixed 6.625%)
-      - **Pipeline Card**: Only shown when Team is NOT "Select"; displays active loans, pending items, and monthly volume metrics
-      - **Access Card**: Only shown when Team is NOT "Select"; displays system access and permission levels
-      - **Search Card**: Auto-shows when Team is NOT "Select"; can be manually opened via magnifying glass icon in Performance card even when Team = "Select"
-      - Card visibility logic: When Team = "Select" → only Performance card shown (no chart cards, Pipeline, Access, or Search by default; Search can be opened via magnifying glass icon); When Team = "MLO" → Performance, chart cards (titled Pipeline/Access), Prime Rate card, Pipeline card, Access card, and Search shown; When Team = any other option → Performance, chart cards (titled Pipeline/Access), Pipeline card, Access card, and Search shown (no Prime Rate card)
-    - **Staff Form Card**:
-      - PDF Attachment System: Paperclip icon next to minimize button for managing staff documents
-      - Displays document count (clickable to open attachment dialog)
-      - Supports PDF, JPG, PNG uploads, camera capture (max 5MB)
-      - Same attachment functionality as Expense/Revenue logs
-      - Documents linked to temporary staff ID before form submission
-      - **Compliance Card Fields**: Background Check, Credit Review, Identification, Work Authorization, Drug Screening, Employment Agreement, Policy, NDA Agreement, Source (formerly Interview Grade - dropdown with options: Select, Referral, Return, Recruiter, Indeed)
-    - **Visualizations**: Pie charts for Revenue Sources and Expense Breakdown with drill-down capabilities.
-    - **Expense & Revenue Logging**: Add entry functionality with transaction tracking, date filtering, sortable tables, and an advanced Transaction Attachments System supporting PDF, JPG, PNG uploads, camera capture, and temporary ID management for attachments. Form conflict warning prevents chart card expansion while expense or revenue log is open, displaying popup: "Please complete or cancel the open expense log." or "Please complete or cancel the open revenue log."
-    - **Marketing Campaign Management**: Direct Mail Batch Creation with 17 required fields, US states selection, completion bar, CSV upload with fuzzy mapping, and batch management actions.
-    - **Marketing Category Cards**:
-      - **Direct Mail Dropdown**: First option is "Select" (default when Marketing category is selected)
-      - **Search Card**: Auto-shows when Direct Mail is NOT "Select"; can be manually opened via magnifying glass icon in Performance card even when Direct Mail = "Select"
-      - **Batch List**: Only shown when Direct Mail is NOT "Select" and user clicks "Search Batch" button
-      - Card visibility logic: When Direct Mail = "Select" → only Performance card shown (no chart cards, Search, or Batch List by default; Search can be opened via magnifying glass icon); When Direct Mail = any other option → Performance, chart cards (titled Activity/Geography), Search, and Batch List (when searched) shown
-    - **Financials Category Search**:
-      - **Search Card**: Can be manually opened via magnifying glass icon in Performance card
-      - **Search Fields**: 
-        - Row 1: Date (MM/DD/YYYY auto-format), Amount (currency auto-format), Payee, Payment For
-        - Row 2: Invoice #, Check #, Payment Method (Zelle/Venmo/Wire/Check/Cash/Direct Deposit), Payment Term (One-Time/Recurring)
-        - Row 3: Vendor, Services, Area (Company/Partner/Branch), Role
-      - **Features**: "Search Expense" button, Clear Filters functionality, minimize/expand controls
-    - **Search Card (Marketing)**: Features a "Search Batch" button matching Staff page's "Search Staff" button styling (`px-3.5 py-1.5 text-sm rounded-lg` with purple-to-pink gradient). Data Category defaults to "Select". Data Category selections (Show All, Trigger Data, Monthly Data) only take effect when user clicks "Search Batch" button, which opens the Batch List table.
-    - **Batch List Table**:
-      - Themed Icon: FileText icon in purple box matching Search card design
-      - Header Controls: Minimize button (Plus/Minus icon) to collapse/expand table, X close button to hide batch list
-      - Custom Interactive Scrollbar: Purple/pink gradient indicator with click-to-jump and drag-to-scroll functionality (matching Staff Results Table design)
-      - Dynamic Column System: Table columns automatically sync with Search Card field labels and only display columns with active search criteria
-      - Default Columns: Created, Batch #, Batch Title, Records, Total Cost (always visible and sortable), plus icon-only Paperclip and Actions columns (non-sortable)
-      - Conditional Columns: Additional columns (Data Category, States, Loan Category, Loan Purpose, Property Use, Property Type, Lenders, Data Vendors, Mail Vendors, Batch Activity To Date, FICO Range Above, 10 Yr Bond Above, Par Rate Above, Cash Out Above, Batch Financials) only appear when corresponding search field has a non-"Select" dropdown value or input field has a value
-      - Attachment System: Icon-only Paperclip column (no text label) showing document count for each batch, clickable to manage batch attachments
-      - Actions Column: Icon-only column with three-dot (MoreVertical) menu for batch actions (delete, etc.)
-      - Supports PDF, JPG, PNG uploads and camera capture (max 5MB) per batch
-      - Sortable data columns with visual indicators (ArrowUpDown icon)
-    - **Dropdown Styling Standard**: All dropdowns use native HTML `<select>` elements with consistent styling: `w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors`. Native `<option>` elements display browser default blue hover effect on grey background with white text. This styling pattern matches across Direct Mail search fields (including Batch Financials: Select, Profitable, Loss) and Staff Role card dropdowns (Payroll Type, Level, Role, Authorization, Access).
-    - **Technology Stack**: Recharts for data visualization, Papa Parse for CSV processing.
+- **PDF Document Extraction System (Quote Tile)**: Supports drag-and-drop PDF upload for various document types (Paystub, Bank Statement, Tax Return, Mortgage Statement, Credit Report) using AWS Textract for OCR and Anthropic Claude for AI-powered structured data extraction.
+- **Snapshot Analytics Dashboard**: Comprehensive dashboard for financial analytics, marketing campaign management, expense/revenue tracking, and data visualization.
+    - **Key Features**: Interactive filters, real-time financial metrics, conditional card displays, customizable search cards with dynamic column systems for results tables.
+    - **Design**: Purple-to-pink gradient scrollbars, themed icons, consistent dropdown styling across all admin features.
+    - **Functionality**: Transaction Attachments System for expenses/revenue, PDF attachment system for staff and batches.
 
 ### Background Selector System
 Allows customization of dashboard and login page backgrounds with various presets, supporting mode toggling, visual previews, and persistence.
@@ -139,4 +73,3 @@ Allows customization of dashboard and login page backgrounds with various preset
 - **Fonts**: Google Fonts (Inter, Lora).
 - **OCR**: AWS Textract.
 - **AI**: Anthropic Claude (`claude-sonnet-4-20250514`).
-```
