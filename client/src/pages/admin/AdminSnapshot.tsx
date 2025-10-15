@@ -420,7 +420,7 @@ export default function AdminSnapshot() {
   const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
   const [areChartsMinimized, setAreChartsMinimized] = useState(false);
   const [isTransactionsMinimized, setIsTransactionsMinimized] = useState(false);
-  const [isFiltersMinimized, setIsFiltersMinimized] = useState(true); // Start minimized when category is "Select"
+  const [isFiltersMinimized, setIsFiltersMinimized] = useState(false); // Always start expanded
   const [areStaffCardsMinimized, setAreStaffCardsMinimized] = useState(false);
   const [isStaffResultsMinimized, setIsStaffResultsMinimized] = useState(false);
   const [isBatchListMinimized, setIsBatchListMinimized] = useState(false);

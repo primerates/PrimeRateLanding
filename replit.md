@@ -64,8 +64,8 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - **Route**: `/admin/reports`
     - **Overview**: Comprehensive dashboard for financial analytics, marketing campaign management (Direct Mail, Lead Vendors, Social Media), expense/revenue tracking, and data visualization. Features interactive filters (Category, Team, Time), real-time financial metrics, and conditional card displays.
     - **Category Dropdown Behavior**:
-      - **Default Selection**: "Select" (first option, default on page load)
-      - **Select**: Performance card minimized, no Pipeline/Access cards, no charts displayed
+      - **Default Selection**: "Select" (first option, default on page load with Performance card always expanded)
+      - **Select**: Performance card expanded, no Pipeline/Access cards, no charts displayed
       - **Vendor**: Performance card minimized, no other cards displayed
       - **Staff/Marketing/Financials**: Performance card expanded, two pie chart cards displayed (Revenue Sources, Expense Breakdown)
     - **Core Features**: Performance Card with interactive title, filter dropdowns, header buttons, Search Cards (Direct Mail, Staff Page) with minimizable functionality. Both Search cards use matching purple magnify glass icons (`Search` component with `bg-purple-500/20 border-purple-500/30` styling).
