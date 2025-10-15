@@ -129,8 +129,8 @@ export default function AdminSnapshot() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [entityFilter, setEntityFilter] = useState('prime-rate');
-  const [categoryFilter, setCategoryFilter] = useState('marketing');
-  const [teamFilter, setTeamFilter] = useState('direct-mail');
+  const [categoryFilter, setCategoryFilter] = useState('select');
+  const [teamFilter, setTeamFilter] = useState('select');
   const [timeFilter, setTimeFilter] = useState('today');
   const [timeFilterFromDate, setTimeFilterFromDate] = useState('');
   const [timeFilterToDate, setTimeFilterToDate] = useState('');
@@ -420,7 +420,7 @@ export default function AdminSnapshot() {
   const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
   const [areChartsMinimized, setAreChartsMinimized] = useState(false);
   const [isTransactionsMinimized, setIsTransactionsMinimized] = useState(false);
-  const [isFiltersMinimized, setIsFiltersMinimized] = useState(false);
+  const [isFiltersMinimized, setIsFiltersMinimized] = useState(true); // Start minimized when category is "Select"
   const [areStaffCardsMinimized, setAreStaffCardsMinimized] = useState(false);
   const [isStaffResultsMinimized, setIsStaffResultsMinimized] = useState(false);
   const [isBatchListMinimized, setIsBatchListMinimized] = useState(false);
@@ -428,8 +428,16 @@ export default function AdminSnapshot() {
   const [showBatchList, setShowBatchList] = useState(true);
   const [transactionDateFilter, setTransactionDateFilter] = useState('today');
   
-  // Auto-minimize/expand Prime Rate card based on Team selection in Staff category
+  // Auto-minimize/expand Performance card and Prime Rate card based on Category and Team selection
   useEffect(() => {
+    // Performance card logic
+    if (categoryFilter === 'select' || categoryFilter === 'vendor') {
+      setIsFiltersMinimized(true);
+    } else if (categoryFilter === 'staff' || categoryFilter === 'marketing' || categoryFilter === 'financials') {
+      setIsFiltersMinimized(false);
+    }
+    
+    // Prime Rate card logic (Staff category only)
     if (categoryFilter === 'staff') {
       if (teamFilter === 'select') {
         setIsPrimeRateMinimized(true);
@@ -1636,38 +1644,40 @@ export default function AdminSnapshot() {
           </div>
         </div>
 
-        {/* Second Card - Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <RevenueSourcesChart
-            categoryFilter={categoryFilter}
-            revenueData={revenueData}
-            directMailByState={directMailByState}
-            loanProgramData={loanProgramData}
-            areChartsMinimized={areChartsMinimized}
-            setAreChartsMinimized={setAreChartsMinimized}
-            revenueDetailView={revenueDetailView}
-            setRevenueDetailView={setRevenueDetailView}
-            formatCurrency={formatCurrency}
-            CustomTooltip={CustomTooltip}
-            showCreateBatch={showCreateBatch}
-            onShowBatchWarning={() => setShowBatchWarning(true)}
-            showStaffForm={showStaffForm}
-            onShowStaffWarning={() => setShowStaffWarning(true)}
-          />
+        {/* Second Card - Charts - Only shown when Staff, Marketing, or Financials are selected */}
+        {(categoryFilter === 'staff' || categoryFilter === 'marketing' || categoryFilter === 'financials') && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <RevenueSourcesChart
+              categoryFilter={categoryFilter}
+              revenueData={revenueData}
+              directMailByState={directMailByState}
+              loanProgramData={loanProgramData}
+              areChartsMinimized={areChartsMinimized}
+              setAreChartsMinimized={setAreChartsMinimized}
+              revenueDetailView={revenueDetailView}
+              setRevenueDetailView={setRevenueDetailView}
+              formatCurrency={formatCurrency}
+              CustomTooltip={CustomTooltip}
+              showCreateBatch={showCreateBatch}
+              onShowBatchWarning={() => setShowBatchWarning(true)}
+              showStaffForm={showStaffForm}
+              onShowStaffWarning={() => setShowStaffWarning(true)}
+            />
 
-          <ExpenseBreakdownChart
-            categoryFilter={categoryFilter}
-            expenseData={expenseData}
-            areChartsMinimized={areChartsMinimized}
-            setAreChartsMinimized={setAreChartsMinimized}
-            formatCurrency={formatCurrency}
-            CustomTooltip={CustomTooltip}
-            showCreateBatch={showCreateBatch}
-            onShowBatchWarning={() => setShowBatchWarning(true)}
-            showStaffForm={showStaffForm}
-            onShowStaffWarning={() => setShowStaffWarning(true)}
-          />
-        </div>
+            <ExpenseBreakdownChart
+              categoryFilter={categoryFilter}
+              expenseData={expenseData}
+              areChartsMinimized={areChartsMinimized}
+              setAreChartsMinimized={setAreChartsMinimized}
+              formatCurrency={formatCurrency}
+              CustomTooltip={CustomTooltip}
+              showCreateBatch={showCreateBatch}
+              onShowBatchWarning={() => setShowBatchWarning(true)}
+              showStaffForm={showStaffForm}
+              onShowStaffWarning={() => setShowStaffWarning(true)}
+            />
+          </div>
+        )}
 
         {/* Staff Search Card - Only shown when Staff category is selected */}
         {categoryFilter === 'staff' && showStaffSearch && (
@@ -2184,7 +2194,7 @@ export default function AdminSnapshot() {
           </div>
         )}
 
-        {/* Prime Rate Card - Always shown when Staff category is selected */}
+        {/* Prime Rate Card - Only shown when Staff category is selected (hidden for Select and Vendor) */}
         {categoryFilter === 'staff' && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <div className="flex items-center justify-between mb-6">

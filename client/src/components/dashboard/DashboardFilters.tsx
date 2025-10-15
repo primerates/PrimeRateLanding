@@ -38,6 +38,7 @@ export function DashboardFilters({
             data-testid="select-category-filter"
           >
             <span>
+              {categoryFilter === 'select' && 'Select'}
               {categoryFilter === 'financials' && 'Financials'}
               {categoryFilter === 'marketing' && 'Marketing'}
               {categoryFilter === 'staff' && 'Staff'}
@@ -47,6 +48,16 @@ export function DashboardFilters({
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-[150px] bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+          <DropdownMenuItem
+            onClick={() => {
+              setCategoryFilter('select');
+              setTeamFilter('select');
+            }}
+            className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+            data-testid="option-category-select"
+          >
+            Select
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
               setCategoryFilter('financials');
