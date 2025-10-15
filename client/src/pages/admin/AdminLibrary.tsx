@@ -230,7 +230,10 @@ export default function AdminLibrary() {
     if (selectedTheme === 'sunset') {
       return 'bg-gradient-to-r from-orange-400 to-red-400 hover:from-orange-300 hover:to-red-300 text-black font-semibold border-0 shadow-lg hover:shadow-orange-500/50';
     }
-    // Default purple-pink gradient for other themes
+    if (selectedTheme === 'professional') {
+      return 'bg-gradient-to-r from-blue-400 to-cyan-400 hover:from-blue-300 hover:to-cyan-300 text-black font-semibold border-0 shadow-lg hover:shadow-blue-500/50';
+    }
+    // Default purple-pink gradient for cyberpunk theme
     return 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white border-0 shadow-lg hover:shadow-purple-500/50';
   };
 
