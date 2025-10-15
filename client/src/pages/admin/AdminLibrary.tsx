@@ -64,40 +64,6 @@ const themes = {
       borderAccent: 'border-l-purple-500'
     }
   },
-  navy: {
-    name: 'Professional Navy',
-    description: 'Corporate light theme with navy accents',
-    preview: {
-      primary: 'from-blue-600 to-blue-800',
-      secondary: 'from-slate-100 to-blue-50',
-      accent: 'bg-blue-900'
-    },
-    colors: {
-      pageGradient: 'from-slate-900 via-blue-900 to-slate-900',
-      cardBg: 'bg-slate-800/50',
-      inputBg: 'bg-slate-700/50 text-white border-blue-500/30 focus:border-blue-500',
-      labelColor: 'text-blue-200',
-      titleGradient: 'bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent',
-      borderAccent: 'border-l-blue-600'
-    }
-  },
-  emerald: {
-    name: 'Emerald Forest',
-    description: 'Nature-inspired green and teal',
-    preview: {
-      primary: 'from-emerald-500 to-teal-600',
-      secondary: 'from-slate-100 to-emerald-50',
-      accent: 'bg-emerald-600'
-    },
-    colors: {
-      pageGradient: 'from-slate-900 via-emerald-900 to-slate-900',
-      cardBg: 'bg-slate-800/50',
-      inputBg: 'bg-slate-700/50 text-white border-emerald-500/30 focus:border-emerald-500',
-      labelColor: 'text-emerald-200',
-      titleGradient: 'bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent',
-      borderAccent: 'border-l-emerald-500'
-    }
-  },
   sunset: {
     name: 'Sunset Blaze',
     description: 'Warm orange and red tones',
@@ -945,7 +911,7 @@ export default function AdminLibrary() {
 
             {/* Theme Options */}
             <div className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {Object.entries(themes).map(([key, theme]) => {
                   const isSelected = selectedTheme === key;
                   return (
