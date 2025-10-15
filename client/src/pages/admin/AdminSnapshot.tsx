@@ -3810,32 +3810,40 @@ export default function AdminSnapshot() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Term</label>
-                    <select
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Log Date</label>
+                    <input
+                      type="text"
+                      placeholder="MM/DD/YYYY"
                       value={revenueSearchParams.term}
-                      onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, term: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                      data-testid="select-revenue-term"
-                    >
-                      <option value="">Select</option>
-                      <option value="onetime">One-Time</option>
-                      <option value="recurring">Recurring</option>
-                    </select>
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (value.length >= 2) {
+                          value = value.slice(0, 2) + '/' + value.slice(2);
+                        }
+                        if (value.length >= 5) {
+                          value = value.slice(0, 5) + '/' + value.slice(5);
+                        }
+                        if (value.length > 10) {
+                          value = value.slice(0, 10);
+                        }
+                        setRevenueSearchParams({ ...revenueSearchParams, term: value });
+                      }}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                      data-testid="input-revenue-term-log-date"
+                    />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Status</label>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Payment Source</label>
                     <select
                       value={revenueSearchParams.status}
                       onChange={(e) => setRevenueSearchParams({ ...revenueSearchParams, status: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
-                      data-testid="select-revenue-status"
+                      data-testid="select-revenue-payment-source"
                     >
                       <option value="">Select</option>
-                      <option value="pending">Pending</option>
-                      <option value="received">Received</option>
-                      <option value="processed">Processed</option>
-                      <option value="cancelled">Cancelled</option>
+                      <option value="first-american">First American</option>
+                      <option value="reltco">Reltco</option>
                     </select>
                   </div>
                 </div>
