@@ -1698,6 +1698,11 @@ export default function AdminSnapshot() {
                     setShowFormConflictWarning(true);
                     return;
                   }
+                  // Check if New Batch card is open in Marketing
+                  if (showCreateBatch && categoryFilter === 'marketing') {
+                    setShowBatchWarning(true);
+                    return;
+                  }
                   
                   // Open appropriate search card based on category
                   if (categoryFilter === 'marketing') {
@@ -5760,9 +5765,9 @@ export default function AdminSnapshot() {
         <Dialog open={showBatchWarning} onOpenChange={setShowBatchWarning}>
           <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
             <DialogHeader>
-              <DialogTitle className="text-xl font-bold text-white">Batch Card Open</DialogTitle>
+              <DialogTitle className="text-xl font-bold text-white">New Batch Card Open</DialogTitle>
               <DialogDescription className="text-purple-200 pt-2">
-                Please create or cancel the open batch card first
+                Please complete or close the open new batch entry
               </DialogDescription>
             </DialogHeader>
             <div className="flex justify-end mt-4">
