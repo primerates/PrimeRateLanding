@@ -110,8 +110,8 @@ export function DashboardFilters({
           >
             <span>
               {teamFilter === 'select' && 'Select'}
-              {teamFilter === 'revenue-add' && 'Revenue (add)'}
-              {teamFilter === 'expense-add' && 'Expense (add)'}
+              {teamFilter === 'revenue-add' && 'Revenue'}
+              {teamFilter === 'expense-add' && 'Expense'}
               {teamFilter === 'pl-statement' && 'P&L Statement'}
               {teamFilter === 'direct-mail' && 'Direct Mail'}
               {teamFilter === 'lead-vendor' && 'Lead Vendor'}
@@ -145,14 +145,14 @@ export function DashboardFilters({
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
                 data-testid="option-team-revenue-add"
               >
-                Revenue (add)
+                Revenue
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setTeamFilter('expense-add')}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
                 data-testid="option-team-expense-add"
               >
-                Expense (add)
+                Expense
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setTeamFilter('pl-statement')}
