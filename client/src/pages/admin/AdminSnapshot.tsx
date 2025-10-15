@@ -1609,6 +1609,18 @@ export default function AdminSnapshot() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => {
+                  // Check if there's an open expense or revenue form first
+                  if (showExpenseForm) {
+                    setConflictFormType('expense');
+                    setShowFormConflictWarning(true);
+                    return;
+                  }
+                  if (showRevenueForm) {
+                    setConflictFormType('revenue');
+                    setShowFormConflictWarning(true);
+                    return;
+                  }
+                  
                   // Open appropriate search card based on category
                   if (categoryFilter === 'marketing') {
                     setShowQueryCard(true);
