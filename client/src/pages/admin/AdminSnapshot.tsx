@@ -255,7 +255,7 @@ export default function AdminSnapshot() {
     // Always include default columns
     const columns = [
       { key: 'createdDate', label: 'Created' },
-      { key: 'batchNumber', label: 'Batch 1' },
+      { key: 'batchNumber', label: 'Batch #' },
       { key: 'batchTitle', label: 'Batch Title' },
       { key: 'records', label: 'Records' },
       { key: 'cost', label: 'Total Cost' }
@@ -595,54 +595,8 @@ export default function AdminSnapshot() {
     { name: 'Conv Jumbo', value: 141680, color: '#10b981' }
   ];
 
-  // Mock batch data for Batch List table
-  const mockBatches = [
-    {
-      id: '1',
-      createdDate: '10/05/2025',
-      batchNumber: 'B-1001',
-      batchTitle: 'VA Refinance Q4',
-      category: 'VA',
-      tenYearBond: '4.25',
-      parRate: '6.75',
-      records: 1250,
-      states: ['CA', 'TX', 'FL'],
-      dataCost: '5000',
-      mailCost: '3500',
-      printCost: '2000',
-      supplyCost: '500'
-    },
-    {
-      id: '2',
-      createdDate: '10/08/2025',
-      batchNumber: 'B-1002',
-      batchTitle: 'FHA Purchase Campaign',
-      category: 'FHA',
-      tenYearBond: '4.30',
-      parRate: '6.85',
-      records: 890,
-      states: ['NY', 'NJ', 'PA'],
-      dataCost: '4200',
-      mailCost: '2800',
-      printCost: '1500',
-      supplyCost: '400'
-    },
-    {
-      id: '3',
-      createdDate: '10/10/2025',
-      batchNumber: 'B-1003',
-      batchTitle: 'Conventional Jumbo',
-      category: 'Conventional Jumbo',
-      tenYearBond: '4.35',
-      parRate: '7.00',
-      records: 450,
-      states: ['CA', 'WA'],
-      dataCost: '3000',
-      mailCost: '2000',
-      printCost: '1200',
-      supplyCost: '300'
-    }
-  ];
+  // Mock batch data for Batch List table (empty - batches come from localStorage or user creation)
+  const mockBatches: any[] = [];
 
   // Load batches from localStorage on component mount
   useEffect(() => {
