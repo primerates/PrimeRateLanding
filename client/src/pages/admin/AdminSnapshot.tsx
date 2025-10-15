@@ -431,6 +431,9 @@ export default function AdminSnapshot() {
   const [isQueryCardMinimized, setIsQueryCardMinimized] = useState(false);
   const [showQueryCard, setShowQueryCard] = useState(true);
   const [showBatchWarning, setShowBatchWarning] = useState(false);
+  
+  // Staff search card state
+  const [showStaffSearch, setShowStaffSearch] = useState(true);
   const [showStaffWarning, setShowStaffWarning] = useState(false);
   const [showFormConflictWarning, setShowFormConflictWarning] = useState(false);
   const [conflictFormType, setConflictFormType] = useState<'expense' | 'revenue'>('expense');
@@ -1525,6 +1528,7 @@ export default function AdminSnapshot() {
                     setShowQueryCard(true);
                     setIsQueryCardMinimized(false);
                   } else if (categoryFilter === 'staff') {
+                    setShowStaffSearch(true);
                     setIsSearchMinimized(false);
                   }
                   // For financials, we'll add a search card later if needed
@@ -1654,7 +1658,7 @@ export default function AdminSnapshot() {
         </div>
 
         {/* Staff Search Card - Only shown when Staff category is selected */}
-        {categoryFilter === 'staff' && (
+        {categoryFilter === 'staff' && showStaffSearch && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
@@ -1690,7 +1694,7 @@ export default function AdminSnapshot() {
                   )}
                 </button>
                 <button
-                  onClick={() => setIsSearchMinimized(true)}
+                  onClick={() => setShowStaffSearch(false)}
                   className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
                   title="Close Search"
                   data-testid="button-close-search-staff"
