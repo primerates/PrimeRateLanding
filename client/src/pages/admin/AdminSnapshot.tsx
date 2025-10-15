@@ -376,7 +376,7 @@ export default function AdminSnapshot() {
   const [ficoRangeAbove, setFicoRangeAbove] = useState('');
   const [parRateAbove, setParRateAbove] = useState('');
   const [dataCategory, setDataCategory] = useState('Select');
-  const [batchResults, setBatchResults] = useState<'show-all' | 'profitable' | 'loss'>('show-all');
+  const [batchResults, setBatchResults] = useState<'' | 'profitable' | 'loss'>('');
   const [showBatchWarning, setShowBatchWarning] = useState(false);
   const [showStaffWarning, setShowStaffWarning] = useState(false);
   const [showFormConflictWarning, setShowFormConflictWarning] = useState(false);
@@ -2967,63 +2967,17 @@ export default function AdminSnapshot() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-purple-200">Batch Results To Date</Label>
-                      <div className="flex h-8 rounded-md overflow-hidden border border-purple-500/30">
-                        <TooltipComponent>
-                          <TooltipTrigger asChild>
-                            <button
-                              type="button"
-                              onClick={() => setBatchResults('show-all')}
-                              className="flex-1 flex items-center justify-center text-xs font-medium transition-all h-full text-white"
-                              style={{ 
-                                background: batchResults === 'show-all' 
-                                  ? 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)' 
-                                  : '#475569'
-                              }}
-                              data-testid="button-batch-results-show-all"
-                            >
-                              {batchResults === 'show-all' && 'Show All'}
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>Show All</TooltipContent>
-                        </TooltipComponent>
-                        <TooltipComponent>
-                          <TooltipTrigger asChild>
-                            <button
-                              type="button"
-                              onClick={() => setBatchResults('profitable')}
-                              className="flex-1 flex items-center justify-center text-xs font-medium transition-all h-full text-white border-x border-purple-500/30"
-                              style={{ 
-                                background: batchResults === 'profitable' 
-                                  ? 'linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%)' 
-                                  : '#475569'
-                              }}
-                              data-testid="button-batch-results-profitable"
-                            >
-                              {batchResults === 'profitable' && 'Profitable'}
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>Profitable</TooltipContent>
-                        </TooltipComponent>
-                        <TooltipComponent>
-                          <TooltipTrigger asChild>
-                            <button
-                              type="button"
-                              onClick={() => setBatchResults('loss')}
-                              className="flex-1 flex items-center justify-center text-xs font-medium transition-all h-full text-white"
-                              style={{ 
-                                background: batchResults === 'loss' 
-                                  ? 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)' 
-                                  : '#475569'
-                              }}
-                              data-testid="button-batch-results-loss"
-                            >
-                              {batchResults === 'loss' && 'Loss'}
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>Loss</TooltipContent>
-                        </TooltipComponent>
-                      </div>
+                      <Label className="text-purple-200">Batch Financials</Label>
+                      <select 
+                        value={batchResults}
+                        onChange={(e) => setBatchResults(e.target.value as '' | 'profitable' | 'loss')}
+                        data-testid="select-batch-financials"
+                        className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      >
+                        <option value="">Select</option>
+                        <option value="profitable">Profitable</option>
+                        <option value="loss">Loss</option>
+                      </select>
                     </div>
                   </div>
                 </div>
