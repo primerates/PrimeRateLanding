@@ -74,6 +74,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
       - **Revenue Search Card** (Financials/Revenue): DollarSign icon, 8 fields across 2 rows - Payment Date, Source, Amount, Reference #, Payment Method, Purpose, Term, Status
       - **Auto-Hide Logic**: Cards mutually exclusive - switching between Expense/Revenue auto-hides the other; both hide when Team ≠ Expense/Revenue
       - **Button Standardization**: Clear Filters (left) and Search buttons match at px-3.5 py-1.5 text-sm height
+    - **Staff Card Auto-Minimize System**: When Staff category is selected with Team ≠ "Select" and user clicks Add Entry → Add Staff Member, the system automatically minimizes Performance card, Pipeline card, and Access card while closing all Search cards for optimal workflow focus
 
 ### Background Selector System
 Allows customization of dashboard and login page backgrounds with various presets, supporting mode toggling, visual previews, and persistence.

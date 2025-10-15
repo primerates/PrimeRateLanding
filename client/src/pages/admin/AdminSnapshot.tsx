@@ -425,6 +425,8 @@ export default function AdminSnapshot() {
   const [isStaffResultsMinimized, setIsStaffResultsMinimized] = useState(false);
   const [isBatchListMinimized, setIsBatchListMinimized] = useState(false);
   const [isPrimeRateMinimized, setIsPrimeRateMinimized] = useState(true); // Minimized when Team = "Select"
+  const [isPipelineMinimized, setIsPipelineMinimized] = useState(false);
+  const [isAccessMinimized, setIsAccessMinimized] = useState(false);
   const [showBatchList, setShowBatchList] = useState(true);
   const [transactionDateFilter, setTransactionDateFilter] = useState('today');
   
@@ -2338,54 +2340,86 @@ export default function AdminSnapshot() {
         {/* Pipeline Card - Only shown when Team is not "Select" */}
         {categoryFilter === 'staff' && teamFilter !== 'select' && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-lg bg-green-500/20 border border-green-500/30">
-                <Users className="w-5 h-5 text-green-400" />
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-green-500/20 border border-green-500/30">
+                  <Users className="w-5 h-5 text-green-400" />
+                </div>
+                <h2 className="text-xl font-bold text-white">Pipeline</h2>
               </div>
-              <h2 className="text-xl font-bold text-white">Pipeline</h2>
+              <button
+                onClick={() => setIsPipelineMinimized(!isPipelineMinimized)}
+                className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                title={isPipelineMinimized ? "Expand" : "Minimize"}
+                data-testid="button-minimize-pipeline"
+              >
+                {isPipelineMinimized ? (
+                  <Plus className="w-5 h-5 text-purple-300" />
+                ) : (
+                  <Minus className="w-5 h-5 text-purple-300" />
+                )}
+              </button>
             </div>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
-                  <p className="text-purple-300 text-sm mb-1">Active Loans</p>
-                  <p className="text-2xl font-bold text-white">24</p>
+            {!isPipelineMinimized && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                    <p className="text-purple-300 text-sm mb-1">Active Loans</p>
+                    <p className="text-2xl font-bold text-white">24</p>
+                  </div>
+                  <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                    <p className="text-purple-300 text-sm mb-1">Pending</p>
+                    <p className="text-2xl font-bold text-white">12</p>
+                  </div>
+                  <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                    <p className="text-purple-300 text-sm mb-1">This Month</p>
+                    <p className="text-2xl font-bold text-white">$2.4M</p>
+                  </div>
                 </div>
-                <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
-                  <p className="text-purple-300 text-sm mb-1">Pending</p>
-                  <p className="text-2xl font-bold text-white">12</p>
-                </div>
-                <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
-                  <p className="text-purple-300 text-sm mb-1">This Month</p>
-                  <p className="text-2xl font-bold text-white">$2.4M</p>
-                </div>
+                <p className="text-purple-300 text-sm">Staff pipeline and loan volume metrics</p>
               </div>
-              <p className="text-purple-300 text-sm">Staff pipeline and loan volume metrics</p>
-            </div>
+            )}
           </div>
         )}
 
         {/* Access Card - Only shown when Team is not "Select" */}
         {categoryFilter === 'staff' && teamFilter !== 'select' && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
-                <Shield className="w-5 h-5 text-purple-400" />
-              </div>
-              <h2 className="text-xl font-bold text-white">Access</h2>
-            </div>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
-                  <p className="text-purple-300 text-sm mb-1">System Access</p>
-                  <p className="text-lg font-semibold text-white">Full Access</p>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
+                  <Shield className="w-5 h-5 text-purple-400" />
                 </div>
-                <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
-                  <p className="text-purple-300 text-sm mb-1">Permissions</p>
-                  <p className="text-lg font-semibold text-white">Admin Level</p>
-                </div>
+                <h2 className="text-xl font-bold text-white">Access</h2>
               </div>
-              <p className="text-purple-300 text-sm">Staff access permissions and authorization levels</p>
+              <button
+                onClick={() => setIsAccessMinimized(!isAccessMinimized)}
+                className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                title={isAccessMinimized ? "Expand" : "Minimize"}
+                data-testid="button-minimize-access"
+              >
+                {isAccessMinimized ? (
+                  <Plus className="w-5 h-5 text-purple-300" />
+                ) : (
+                  <Minus className="w-5 h-5 text-purple-300" />
+                )}
+              </button>
             </div>
+            {!isAccessMinimized && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                    <p className="text-purple-300 text-sm mb-1">System Access</p>
+                    <p className="text-lg font-semibold text-white">Full Access</p>
+                  </div>
+                  <div className="bg-slate-700/30 rounded-lg p-4 border border-purple-500/20">
+                    <p className="text-purple-300 text-sm mb-1">Permissions</p>
+                    <p className="text-lg font-semibold text-white">Admin Level</p>
+                  </div>
+                </div>
+                <p className="text-purple-300 text-sm">Staff access permissions and authorization levels</p>
+              </div>
+            )}
           </div>
         )}
 
@@ -5296,6 +5330,9 @@ export default function AdminSnapshot() {
                       setIsFiltersMinimized(true); // Minimize Performance card
                       setAreChartsMinimized(true); // Minimize Charts
                       setIsSearchMinimized(true); // Minimize Search card
+                      setIsPipelineMinimized(true); // Minimize Pipeline card
+                      setIsAccessMinimized(true); // Minimize Access card
+                      setShowStaffSearch(false); // Close Staff Search card
                       setShowAddModal(false);
                     }}
                     className="w-full p-6 bg-gradient-to-br from-purple-500/20 to-indigo-600/20 hover:from-purple-500/30 hover:to-indigo-600/30 rounded-xl border border-purple-500/30 hover:border-purple-500/50 transition-all group"
