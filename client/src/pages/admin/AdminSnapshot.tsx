@@ -2658,7 +2658,7 @@ export default function AdminSnapshot() {
                   <button 
                     onClick={() => {
                       setShowBatchList(true);
-                      console.log('Search Batch clicked');
+                      console.log('Search Batch clicked with Data Category:', dataCategory);
                     }}
                     className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:shadow-purple-500/50"
                     data-testid="button-search-batch"
@@ -2998,8 +2998,8 @@ export default function AdminSnapshot() {
           </TooltipProvider>
         )}
 
-        {/* Batch List Table - Only shown when Data Category is "Show All" */}
-        {categoryFilter === 'marketing' && teamFilter === 'direct-mail' && dataCategory === 'Show All' && showBatchList && (
+        {/* Batch List Table - Only shown when Search Batch is clicked */}
+        {categoryFilter === 'marketing' && teamFilter === 'direct-mail' && showBatchList && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
