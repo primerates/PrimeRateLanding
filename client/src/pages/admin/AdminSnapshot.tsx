@@ -3810,7 +3810,7 @@ export default function AdminSnapshot() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-purple-300">Log Date</label>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Clear Date</label>
                     <input
                       type="text"
                       placeholder="MM/DD/YYYY"
@@ -3829,7 +3829,7 @@ export default function AdminSnapshot() {
                         setRevenueSearchParams({ ...revenueSearchParams, term: value });
                       }}
                       className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
-                      data-testid="input-revenue-term-log-date"
+                      data-testid="input-revenue-clear-date"
                     />
                   </div>
 
