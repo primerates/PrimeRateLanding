@@ -442,6 +442,16 @@ export default function AdminSnapshot() {
     if (categoryFilter === 'staff' && teamFilter === 'mlo') {
       setIsPrimeRateMinimized(false);
     }
+    
+    // Staff Search card logic - auto-show when Team is not "Select", auto-hide when Team is "Select"
+    if (categoryFilter === 'staff') {
+      if (teamFilter !== 'select') {
+        setShowStaffSearch(true);
+      } else {
+        // Hide Search card when Team = "Select", but user can still open it via magnifying glass
+        setShowStaffSearch(false);
+      }
+    }
   }, [teamFilter, categoryFilter]);
   
   // Query card state variables (only shown when categoryFilter is 'marketing' and teamFilter is 'direct-mail')
@@ -450,7 +460,7 @@ export default function AdminSnapshot() {
   const [showBatchWarning, setShowBatchWarning] = useState(false);
   
   // Staff search card state
-  const [showStaffSearch, setShowStaffSearch] = useState(true);
+  const [showStaffSearch, setShowStaffSearch] = useState(false); // Start hidden when Team = "Select"
   const [showStaffWarning, setShowStaffWarning] = useState(false);
   const [showFormConflictWarning, setShowFormConflictWarning] = useState(false);
   const [conflictFormType, setConflictFormType] = useState<'expense' | 'revenue'>('expense');
@@ -1734,8 +1744,8 @@ export default function AdminSnapshot() {
           </div>
         )}
 
-        {/* Staff Search Card - Only shown when Staff category is selected AND Team is not "Select" */}
-        {categoryFilter === 'staff' && teamFilter !== 'select' && showStaffSearch && (
+        {/* Staff Search Card - Only shown when Staff category is selected and showStaffSearch is true */}
+        {categoryFilter === 'staff' && showStaffSearch && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
