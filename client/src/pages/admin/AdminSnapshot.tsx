@@ -4739,7 +4739,7 @@ export default function AdminSnapshot() {
                         data-testid="header-paid-by"
                       >
                         <div className="flex items-center gap-1">
-                          Paid By
+                          Payment Method
                           <ArrowUpDown className="w-4 h-4" />
                         </div>
                       </th>
@@ -4775,7 +4775,7 @@ export default function AdminSnapshot() {
                         <td className="py-3 px-2 text-purple-200">{entry.paymentTerm || '-'}</td>
                         <td className="py-3 px-2 text-purple-200">{entry.paidTo}</td>
                         <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
-                        <td className="py-3 px-2 text-white">{entry.expense}</td>
+                        <td className="py-3 px-2 font-semibold text-emerald-500">{entry.expense}</td>
                         <td className="py-3 px-2 text-center">
                           <AttachmentIndicator 
                             transactionId={entry.id} 
