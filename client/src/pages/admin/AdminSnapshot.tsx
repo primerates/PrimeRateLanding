@@ -1924,9 +1924,6 @@ export default function AdminSnapshot() {
               <h3 className="text-xl font-bold text-white">
                 Search Results ({sortedStaffData.length} staff members • {activeStaffColumns.length} columns)
               </h3>
-              <p className="text-sm text-purple-300">
-                Click column headers to sort
-              </p>
             </div>
 
             {/* Custom Scrollbar Track */}
@@ -2007,6 +2004,12 @@ export default function AdminSnapshot() {
                         </div>
                       </th>
                     ))}
+                    <th className="text-center text-purple-300 font-semibold py-3 px-4">
+                      <Paperclip className="w-4 h-4 mx-auto" />
+                    </th>
+                    <th className="text-left text-purple-300 font-semibold py-3 px-4">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -2037,6 +2040,62 @@ export default function AdminSnapshot() {
                           </td>
                         );
                       })}
+                      <td className="py-3 px-4 text-center">
+                        <AttachmentIndicator 
+                          transactionId={`staff-${staff.id}`}
+                          transactionType="staff"
+                          onOpenDialog={() => {
+                            setSelectedTransaction({ id: `staff-${staff.id}`, type: 'staff' });
+                            setShowAttachmentsDialog(true);
+                          }}
+                        />
+                      </td>
+                      <td className="py-3 px-4 relative">
+                        <button
+                          onClick={() => setOpenActionMenu(openActionMenu === staff.id ? null : staff.id)}
+                          className="text-purple-300 hover:text-white transition-colors"
+                          data-testid={`button-staff-action-menu-${staff.id}`}
+                        >
+                          <MoreVertical className="w-5 h-5" />
+                        </button>
+                        
+                        {/* Action Menu Popup */}
+                        {openActionMenu === staff.id && (
+                          <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-lg border border-purple-500/30 shadow-xl z-50 overflow-hidden">
+                            <button
+                              onClick={() => {
+                                setSelectedTransaction({ id: `staff-${staff.id}`, type: 'staff' });
+                                setShowAttachmentsDialog(true);
+                                setOpenActionMenu(null);
+                              }}
+                              className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
+                              data-testid={`button-staff-manage-attachments-${staff.id}`}
+                            >
+                              Attach Doc
+                            </button>
+                            <button
+                              onClick={() => {
+                                // TODO: Implement edit staff functionality
+                                setOpenActionMenu(null);
+                              }}
+                              className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
+                              data-testid={`button-staff-edit-${staff.id}`}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => {
+                                // TODO: Implement delete staff functionality
+                                setOpenActionMenu(null);
+                              }}
+                              className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
+                              data-testid={`button-staff-delete-${staff.id}`}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
