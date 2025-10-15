@@ -295,6 +295,10 @@ export default function AdminSnapshot() {
       }
     });
     
+    // Always include Paperclip and Actions columns at the end
+    columns.push({ key: 'paperclip', label: 'Paperclip' });
+    columns.push({ key: 'actions', label: 'Actions' });
+    
     return columns;
   }, [dataCategory, selectedQueryStates, selectedBatchActivities, ficoRangeAbove, parRateAbove, cashOutAbove, batchResults]);
 
