@@ -430,12 +430,13 @@ export default function AdminSnapshot() {
   
   // Auto-minimize/expand Performance card and Prime Rate card based on Category and Team selection
   useEffect(() => {
-    // Performance card logic
-    if (categoryFilter === 'select' || categoryFilter === 'vendor') {
+    // Performance card logic - only minimize for Vendor, keep expanded for Select and others
+    if (categoryFilter === 'vendor') {
       setIsFiltersMinimized(true);
     } else if (categoryFilter === 'staff' || categoryFilter === 'marketing' || categoryFilter === 'financials') {
       setIsFiltersMinimized(false);
     }
+    // Note: 'select' keeps whatever state it has (starts expanded by default)
     
     // Prime Rate card logic (Staff category only)
     if (categoryFilter === 'staff') {
