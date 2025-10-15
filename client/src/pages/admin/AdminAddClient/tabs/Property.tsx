@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
-import PropertyHeader from '../components/PropertyHeader';
-import PropertyManagement from '../components/PropertyManagement';
-import PropertyForm from '../components/PropertyForm';
+import PropertyHeader from '../components/Property/PropertyHeader';
+import PropertyManagement from '../components/Property/PropertyManagement';
+import PropertyForm from '../components/Property/PropertyForm';
 import DeleteConfirmationDialog from '../dialogs/DeleteConfirmationDialog';
 import ChangeSubjectPropertyDialog from '../dialogs/ChangeSubjectPropertyDialog';
 import ValuationDialog from '../dialogs/ValuationDialog';

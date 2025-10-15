@@ -1,8 +1,8 @@
 import { useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
-import FormInput from './FormInput';
-import FormSelect from './FormSelect';
-import { US_STATES_OPTIONS } from '../data/formOptions';
+import FormInput from '../FormInput';
+import FormSelect from '../FormSelect';
+import { US_STATES_OPTIONS } from '../../data/formOptions';
 
 interface PropertyAddressProps {
   propertyId: string;

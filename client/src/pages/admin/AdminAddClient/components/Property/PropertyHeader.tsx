@@ -2,7 +2,7 @@ import { useFormContext } from 'react-hook-form';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { type InsertClient } from '@shared/schema';
-import CircularMetric from './CircularMetric';
+import CircularMetric from '../CircularMetric';
 
 interface PropertyHeaderProps {
   showPropertyAnimation?: boolean;

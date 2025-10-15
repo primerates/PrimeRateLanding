@@ -4,10 +4,9 @@ import { Input } from '@/components/ui/input';
 import { useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
 import { toast } from '@/hooks/use-toast';
-import FormInput from './FormInput';
-import FormSelect from './FormSelect';
-import DateInput from './DateInput';
-import AppraisalIcon from './AppraisalIcon';
+import FormSelect from '../FormSelect';
+import DateInput from '../DateInput';
+import AppraisalIcon from '../AppraisalIcon';
 import ValuationButtons from './ValuationButtons';
 
 interface PropertyDetailsProps {
