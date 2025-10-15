@@ -1342,8 +1342,8 @@ export default function AdminSnapshot() {
             const result = await response.json();
             if (result.success) {
               toast({
-                title: "Expense Added",
-                description: "Expense and attachments saved successfully",
+                title: "Success",
+                description: "Transaction has been recorded",
               });
             }
             
