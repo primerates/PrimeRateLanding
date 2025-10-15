@@ -88,6 +88,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - **Visualizations**: Pie charts for Revenue Sources and Expense Breakdown with drill-down capabilities.
     - **Expense & Revenue Logging**: Add entry functionality with transaction tracking, date filtering, sortable tables, and an advanced Transaction Attachments System supporting PDF, JPG, PNG uploads, camera capture, and temporary ID management for attachments.
     - **Marketing Campaign Management**: Direct Mail Batch Creation with 17 required fields, US states selection, completion bar, CSV upload with fuzzy mapping, and batch management actions.
+    - **Search Card (Marketing)**: Features a "Search Batch" button matching Staff page's "Search Staff" button styling (`px-3.5 py-1.5 text-sm rounded-lg` with purple-to-pink gradient). Clicking opens the Batch List table.
     - **Batch List Table**:
       - Themed Icon: FileText icon in purple box matching Search card design
       - Header Controls: Minimize button (Plus/Minus icon) to collapse/expand table, X close button to hide batch list

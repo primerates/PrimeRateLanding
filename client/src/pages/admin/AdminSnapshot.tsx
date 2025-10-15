@@ -2654,26 +2654,38 @@ export default function AdminSnapshot() {
                   </div>
                   <h3 className="text-xl font-bold text-white">Search</h3>
                 </div>
-                <TooltipComponent>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => {
-                        if (showCreateBatch && isQueryCardMinimized) {
-                          setShowBatchWarning(true);
-                        } else {
-                          setIsQueryCardMinimized(!isQueryCardMinimized);
-                        }
-                      }}
-                      className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
-                      data-testid="button-toggle-query-card"
-                    >
-                      {isQueryCardMinimized ? <Plus className="h-4 w-4 text-purple-300" /> : <Minus className="h-4 w-4 text-purple-300" />}
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{isQueryCardMinimized ? 'Expand' : 'Minimize'}</p>
-                  </TooltipContent>
-                </TooltipComponent>
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => {
+                      setShowBatchList(true);
+                      console.log('Search Batch clicked');
+                    }}
+                    className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:shadow-purple-500/50"
+                    data-testid="button-search-batch"
+                  >
+                    Search Batch
+                  </button>
+                  <TooltipComponent>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => {
+                          if (showCreateBatch && isQueryCardMinimized) {
+                            setShowBatchWarning(true);
+                          } else {
+                            setIsQueryCardMinimized(!isQueryCardMinimized);
+                          }
+                        }}
+                        className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                        data-testid="button-toggle-query-card"
+                      >
+                        {isQueryCardMinimized ? <Plus className="h-4 w-4 text-purple-300" /> : <Minus className="h-4 w-4 text-purple-300" />}
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{isQueryCardMinimized ? 'Expand' : 'Minimize'}</p>
+                    </TooltipContent>
+                  </TooltipComponent>
+                </div>
               </div>
               {!isQueryCardMinimized && (
                 <div>
