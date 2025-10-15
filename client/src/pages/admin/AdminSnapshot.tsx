@@ -427,7 +427,7 @@ export default function AdminSnapshot() {
   const [isPrimeRateMinimized, setIsPrimeRateMinimized] = useState(true); // Minimized when Team = "Select"
   const [isPipelineMinimized, setIsPipelineMinimized] = useState(false);
   const [isAccessMinimized, setIsAccessMinimized] = useState(false);
-  const [showBatchList, setShowBatchList] = useState(true);
+  const [showBatchList, setShowBatchList] = useState(false); // Start hidden, shown only after search
   const [transactionDateFilter, setTransactionDateFilter] = useState('today');
   
   // Auto-minimize/expand Performance card and Prime Rate card based on Category and Team selection
@@ -455,14 +455,12 @@ export default function AdminSnapshot() {
       }
     }
     
-    // Marketing Search card logic - auto-show when Team is not "Select", auto-hide when Team is "Select"
+    // Marketing Search card logic - DON'T auto-show, user must click magnifying glass
     if (categoryFilter === 'marketing') {
-      if (teamFilter !== 'select') {
-        setShowQueryCard(true);
-      } else {
-        // Hide Search card when Team = "Select", but user can still open it via magnifying glass
-        setShowQueryCard(false);
-      }
+      // Always hide Search card when Team changes - user must manually open via magnifying glass
+      setShowQueryCard(false);
+      // Also hide Batch List when Team changes
+      setShowBatchList(false);
     }
     
     // Financials Search card logic - only show when Team is "Expense", hide otherwise
@@ -2996,7 +2994,10 @@ export default function AdminSnapshot() {
                     </TooltipContent>
                   </TooltipComponent>
                   <button
-                    onClick={() => setShowQueryCard(false)}
+                    onClick={() => {
+                      setShowQueryCard(false);
+                      setShowBatchList(false); // Also hide Batch List when closing Search card
+                    }}
                     className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
                     title="Close Search"
                     data-testid="button-close-search-marketing"
