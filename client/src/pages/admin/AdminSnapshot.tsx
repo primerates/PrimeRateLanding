@@ -429,6 +429,7 @@ export default function AdminSnapshot() {
   
   // Query card state variables (only shown when categoryFilter is 'marketing' and teamFilter is 'direct-mail')
   const [isQueryCardMinimized, setIsQueryCardMinimized] = useState(false);
+  const [showQueryCard, setShowQueryCard] = useState(true);
   const [showBatchWarning, setShowBatchWarning] = useState(false);
   const [showStaffWarning, setShowStaffWarning] = useState(false);
   const [showFormConflictWarning, setShowFormConflictWarning] = useState(false);
@@ -2676,7 +2677,7 @@ export default function AdminSnapshot() {
         )}
 
         {/* Search Card - Only shown when Direct Mail category is selected */}
-        {categoryFilter === 'marketing' && teamFilter === 'direct-mail' && (
+        {categoryFilter === 'marketing' && teamFilter === 'direct-mail' && showQueryCard && (
           <TooltipProvider>
             <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
               <div className="flex items-center justify-between mb-4">
@@ -2718,7 +2719,7 @@ export default function AdminSnapshot() {
                     </TooltipContent>
                   </TooltipComponent>
                   <button
-                    onClick={() => setIsQueryCardMinimized(true)}
+                    onClick={() => setShowQueryCard(false)}
                     className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
                     title="Close Search"
                     data-testid="button-close-search-marketing"
