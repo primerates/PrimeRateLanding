@@ -1294,7 +1294,32 @@ export default function AdminSnapshot() {
     return visibleTransactionColumns.includes(column);
   };
 
-  const sortedExpenses = [...expenseEntries].sort((a: any, b: any) => {
+  // Filter expenses based on search parameters
+  const filteredExpenses = expenseEntries.filter((entry: any) => {
+    // If no search parameters are set, show all entries
+    const hasSearchParams = Object.values(financialsSearchParams).some(val => val !== '');
+    if (!hasSearchParams) return true;
+
+    // Match each search parameter if it's filled
+    const matchLogDate = !financialsSearchParams.logDate || entry.logDate === financialsSearchParams.logDate;
+    const matchTransactionDate = !financialsSearchParams.transactionDate || entry.transactionDate === financialsSearchParams.transactionDate;
+    const matchClearDate = !financialsSearchParams.clearDate || entry.clearanceDate === financialsSearchParams.clearDate;
+    const matchAmount = !financialsSearchParams.amount || entry.expense === financialsSearchParams.amount;
+    const matchInvoiceNum = !financialsSearchParams.invoiceNum || entry.invoiceNumber === financialsSearchParams.invoiceNum;
+    const matchCheckNum = !financialsSearchParams.checkNum || entry.checkNumber === financialsSearchParams.checkNum;
+    const matchPaymentMethod = !financialsSearchParams.paymentMethod || entry.paidWith === financialsSearchParams.paymentMethod;
+    const matchPaymentTerm = !financialsSearchParams.paymentTerm || entry.paymentTerm === financialsSearchParams.paymentTerm;
+    const matchCategory = !financialsSearchParams.paymentFor || entry.expenseCategory === financialsSearchParams.paymentFor;
+    const matchArea = !financialsSearchParams.area || entry.area === financialsSearchParams.area;
+    const matchVendor = !financialsSearchParams.vendor || entry.paidTo === financialsSearchParams.vendor;
+    const matchPayee = !financialsSearchParams.payee || entry.payee === financialsSearchParams.payee;
+
+    return matchLogDate && matchTransactionDate && matchClearDate && matchAmount && 
+           matchInvoiceNum && matchCheckNum && matchPaymentMethod && matchPaymentTerm && 
+           matchCategory && matchArea && matchVendor && matchPayee;
+  });
+
+  const sortedExpenses = [...filteredExpenses].sort((a: any, b: any) => {
     if (!sortConfig.key) return 0;
     
     const aValue = a[sortConfig.key];
@@ -3409,25 +3434,22 @@ export default function AdminSnapshot() {
 
                   <div>
                     <label className="block text-sm font-medium mb-2 text-purple-300">Amount</label>
-                    <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">$</span>
-                      <input
-                        type="text"
-                        placeholder="0"
-                        value={financialsSearchParams.amount}
-                        onChange={(e) => {
-                          let value = e.target.value.replace(/[^0-9]/g, '');
-                          if (value) {
-                            value = parseInt(value).toLocaleString('en-US');
-                            setFinancialsSearchParams({ ...financialsSearchParams, amount: value });
-                          } else {
-                            setFinancialsSearchParams({ ...financialsSearchParams, amount: '' });
-                          }
-                        }}
-                        className="w-full pl-8 pr-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
-                        data-testid="input-financials-amount"
-                      />
-                    </div>
+                    <input
+                      type="text"
+                      placeholder="$0"
+                      value={financialsSearchParams.amount}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/[^0-9]/g, '');
+                        if (value) {
+                          const formatted = '$' + parseInt(value).toLocaleString('en-US');
+                          setFinancialsSearchParams({ ...financialsSearchParams, amount: formatted });
+                        } else {
+                          setFinancialsSearchParams({ ...financialsSearchParams, amount: '' });
+                        }
+                      }}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                      data-testid="input-financials-amount"
+                    />
                   </div>
                 </div>
 
@@ -5454,6 +5476,7 @@ export default function AdminSnapshot() {
                           setShowTransactionsCard(true);
                           setVisibleTransactionColumns(['all']); // Show all columns by default
                           setAreChartsMinimized(true); // Minimize charts to reduce clutter
+                          setShowFinancialsSearch(false); // Close search card before opening expense log
                           setTeamFilter('expense-add'); // Update Team dropdown to match selection
                           setShowAddModal(false);
                         }
