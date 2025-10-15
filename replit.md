@@ -88,6 +88,12 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - **Visualizations**: Pie charts for Revenue Sources and Expense Breakdown with drill-down capabilities.
     - **Expense & Revenue Logging**: Add entry functionality with transaction tracking, date filtering, sortable tables, and an advanced Transaction Attachments System supporting PDF, JPG, PNG uploads, camera capture, and temporary ID management for attachments.
     - **Marketing Campaign Management**: Direct Mail Batch Creation with 17 required fields, US states selection, completion bar, CSV upload with fuzzy mapping, and batch management actions.
+    - **Batch List Table**:
+      - Themed Icon: FileText icon in purple box matching Search card design
+      - Header Controls: Minimize button (Plus/Minus icon) to collapse/expand table, X close button to hide batch list
+      - Attachment System: Paperclip column showing document count for each batch, clickable to manage batch attachments
+      - Supports PDF, JPG, PNG uploads and camera capture (max 5MB) per batch
+      - Sortable columns with visual indicators
     - **Dropdown Styling Standard**: All dropdowns use native HTML `<select>` elements with consistent styling: `w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors`. Native `<option>` elements display browser default blue hover effect on grey background with white text. This styling pattern matches across Direct Mail search fields and Staff Role card dropdowns (Payroll Type, Level, Role, Authorization, Access).
     - **Technology Stack**: Recharts for data visualization, Papa Parse for CSV processing.
 

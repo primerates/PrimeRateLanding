@@ -144,6 +144,8 @@ export default function AdminSnapshot() {
   const [showExpenseLogAttachmentsDialog, setShowExpenseLogAttachmentsDialog] = useState(false);
   const [showRevenueLogAttachmentsDialog, setShowRevenueLogAttachmentsDialog] = useState(false);
   const [showStaffAttachmentsDialog, setShowStaffAttachmentsDialog] = useState(false);
+  const [showBatchAttachmentsDialog, setShowBatchAttachmentsDialog] = useState(false);
+  const [selectedBatchId, setSelectedBatchId] = useState<string | null>(null);
   const [tempExpenseLogId, setTempExpenseLogId] = useState(() => `temp-expense-${Date.now()}`);
   const [tempRevenueLogId, setTempRevenueLogId] = useState(() => `temp-revenue-${Date.now()}`);
   const [tempStaffId, setTempStaffId] = useState(() => `temp-staff-${Date.now()}`);
@@ -362,6 +364,8 @@ export default function AdminSnapshot() {
   const [isFiltersMinimized, setIsFiltersMinimized] = useState(false);
   const [areStaffCardsMinimized, setAreStaffCardsMinimized] = useState(false);
   const [isStaffResultsMinimized, setIsStaffResultsMinimized] = useState(false);
+  const [isBatchListMinimized, setIsBatchListMinimized] = useState(false);
+  const [showBatchList, setShowBatchList] = useState(true);
   const [transactionDateFilter, setTransactionDateFilter] = useState('today');
   
   // Query card state variables (only shown when categoryFilter is 'marketing' and teamFilter is 'direct-mail')
@@ -3029,15 +3033,45 @@ export default function AdminSnapshot() {
         )}
 
         {/* Batch List Table - Only shown when Data Category is "Show All" */}
-        {categoryFilter === 'marketing' && teamFilter === 'direct-mail' && dataCategory === 'Show All' && (
+        {categoryFilter === 'marketing' && teamFilter === 'direct-mail' && dataCategory === 'Show All' && showBatchList && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
-            <h3 className="text-xl font-bold text-white mb-6">Batch List</h3>
-            {sortedBatches.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-purple-300">No batches created yet</p>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
+                  <FileText className="w-5 h-5 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white">Batch List</h3>
               </div>
-            ) : (
-              <div className="overflow-x-auto">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsBatchListMinimized(!isBatchListMinimized)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title={isBatchListMinimized ? "Expand" : "Minimize"}
+                  data-testid="button-toggle-batch-list"
+                >
+                  {isBatchListMinimized ? (
+                    <Plus className="w-5 h-5 text-purple-300" />
+                  ) : (
+                    <Minus className="w-5 h-5 text-purple-300" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowBatchList(false)}
+                  className="text-purple-300 hover:text-white transition-colors"
+                  data-testid="button-close-batch-list"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+            {!isBatchListMinimized && (
+              <>
+                {sortedBatches.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-purple-300">No batches created yet</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
                 <table className="w-full border-collapse min-w-max">
                   <thead>
                     <tr className="border-b border-purple-500/30">
@@ -3132,6 +3166,9 @@ export default function AdminSnapshot() {
                         </div>
                       </th>
                       <th className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 whitespace-nowrap">
+                        <Paperclip className="w-4 h-4" />
+                      </th>
+                      <th className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 whitespace-nowrap">
                         Actions
                       </th>
                     </tr>
@@ -3162,6 +3199,19 @@ export default function AdminSnapshot() {
                             </button>
                           </td>
                           <td className="p-3 text-green-400 whitespace-nowrap font-semibold">${totalCost.toLocaleString()}</td>
+                          <td className="p-3">
+                            <button
+                              onClick={() => {
+                                setSelectedBatchId(batch.id);
+                                setShowBatchAttachmentsDialog(true);
+                              }}
+                              className="flex items-center gap-1 text-purple-300 hover:text-white transition-colors"
+                              data-testid={`button-batch-attachments-${batch.id}`}
+                            >
+                              <Paperclip className="w-4 h-4" />
+                              <BatchAttachmentCount transactionId={batch.id} />
+                            </button>
+                          </td>
                           <td className="p-3 relative">
                             <button
                               onClick={() => setOpenBatchActionMenu(openBatchActionMenu === batch.id ? null : batch.id)}
@@ -3189,7 +3239,9 @@ export default function AdminSnapshot() {
                     })}
                   </tbody>
                 </table>
-              </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}
@@ -5011,6 +5063,14 @@ export default function AdminSnapshot() {
           transactionId={tempStaffId}
           transactionType="staff"
         />
+
+        {/* Batch Attachments Dialog */}
+        <AttachmentsDialog
+          open={showBatchAttachmentsDialog}
+          onClose={() => setShowBatchAttachmentsDialog(false)}
+          transactionId={selectedBatchId || ''}
+          transactionType="batch"
+        />
       </div>
     </div>
   );
@@ -5071,6 +5131,27 @@ function StaffAttachmentCount({ transactionId }: { transactionId: string | numbe
   );
 }
 
+function BatchAttachmentCount({ transactionId }: { transactionId: string | number }) {
+  const { data: attachments = [], isLoading } = useQuery({
+    queryKey: ['/api/transactions', 'batch', transactionId, 'attachments'],
+    queryFn: async () => {
+      const res = await fetch(`/api/transactions/${transactionId}/attachments?transactionType=batch`);
+      if (!res.ok) throw new Error('Failed to fetch attachments');
+      const result = await res.json();
+      return result.data || [];
+    },
+  });
+
+  if (isLoading) return null;
+  if (attachments.length === 0) return <span className="text-purple-300">0</span>;
+  
+  return (
+    <span className="text-purple-300 font-semibold">
+      {attachments.length}
+    </span>
+  );
+}
+
 function AttachmentCountBadge({ 
   transactionId, 
   transactionType 
@@ -5107,7 +5188,7 @@ function AttachmentsDialog({
   open: boolean; 
   onClose: () => void; 
   transactionId?: string | number; 
-  transactionType?: 'expense' | 'revenue' | 'staff';
+  transactionType?: 'expense' | 'revenue' | 'staff' | 'batch';
 }) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
