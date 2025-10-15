@@ -421,6 +421,8 @@ export default function AdminSnapshot() {
   const [areChartsMinimized, setAreChartsMinimized] = useState(false);
   const [isTransactionsMinimized, setIsTransactionsMinimized] = useState(false);
   const [showTransactionsCard, setShowTransactionsCard] = useState(false); // Only show when Search has values
+  const [showRevenueTransactionsCard, setShowRevenueTransactionsCard] = useState(false); // Only show when Revenue Search has values
+  const [isRevenueTransactionsMinimized, setIsRevenueTransactionsMinimized] = useState(false);
   const [visibleTransactionColumns, setVisibleTransactionColumns] = useState<string[]>(['all']);
   const [isFiltersMinimized, setIsFiltersMinimized] = useState(false); // Always start expanded
   const [areStaffCardsMinimized, setAreStaffCardsMinimized] = useState(false);
@@ -5219,69 +5221,108 @@ export default function AdminSnapshot() {
         )}
 
         {/* Transactions Table for Revenue - Separate Card */}
-        {showRevenueForm && (
+        {categoryFilter === 'financials' && teamFilter === 'revenue-add' && showRevenueTransactionsCard && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-roll-down">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-white">Transactions</h3>
-              <button
-                onClick={() => setIsTransactionsMinimized(!isTransactionsMinimized)}
-                className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
-                title={isTransactionsMinimized ? "Expand" : "Minimize"}
-                data-testid="button-toggle-revenue-transactions"
-              >
-                {isTransactionsMinimized ? (
-                  <Plus className="w-5 h-5 text-purple-300" />
-                ) : (
-                  <Minus className="w-5 h-5 text-purple-300" />
-                )}
-              </button>
-            </div>
-
-            {!isTransactionsMinimized && (
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <select
-                    value={transactionDateFilter}
-                    onChange={(e) => setTransactionDateFilter(e.target.value)}
-                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm"
-                    data-testid="select-revenue-date-filter"
-                  >
-                    <option value="today">Today</option>
-                    <option value="mtd">MTD</option>
-                    <option value="ytd">YTD</option>
-                    <option value="dateRange">Date Range</option>
-                  </select>
-
-                  {transactionDateFilter === 'dateRange' && (
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        placeholder="From (MM/DD/YYYY)"
-                        value={transactionDateRange.fromDate}
-                        onChange={(e) => handleTransactionDateInput(e, 'fromDate')}
-                        className="bg-slate-700/50 text-white px-3 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm w-36"
-                        data-testid="input-revenue-from-date"
-                      />
-                      <input
-                        type="text"
-                        placeholder="To (MM/DD/YYYY)"
-                        value={transactionDateRange.toDate}
-                        onChange={(e) => handleTransactionDateInput(e, 'toDate')}
-                        className="bg-slate-700/50 text-white px-3 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm w-36"
-                        data-testid="input-revenue-to-date"
-                      />
-                    </div>
-                  )}
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
+                  <FileText className="w-5 h-5 text-purple-400" />
                 </div>
+                <h3 className="text-xl font-bold text-white">Transactions</h3>
               </div>
-            )}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsRevenueTransactionsMinimized(!isRevenueTransactionsMinimized)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title={isRevenueTransactionsMinimized ? "Expand" : "Minimize"}
+                  data-testid="button-toggle-revenue-transactions"
+                >
+                  {isRevenueTransactionsMinimized ? (
+                    <Plus className="w-5 h-5 text-purple-300" />
+                  ) : (
+                    <Minus className="w-5 h-5 text-purple-300" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowRevenueTransactionsCard(false)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title="Close"
+                  data-testid="button-close-revenue-transactions"
+                >
+                  <X className="w-5 h-5 text-purple-300" />
+                </button>
+              </div>
+            </div>
             
             {/* Separation line */}
-            <div className="border-t border-purple-500/30 mb-6"></div>
+            {!isRevenueTransactionsMinimized && <div className="border-t border-purple-500/30 my-6"></div>}
 
-            {!isTransactionsMinimized && (
-              <div className="overflow-x-auto">
-                <table className="w-full">
+            {!isRevenueTransactionsMinimized && (
+              <>
+                {/* Custom Scrollbar Track */}
+                <div className="mb-4">
+                  <div 
+                    className="h-2 rounded-full overflow-hidden cursor-pointer bg-slate-700/50"
+                    style={{ position: 'relative' }}
+                    onClick={(e) => {
+                      const tableContainer = e.currentTarget.parentElement?.nextElementSibling as HTMLDivElement;
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const clickX = e.clientX - rect.left;
+                      const percentage = clickX / rect.width;
+                      tableContainer.scrollLeft = percentage * (tableContainer.scrollWidth - tableContainer.clientWidth);
+                    }}
+                  >
+                    <div 
+                      id="revenue-transactions-scroll-indicator"
+                      className="h-full rounded-full transition-all bg-gradient-to-r from-purple-500 to-pink-500"
+                      style={{ width: '30%', cursor: 'grab' }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        const indicator = e.currentTarget;
+                        const track = indicator.parentElement as HTMLDivElement;
+                        const tableContainer = track.parentElement?.nextElementSibling as HTMLDivElement;
+                        
+                        indicator.style.cursor = 'grabbing';
+                        const startX = e.clientX;
+                        const startScrollLeft = tableContainer.scrollLeft;
+                        const trackWidth = track.offsetWidth;
+                        const scrollWidth = tableContainer.scrollWidth - tableContainer.clientWidth;
+                        
+                        const handleMouseMove = (e: MouseEvent) => {
+                          const deltaX = e.clientX - startX;
+                          const scrollDelta = (deltaX / trackWidth) * scrollWidth;
+                          tableContainer.scrollLeft = startScrollLeft + scrollDelta;
+                        };
+                        
+                        const handleMouseUp = () => {
+                          indicator.style.cursor = 'grab';
+                          document.removeEventListener('mousemove', handleMouseMove);
+                          document.removeEventListener('mouseup', handleMouseUp);
+                        };
+                        
+                        document.addEventListener('mousemove', handleMouseMove);
+                        document.addEventListener('mouseup', handleMouseUp);
+                      }}
+                    />
+                  </div>
+                  <p className="text-xs mt-1 text-slate-400">
+                    ← Drag or click the scrollbar to navigate →
+                  </p>
+                </div>
+
+                <div 
+                  className="overflow-x-auto scrollbar-custom"
+                  onScroll={(e) => {
+                    const scrollPercentage = e.currentTarget.scrollLeft / (e.currentTarget.scrollWidth - e.currentTarget.clientWidth);
+                    const indicator = document.getElementById('revenue-transactions-scroll-indicator');
+                    if (indicator) {
+                      const thumbWidth = (e.currentTarget.clientWidth / e.currentTarget.scrollWidth) * 100;
+                      indicator.style.width = `${Math.max(thumbWidth, 10)}%`;
+                      indicator.style.transform = `translateX(${scrollPercentage * (100 / thumbWidth - 1)}%)`;
+                    }
+                  }}
+                >
+                <table className="w-full min-w-max">
                   <thead>
                     <tr className="border-b border-purple-500/30">
                       <th 
@@ -5441,7 +5482,8 @@ export default function AdminSnapshot() {
                     ))}
                   </tbody>
                 </table>
-              </div>
+                </div>
+              </>
             )}
           </div>
         )}
