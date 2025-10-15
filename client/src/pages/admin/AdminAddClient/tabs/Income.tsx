@@ -1,8 +1,8 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Card, CardContent } from '@/components/ui/card';
-import IncomeHeader from '../components/IncomeHeader';
-import IncomeFormsSection from '../components/IncomeFormsSection';
+import IncomeHeader from '../components/Income/IncomeHeader';
+import IncomeFormsSection from '../components/Income/IncomeFormsSection';
 import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 import { InsertClient } from '@shared/schema';
 import { parseMonetaryValue, formatCurrency, calculateEmploymentDuration } from '../utils/formUtils';

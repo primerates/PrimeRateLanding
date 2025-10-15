@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Plus, Minus } from 'lucide-react';
 import { InsertClient } from '@shared/schema';
-import FormInput from './FormInput';
-import DateInput from './DateInput';
+import FormInput from '../FormInput';
+import DateInput from '../DateInput';
 import DisabilityOption from './DisabilityOption';
-import DeleteConfirmationDialog from '../dialogs/DeleteConfirmationDialog';
+import DeleteConfirmationDialog from '../../dialogs/DeleteConfirmationDialog';
 
 interface DisabilityCardProps {
     isOpen: boolean;

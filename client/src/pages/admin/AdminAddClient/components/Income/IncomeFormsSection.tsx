@@ -7,8 +7,8 @@ import SelfEmploymentForm from './SelfEmploymentForm';
 import SocialSecurityForm from './SocialSecurityForm';
 import PensionForm from './PensionForm';
 import DisabilityCard from './DisabilityCard';
-import PropertyRentalDialog from '../dialogs/PropertyRentalDialog';
-import DeleteConfirmationDialog from '../dialogs/DeleteConfirmationDialog';
+import PropertyRentalDialog from '../../dialogs/PropertyRentalDialog';
+import DeleteConfirmationDialog from '../../dialogs/DeleteConfirmationDialog';
 
 interface EmploymentDate {
     startDate: string;

@@ -8,13 +8,13 @@ import { Switch } from '@/components/ui/switch';
 import { useState, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
-import FormInput from '../FormInput';
-import PhoneInput from '../PhoneInput';
-import FormSelect from '../FormSelect';
-import DateInput from '../DateInput';
-import { US_STATES_OPTIONS, FORMATION_OPTIONS } from '../../data/formOptions';
-import BusinessDescriptionDialog from '../../dialogs/BusinessDescriptionDialog';
-import TaxPreparerDialog from '../../dialogs/TaxPreparerDialog';
+import FormInput from '../../FormInput';
+import PhoneInput from '../../PhoneInput';
+import FormSelect from '../../FormSelect';
+import DateInput from '../../DateInput';
+import { US_STATES_OPTIONS, FORMATION_OPTIONS } from '../../../data/formOptions';
+import BusinessDescriptionDialog from '../../../dialogs/BusinessDescriptionDialog';
+import TaxPreparerDialog from '../../../dialogs/TaxPreparerDialog';
 
 interface SelfEmploymentFormProps {
   cardId: string;

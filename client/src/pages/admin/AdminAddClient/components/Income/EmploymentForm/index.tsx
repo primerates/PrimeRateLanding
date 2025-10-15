@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Controller, useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
-import FormInput from '../FormInput';
+import FormInput from '../../FormInput';
 import EmploymentTypeRadio from './EmploymentTypeRadio';
 import EmploymentVerificationToggle from './EmploymentVerificationToggle';
 import EmploymentDateFields from './EmploymentDateFields';
