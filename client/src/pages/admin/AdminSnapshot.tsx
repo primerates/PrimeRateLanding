@@ -5080,7 +5080,12 @@ export default function AdminSnapshot() {
         {showRevenueForm && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-in">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-white">Revenue Log</h3>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
+                  <Stamp className="w-5 h-5 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white">Revenue log</h3>
+              </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowRevenueLogAttachmentsDialog(true)}
