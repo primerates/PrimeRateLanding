@@ -3228,6 +3228,28 @@ export default function AdminSnapshot() {
               <div className="flex items-center gap-2">
                 <button 
                   onClick={() => {
+                    setFinancialsSearchParams({
+                      date: '',
+                      amount: '',
+                      payee: '',
+                      paymentFor: '',
+                      invoiceNum: '',
+                      checkNum: '',
+                      paymentMethod: '',
+                      paymentTerm: '',
+                      vendor: '',
+                      services: '',
+                      area: '',
+                      role: ''
+                    });
+                  }}
+                  className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
+                  data-testid="button-clear-filters-financials"
+                >
+                  Clear Filters
+                </button>
+                <button 
+                  onClick={() => {
                     console.log('Search Expense clicked');
                   }}
                   className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:shadow-purple-500/50"
@@ -3449,32 +3471,6 @@ export default function AdminSnapshot() {
                       <option value="tbd">TBD</option>
                     </select>
                   </div>
-                </div>
-
-                {/* Clear Filters Button */}
-                <div className="mt-4 flex justify-end">
-                  <button 
-                    onClick={() => {
-                      setFinancialsSearchParams({
-                        date: '',
-                        amount: '',
-                        payee: '',
-                        paymentFor: '',
-                        invoiceNum: '',
-                        checkNum: '',
-                        paymentMethod: '',
-                        paymentTerm: '',
-                        vendor: '',
-                        services: '',
-                        area: '',
-                        role: ''
-                      });
-                    }}
-                    className="px-6 py-2.5 rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
-                    data-testid="button-clear-filters-financials"
-                  >
-                    Clear Filters
-                  </button>
                 </div>
               </div>
             )}
