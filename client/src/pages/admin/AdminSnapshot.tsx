@@ -421,6 +421,7 @@ export default function AdminSnapshot() {
   const [areChartsMinimized, setAreChartsMinimized] = useState(false);
   const [isTransactionsMinimized, setIsTransactionsMinimized] = useState(false);
   const [showTransactionsCard, setShowTransactionsCard] = useState(true);
+  const [visibleTransactionColumns, setVisibleTransactionColumns] = useState<string[]>(['all']);
   const [isFiltersMinimized, setIsFiltersMinimized] = useState(false); // Always start expanded
   const [areStaffCardsMinimized, setAreStaffCardsMinimized] = useState(false);
   const [isStaffResultsMinimized, setIsStaffResultsMinimized] = useState(false);
@@ -491,7 +492,9 @@ export default function AdminSnapshot() {
   const [showFinancialsSearch, setShowFinancialsSearch] = useState(false);
   const [isFinancialsSearchMinimized, setIsFinancialsSearchMinimized] = useState(false);
   const [financialsSearchParams, setFinancialsSearchParams] = useState({
-    date: '',
+    logDate: '',
+    transactionDate: '',
+    clearDate: '',
     amount: '',
     payee: '',
     paymentFor: '',
@@ -500,8 +503,10 @@ export default function AdminSnapshot() {
     paymentMethod: '',
     paymentTerm: '',
     vendor: '',
-    services: '',
     area: '',
+    // Legacy fields (may be used elsewhere)
+    date: '',
+    services: '',
     role: ''
   });
   
@@ -633,7 +638,9 @@ export default function AdminSnapshot() {
     paymentTerm: '',
     notes: '',
     checkNumber: '',
-    invoiceNumber: ''
+    invoiceNumber: '',
+    area: '',
+    payee: ''
   });
   const [newRevenue, setNewRevenue] = useState({
     logDate: '',
@@ -1281,6 +1288,12 @@ export default function AdminSnapshot() {
     setSortConfig({ key, direction });
   };
 
+  // Helper function to check if a column should be visible
+  const isColumnVisible = (column: string) => {
+    if (visibleTransactionColumns.includes('all')) return true;
+    return visibleTransactionColumns.includes(column);
+  };
+
   const sortedExpenses = [...expenseEntries].sort((a: any, b: any) => {
     if (!sortConfig.key) return 0;
     
@@ -1393,6 +1406,8 @@ export default function AdminSnapshot() {
     setIsEditMode(true);
     setEditingExpenseId(expense.id);
     setShowExpenseForm(true);
+    setShowTransactionsCard(true);
+    setVisibleTransactionColumns(['all']); // Show all columns by default
     setAreChartsMinimized(true); // Minimize charts to reduce clutter
     setOpenActionMenu(null);
   };
@@ -3241,7 +3256,9 @@ export default function AdminSnapshot() {
                 <button 
                   onClick={() => {
                     setFinancialsSearchParams({
-                      date: '',
+                      logDate: '',
+                      transactionDate: '',
+                      clearDate: '',
                       amount: '',
                       payee: '',
                       paymentFor: '',
@@ -3250,8 +3267,9 @@ export default function AdminSnapshot() {
                       paymentMethod: '',
                       paymentTerm: '',
                       vendor: '',
-                      services: '',
                       area: '',
+                      date: '',
+                      services: '',
                       role: ''
                     });
                   }}
@@ -3262,7 +3280,24 @@ export default function AdminSnapshot() {
                 </button>
                 <button 
                   onClick={() => {
-                    console.log('Search Expense clicked');
+                    // Calculate visible columns based on filled search fields
+                    const visibleCols: string[] = [];
+                    if (financialsSearchParams.logDate) visibleCols.push('logDate');
+                    if (financialsSearchParams.transactionDate) visibleCols.push('transactionDate');
+                    if (financialsSearchParams.clearDate) visibleCols.push('clearanceDate');
+                    if (financialsSearchParams.amount) visibleCols.push('expense');
+                    if (financialsSearchParams.invoiceNum) visibleCols.push('invoiceNumber');
+                    if (financialsSearchParams.checkNum) visibleCols.push('checkNumber');
+                    if (financialsSearchParams.paymentMethod) visibleCols.push('paidWith');
+                    if (financialsSearchParams.paymentTerm) visibleCols.push('paymentTerm');
+                    if (financialsSearchParams.paymentFor) visibleCols.push('expenseCategory');
+                    if (financialsSearchParams.area) visibleCols.push('area');
+                    if (financialsSearchParams.vendor) visibleCols.push('paidTo');
+                    if (financialsSearchParams.payee) visibleCols.push('payee');
+                    
+                    setVisibleTransactionColumns(visibleCols.length > 0 ? visibleCols : ['all']);
+                    setShowTransactionsCard(true);
+                    setIsTransactionsMinimized(false);
                   }}
                   className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:shadow-purple-500/50"
                   data-testid="button-search-expense"
@@ -3301,7 +3336,7 @@ export default function AdminSnapshot() {
                     <input
                       type="text"
                       placeholder="MM/DD/YYYY"
-                      value={financialsSearchParams.role}
+                      value={financialsSearchParams.logDate}
                       onChange={(e) => {
                         let value = e.target.value.replace(/\D/g, '');
                         if (value.length >= 2) {
@@ -3313,10 +3348,10 @@ export default function AdminSnapshot() {
                         if (value.length > 10) {
                           value = value.slice(0, 10);
                         }
-                        setFinancialsSearchParams({ ...financialsSearchParams, role: value });
+                        setFinancialsSearchParams({ ...financialsSearchParams, logDate: value });
                       }}
                       className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
-                      data-testid="input-financials-role"
+                      data-testid="input-financials-log-date"
                     />
                   </div>
 
@@ -3325,7 +3360,7 @@ export default function AdminSnapshot() {
                     <input
                       type="text"
                       placeholder="MM/DD/YYYY"
-                      value={financialsSearchParams.date}
+                      value={financialsSearchParams.transactionDate}
                       onChange={(e) => {
                         let value = e.target.value.replace(/\D/g, '');
                         if (value.length >= 2) {
@@ -3337,10 +3372,10 @@ export default function AdminSnapshot() {
                         if (value.length > 10) {
                           value = value.slice(0, 10);
                         }
-                        setFinancialsSearchParams({ ...financialsSearchParams, date: value });
+                        setFinancialsSearchParams({ ...financialsSearchParams, transactionDate: value });
                       }}
                       className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
-                      data-testid="input-financials-date"
+                      data-testid="input-financials-transaction-date"
                     />
                   </div>
 
@@ -3349,7 +3384,7 @@ export default function AdminSnapshot() {
                     <input
                       type="text"
                       placeholder="MM/DD/YYYY"
-                      value={financialsSearchParams.services}
+                      value={financialsSearchParams.clearDate}
                       onChange={(e) => {
                         let value = e.target.value.replace(/\D/g, '');
                         if (value.length >= 2) {
@@ -3361,10 +3396,10 @@ export default function AdminSnapshot() {
                         if (value.length > 10) {
                           value = value.slice(0, 10);
                         }
-                        setFinancialsSearchParams({ ...financialsSearchParams, services: value });
+                        setFinancialsSearchParams({ ...financialsSearchParams, clearDate: value });
                       }}
                       className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
-                      data-testid="input-financials-services"
+                      data-testid="input-financials-clear-date"
                     />
                   </div>
 
@@ -4684,86 +4719,150 @@ export default function AdminSnapshot() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-purple-500/30">
-                      <th 
-                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                        onClick={() => handleSort('logDate')}
-                        data-testid="header-log-date"
-                      >
-                        <div className="flex items-center gap-1">
-                          Log Date
-                          <ArrowUpDown className="w-4 h-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                        onClick={() => handleSort('transactionDate')}
-                        data-testid="header-transaction-date"
-                      >
-                        <div className="flex items-center gap-1">
-                          Transaction Date
-                          <ArrowUpDown className="w-4 h-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                        onClick={() => handleSort('clearanceDate')}
-                        data-testid="header-clear-date"
-                      >
-                        <div className="flex items-center gap-1">
-                          Clear Date
-                          <ArrowUpDown className="w-4 h-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                        onClick={() => handleSort('expenseCategory')}
-                        data-testid="header-expense-category"
-                      >
-                        <div className="flex items-center gap-1">
-                          Category
-                          <ArrowUpDown className="w-4 h-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                        onClick={() => handleSort('paymentTerm')}
-                        data-testid="header-payment-term"
-                      >
-                        <div className="flex items-center gap-1">
-                          Payment Term
-                          <ArrowUpDown className="w-4 h-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                        onClick={() => handleSort('paidTo')}
-                        data-testid="header-paid-to"
-                      >
-                        <div className="flex items-center gap-1">
-                          Paid To
-                          <ArrowUpDown className="w-4 h-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                        onClick={() => handleSort('paidWith')}
-                        data-testid="header-paid-by"
-                      >
-                        <div className="flex items-center gap-1">
-                          Payment Method
-                          <ArrowUpDown className="w-4 h-4" />
-                        </div>
-                      </th>
-                      <th 
-                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                        onClick={() => handleSort('expense')}
-                        data-testid="header-expense"
-                      >
-                        <div className="flex items-center gap-1">
-                          Amount
-                          <ArrowUpDown className="w-4 h-4" />
-                        </div>
-                      </th>
+                      {isColumnVisible('logDate') && (
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('logDate')}
+                          data-testid="header-log-date"
+                        >
+                          <div className="flex items-center gap-1">
+                            Log Date
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                      )}
+                      {isColumnVisible('transactionDate') && (
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('transactionDate')}
+                          data-testid="header-transaction-date"
+                        >
+                          <div className="flex items-center gap-1">
+                            Transaction Date
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                      )}
+                      {isColumnVisible('clearanceDate') && (
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('clearanceDate')}
+                          data-testid="header-clear-date"
+                        >
+                          <div className="flex items-center gap-1">
+                            Clear Date
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                      )}
+                      {isColumnVisible('invoiceNumber') && (
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('invoiceNumber')}
+                          data-testid="header-invoice-number"
+                        >
+                          <div className="flex items-center gap-1">
+                            Invoice #
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                      )}
+                      {isColumnVisible('checkNumber') && (
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('checkNumber')}
+                          data-testid="header-check-number"
+                        >
+                          <div className="flex items-center gap-1">
+                            Check #
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                      )}
+                      {isColumnVisible('paidWith') && (
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('paidWith')}
+                          data-testid="header-paid-by"
+                        >
+                          <div className="flex items-center gap-1">
+                            Payment Method
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                      )}
+                      {isColumnVisible('paymentTerm') && (
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('paymentTerm')}
+                          data-testid="header-payment-term"
+                        >
+                          <div className="flex items-center gap-1">
+                            Payment Term
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                      )}
+                      {isColumnVisible('expenseCategory') && (
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('expenseCategory')}
+                          data-testid="header-expense-category"
+                        >
+                          <div className="flex items-center gap-1">
+                            Category
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                      )}
+                      {isColumnVisible('area') && (
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('area')}
+                          data-testid="header-area"
+                        >
+                          <div className="flex items-center gap-1">
+                            Area
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                      )}
+                      {isColumnVisible('paidTo') && (
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('paidTo')}
+                          data-testid="header-paid-to"
+                        >
+                          <div className="flex items-center gap-1">
+                            Paid To
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                      )}
+                      {isColumnVisible('payee') && (
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('payee')}
+                          data-testid="header-payee"
+                        >
+                          <div className="flex items-center gap-1">
+                            Payee
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                      )}
+                      {isColumnVisible('expense') && (
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('expense')}
+                          data-testid="header-expense"
+                        >
+                          <div className="flex items-center gap-1">
+                            Amount
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                      )}
                       <th className="text-center text-purple-300 font-semibold py-3 px-2">
                         <Paperclip className="w-4 h-4 mx-auto" />
                       </th>
@@ -4779,14 +4878,18 @@ export default function AdminSnapshot() {
                         className="border-b border-purple-500/10 hover:bg-slate-700/30 transition-colors"
                         data-testid={`expense-row-${entry.id}`}
                       >
-                        <td className="py-3 px-2 text-purple-200">{entry.logDate}</td>
-                        <td className="py-3 px-2 text-purple-200">{entry.transactionDate}</td>
-                        <td className="py-3 px-2 text-purple-200">{entry.clearanceDate}</td>
-                        <td className="py-3 px-2 text-purple-200">{entry.expenseCategory}</td>
-                        <td className="py-3 px-2 text-purple-200">{entry.paymentTerm || '-'}</td>
-                        <td className="py-3 px-2 text-purple-200">{entry.paidTo}</td>
-                        <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
-                        <td className="py-3 px-2 font-semibold text-emerald-500">{entry.expense}</td>
+                        {isColumnVisible('logDate') && <td className="py-3 px-2 text-purple-200">{entry.logDate}</td>}
+                        {isColumnVisible('transactionDate') && <td className="py-3 px-2 text-purple-200">{entry.transactionDate}</td>}
+                        {isColumnVisible('clearanceDate') && <td className="py-3 px-2 text-purple-200">{entry.clearanceDate}</td>}
+                        {isColumnVisible('invoiceNumber') && <td className="py-3 px-2 text-purple-200">{entry.invoiceNumber || '-'}</td>}
+                        {isColumnVisible('checkNumber') && <td className="py-3 px-2 text-purple-200">{entry.checkNumber || '-'}</td>}
+                        {isColumnVisible('paidWith') && <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>}
+                        {isColumnVisible('paymentTerm') && <td className="py-3 px-2 text-purple-200">{entry.paymentTerm || '-'}</td>}
+                        {isColumnVisible('expenseCategory') && <td className="py-3 px-2 text-purple-200">{entry.expenseCategory}</td>}
+                        {isColumnVisible('area') && <td className="py-3 px-2 text-purple-200">{entry.area || '-'}</td>}
+                        {isColumnVisible('paidTo') && <td className="py-3 px-2 text-purple-200">{entry.paidTo}</td>}
+                        {isColumnVisible('payee') && <td className="py-3 px-2 text-purple-200">{entry.payee || '-'}</td>}
+                        {isColumnVisible('expense') && <td className="py-3 px-2 font-semibold text-emerald-500">{entry.expense}</td>}
                         <td className="py-3 px-2 text-center">
                           <AttachmentIndicator 
                             transactionId={entry.id} 
@@ -5270,6 +5373,8 @@ export default function AdminSnapshot() {
                         } else {
                           setEntryType('expense');
                           setShowExpenseForm(true);
+                          setShowTransactionsCard(true);
+                          setVisibleTransactionColumns(['all']); // Show all columns by default
                           setAreChartsMinimized(true); // Minimize charts to reduce clutter
                           setTeamFilter('expense-add'); // Update Team dropdown to match selection
                           setShowAddModal(false);
