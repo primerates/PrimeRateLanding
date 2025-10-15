@@ -3144,7 +3144,8 @@ export default function AdminSnapshot() {
                                   if (column.key === 'cost') {
                                     value = `$${totalCost.toLocaleString()}`;
                                   } else if (column.key === 'records') {
-                                    value = (batch.records || 0).toLocaleString();
+                                    // Display actual count from excelData array, not the stored records field
+                                    value = (batch.excelData?.length || batch.records || 0).toLocaleString();
                                   } else if (column.key === 'states' && stateCount > 0) {
                                     return (
                                       <td key={column.key} className="py-3 px-4 text-slate-300">
