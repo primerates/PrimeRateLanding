@@ -420,6 +420,7 @@ export default function AdminSnapshot() {
   const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
   const [areChartsMinimized, setAreChartsMinimized] = useState(false);
   const [isTransactionsMinimized, setIsTransactionsMinimized] = useState(false);
+  const [showTransactionsCard, setShowTransactionsCard] = useState(true);
   const [isFiltersMinimized, setIsFiltersMinimized] = useState(false); // Always start expanded
   const [areStaffCardsMinimized, setAreStaffCardsMinimized] = useState(false);
   const [isStaffResultsMinimized, setIsStaffResultsMinimized] = useState(false);
@@ -4600,22 +4601,32 @@ export default function AdminSnapshot() {
         )}
 
         {/* Transactions Table - Separate Card */}
-        {showExpenseForm && (
+        {showExpenseForm && showTransactionsCard && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-roll-down">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-white">Transactions</h3>
-              <button
-                onClick={() => setIsTransactionsMinimized(!isTransactionsMinimized)}
-                className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
-                title={isTransactionsMinimized ? "Expand" : "Minimize"}
-                data-testid="button-toggle-transactions"
-              >
-                {isTransactionsMinimized ? (
-                  <Plus className="w-5 h-5 text-purple-300" />
-                ) : (
-                  <Minus className="w-5 h-5 text-purple-300" />
-                )}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsTransactionsMinimized(!isTransactionsMinimized)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title={isTransactionsMinimized ? "Expand" : "Minimize"}
+                  data-testid="button-toggle-transactions"
+                >
+                  {isTransactionsMinimized ? (
+                    <Plus className="w-5 h-5 text-purple-300" />
+                  ) : (
+                    <Minus className="w-5 h-5 text-purple-300" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowTransactionsCard(false)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title="Close"
+                  data-testid="button-close-transactions"
+                >
+                  <X className="w-5 h-5 text-purple-300" />
+                </button>
+              </div>
             </div>
 
             {/* Date Filter Dropdown */}
