@@ -475,6 +475,24 @@ export default function AdminSnapshot() {
   const [showFormConflictWarning, setShowFormConflictWarning] = useState(false);
   const [conflictFormType, setConflictFormType] = useState<'expense' | 'revenue'>('expense');
   
+  // Financials search card state
+  const [showFinancialsSearch, setShowFinancialsSearch] = useState(false);
+  const [isFinancialsSearchMinimized, setIsFinancialsSearchMinimized] = useState(false);
+  const [financialsSearchParams, setFinancialsSearchParams] = useState({
+    date: '',
+    amount: '',
+    payee: '',
+    paymentFor: '',
+    invoiceNum: '',
+    checkNum: '',
+    paymentMethod: '',
+    paymentTerm: '',
+    vendor: '',
+    services: '',
+    area: '',
+    role: ''
+  });
+  
   // Batch List sorting state
   const [batchSortColumn, setBatchSortColumn] = useState<string>('createdDate');
   const [batchSortDirection, setBatchSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -1567,8 +1585,10 @@ export default function AdminSnapshot() {
                   } else if (categoryFilter === 'staff') {
                     setShowStaffSearch(true);
                     setIsSearchMinimized(false);
+                  } else if (categoryFilter === 'financials') {
+                    setShowFinancialsSearch(true);
+                    setIsFinancialsSearchMinimized(false);
                   }
-                  // For financials, we'll add a search card later if needed
                 }}
                 className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
                 title="Open Search"
@@ -3193,6 +3213,272 @@ export default function AdminSnapshot() {
               )}
             </div>
           </TooltipProvider>
+        )}
+
+        {/* Financials Search Card - Only shown when Financials category is selected and showFinancialsSearch is true */}
+        {categoryFilter === 'financials' && showFinancialsSearch && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
+                  <Search className="w-5 h-5 text-purple-400" />
+                </div>
+                <h2 className="text-xl font-bold text-white">Search</h2>
+              </div>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => {
+                    console.log('Search Expense clicked');
+                  }}
+                  className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:shadow-purple-500/50"
+                  data-testid="button-search-expense"
+                >
+                  Search Expense
+                </button>
+                <button
+                  onClick={() => setIsFinancialsSearchMinimized(!isFinancialsSearchMinimized)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title={isFinancialsSearchMinimized ? "Expand" : "Minimize"}
+                  data-testid="button-toggle-financials-search"
+                >
+                  {isFinancialsSearchMinimized ? (
+                    <Plus className="w-5 h-5 text-purple-300" />
+                  ) : (
+                    <Minus className="w-5 h-5 text-purple-300" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowFinancialsSearch(false)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title="Close Search"
+                  data-testid="button-close-search-financials"
+                >
+                  <X className="w-5 h-5 text-purple-300" />
+                </button>
+              </div>
+            </div>
+            
+            {!isFinancialsSearchMinimized && (
+              <div>
+                {/* Row 1 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Date</label>
+                    <input
+                      type="text"
+                      placeholder="MM/DD/YYYY"
+                      value={financialsSearchParams.date}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (value.length >= 2) {
+                          value = value.slice(0, 2) + '/' + value.slice(2);
+                        }
+                        if (value.length >= 5) {
+                          value = value.slice(0, 5) + '/' + value.slice(5);
+                        }
+                        if (value.length > 10) {
+                          value = value.slice(0, 10);
+                        }
+                        setFinancialsSearchParams({ ...financialsSearchParams, date: value });
+                      }}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                      data-testid="input-financials-date"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Amount</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">$</span>
+                      <input
+                        type="text"
+                        placeholder="0"
+                        value={financialsSearchParams.amount}
+                        onChange={(e) => {
+                          let value = e.target.value.replace(/[^0-9]/g, '');
+                          if (value) {
+                            value = parseInt(value).toLocaleString('en-US');
+                            setFinancialsSearchParams({ ...financialsSearchParams, amount: value });
+                          } else {
+                            setFinancialsSearchParams({ ...financialsSearchParams, amount: '' });
+                          }
+                        }}
+                        className="w-full pl-8 pr-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                        data-testid="input-financials-amount"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Payee</label>
+                    <input
+                      type="text"
+                      placeholder="Enter payee name"
+                      value={financialsSearchParams.payee}
+                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, payee: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                      data-testid="input-financials-payee"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Payment For</label>
+                    <select
+                      value={financialsSearchParams.paymentFor}
+                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, paymentFor: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-financials-payment-for"
+                    >
+                      <option value="">Select</option>
+                      <option value="tbd">TBD</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Row 2 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Invoice #</label>
+                    <input
+                      type="text"
+                      placeholder="Enter invoice number"
+                      value={financialsSearchParams.invoiceNum}
+                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, invoiceNum: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                      data-testid="input-financials-invoice"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Check #</label>
+                    <input
+                      type="text"
+                      placeholder="Enter check number"
+                      value={financialsSearchParams.checkNum}
+                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, checkNum: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors placeholder-slate-500"
+                      data-testid="input-financials-check"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Payment Method</label>
+                    <select
+                      value={financialsSearchParams.paymentMethod}
+                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, paymentMethod: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-financials-payment-method"
+                    >
+                      <option value="">Select</option>
+                      <option value="zelle">Zelle</option>
+                      <option value="venmo">Venmo</option>
+                      <option value="wire">Wire</option>
+                      <option value="check">Check</option>
+                      <option value="cash">Cash</option>
+                      <option value="directdeposit">Direct Deposit</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Payment Term</label>
+                    <select
+                      value={financialsSearchParams.paymentTerm}
+                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, paymentTerm: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-financials-payment-term"
+                    >
+                      <option value="">Select</option>
+                      <option value="onetime">One-Time</option>
+                      <option value="recurring">Recurring</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Row 3 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Vendor</label>
+                    <select
+                      value={financialsSearchParams.vendor}
+                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, vendor: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-financials-vendor"
+                    >
+                      <option value="">Select</option>
+                      <option value="tbd">TBD</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Services</label>
+                    <select
+                      value={financialsSearchParams.services}
+                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, services: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-financials-services"
+                    >
+                      <option value="">Select</option>
+                      <option value="tbd">TBD</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Area</label>
+                    <select
+                      value={financialsSearchParams.area}
+                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, area: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-financials-area"
+                    >
+                      <option value="">Select</option>
+                      <option value="company">Company</option>
+                      <option value="partner">Partner</option>
+                      <option value="branch">Branch</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-purple-300">Role</label>
+                    <select
+                      value={financialsSearchParams.role}
+                      onChange={(e) => setFinancialsSearchParams({ ...financialsSearchParams, role: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                      data-testid="select-financials-role"
+                    >
+                      <option value="">Select</option>
+                      <option value="tbd">TBD</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Clear Filters Button */}
+                <div className="mt-4 flex justify-end">
+                  <button 
+                    onClick={() => {
+                      setFinancialsSearchParams({
+                        date: '',
+                        amount: '',
+                        payee: '',
+                        paymentFor: '',
+                        invoiceNum: '',
+                        checkNum: '',
+                        paymentMethod: '',
+                        paymentTerm: '',
+                        vendor: '',
+                        services: '',
+                        area: '',
+                        role: ''
+                      });
+                    }}
+                    className="px-6 py-2.5 rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
+                    data-testid="button-clear-filters-financials"
+                  >
+                    Clear Filters
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         )}
 
         {/* Batch List Table - Only shown when Marketing is selected with non-Select Team and Search Batch is clicked */}

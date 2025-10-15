@@ -106,6 +106,13 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
       - **Search Card**: Auto-shows when Direct Mail is NOT "Select"; can be manually opened via magnifying glass icon in Performance card even when Direct Mail = "Select"
       - **Batch List**: Only shown when Direct Mail is NOT "Select" and user clicks "Search Batch" button
       - Card visibility logic: When Direct Mail = "Select" → only Performance card shown (no chart cards, Search, or Batch List by default; Search can be opened via magnifying glass icon); When Direct Mail = any other option → Performance, chart cards (titled Activity/Geography), Search, and Batch List (when searched) shown
+    - **Financials Category Search**:
+      - **Search Card**: Can be manually opened via magnifying glass icon in Performance card
+      - **Search Fields**: 
+        - Row 1: Date (MM/DD/YYYY auto-format), Amount (currency auto-format), Payee, Payment For
+        - Row 2: Invoice #, Check #, Payment Method (Zelle/Venmo/Wire/Check/Cash/Direct Deposit), Payment Term (One-Time/Recurring)
+        - Row 3: Vendor, Services, Area (Company/Partner/Branch), Role
+      - **Features**: "Search Expense" button, Clear Filters functionality, minimize/expand controls
     - **Search Card (Marketing)**: Features a "Search Batch" button matching Staff page's "Search Staff" button styling (`px-3.5 py-1.5 text-sm rounded-lg` with purple-to-pink gradient). Data Category defaults to "Select". Data Category selections (Show All, Trigger Data, Monthly Data) only take effect when user clicks "Search Batch" button, which opens the Batch List table.
     - **Batch List Table**:
       - Themed Icon: FileText icon in purple box matching Search card design
