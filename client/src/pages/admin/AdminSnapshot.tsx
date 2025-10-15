@@ -5427,7 +5427,7 @@ export default function AdminSnapshot() {
                         <td className="py-3 px-2 text-purple-200">{entry.revenueTerm || '-'}</td>
                         <td className="py-3 px-2 text-purple-200">{entry.paymentFrom}</td>
                         <td className="py-3 px-2 text-purple-200">{entry.paymentForm}</td>
-                        <td className="py-3 px-2 text-white">{entry.revenue}</td>
+                        <td className="py-3 px-2 text-emerald-500">{entry.revenue}</td>
                         <td className="py-3 px-2 text-center">
                           <AttachmentIndicator 
                             transactionId={entry.id} 
