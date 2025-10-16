@@ -106,19 +106,25 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
       - **Conflict Prevention**: When New Batch card is open and user clicks magnifying glass icon, displays warning: "Please complete or close the open new batch entry"
       - **Auto-Close Logic**: When Search card is open and user clicks "Add Entry" → "Add New Batch", Search card automatically closes before New Batch card opens
     - **Marketing Batch List Flow**: When Marketing/Direct Mail is selected, Batch List only appears after user opens Search card and clicks "Search Batch" button
-    - **Vendor Search Card** (Vendor/Show All): HardHat icon with orange accent, minimizable card
-      - **Access Method**: Displays when Vendor category + "Show All" team selected and user clicks "Add Entry"
-      - **Title**: "Add Vendor" with construction/HardHat icon
-      - **Search Fields**: 16 fields across 4 rows with auto-formatting
-        - Row 1: Business Name, Website, Phone (formatted), Email
-        - Row 2: Services (dropdown), State (dropdown), Internal Rating (dropdown), Online Rating (dropdown)
-        - Row 3: Rating Source (dropdown), Contact, Position, Latest Quote ($ formatted with thousands separators)
-        - Row 4: Client Serviced, Client Phone (formatted), Date of Service (MM/DD/YYYY), Street Address
-      - **Controls**: Clear Filters button (px-3.5 py-1.5 text-sm), Search Vendors button, Minimize button, Close button
-      - **Results Table**: Displays when hasVendorSearchCriteria is true (any search field filled)
-        - All 16 sortable columns matching search fields
-        - Latest Quote displayed in emerald-500 green
-        - Standard purple-themed table styling
+    - **Vendor Cards System** (Vendor/Show All): Two distinct cards for vendor management
+      - **Add Vendor Card** (via Add Entry button):
+        - **Access Method**: Displays when Vendor category + "Show All" team selected and user clicks "Add Entry"
+        - **Title**: "Add Vendor" with construction/HardHat icon (orange accent)
+        - **Search Fields**: 16 fields across 4 rows with auto-formatting
+          - Row 1: Business Name, Website, Phone (formatted), Email
+          - Row 2: Services (dropdown), State (dropdown), Internal Rating (dropdown), Online Rating (dropdown)
+          - Row 3: Rating Source (dropdown), Contact, Position, Latest Quote ($ formatted with thousands separators)
+          - Row 4: Client Serviced, Client Phone (formatted), Date of Service (MM/DD/YYYY), Street Address
+        - **Controls**: Clear Filters button (px-3.5 py-1.5 text-sm), Search Vendors button, Minimize button, Close button
+        - **Results Table**: Displays when hasVendorSearchCriteria is true (any search field filled)
+      - **Vendor Search Card** (via Magnifying Glass icon):
+        - **Access Method**: Displays when user clicks magnifying glass icon in Performance card
+        - **Conflict Prevention**: If Add Vendor card is open, displays warning: "Please complete or close the open add vendor request"
+        - **Title**: "Search" with magnifying glass/Search icon (indigo accent)
+        - **Same 16 fields and formatting** as Add Vendor card
+        - **Controls**: Clear Filters (px-3.5 py-1.5 text-sm), Search Vendors, Minimize, Close buttons
+        - **Results Table**: Same structure as Add Vendor results, displays when search criteria filled
+        - **Mutual Exclusivity**: Only one vendor card (Add or Search) can display warning if other is open
 
 ### Background Selector System
 Allows customization of dashboard and login page backgrounds with various presets, supporting mode toggling, visual previews, and persistence.

@@ -209,7 +209,7 @@ export default function AdminSnapshot() {
   // Performance card title state
   const [performanceCardTitle, setPerformanceCardTitle] = useState('Prime Rate');
 
-  // Vendor search state
+  // Vendor search state (Add Vendor card)
   const [showVendorSearch, setShowVendorSearch] = useState(false);
   const [isVendorSearchMinimized, setIsVendorSearchMinimized] = useState(false);
   const [vendorSearchParams, setVendorSearchParams] = useState({
@@ -218,6 +218,11 @@ export default function AdminSnapshot() {
     latestQuote: '', clientServiced: '', clientPhone: '', dateOfService: '', streetAddress: ''
   });
   const [vendorSortConfig, setVendorSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
+  
+  // Vendor Search Card (from magnifying glass) - separate from Add Vendor
+  const [showVendorSearchCard, setShowVendorSearchCard] = useState(false);
+  const [isVendorSearchCardMinimized, setIsVendorSearchCardMinimized] = useState(false);
+  const [showVendorWarning, setShowVendorWarning] = useState(false);
   
   // Mock vendor data
   const mockVendorData = [
@@ -1794,6 +1799,11 @@ export default function AdminSnapshot() {
                     setShowBatchWarning(true);
                     return;
                   }
+                  // Check if Add Vendor card is open in Vendor category
+                  if (showVendorSearch && categoryFilter === 'vendor') {
+                    setShowVendorWarning(true);
+                    return;
+                  }
                   
                   // Open appropriate search card based on category
                   if (categoryFilter === 'marketing') {
@@ -1809,6 +1819,9 @@ export default function AdminSnapshot() {
                     setShowRevenueSearch(true);
                     setIsRevenueSearchMinimized(false);
                     setShowRevenueForm(false); // Close Revenue Log when Search Card opens (mutual exclusivity)
+                  } else if (categoryFilter === 'vendor' && teamFilter === 'show-all') {
+                    setShowVendorSearchCard(true);
+                    setIsVendorSearchCardMinimized(false);
                   }
                 }}
                 className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
@@ -2275,6 +2288,356 @@ export default function AdminSnapshot() {
                 <tbody>
                   {getSortedVendors().map((v) => (
                     <tr key={v.id} className="border-b border-purple-500/10 hover:bg-slate-700/30" data-testid={`vendor-row-${v.id}`}>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.businessName}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-purple-300 border-purple-500/10">{v.website}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.phone}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-purple-300 border-purple-500/10">{v.email}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.services}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.state}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.internalRating}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.onlineRating}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.ratingSource}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.contactName}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.position}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap font-semibold border text-green-400 border-purple-500/10">{v.latestQuote}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.clientServiced}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.clientPhone}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.dateOfService}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.streetAddress}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Vendor Search Card - Only shown when Vendor category with Show All is selected and magnifying glass is clicked */}
+        {showVendorSearchCard && categoryFilter === 'vendor' && teamFilter === 'show-all' && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-indigo-500/20 border border-indigo-500/30">
+                  <Search className="w-5 h-5 text-indigo-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Search</h2>
+              </div>
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={clearVendorFilters} 
+                  className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
+                  data-testid="button-clear-vendor-search-filters"
+                >
+                  Clear Filters
+                </button>
+                <button 
+                  className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
+                  data-testid="button-search-vendors-action"
+                >
+                  Search Vendors
+                </button>
+                <button
+                  onClick={() => setIsVendorSearchCardMinimized(!isVendorSearchCardMinimized)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title={isVendorSearchCardMinimized ? "Expand" : "Minimize"}
+                  data-testid="button-toggle-vendor-search-card"
+                >
+                  {isVendorSearchCardMinimized ? (
+                    <Plus className="w-5 h-5 text-purple-300" />
+                  ) : (
+                    <Minus className="w-5 h-5 text-purple-300" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowVendorSearchCard(false)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title="Close"
+                  data-testid="button-close-vendor-search-card"
+                >
+                  <X className="w-5 h-5 text-purple-300" />
+                </button>
+              </div>
+            </div>
+
+            {!isVendorSearchCardMinimized && (
+            <>
+            {/* Row 1 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Business Name</label>
+                <input 
+                  type="text" 
+                  placeholder="Enter business name" 
+                  value={vendorSearchParams.businessName} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, businessName: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-search-business-name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Website</label>
+                <input 
+                  type="text" 
+                  placeholder="www.example.com" 
+                  value={vendorSearchParams.website} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, website: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-search-website"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Phone</label>
+                <input 
+                  type="text" 
+                  placeholder="(555) 123-4567" 
+                  value={vendorSearchParams.phone} 
+                  onChange={(e) => handleVendorPhoneInput(e, 'phone')} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-search-phone"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Email</label>
+                <input 
+                  type="email" 
+                  placeholder="email@example.com" 
+                  value={vendorSearchParams.email} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, email: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-search-email"
+                />
+              </div>
+            </div>
+
+            {/* Row 2 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Services</label>
+                <select 
+                  value={vendorSearchParams.services} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, services: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  data-testid="select-search-services"
+                >
+                  <option value="">Select</option>
+                  <option value="wdo">WDO</option>
+                  <option value="appraisal">Appraisal</option>
+                  <option value="watertest">Water Test</option>
+                  <option value="propertyinspection">Property Inspection</option>
+                  <option value="handyman">Handyman</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">State</label>
+                <select 
+                  value={vendorSearchParams.state} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, state: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  data-testid="select-search-state"
+                >
+                  <option value="">Select</option>
+                  {['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'].map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Internal Rating</label>
+                <select 
+                  value={vendorSearchParams.internalRating} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, internalRating: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  data-testid="select-search-internal-rating"
+                >
+                  <option value="">Select</option>
+                  <option value="5stars">Five Stars</option>
+                  <option value="4stars">4 Stars</option>
+                  <option value="3stars">3 Stars</option>
+                  <option value="donotuse">Do Not Use</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Online Rating</label>
+                <select 
+                  value={vendorSearchParams.onlineRating} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, onlineRating: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  data-testid="select-search-online-rating"
+                >
+                  <option value="">Select</option>
+                  <option value="5stars">Five Stars</option>
+                  <option value="4stars">4 Stars</option>
+                  <option value="3stars">3 Stars</option>
+                  <option value="donotuse">Do Not Use</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Row 3 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Rating Source</label>
+                <select 
+                  value={vendorSearchParams.ratingSource} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, ratingSource: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  data-testid="select-search-rating-source"
+                >
+                  <option value="">Select</option>
+                  <option value="yelp">Yelp</option>
+                  <option value="google">Google</option>
+                  <option value="bbb">BBB</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Contact</label>
+                <input 
+                  type="text" 
+                  placeholder="Enter contact name" 
+                  value={vendorSearchParams.contact} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, contact: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-search-contact"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Position</label>
+                <input 
+                  type="text" 
+                  placeholder="Enter position" 
+                  value={vendorSearchParams.position} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, position: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-search-position"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Latest Quote</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">$</span>
+                  <input 
+                    type="text" 
+                    placeholder="0" 
+                    value={vendorSearchParams.latestQuote} 
+                    onChange={handleVendorCurrencyInput} 
+                    className="w-full pl-8 pr-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                    data-testid="input-search-latest-quote"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Row 4 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Client Serviced</label>
+                <input 
+                  type="text" 
+                  placeholder="Enter client name" 
+                  value={vendorSearchParams.clientServiced} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, clientServiced: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-search-client-serviced"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Client Phone</label>
+                <input 
+                  type="text" 
+                  placeholder="(555) 123-4567" 
+                  value={vendorSearchParams.clientPhone} 
+                  onChange={(e) => handleVendorPhoneInput(e, 'clientPhone')} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-search-client-phone"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Date of Service</label>
+                <input 
+                  type="text" 
+                  placeholder="MM/DD/YYYY" 
+                  value={vendorSearchParams.dateOfService} 
+                  onChange={handleVendorDateInput} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-search-date-of-service"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Street Address</label>
+                <input 
+                  type="text" 
+                  placeholder="Enter street address" 
+                  value={vendorSearchParams.streetAddress} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, streetAddress: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-search-street-address"
+                />
+              </div>
+            </div>
+            </>
+            )}
+          </div>
+        )}
+
+        {/* Vendor Search Results Table for Search Card */}
+        {showVendorSearchCard && hasVendorSearchCriteria && categoryFilter === 'vendor' && teamFilter === 'show-all' && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <h3 className="text-xl font-bold mb-4 text-white">Search Results ({getSortedVendors().length})</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full border border-purple-500/20">
+                <thead>
+                  <tr className="bg-slate-700/50">
+                    <th onClick={() => handleVendorSort('businessName')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-business-name">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Business Name <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('website')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-website">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Website <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('phone')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-phone">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Phone <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('email')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-email">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Email <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('services')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-services">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Services <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('state')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-state">
+                      <div className="flex items-center gap-2 whitespace-nowrap">State <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('internalRating')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-internal-rating">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Internal Rating <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('onlineRating')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-online-rating">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Online Rating <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('ratingSource')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-rating-source">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Rating Source <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('contactName')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-contact">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Contact <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('position')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-position">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Position <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('latestQuote')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-latest-quote">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Latest Quote <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('clientServiced')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-client-serviced">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Client Serviced <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('clientPhone')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-client-phone">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Client Phone <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('dateOfService')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-date-of-service">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Date of Service <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('streetAddress')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-search-street-address">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Street Address <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getSortedVendors().map((v) => (
+                    <tr key={v.id} className="border-b border-purple-500/10 hover:bg-slate-700/30" data-testid={`vendor-search-row-${v.id}`}>
                       <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.businessName}</td>
                       <td className="px-4 py-3 text-sm whitespace-nowrap border text-purple-300 border-purple-500/10">{v.website}</td>
                       <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.phone}</td>
@@ -6238,6 +6601,27 @@ export default function AdminSnapshot() {
                 onClick={() => setShowStaffWarning(false)}
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
                 data-testid="button-close-staff-warning"
+              >
+                OK
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Vendor Warning Dialog */}
+        <Dialog open={showVendorWarning} onOpenChange={setShowVendorWarning}>
+          <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-white">Add Vendor Card Open</DialogTitle>
+              <DialogDescription className="text-purple-200 pt-2">
+                Please complete or close the open add vendor request
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end mt-4">
+              <Button
+                onClick={() => setShowVendorWarning(false)}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
+                data-testid="button-close-vendor-warning"
               >
                 OK
               </Button>
