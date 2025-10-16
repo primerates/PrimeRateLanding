@@ -10,6 +10,9 @@ import UnderwritingProcessingSelect from '../components/Quote/UnderwritingProces
 import QuoteRateSelect from '../components/Quote/QuoteRateSelect';
 import PinReferencePopup from '../components/Quote/PinReferencePopup';
 import PageEditorPopup from '../components/Quote/PageEditorPopup';
+import StickyNotesDialog from '../components/Quote/StickyNotesDialog';
+import GuidelinesLibraryDialog from '../components/Quote/GuidelinesLibraryDialog';
+import CalculatorPopup from '../components/Quote/CalculatorPopup';
 import ManageableSelect from '../components/ManageableSelect';
 import FormSelect from '../components/FormSelect';
 import {
@@ -87,6 +90,30 @@ const QuoteTab = () => {
     const [pageContent, setPageContent] = useState('');
     const [pageFontSize, setPageFontSize] = useState('16');
     const [pageFontColor, setPageFontColor] = useState('#000000');
+
+    // Sticky Notes state
+    const [stickyNotes, setStickyNotes] = useState('');
+
+    // Guidelines Library state
+    const [libraryConfigurations, setLibraryConfigurations] = useState<Record<string, any>>({});
+
+    // Calculator state
+    const [calculatorPosition, setCalculatorPosition] = useState({ x: 100, y: 100 });
+
+    // Handler functions for library
+    const handleDeleteConfiguration = (key: string) => {
+        setLibraryConfigurations(prev => {
+            const updated = { ...prev };
+            delete updated[key];
+            return updated;
+        });
+    };
+
+    const handleLoadConfiguration = (config: any) => {
+        // This would load the configuration into the current form state
+        // Implementation depends on how you want to handle the loaded data
+        console.log('Loading configuration:', config);
+    };
 
     // Calculate if all fields are completed to enable Quote selection
     const getCompletedFieldsCount = () => {
@@ -369,6 +396,31 @@ const QuoteTab = () => {
                 onFontSizeChange={setPageFontSize}
                 fontColor={pageFontColor}
                 onFontColorChange={setPageFontColor}
+            />
+
+            {/* Sticky Notes Dialog */}
+            <StickyNotesDialog
+                isOpen={isStickyNotesOpen}
+                onOpenChange={setIsStickyNotesOpen}
+                notes={stickyNotes}
+                onNotesChange={setStickyNotes}
+            />
+
+            {/* Guidelines Library Dialog */}
+            <GuidelinesLibraryDialog
+                isOpen={showLibraryDialog}
+                onOpenChange={setShowLibraryDialog}
+                libraryConfigurations={libraryConfigurations}
+                onDeleteConfiguration={handleDeleteConfiguration}
+                onLoadConfiguration={handleLoadConfiguration}
+            />
+
+            {/* Calculator Popup */}
+            <CalculatorPopup
+                isOpen={showCalculator}
+                onClose={() => setShowCalculator(false)}
+                position={calculatorPosition}
+                onPositionChange={setCalculatorPosition}
             />
         </Card>
     );
