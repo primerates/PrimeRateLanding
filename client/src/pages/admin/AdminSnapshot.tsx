@@ -209,6 +209,34 @@ export default function AdminSnapshot() {
   // Performance card title state
   const [performanceCardTitle, setPerformanceCardTitle] = useState('Prime Rate');
 
+  // Vendor search state
+  const [showVendorSearch, setShowVendorSearch] = useState(false);
+  const [vendorSearchParams, setVendorSearchParams] = useState({
+    businessName: '', website: '', phone: '', email: '', services: '', state: '',
+    internalRating: '', onlineRating: '', ratingSource: '', contact: '', position: '',
+    latestQuote: '', clientServiced: '', clientPhone: '', dateOfService: '', streetAddress: ''
+  });
+  const [vendorSortConfig, setVendorSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
+  
+  // Mock vendor data
+  const mockVendorData = [
+    { id: 1, businessName: 'ABC Inspection Services', website: 'www.abcinspection.com', phone: '(555) 123-4567',
+      email: 'info@abcinspection.com', services: 'Property Inspection', state: 'CA', internalRating: '5 Stars',
+      onlineRating: '4 Stars', ratingSource: 'Google', contactName: 'Mike Johnson', position: 'Manager',
+      latestQuote: '$450', clientServiced: 'John Smith', clientPhone: '(555) 987-6543',
+      dateOfService: '10/01/2024', streetAddress: '123 Main St' },
+    { id: 2, businessName: 'Premier Appraisal Group', website: 'www.premierappraisal.com', phone: '(555) 234-5678',
+      email: 'contact@premierappraisal.com', services: 'Appraisal', state: 'TX', internalRating: '4 Stars',
+      onlineRating: '5 Stars', ratingSource: 'Yelp', contactName: 'Lisa Anderson', position: 'Lead Appraiser',
+      latestQuote: '$650', clientServiced: 'Sarah Davis', clientPhone: '(555) 876-5432',
+      dateOfService: '10/05/2024', streetAddress: '456 Oak Ave' },
+    { id: 3, businessName: 'Quality WDO Solutions', website: 'www.qualitywdo.com', phone: '(555) 345-6789',
+      email: 'service@qualitywdo.com', services: 'WDO', state: 'FL', internalRating: '5 Stars',
+      onlineRating: '5 Stars', ratingSource: 'BBB', contactName: 'Tom Martinez', position: 'Inspector',
+      latestQuote: '$300', clientServiced: 'Robert Wilson', clientPhone: '(555) 765-4321',
+      dateOfService: '10/08/2024', streetAddress: '789 Pine Rd' }
+  ];
+
   // Staff search field configuration - maps search fields to table columns
   const staffFieldConfig = [
     { key: 'area', label: 'Area', searchValue: searchArea, isDropdown: true },
@@ -1261,6 +1289,60 @@ export default function AdminSnapshot() {
     });
   };
 
+  // Vendor handler functions
+  const handleVendorPhoneInput = (e: React.ChangeEvent<HTMLInputElement>, field: 'phone' | 'clientPhone') => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length <= 3) value = value;
+    else if (value.length <= 6) value = '(' + value.slice(0, 3) + ') ' + value.slice(3);
+    else if (value.length <= 10) value = '(' + value.slice(0, 3) + ') ' + value.slice(3, 6) + '-' + value.slice(6);
+    else value = '(' + value.slice(0, 3) + ') ' + value.slice(3, 6) + '-' + value.slice(6, 10);
+    setVendorSearchParams({ ...vendorSearchParams, [field]: value });
+  };
+
+  const handleVendorCurrencyInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/[^0-9]/g, '');
+    if (value) value = parseInt(value).toLocaleString('en-US');
+    else value = '';
+    setVendorSearchParams({ ...vendorSearchParams, latestQuote: value });
+  };
+
+  const handleVendorDateInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) value = value.slice(0, 2) + '/' + value.slice(2);
+    if (value.length >= 5) value = value.slice(0, 5) + '/' + value.slice(5);
+    if (value.length > 10) value = value.slice(0, 10);
+    setVendorSearchParams({ ...vendorSearchParams, dateOfService: value });
+  };
+
+  const clearVendorFilters = () => {
+    setVendorSearchParams({ 
+      businessName: '', website: '', phone: '', email: '', services: '', state: '',
+      internalRating: '', onlineRating: '', ratingSource: '', contact: '', position: '',
+      latestQuote: '', clientServiced: '', clientPhone: '', dateOfService: '', streetAddress: '' 
+    });
+  };
+
+  const handleVendorSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (vendorSortConfig.key === key && vendorSortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setVendorSortConfig({ key, direction });
+  };
+
+  const getSortedVendors = () => {
+    if (!vendorSortConfig.key) return mockVendorData;
+    return [...mockVendorData].sort((a: any, b: any) => {
+      const aVal = a[vendorSortConfig.key as string];
+      const bVal = b[vendorSortConfig.key as string];
+      if (aVal < bVal) return vendorSortConfig.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return vendorSortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  };
+
+  const hasVendorSearchCriteria = Object.values(vendorSearchParams).some(val => val !== '');
+
   const handleTransactionDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: 'fromDate' | 'toDate') => {
     let value = e.target.value.replace(/\D/g, '');
     if (value.length >= 2) {
@@ -1635,6 +1717,10 @@ export default function AdminSnapshot() {
                   setAreChartsMinimized(true); // Minimize charts to reduce clutter
                   setShowFinancialsSearch(false); // Close search card
                   setIsFiltersMinimized(true); // Minimize Dashboard card for cleaner data entry
+                } else if (categoryFilter === 'vendor' && teamFilter === 'show-all') {
+                  // If in Vendor tab with Show All, open vendor search card
+                  setShowVendorSearch(true);
+                  setIsFiltersMinimized(true); // Minimize Performance card for cleaner view
                 } else {
                   setShowAddModal(true);
                   setIsFiltersMinimized(true); // Minimize Dashboard card for cleaner data entry
@@ -1859,6 +1945,340 @@ export default function AdminSnapshot() {
                 setShowFormConflictWarning(true);
               }}
             />
+          </div>
+        )}
+
+        {/* Vendor Search Card - Only shown when Vendor category with Show All is selected and user clicks Add Entry */}
+        {showVendorSearch && categoryFilter === 'vendor' && teamFilter === 'show-all' && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-indigo-500/20 border border-indigo-500/30">
+                  <Search className="w-5 h-5 text-indigo-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Search Vendors</h2>
+              </div>
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={clearVendorFilters} 
+                  className="px-6 py-2.5 rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
+                  data-testid="button-clear-vendor-filters"
+                >
+                  Clear Filters
+                </button>
+                <button 
+                  className="px-4 py-2 rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
+                  data-testid="button-search-vendors"
+                >
+                  Search Vendors
+                </button>
+                <button
+                  onClick={() => setShowVendorSearch(false)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title="Close"
+                  data-testid="button-close-vendor-search"
+                >
+                  <X className="w-5 h-5 text-purple-300" />
+                </button>
+              </div>
+            </div>
+
+            {/* Row 1 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Business Name</label>
+                <input 
+                  type="text" 
+                  placeholder="Enter business name" 
+                  value={vendorSearchParams.businessName} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, businessName: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-business-name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Website</label>
+                <input 
+                  type="text" 
+                  placeholder="www.example.com" 
+                  value={vendorSearchParams.website} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, website: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-website"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Phone</label>
+                <input 
+                  type="text" 
+                  placeholder="(555) 123-4567" 
+                  value={vendorSearchParams.phone} 
+                  onChange={(e) => handleVendorPhoneInput(e, 'phone')} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-phone"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Email</label>
+                <input 
+                  type="email" 
+                  placeholder="email@example.com" 
+                  value={vendorSearchParams.email} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, email: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-email"
+                />
+              </div>
+            </div>
+
+            {/* Row 2 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Services</label>
+                <select 
+                  value={vendorSearchParams.services} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, services: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  data-testid="select-services"
+                >
+                  <option value="">Select</option>
+                  <option value="wdo">WDO</option>
+                  <option value="appraisal">Appraisal</option>
+                  <option value="watertest">Water Test</option>
+                  <option value="propertyinspection">Property Inspection</option>
+                  <option value="handyman">Handyman</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">State</label>
+                <select 
+                  value={vendorSearchParams.state} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, state: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  data-testid="select-state"
+                >
+                  <option value="">Select</option>
+                  {['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'].map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Internal Rating</label>
+                <select 
+                  value={vendorSearchParams.internalRating} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, internalRating: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  data-testid="select-internal-rating"
+                >
+                  <option value="">Select</option>
+                  <option value="5stars">Five Stars</option>
+                  <option value="4stars">4 Stars</option>
+                  <option value="3stars">3 Stars</option>
+                  <option value="donotuse">Do Not Use</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Online Rating</label>
+                <select 
+                  value={vendorSearchParams.onlineRating} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, onlineRating: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  data-testid="select-online-rating"
+                >
+                  <option value="">Select</option>
+                  <option value="5stars">Five Stars</option>
+                  <option value="4stars">4 Stars</option>
+                  <option value="3stars">3 Stars</option>
+                  <option value="donotuse">Do Not Use</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Row 3 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Rating Source</label>
+                <select 
+                  value={vendorSearchParams.ratingSource} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, ratingSource: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  data-testid="select-rating-source"
+                >
+                  <option value="">Select</option>
+                  <option value="yelp">Yelp</option>
+                  <option value="google">Google</option>
+                  <option value="bbb">BBB</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Contact</label>
+                <input 
+                  type="text" 
+                  placeholder="Enter contact name" 
+                  value={vendorSearchParams.contact} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, contact: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-contact"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Position</label>
+                <input 
+                  type="text" 
+                  placeholder="Enter position" 
+                  value={vendorSearchParams.position} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, position: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-position"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Latest Quote</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">$</span>
+                  <input 
+                    type="text" 
+                    placeholder="0" 
+                    value={vendorSearchParams.latestQuote} 
+                    onChange={handleVendorCurrencyInput} 
+                    className="w-full pl-8 pr-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                    data-testid="input-latest-quote"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Row 4 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Client Serviced</label>
+                <input 
+                  type="text" 
+                  placeholder="Enter client name" 
+                  value={vendorSearchParams.clientServiced} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, clientServiced: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-client-serviced"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Client Phone</label>
+                <input 
+                  type="text" 
+                  placeholder="(555) 123-4567" 
+                  value={vendorSearchParams.clientPhone} 
+                  onChange={(e) => handleVendorPhoneInput(e, 'clientPhone')} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-client-phone"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Date of Service</label>
+                <input 
+                  type="text" 
+                  placeholder="MM/DD/YYYY" 
+                  value={vendorSearchParams.dateOfService} 
+                  onChange={handleVendorDateInput} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-date-of-service"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-300">Street Address</label>
+                <input 
+                  type="text" 
+                  placeholder="Enter street address" 
+                  value={vendorSearchParams.streetAddress} 
+                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, streetAddress: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                  data-testid="input-street-address"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Vendor Search Results Table */}
+        {showVendorSearch && hasVendorSearchCriteria && categoryFilter === 'vendor' && teamFilter === 'show-all' && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <h3 className="text-xl font-bold mb-4 text-white">Search Results ({getSortedVendors().length})</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full border border-purple-500/20">
+                <thead>
+                  <tr className="bg-slate-700/50">
+                    <th onClick={() => handleVendorSort('businessName')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-business-name">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Business Name <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('website')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-website">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Website <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('phone')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-phone">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Phone <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('email')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-email">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Email <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('services')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-services">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Services <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('state')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-state">
+                      <div className="flex items-center gap-2 whitespace-nowrap">State <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('internalRating')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-internal-rating">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Internal Rating <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('onlineRating')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-online-rating">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Online Rating <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('ratingSource')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-rating-source">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Rating Source <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('contactName')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-contact">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Contact <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('position')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-position">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Position <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('latestQuote')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-latest-quote">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Latest Quote <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('clientServiced')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-client-serviced">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Client Serviced <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('clientPhone')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-client-phone">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Client Phone <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('dateOfService')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-date-of-service">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Date of Service <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                    <th onClick={() => handleVendorSort('streetAddress')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-street-address">
+                      <div className="flex items-center gap-2 whitespace-nowrap">Street Address <ArrowUpDown className="w-3 h-3" /></div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getSortedVendors().map((v) => (
+                    <tr key={v.id} className="border-b border-purple-500/10 hover:bg-slate-700/30" data-testid={`vendor-row-${v.id}`}>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.businessName}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-purple-300 border-purple-500/10">{v.website}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.phone}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-purple-300 border-purple-500/10">{v.email}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.services}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.state}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.internalRating}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.onlineRating}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.ratingSource}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.contactName}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.position}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap font-semibold border text-green-400 border-purple-500/10">{v.latestQuote}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.clientServiced}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.clientPhone}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.dateOfService}</td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.streetAddress}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
