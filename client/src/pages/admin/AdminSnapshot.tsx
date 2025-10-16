@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { queryClient, apiRequest } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Users, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2, Camera, Phone, Mail, Briefcase, Calendar, Shield, Search, Stamp } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Users, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2, Camera, Phone, Mail, Briefcase, Calendar, Shield, Search, Stamp, HardHat } from 'lucide-react';
 import { RevenueSourcesChart } from '@/components/dashboard/RevenueSourcesChart';
 import { ExpenseBreakdownChart } from '@/components/dashboard/ExpenseBreakdownChart';
 import { DashboardFilters } from '@/components/dashboard/DashboardFilters';
@@ -211,6 +211,7 @@ export default function AdminSnapshot() {
 
   // Vendor search state
   const [showVendorSearch, setShowVendorSearch] = useState(false);
+  const [isVendorSearchMinimized, setIsVendorSearchMinimized] = useState(false);
   const [vendorSearchParams, setVendorSearchParams] = useState({
     businessName: '', website: '', phone: '', email: '', services: '', state: '',
     internalRating: '', onlineRating: '', ratingSource: '', contact: '', position: '',
@@ -1953,24 +1954,36 @@ export default function AdminSnapshot() {
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-indigo-500/20 border border-indigo-500/30">
-                  <Search className="w-5 h-5 text-indigo-400" />
+                <div className="p-2 rounded-lg bg-orange-500/20 border border-orange-500/30">
+                  <HardHat className="w-5 h-5 text-orange-400" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">Search Vendors</h2>
+                <h2 className="text-2xl font-bold text-white">Add Vendor</h2>
               </div>
               <div className="flex items-center gap-3">
                 <button 
                   onClick={clearVendorFilters} 
-                  className="px-6 py-2.5 rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
+                  className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
                   data-testid="button-clear-vendor-filters"
                 >
                   Clear Filters
                 </button>
                 <button 
-                  className="px-4 py-2 rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
+                  className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
                   data-testid="button-search-vendors"
                 >
                   Search Vendors
+                </button>
+                <button
+                  onClick={() => setIsVendorSearchMinimized(!isVendorSearchMinimized)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title={isVendorSearchMinimized ? "Expand" : "Minimize"}
+                  data-testid="button-toggle-vendor-search"
+                >
+                  {isVendorSearchMinimized ? (
+                    <Plus className="w-5 h-5 text-purple-300" />
+                  ) : (
+                    <Minus className="w-5 h-5 text-purple-300" />
+                  )}
                 </button>
                 <button
                   onClick={() => setShowVendorSearch(false)}
@@ -1983,6 +1996,8 @@ export default function AdminSnapshot() {
               </div>
             </div>
 
+            {!isVendorSearchMinimized && (
+            <>
             {/* Row 1 */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
               <div>
@@ -2194,6 +2209,8 @@ export default function AdminSnapshot() {
                 />
               </div>
             </div>
+            </>
+            )}
           </div>
         )}
 
