@@ -435,13 +435,13 @@ export default function AdminSnapshot() {
   
   // Auto-minimize/expand Performance card and Prime Rate card based on Category and Team selection
   useEffect(() => {
-    // Performance card logic - only minimize for Vendor, keep expanded for Select and others
-    if (categoryFilter === 'vendor') {
+    // Performance card logic - keep expanded for Vendor with Show All, minimize for Vendor with specific teams
+    if (categoryFilter === 'vendor' && teamFilter !== 'show-all') {
       setIsFiltersMinimized(true);
-    } else if (categoryFilter === 'staff' || categoryFilter === 'marketing' || categoryFilter === 'financials') {
+    } else if (categoryFilter === 'staff' || categoryFilter === 'marketing' || categoryFilter === 'financials' || (categoryFilter === 'vendor' && teamFilter === 'show-all')) {
       setIsFiltersMinimized(false);
     }
-    // Note: 'select' keeps whatever state it has (starts expanded by default)
+    // Note: 'select' category keeps whatever state it has (starts expanded by default)
     
     // Prime Rate card logic (Staff category with MLO team only)
     if (categoryFilter === 'staff' && teamFilter === 'mlo') {
@@ -1811,8 +1811,8 @@ export default function AdminSnapshot() {
           </div>
         </div>
 
-        {/* Second Card - Charts - Only shown when Staff with non-Select Team, Marketing with non-Select Team, or Financials with Revenue/Expense */}
-        {((categoryFilter === 'staff' && teamFilter !== 'select') || (categoryFilter === 'marketing' && teamFilter !== 'select') || (categoryFilter === 'financials' && (teamFilter === 'revenue-add' || teamFilter === 'expense-add'))) && (
+        {/* Second Card - Charts - Only shown when Staff with non-Show All Team, Marketing with non-Show All Team, Financials with Revenue/Expense, or Vendor with Show All */}
+        {((categoryFilter === 'staff' && teamFilter !== 'show-all') || (categoryFilter === 'marketing' && teamFilter !== 'show-all') || (categoryFilter === 'financials' && (teamFilter === 'revenue-add' || teamFilter === 'expense-add')) || (categoryFilter === 'vendor' && teamFilter === 'show-all')) && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <RevenueSourcesChart
               categoryFilter={categoryFilter}
@@ -3936,8 +3936,8 @@ export default function AdminSnapshot() {
           </div>
         )}
 
-        {/* Batch List Table - Only shown when Marketing is selected with non-Select Team and Search Batch is clicked */}
-        {categoryFilter === 'marketing' && teamFilter !== 'select' && showBatchList && (
+        {/* Batch List Table - Only shown when Marketing is selected with non-Show All Team and Search Batch is clicked */}
+        {categoryFilter === 'marketing' && teamFilter !== 'show-all' && showBatchList && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
@@ -4162,8 +4162,8 @@ export default function AdminSnapshot() {
           </div>
         )}
 
-        {/* Create New Batch Card - Only shown when Marketing with non-Select Team is selected and Add New Batch is clicked */}
-        {categoryFilter === 'marketing' && teamFilter !== 'select' && showCreateBatch && (
+        {/* Create New Batch Card - Only shown when Marketing with non-Show All Team is selected and Add New Batch is clicked */}
+        {categoryFilter === 'marketing' && teamFilter !== 'show-all' && showCreateBatch && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-white">New Batch</h3>
