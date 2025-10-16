@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import ActionButtons from '../components/ActionButtons';
+import ActionButtons from '../components/Quote/ActionButtons';
 import LoanCategorySelect from '../components/Quote/LoanCategorySelect';
 import LoanTermSelect from '../components/Quote/LoanTermSelect';
 import LoanProgramSelect from '../components/Quote/LoanProgramSelect';
@@ -8,6 +8,8 @@ import LenderTitleSelect from '../components/Quote/LenderTitleSelect';
 import CalculatedEstimatedInput from '../components/Quote/CalculatedEstimatedInput';
 import UnderwritingProcessingSelect from '../components/Quote/UnderwritingProcessingSelect';
 import QuoteRateSelect from '../components/Quote/QuoteRateSelect';
+import PinReferencePopup from '../components/Quote/PinReferencePopup';
+import PageEditorPopup from '../components/Quote/PageEditorPopup';
 import ManageableSelect from '../components/ManageableSelect';
 import FormSelect from '../components/FormSelect';
 import {
@@ -74,6 +76,17 @@ const QuoteTab = () => {
     // Underwriting/Processing state
     const [isProcessingMode, setIsProcessingMode] = useState(false);
     const [underwriting, setUnderwriting] = useState('financed');
+
+    // Pin Reference state
+    const [pinPopupPosition, setPinPopupPosition] = useState({ x: 250, y: 100 });
+    const [pinPopupSize, setPinPopupSize] = useState({ width: 600, height: 700 });
+    const [pinContent, setPinContent] = useState<{ type: 'text' | 'image'; data: string } | null>(null);
+
+    // Page Editor state
+    const [pagePopupPosition, setPagePopupPosition] = useState({ x: 150, y: 150 });
+    const [pageContent, setPageContent] = useState('');
+    const [pageFontSize, setPageFontSize] = useState('16');
+    const [pageFontColor, setPageFontColor] = useState('#000000');
 
     // Calculate if all fields are completed to enable Quote selection
     const getCompletedFieldsCount = () => {
@@ -331,6 +344,32 @@ const QuoteTab = () => {
                     </div>
                 </CardContent>
             )}
+
+            {/* Pin Reference Popup */}
+            <PinReferencePopup
+                isOpen={showPinPopup}
+                onClose={() => setShowPinPopup(false)}
+                position={pinPopupPosition}
+                onPositionChange={setPinPopupPosition}
+                size={pinPopupSize}
+                onSizeChange={setPinPopupSize}
+                content={pinContent}
+                onContentChange={setPinContent}
+            />
+
+            {/* Page Editor Popup */}
+            <PageEditorPopup
+                isOpen={showPagePopup}
+                onClose={() => setShowPagePopup(false)}
+                position={pagePopupPosition}
+                onPositionChange={setPagePopupPosition}
+                content={pageContent}
+                onContentChange={setPageContent}
+                fontSize={pageFontSize}
+                onFontSizeChange={setPageFontSize}
+                fontColor={pageFontColor}
+                onFontColorChange={setPageFontColor}
+            />
         </Card>
     );
 };
