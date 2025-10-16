@@ -39,10 +39,12 @@ const FormInput = ({
 
   return (
     <div className={className}>
-      <Label htmlFor={id}>
-        {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </Label>
+      <div className="min-h-5 flex items-center gap-2">
+        <Label htmlFor={id}>
+          {label}
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </Label>
+      </div>
       <Input
         id={id}
         type={type}

@@ -8,14 +8,14 @@ export type LoanType = 'new-refinance' | 'new-purchase' | 'new-second' | 'new-se
 interface LoanManagementProps {
   // Generic loan handler
   handleLoanTypeChange: (checked: boolean, loanType: LoanType) => void;
-  
+
   // Checked states
   hasNewRefinanceLoan: boolean;
   hasNewPurchaseLoan: boolean;
   hasCurrentPrimaryLoan: boolean;
   hasCurrentSecondLoan: boolean;
   hasCurrentThirdLoan: boolean;
-  
+
   // Expand/collapse handlers
   onExpandAll?: () => void;
   onMinimizeAll?: () => void;
@@ -52,7 +52,7 @@ const LoanManagement = ({
                 >
                   <Plus className="h-4 w-4" />
                 </Button>
-                
+
                 {/* Minimize All Button */}
                 <Button
                   type="button"
@@ -82,7 +82,7 @@ const LoanManagement = ({
                 onCheckedChange={(checked) => handleLoanTypeChange(checked, 'new-refinance')}
                 testId="checkbox-property-abc-loan-tab"
               />
-              
+
               <FormCheckbox
                 id="property-type-bbb-loan-tab"
                 label="New Purchase Loan"
@@ -90,7 +90,7 @@ const LoanManagement = ({
                 onCheckedChange={(checked) => handleLoanTypeChange(checked, 'new-purchase')}
                 testId="checkbox-property-bbb-loan-tab"
               />
-              
+
               <FormCheckbox
                 id="property-type-second-home-loan-tab"
                 label="New Second Loan"
@@ -99,7 +99,7 @@ const LoanManagement = ({
                 disabled={true}
                 testId="checkbox-property-second-home-loan-tab"
               />
-              
+
               <FormCheckbox
                 id="property-type-investment-loan-tab"
                 label="New Second + Purchase Loan"
@@ -121,7 +121,7 @@ const LoanManagement = ({
                 onCheckedChange={(checked) => handleLoanTypeChange(checked, 'current-primary')}
                 testId="checkbox-current-primary-loan-tab"
               />
-              
+
               <FormCheckbox
                 id="current-second-loan-tab"
                 label="Existing Second Loan"
@@ -129,7 +129,7 @@ const LoanManagement = ({
                 onCheckedChange={(checked) => handleLoanTypeChange(checked, 'current-second')}
                 testId="checkbox-current-second-loan-tab"
               />
-              
+
               <FormCheckbox
                 id="current-third-loan-tab"
                 label="Existing Third Loan"
@@ -137,9 +137,15 @@ const LoanManagement = ({
                 onCheckedChange={(checked) => handleLoanTypeChange(checked, 'current-third')}
                 testId="checkbox-current-third-loan-tab"
               />
-              
-              {/* Empty space for 4-column grid alignment */}
-              <div></div>
+
+              <FormCheckbox
+                id="brand-new-loan-tab"
+                label="Other"
+                checked={false}
+                onCheckedChange={(checked) => handleLoanTypeChange(checked, 'current-third')}
+                disabled={true}
+                testId="checkbox-brand-new-loan-tab"
+              />
             </div>
           </div>
         </div>
