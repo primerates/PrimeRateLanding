@@ -118,6 +118,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
         - **Controls**: Clear Filters button (px-3.5 py-1.5 text-sm), Search Vendors button, Minimize button, Close button
         - **Results Table**: Displays when hasVendorSearchCriteria is true (any search field filled)
         - **Team Dropdown Protection**: When Add Vendor card is open, attempting to change Team dropdown shows warning: "Please complete or close the open add vendor request before changing the team filter"
+        - **Auto-Minimize Charts**: Chart cards automatically minimize when Add Entry is triggered
       - **Vendor Search Card** (via Magnifying Glass icon):
         - **Access Method**: Displays when user clicks magnifying glass icon in Performance card
         - **Conflict Prevention**: If Add Vendor card is open, displays warning: "Please complete or close the open add vendor request"
@@ -125,6 +126,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
         - **Same 16 fields and formatting** as Add Vendor card
         - **Controls**: Clear Filters (px-3.5 py-1.5 text-sm), Search Vendors, Minimize, Close buttons
         - **Results Table**: Same structure as Add Vendor results, displays when search criteria filled
+        - **Auto-Minimize Charts**: Chart cards automatically minimize when Search is triggered
       - **Mutual Exclusivity & Auto-Close**: 
         - Only one vendor card (Add or Search) can be open at a time - displays warning if other is open
         - When Add Entry clicked with Search card open, Search card automatically closes before Add Vendor opens
