@@ -13,6 +13,8 @@ interface DashboardFiltersProps {
   timeFilterFromDate: string;
   handleTimeFilterDateInput: (e: React.ChangeEvent<HTMLInputElement>, field: 'from' | 'to') => void;
   timeFilterToDate: string;
+  showVendorSearch?: boolean;
+  onShowVendorWarning?: () => void;
 }
 
 export function DashboardFilters({
@@ -26,7 +28,9 @@ export function DashboardFilters({
   setTimeFilter,
   timeFilterFromDate,
   handleTimeFilterDateInput,
-  timeFilterToDate
+  timeFilterToDate,
+  showVendorSearch,
+  onShowVendorWarning
 }: DashboardFiltersProps) {
   return (
     <div className="flex flex-wrap items-center gap-4 mb-6">
@@ -251,35 +255,65 @@ export function DashboardFilters({
           {categoryFilter === 'vendor' && (
             <>
               <DropdownMenuItem
-                onClick={() => setTeamFilter('show-all')}
+                onClick={() => {
+                  if (showVendorSearch && onShowVendorWarning) {
+                    onShowVendorWarning();
+                  } else {
+                    setTeamFilter('show-all');
+                  }
+                }}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
                 data-testid="option-team-show-all-vendor"
               >
                 Show All
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setTeamFilter('wdo')}
+                onClick={() => {
+                  if (showVendorSearch && onShowVendorWarning) {
+                    onShowVendorWarning();
+                  } else {
+                    setTeamFilter('wdo');
+                  }
+                }}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
                 data-testid="option-team-wdo"
               >
                 WDO
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setTeamFilter('water')}
+                onClick={() => {
+                  if (showVendorSearch && onShowVendorWarning) {
+                    onShowVendorWarning();
+                  } else {
+                    setTeamFilter('water');
+                  }
+                }}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
                 data-testid="option-team-water"
               >
                 Water
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setTeamFilter('inspection')}
+                onClick={() => {
+                  if (showVendorSearch && onShowVendorWarning) {
+                    onShowVendorWarning();
+                  } else {
+                    setTeamFilter('inspection');
+                  }
+                }}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
                 data-testid="option-team-inspection"
               >
                 Inspection
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setTeamFilter('handyman')}
+                onClick={() => {
+                  if (showVendorSearch && onShowVendorWarning) {
+                    onShowVendorWarning();
+                  } else {
+                    setTeamFilter('handyman');
+                  }
+                }}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
                 data-testid="option-team-handyman"
               >

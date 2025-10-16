@@ -117,6 +117,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
           - Row 4: Client Serviced, Client Phone (formatted), Date of Service (MM/DD/YYYY), Street Address
         - **Controls**: Clear Filters button (px-3.5 py-1.5 text-sm), Search Vendors button, Minimize button, Close button
         - **Results Table**: Displays when hasVendorSearchCriteria is true (any search field filled)
+        - **Team Dropdown Protection**: When Add Vendor card is open, attempting to change Team dropdown shows warning: "Please complete or close the open add vendor request before changing the team filter"
       - **Vendor Search Card** (via Magnifying Glass icon):
         - **Access Method**: Displays when user clicks magnifying glass icon in Performance card
         - **Conflict Prevention**: If Add Vendor card is open, displays warning: "Please complete or close the open add vendor request"
@@ -124,7 +125,9 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
         - **Same 16 fields and formatting** as Add Vendor card
         - **Controls**: Clear Filters (px-3.5 py-1.5 text-sm), Search Vendors, Minimize, Close buttons
         - **Results Table**: Same structure as Add Vendor results, displays when search criteria filled
-        - **Mutual Exclusivity**: Only one vendor card (Add or Search) can display warning if other is open
+      - **Mutual Exclusivity & Auto-Close**: 
+        - Only one vendor card (Add or Search) can be open at a time - displays warning if other is open
+        - When Add Entry clicked with Search card open, Search card automatically closes before Add Vendor opens
 
 ### Background Selector System
 Allows customization of dashboard and login page backgrounds with various presets, supporting mode toggling, visual previews, and persistence.

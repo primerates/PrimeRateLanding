@@ -223,6 +223,7 @@ export default function AdminSnapshot() {
   const [showVendorSearchCard, setShowVendorSearchCard] = useState(false);
   const [isVendorSearchCardMinimized, setIsVendorSearchCardMinimized] = useState(false);
   const [showVendorWarning, setShowVendorWarning] = useState(false);
+  const [showVendorTeamWarning, setShowVendorTeamWarning] = useState(false);
   
   // Mock vendor data
   const mockVendorData = [
@@ -1724,7 +1725,8 @@ export default function AdminSnapshot() {
                   setShowFinancialsSearch(false); // Close search card
                   setIsFiltersMinimized(true); // Minimize Dashboard card for cleaner data entry
                 } else if (categoryFilter === 'vendor' && teamFilter === 'show-all') {
-                  // If in Vendor tab with Show All, open vendor search card
+                  // If in Vendor tab with Show All, close Search card first, then open Add Vendor card
+                  setShowVendorSearchCard(false); // Close Search card if open
                   setShowVendorSearch(true);
                   setIsFiltersMinimized(true); // Minimize Performance card for cleaner view
                 } else {
@@ -1869,6 +1871,8 @@ export default function AdminSnapshot() {
               setTimeFilter={setTimeFilter}
               timeFilterFromDate={timeFilterFromDate}
               handleTimeFilterDateInput={handleTimeFilterDateInput}
+              showVendorSearch={showVendorSearch}
+              onShowVendorWarning={() => setShowVendorTeamWarning(true)}
               timeFilterToDate={timeFilterToDate}
             />
 
@@ -6622,6 +6626,27 @@ export default function AdminSnapshot() {
                 onClick={() => setShowVendorWarning(false)}
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
                 data-testid="button-close-vendor-warning"
+              >
+                OK
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Vendor Team Change Warning Dialog */}
+        <Dialog open={showVendorTeamWarning} onOpenChange={setShowVendorTeamWarning}>
+          <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-white">Add Vendor Card Open</DialogTitle>
+              <DialogDescription className="text-purple-200 pt-2">
+                Please complete or close the open add vendor request before changing the team filter
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end mt-4">
+              <Button
+                onClick={() => setShowVendorTeamWarning(false)}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
+                data-testid="button-close-vendor-team-warning"
               >
                 OK
               </Button>
