@@ -5,12 +5,6 @@ import LoanManagement, { type LoanType } from '../components/Loan/LoanManagement
 import RefinanceLoanCard from '../components/Loan/RefinanceLoanCard';
 import PrimaryLoanCard from '../components/Loan/PrimaryLoanCard';
 
-interface LoanData {
-  id: string;
-  type: 'refinance' | 'purchase' | 'primary';
-  expanded: boolean;
-}
-
 interface LoanTabProps {
   showLoanAnimation?: boolean;
   currentPrimaryLoanCards?: string[];
@@ -25,7 +19,16 @@ const LoanTab = ({
   currentThirdLoanCards = []
 }: LoanTabProps) => {
   const form = useFormContext();
-  const [loanCards, setLoanCards] = useState<LoanData[]>([]);
+
+  // Separate state for each loan type - matching original architecture
+  const [newRefinanceLoanCards, setNewRefinanceLoanCards] = useState<string[]>([]);
+  const [newPurchaseLoanCards, setNewPurchaseLoanCards] = useState<string[]>([]);
+  const [currentPrimaryLoans, setCurrentPrimaryLoans] = useState<string[]>([]);
+
+  // Separate collapsible/expanded states for each loan type
+  const [newRefinanceLoanCardStates, setNewRefinanceLoanCardStates] = useState<Record<string, boolean>>({});
+  const [newPurchaseLoanCardStates, setNewPurchaseLoanCardStates] = useState<Record<string, boolean>>({});
+  const [currentPrimaryLoanCardStates, setCurrentPrimaryLoanCardStates] = useState<Record<string, boolean>>({});
 
   // Generic loan type handler
   const handleLoanTypeChange = (checked: boolean, loanType: LoanType) => {
@@ -35,25 +38,16 @@ const LoanTab = ({
       // Add new loan card
       if (loanType === 'new-refinance') {
         const newLoanId = `refinance-${Date.now()}`;
-        setLoanCards(prev => [...prev, {
-          id: newLoanId,
-          type: 'refinance',
-          expanded: true
-        }]);
+        setNewRefinanceLoanCards(prev => [...prev, newLoanId]);
+        setNewRefinanceLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
       } else if (loanType === 'new-purchase') {
         const newLoanId = `purchase-${Date.now()}`;
-        setLoanCards(prev => [...prev, {
-          id: newLoanId,
-          type: 'purchase',
-          expanded: true
-        }]);
+        setNewPurchaseLoanCards(prev => [...prev, newLoanId]);
+        setNewPurchaseLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
       } else if (loanType === 'current-primary') {
         const newLoanId = `primary-${Date.now()}`;
-        setLoanCards(prev => [...prev, {
-          id: newLoanId,
-          type: 'primary',
-          expanded: true
-        }]);
+        setCurrentPrimaryLoans(prev => [...prev, newLoanId]);
+        setCurrentPrimaryLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
       }
       // TODO: Implement other loan types (second, second+purchase, existing loans)
     } else {
@@ -61,85 +55,123 @@ const LoanTab = ({
       if (loanType === 'new-refinance') {
         // Clear refinance loan data
         form.setValue('abc' as any, undefined);
-        setLoanCards(prev => prev.filter(loan => loan.type !== 'refinance'));
+        setNewRefinanceLoanCards([]);
+        setNewRefinanceLoanCardStates({});
       } else if (loanType === 'new-purchase') {
         // Clear purchase loan data if applicable
-        setLoanCards(prev => prev.filter(loan => loan.type !== 'purchase'));
+        setNewPurchaseLoanCards([]);
+        setNewPurchaseLoanCardStates({});
       } else if (loanType === 'current-primary') {
         // Clear all primary loan data
-        const primaryLoans = loanCards.filter(loan => loan.type === 'primary');
-        primaryLoans.forEach(loan => {
-          form.setValue(`currentLoan.${loan.id}` as any, undefined);
+        currentPrimaryLoans.forEach(loanId => {
+          form.setValue(`currentLoan.${loanId}` as any, undefined);
         });
-        setLoanCards(prev => prev.filter(loan => loan.type !== 'primary'));
+        setCurrentPrimaryLoans([]);
+        setCurrentPrimaryLoanCardStates({});
       }
       // TODO: Implement removal for other loan types
     }
   };
 
   const handleRemoveLoanCard = (loanId: string) => {
-    // Find the loan to determine its type
-    const loanToRemove = loanCards.find(loan => loan.id === loanId);
-
-    if (loanToRemove) {
-      // Clear form data based on loan type
-      if (loanToRemove.type === 'primary') {
-        // Clear primary loan data
-        form.setValue(`currentLoan.${loanId}` as any, undefined);
-      } else if (loanToRemove.type === 'refinance') {
-        // Clear refinance loan data (uses 'abc' prefix)
-        form.setValue('abc' as any, undefined);
-      } else if (loanToRemove.type === 'purchase') {
-        // Clear purchase loan data if applicable
-        // Add field prefix for purchase loans when implemented
-      }
+    // Determine loan type from loanId prefix
+    if (loanId.startsWith('primary-')) {
+      // Clear primary loan data
+      form.setValue(`currentLoan.${loanId}` as any, undefined);
+      // Remove from primary loans
+      setCurrentPrimaryLoans(prev => prev.filter(id => id !== loanId));
+      setCurrentPrimaryLoanCardStates(prev => {
+        const { [loanId]: _, ...rest } = prev;
+        return rest;
+      });
+    } else if (loanId.startsWith('refinance-')) {
+      // Clear refinance loan data (uses 'abc' prefix)
+      form.setValue('abc' as any, undefined);
+      // Remove from refinance loans
+      setNewRefinanceLoanCards(prev => prev.filter(id => id !== loanId));
+      setNewRefinanceLoanCardStates(prev => {
+        const { [loanId]: _, ...rest } = prev;
+        return rest;
+      });
+    } else if (loanId.startsWith('purchase-')) {
+      // Clear purchase loan data if applicable
+      // Remove from purchase loans
+      setNewPurchaseLoanCards(prev => prev.filter(id => id !== loanId));
+      setNewPurchaseLoanCardStates(prev => {
+        const { [loanId]: _, ...rest } = prev;
+        return rest;
+      });
     }
-
-    // Remove the loan card from the list
-    setLoanCards(prev => prev.filter(loan => loan.id !== loanId));
   };
 
   const handleAddPrimaryLoan = () => {
-    const primaryLoansCount = loanCards.filter(loan => loan.type === 'primary').length;
-    if (primaryLoansCount < 2) {
+    if (currentPrimaryLoans.length < 2) {
       const newLoanId = `primary-${Date.now()}`;
-      setLoanCards(prev => [...prev, {
-        id: newLoanId,
-        type: 'primary',
-        expanded: true
-      }]);
+      setCurrentPrimaryLoans(prev => [...prev, newLoanId]);
+      setCurrentPrimaryLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
     }
   };
 
   const handleLoanCardExpandChange = (loanId: string, expanded: boolean) => {
-    setLoanCards(prev => prev.map(loan => 
-      loan.id === loanId ? { ...loan, expanded } : loan
-    ));
+    // Update the appropriate state based on loan type
+    if (loanId.startsWith('primary-')) {
+      setCurrentPrimaryLoanCardStates(prev => ({ ...prev, [loanId]: expanded }));
+    } else if (loanId.startsWith('refinance-')) {
+      setNewRefinanceLoanCardStates(prev => ({ ...prev, [loanId]: expanded }));
+    } else if (loanId.startsWith('purchase-')) {
+      setNewPurchaseLoanCardStates(prev => ({ ...prev, [loanId]: expanded }));
+    }
   };
 
   // Get current state of loans for checkboxes
-  const hasNewRefinanceLoan = loanCards.some(loan => loan.type === 'refinance');
-  const hasNewPurchaseLoan = loanCards.some(loan => loan.type === 'purchase');
-  const hasCurrentPrimaryLoan = loanCards.some(loan => loan.type === 'primary');
+  const hasNewRefinanceLoan = newRefinanceLoanCards.length > 0;
+  const hasNewPurchaseLoan = newPurchaseLoanCards.length > 0;
+  const hasCurrentPrimaryLoan = currentPrimaryLoans.length > 0;
 
   // Get count of primary loans
-  const primaryLoansCount = loanCards.filter(loan => loan.type === 'primary').length;
+  const primaryLoansCount = currentPrimaryLoans.length;
 
   // Expand/collapse handlers
   const handleExpandAllLoans = () => {
-    setLoanCards(prev => prev.map(loan => ({ ...loan, expanded: true })));
+    // Expand all refinance loans
+    const expandedRefinance: Record<string, boolean> = {};
+    newRefinanceLoanCards.forEach(id => { expandedRefinance[id] = true; });
+    setNewRefinanceLoanCardStates(expandedRefinance);
+
+    // Expand all purchase loans
+    const expandedPurchase: Record<string, boolean> = {};
+    newPurchaseLoanCards.forEach(id => { expandedPurchase[id] = true; });
+    setNewPurchaseLoanCardStates(expandedPurchase);
+
+    // Expand all primary loans
+    const expandedPrimary: Record<string, boolean> = {};
+    currentPrimaryLoans.forEach(id => { expandedPrimary[id] = true; });
+    setCurrentPrimaryLoanCardStates(expandedPrimary);
   };
 
   const handleMinimizeAllLoans = () => {
-    setLoanCards(prev => prev.map(loan => ({ ...loan, expanded: false })));
+    // Minimize all refinance loans
+    const minimizedRefinance: Record<string, boolean> = {};
+    newRefinanceLoanCards.forEach(id => { minimizedRefinance[id] = false; });
+    setNewRefinanceLoanCardStates(minimizedRefinance);
+
+    // Minimize all purchase loans
+    const minimizedPurchase: Record<string, boolean> = {};
+    newPurchaseLoanCards.forEach(id => { minimizedPurchase[id] = false; });
+    setNewPurchaseLoanCardStates(minimizedPurchase);
+
+    // Minimize all primary loans
+    const minimizedPrimary: Record<string, boolean> = {};
+    currentPrimaryLoans.forEach(id => { minimizedPrimary[id] = false; });
+    setCurrentPrimaryLoanCardStates(minimizedPrimary);
   };
 
   return (
     <div className="space-y-6">
       <LoanHeader
         showLoanAnimation={showLoanAnimation}
-        newRefinanceLoanCards={loanCards.filter(loan => loan.type === 'refinance').map(loan => loan.id)}
-        newPurchaseLoanCards={loanCards.filter(loan => loan.type === 'purchase').map(loan => loan.id)}
+        newRefinanceLoanCards={newRefinanceLoanCards}
+        newPurchaseLoanCards={newPurchaseLoanCards}
       />
 
       <LoanManagement
@@ -154,36 +186,35 @@ const LoanTab = ({
       />
 
       {/* Render Loan Cards */}
-      {loanCards.length > 0 && (
+      {(newRefinanceLoanCards.length > 0 || newPurchaseLoanCards.length > 0 || currentPrimaryLoans.length > 0) && (
         <div className="space-y-4">
           {/* Refinance Loan Cards - Render First */}
-          {loanCards
-            .filter(loan => loan.type === 'refinance')
-            .map(loan => (
-              <RefinanceLoanCard
-                key={loan.id}
-                loanId={loan.id}
-                onRemove={handleRemoveLoanCard}
-                expanded={loan.expanded}
-                onExpandChange={(expanded: boolean) => handleLoanCardExpandChange(loan.id, expanded)}
-              />
-            ))}
+          {newRefinanceLoanCards.map(loanId => (
+            <RefinanceLoanCard
+              key={loanId}
+              loanId={loanId}
+              onRemove={handleRemoveLoanCard}
+              expanded={newRefinanceLoanCardStates[loanId] ?? true}
+              onExpandChange={(expanded: boolean) => handleLoanCardExpandChange(loanId, expanded)}
+            />
+          ))}
 
           {/* Primary Loan Cards */}
-          {loanCards
-            .filter(loan => loan.type === 'primary')
-            .map(loan => (
-              <PrimaryLoanCard
-                key={loan.id}
-                loanId={loan.id}
-                onRemove={handleRemoveLoanCard}
-                onAdd={handleAddPrimaryLoan}
-                currentCount={primaryLoansCount}
-                maxCount={2}
-                expanded={loan.expanded}
-                onExpandChange={(expanded: boolean) => handleLoanCardExpandChange(loan.id, expanded)}
-              />
-            ))}
+          {currentPrimaryLoans.map(loanId => (
+            <PrimaryLoanCard
+              key={loanId}
+              loanId={loanId}
+              onRemove={handleRemoveLoanCard}
+              onAdd={handleAddPrimaryLoan}
+              currentCount={primaryLoansCount}
+              maxCount={2}
+              expanded={currentPrimaryLoanCardStates[loanId] ?? true}
+              onExpandChange={(expanded: boolean) => handleLoanCardExpandChange(loanId, expanded)}
+            />
+          ))}
+
+          {/* Purchase Loan Cards - if implemented */}
+          {/* TODO: Add purchase loan card rendering when implemented */}
         </div>
       )}
     </div>
