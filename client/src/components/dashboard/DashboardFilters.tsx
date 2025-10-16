@@ -51,7 +51,7 @@ export function DashboardFilters({
           <DropdownMenuItem
             onClick={() => {
               setCategoryFilter('select');
-              setTeamFilter('select');
+              setTeamFilter('show-all');
             }}
             className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
             data-testid="option-category-select"
@@ -61,7 +61,7 @@ export function DashboardFilters({
           <DropdownMenuItem
             onClick={() => {
               setCategoryFilter('financials');
-              setTeamFilter('select');
+              setTeamFilter('show-all');
             }}
             className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
             data-testid="option-category-financials"
@@ -71,7 +71,7 @@ export function DashboardFilters({
           <DropdownMenuItem
             onClick={() => {
               setCategoryFilter('marketing');
-              setTeamFilter('select');
+              setTeamFilter('show-all');
             }}
             className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
             data-testid="option-category-marketing"
@@ -81,7 +81,7 @@ export function DashboardFilters({
           <DropdownMenuItem
             onClick={() => {
               setCategoryFilter('staff');
-              setTeamFilter('select');
+              setTeamFilter('show-all');
             }}
             className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
             data-testid="option-category-staff"
@@ -91,7 +91,7 @@ export function DashboardFilters({
           <DropdownMenuItem
             onClick={() => {
               setCategoryFilter('vendor');
-              setTeamFilter('select');
+              setTeamFilter('show-all');
             }}
             className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
             data-testid="option-category-vendor"
@@ -109,7 +109,7 @@ export function DashboardFilters({
             data-testid="select-team-filter"
           >
             <span>
-              {teamFilter === 'select' && 'Select'}
+              {teamFilter === 'show-all' && 'Show All'}
               {teamFilter === 'revenue-add' && 'Revenue'}
               {teamFilter === 'expense-add' && 'Expense'}
               {teamFilter === 'pl-statement' && 'P&L Statement'}
@@ -134,11 +134,11 @@ export function DashboardFilters({
           {categoryFilter === 'financials' && (
             <>
               <DropdownMenuItem
-                onClick={() => setTeamFilter('select')}
+                onClick={() => setTeamFilter('show-all')}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-select"
+                data-testid="option-team-show-all"
               >
-                Select
+                Show All
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setTeamFilter('revenue-add')}
@@ -166,11 +166,11 @@ export function DashboardFilters({
           {categoryFilter === 'marketing' && (
             <>
               <DropdownMenuItem
-                onClick={() => setTeamFilter('select')}
+                onClick={() => setTeamFilter('show-all')}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-select-marketing"
+                data-testid="option-team-show-all-marketing"
               >
-                Select
+                Show All
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setTeamFilter('direct-mail')}
@@ -198,11 +198,11 @@ export function DashboardFilters({
           {categoryFilter === 'staff' && (
             <>
               <DropdownMenuItem
-                onClick={() => setTeamFilter('select')}
+                onClick={() => setTeamFilter('show-all')}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-select"
+                data-testid="option-team-show-all-staff"
               >
-                Select
+                Show All
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setTeamFilter('team')}
@@ -251,11 +251,11 @@ export function DashboardFilters({
           {categoryFilter === 'vendor' && (
             <>
               <DropdownMenuItem
-                onClick={() => setTeamFilter('select')}
+                onClick={() => setTeamFilter('show-all')}
                 className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-select"
+                data-testid="option-team-show-all-vendor"
               >
-                Select
+                Show All
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setTeamFilter('wdo')}

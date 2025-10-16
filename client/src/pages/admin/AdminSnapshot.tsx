@@ -130,7 +130,7 @@ export default function AdminSnapshot() {
   const { toast } = useToast();
   const [entityFilter, setEntityFilter] = useState('prime-rate');
   const [categoryFilter, setCategoryFilter] = useState('select');
-  const [teamFilter, setTeamFilter] = useState('select');
+  const [teamFilter, setTeamFilter] = useState('show-all');
   const [timeFilter, setTimeFilter] = useState('today');
   const [timeFilterFromDate, setTimeFilterFromDate] = useState('');
   const [timeFilterToDate, setTimeFilterToDate] = useState('');
