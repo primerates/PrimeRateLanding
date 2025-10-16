@@ -7,6 +7,7 @@ import LoanProgramSelect from '../components/Quote/LoanProgramSelect';
 import LenderTitleSelect from '../components/Quote/LenderTitleSelect';
 import CalculatedEstimatedInput from '../components/Quote/CalculatedEstimatedInput';
 import UnderwritingProcessingSelect from '../components/Quote/UnderwritingProcessingSelect';
+import QuoteRateSelect from '../components/Quote/QuoteRateSelect';
 import ManageableSelect from '../components/ManageableSelect';
 import FormSelect from '../components/FormSelect';
 import {
@@ -46,6 +47,7 @@ const QuoteTab = () => {
     const [selectedLoanProgram, setSelectedLoanProgram] = useState('select');
 
     // Row 2 state - Quote, State, Rate Buydown, Escrow Reserves, Monthly Escrow
+    const [selectedRateIds, setSelectedRateIds] = useState<number[]>([]);
     const [selectedState, setSelectedState] = useState('select');
     const [rateBuydown, setRateBuydown] = useState('yes');
     const [escrowReserves, setEscrowReserves] = useState('new-escrow-reserves');
@@ -72,6 +74,28 @@ const QuoteTab = () => {
     // Underwriting/Processing state
     const [isProcessingMode, setIsProcessingMode] = useState(false);
     const [underwriting, setUnderwriting] = useState('financed');
+
+    // Calculate if all fields are completed to enable Quote selection
+    const getCompletedFieldsCount = () => {
+        return [
+            !!selectedLoanCategory && selectedLoanCategory !== '',  // 1. Loan Category
+            (isCustomTerm && !!customTerm) || (!isCustomTerm && !!loanTerm && loanTerm !== 'select'),  // 2. Loan Term
+            true,  // 3. Loan Program (has default)
+            !!selectedPropertyUse && selectedPropertyUse !== 'select',  // 4. Property Use
+            !!selectedPropertyType && selectedPropertyType !== 'select',  // 5. Property Type
+            !!selectedState && selectedState !== 'select',  // 6. State
+            true,  // 7. Rate Buydown (has default)
+            true,  // 8. Escrow Reserves (has default)
+            true,  // 9. Monthly Escrow (has default)
+            (isMidFicoEstimateMode && !!estimatedFicoValue) || (!isMidFicoEstimateMode),  // 10. Mid FICO
+            (isLtvEstimateMode && !!estimatedLtvValue) || (!isLtvEstimateMode),  // 11. LTV Ratio
+            (isLenderCreditMode && !!lenderCreditAmount) || (!isLenderCreditMode && !!selectedLender),  // 12. Lender
+            (isTitleSellerCreditMode && !!titleSellerCreditAmount) || (!isTitleSellerCreditMode && !!selectedTitle),  // 13. Title
+            true,  // 14. Underwriting (has default)
+        ].filter(Boolean).length;
+    };
+
+    const isQuoteEnabled = getCompletedFieldsCount() === 14;
 
     return (
         <Card className="mb-6 transition-all duration-700 animate-roll-down">
@@ -176,10 +200,13 @@ const QuoteTab = () => {
 
                     {/* Row 2: Quote, State, Rate Buydown, Escrow Reserves, Monthly Escrow */}
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                        {/* Quote - TODO: Complex component with checkboxes */}
-                        <div className="space-y-2">
-                            {/* Placeholder for Quote field */}
-                        </div>
+                        <QuoteRateSelect
+                            selectedRateIds={selectedRateIds}
+                            onSelectedRateIdsChange={setSelectedRateIds}
+                            isEnabled={isQuoteEnabled}
+                            testId="button-quote-select"
+                            className="space-y-2"
+                        />
 
                         <FormSelect
                             label="State"
