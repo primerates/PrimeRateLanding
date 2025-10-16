@@ -19,21 +19,36 @@ const LoanHeader = ({
 
   // Current Loan Purpose calculation
   const getCurrentLoanPurpose = () => {
-    const loanPurpose = form.watch('currentLoan.loanPurpose') || '';
-    
-    if (!loanPurpose || loanPurpose.trim() === '' || loanPurpose === 'select') {
-      return 'TBD';
+    // Only show loan purpose value if refinance or purchase loan is selected
+    const hasRefinanceOrPurchase = newRefinanceLoanCards.length > 0 || newPurchaseLoanCards.length > 0;
+
+    if (!hasRefinanceOrPurchase) {
+      return '';
     }
-    
+
+    // Get loan purpose from refinance loan (abc) or purchase loan (bbb)
+    const refinanceLoanPurpose = form.watch('abc.loanPurpose' as any) || '';
+    const purchaseLoanPurpose = form.watch('bbb.loanPurpose' as any) || '';
+
+    // Use refinance loan purpose if available, otherwise use purchase loan purpose
+    const loanPurpose = refinanceLoanPurpose || purchaseLoanPurpose;
+
+    if (!loanPurpose || (typeof loanPurpose === 'string' && loanPurpose.trim() === '') || loanPurpose === 'select') {
+      return '';
+    }
+
     // Apply mapping rules based on original code
-    switch (loanPurpose) {
+    const purposeStr = String(loanPurpose);
+    switch (purposeStr) {
       case 'cash-out-refinance': return 'Cash Out';
       case 'rate-term-refinance': return 'Rate & Term';
       case 'term-reduction': return 'Term Reduction';
       case 'purchase': return 'Purchase';
-      default: return loanPurpose
+      case 'refinance-rate-term': return 'Rate & Term';
+      case 'refinance-cash-out': return 'Cash Out';
+      default: return purposeStr
         .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
     }
   };
