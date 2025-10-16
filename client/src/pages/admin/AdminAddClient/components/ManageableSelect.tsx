@@ -1,8 +1,8 @@
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useState } from 'react';
-import AddSourceDialog from '../dialogs/addSource';
-import RemoveSourceDialog from '../dialogs/removeSource';
+import AddOptionDialog from '../dialogs/AddOptionDialog';
+import RemoveOptionDialog from '../dialogs/RemoveOptionDialog';
 
 interface OptionItem {
   value: string;
@@ -18,6 +18,11 @@ interface ManageableSelectProps {
   className?: string;
   addDialogTitle?: string;
   removeDialogTitle?: string;
+  addDialogDescription?: string;
+  removeDialogDescription?: string;
+  inputLabel?: string;
+  inputPlaceholder?: string;
+  selectLabel?: string;
 }
 
 const ManageableSelect = ({
@@ -28,7 +33,12 @@ const ManageableSelect = ({
   testId = 'select-item',
   className = 'space-y-2 max-w-[75%]',
   addDialogTitle = 'Add New Item',
-  removeDialogTitle = 'Remove Item'
+  removeDialogTitle = 'Remove Item',
+  addDialogDescription = 'Enter a name for the new option.',
+  removeDialogDescription = 'Select a built-in option to remove from the list.',
+  inputLabel = 'Option Name',
+  inputPlaceholder = 'Enter option name',
+  selectLabel = 'Option to Remove'
 }: ManageableSelectProps) => {
 
   const [removedOptions, setRemovedOptions] = useState<string[]>([]);
@@ -43,6 +53,10 @@ const ManageableSelect = ({
 
   const handleRemoveOption = (optionValue: string) => {
     setRemovedOptions(prev => [...prev, optionValue]);
+  };
+
+  const handleRemoveCustomOption = (optionId: string) => {
+    setCustomOptions(prev => prev.filter(option => option.id !== optionId));
   };
 
   return (
@@ -105,19 +119,27 @@ const ManageableSelect = ({
         </Select>
       </div>
 
-      <AddSourceDialog
+      <AddOptionDialog
         isOpen={showAddDialog}
         onClose={() => setShowAddDialog(false)}
         onAdd={handleAddOption}
         title={addDialogTitle}
+        description={addDialogDescription}
+        inputLabel={inputLabel}
+        inputPlaceholder={inputPlaceholder}
       />
 
-      <RemoveSourceDialog
+      <RemoveOptionDialog
         isOpen={showRemoveDialog}
         onClose={() => setShowRemoveDialog(false)}
         onRemove={handleRemoveOption}
-        removedSources={removedOptions}
+        onRemoveCustom={handleRemoveCustomOption}
+        removedOptions={removedOptions}
+        builtInOptions={builtInOptions}
+        customOptions={customOptions}
         title={removeDialogTitle}
+        description={removeDialogDescription}
+        selectLabel={selectLabel}
       />
     </>
   );

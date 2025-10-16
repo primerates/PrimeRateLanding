@@ -58,8 +58,13 @@ const BorrowerHeaderForm = () => {
                     builtInOptions={BUILT_IN_SOURCES}
                     onValueChange={(value) => form.setValue('borrower.source', value as any)}
                     testId="select-borrower-source"
-                    addDialogTitle='Add New Source'
-                    removeDialogTitle='Remove Source'
+                    addDialogTitle="Add New Source"
+                    removeDialogTitle="Remove Source"
+                    addDialogDescription="Enter a name for the new source option."
+                    removeDialogDescription="Select a built-in source to remove from the options."
+                    inputLabel="Source Name"
+                    inputPlaceholder="Enter source name"
+                    selectLabel="Source to Remove"
                 />
 
                 <DateInput
