@@ -1,4 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Plus, Minus } from 'lucide-react';
 import FormCheckbox from '../FormCheckbox';
 
 export type LoanType = 'new-refinance' | 'new-purchase' | 'new-second' | 'new-second-purchase' | 'current-primary' | 'current-second' | 'current-third';
@@ -13,6 +15,10 @@ interface LoanManagementProps {
   hasCurrentPrimaryLoan: boolean;
   hasCurrentSecondLoan: boolean;
   hasCurrentThirdLoan: boolean;
+  
+  // Expand/collapse handlers
+  onExpandAll?: () => void;
+  onMinimizeAll?: () => void;
 }
 
 const LoanManagement = ({
@@ -21,12 +27,48 @@ const LoanManagement = ({
   hasNewPurchaseLoan,
   hasCurrentPrimaryLoan,
   hasCurrentSecondLoan,
-  hasCurrentThirdLoan
+  hasCurrentThirdLoan,
+  onExpandAll,
+  onMinimizeAll
 }: LoanManagementProps) => {
   return (
-    <Card>
+    <Card className="transition-all duration-700">
       <CardHeader>
-        <CardTitle>Loan List</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle>Loan List</CardTitle>
+          <div className="flex items-center gap-2">
+            {/* Only show buttons if handlers are provided */}
+            {onExpandAll && onMinimizeAll && (
+              <>
+                {/* Expand All Button */}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={onExpandAll}
+                  className="text-gray-600 hover:bg-blue-500 hover:text-white"
+                  title="Expand All Loan Cards"
+                  data-testid="button-expand-all-loans"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+                
+                {/* Minimize All Button */}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={onMinimizeAll}
+                  className="text-gray-600 hover:bg-orange-500 hover:text-white"
+                  title="Minimize All Loan Cards"
+                  data-testid="button-minimize-all-loans"
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-6">

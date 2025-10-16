@@ -139,3 +139,62 @@ export const FORMATION_OPTIONS: Option[] = [
   { value: 'CPA', label: 'CPA' },
   { value: 'Other', label: 'Other' }
 ];
+
+// Loan Category Options
+export const LOAN_CATEGORY_OPTIONS: Option[] = [
+  { value: 'select', label: 'Select' },
+  { value: 'conventional', label: 'Conventional' },
+  { value: 'conventional-jumbo', label: 'Conventional Jumbo' },
+  { value: 'fha', label: 'FHA' },
+  { value: 'va', label: 'VA' },
+  { value: 'va-jumbo', label: 'VA Jumbo' },
+  { value: 'other', label: 'Other' }
+];
+
+// Loan Purpose Options
+export const LOAN_PURPOSE_OPTIONS: Option[] = [
+  { value: 'select', label: 'Select' },
+  { value: 'cash-out', label: 'Cash Out' },
+  { value: 'rate-reduction', label: 'Rate Reduction' },
+  { value: 'term-reduction', label: 'Term Reduction' },
+  { value: 'other', label: 'Other' }
+];
+
+// Doc Type Options
+export const DOC_TYPE_OPTIONS: Option[] = [
+  { value: 'select', label: 'Select' },
+  { value: 'full-doc', label: 'Full Doc' },
+  { value: 'streamline', label: 'Streamline' },
+  { value: 'irrrl', label: 'IRRRL' }
+];
+
+// Loan Term Options
+export const LOAN_TERM_OPTIONS: Option[] = [
+  { value: 'select', label: 'Select' },
+  { value: '30-year-fixed', label: '30 Year Fixed' },
+  { value: '25-year-fixed', label: '25 Year Fixed' },
+  { value: '20-year-fixed', label: '20 Year Fixed' },
+  { value: '15-year-fixed', label: '15 Year Fixed' },
+  { value: '10-year-fixed', label: '10 Year Fixed' }
+];
+
+// Pre-Payment Penalty Options
+export const PREPAYMENT_PENALTY_OPTIONS: Option[] = [
+  { value: 'select', label: 'Select' },
+  { value: 'No', label: 'No' },
+  { value: 'Yes - 6 Months', label: 'Yes - 6 Months' },
+  { value: 'Yes - 1 Year', label: 'Yes - 1 Year' },
+  { value: 'Yes - 2 Years', label: 'Yes - 2 Years' },
+  { value: 'Yes - 3 Years', label: 'Yes - 3 Years' },
+  { value: 'Yes - 4 Years', label: 'Yes - 4 Years' },
+  { value: 'Yes - 5 Years', label: 'Yes - 5 Years' }
+];
+
+// Rate Lock Status Options
+export const RATE_LOCK_STATUS_OPTIONS: Option[] = [
+  { value: 'select', label: 'Select' },
+  { value: 'locked', label: 'Locked' },
+  { value: 'not-locked', label: 'Not Locked' },
+  { value: 'expired', label: 'Expired' },
+  { value: 'extended', label: 'Extended' }
+];

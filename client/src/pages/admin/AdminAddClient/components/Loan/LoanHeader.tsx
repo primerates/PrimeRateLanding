@@ -38,6 +38,11 @@ const LoanHeader = ({
     }
   };
 
+  // Calculate new loans count
+  const getNewLoansCount = () => {
+    return newRefinanceLoanCards.length + newPurchaseLoanCards.length;
+  };
+
   return (
     <Card className="transition-all duration-700">
       <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
@@ -59,7 +64,7 @@ const LoanHeader = ({
         
         <CircularMetric
           label="New Loans"
-          value={0}
+          value={getNewLoansCount()}
           showAnimation={showLoanAnimation}
           testId="text-current-loan-balance"
         />
