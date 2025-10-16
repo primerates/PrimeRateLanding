@@ -97,7 +97,9 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
         - **Transactions Visibility**: Card only appears when Revenue Search has values and user clicks "Search Revenue" button
       - **Auto-Hide Logic**: Cards mutually exclusive - switching between Expense/Revenue auto-hides the other; both hide when Team ≠ Expense/Revenue
       - **Button Standardization**: Clear Filters (left) and Search buttons match at px-3.5 py-1.5 text-sm height
-    - **Staff Card Auto-Minimize System**: When Staff category is selected with Team ≠ "Select" and user clicks Add Entry → Add Staff Member, the system automatically minimizes Performance card while closing all Search cards for optimal workflow focus
+    - **Team Dropdown Default**: Default value is "Show All" (previously "Select") across all categories (Financials, Marketing, Staff, Vendor)
+    - **Vendor Category Behavior**: When Vendor + "Show All" selected, Performance card stays expanded and chart cards are visible; when Vendor + specific team selected, Performance card minimizes
+    - **Staff Card Auto-Minimize System**: When Staff category is selected with Team ≠ "Show All" and user clicks Add Entry → Add Staff Member, the system automatically minimizes Performance card while closing all Search cards for optimal workflow focus
     - **Manual Search Card Access**: For both Staff and Marketing categories, Search cards do not auto-display when Team is selected - users must click the magnifying glass icon in the Performance card to open Search
     - **Marketing Mutual Exclusivity** (Marketing/Direct Mail):
       - **New Batch and Search Card**: Cannot be open simultaneously - only one can be visible at a time
