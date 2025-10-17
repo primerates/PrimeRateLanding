@@ -47,6 +47,7 @@ export function DashboardFilters({
               {categoryFilter === 'marketing' && 'Marketing'}
               {categoryFilter === 'staff' && 'Staff'}
               {categoryFilter === 'vendor' && 'Vendor'}
+              {categoryFilter === 'library' && 'Library'}
             </span>
             <ChevronDown className="h-4 w-4 ml-2" />
           </button>
@@ -102,6 +103,16 @@ export function DashboardFilters({
           >
             Vendor
           </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              setCategoryFilter('library');
+              setTeamFilter('show-all');
+            }}
+            className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+            data-testid="option-category-library"
+          >
+            Library
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -130,6 +141,15 @@ export function DashboardFilters({
               {teamFilter === 'water' && 'Water'}
               {teamFilter === 'inspection' && 'Inspection'}
               {teamFilter === 'handyman' && 'Handyman'}
+              {teamFilter === 'origination' && 'Origination'}
+              {teamFilter === 'processing' && 'Processing'}
+              {teamFilter === 'underwriting' && 'Underwriting'}
+              {teamFilter === 'title' && 'Title'}
+              {teamFilter === 'notary' && 'Notary'}
+              {teamFilter === 'va' && 'VA'}
+              {teamFilter === 'fha' && 'FHA'}
+              {teamFilter === 'conventional' && 'Conventional'}
+              {teamFilter === 'admin' && 'Admin'}
             </span>
             <ChevronDown className="h-4 w-4 ml-2" />
           </button>
@@ -318,6 +338,80 @@ export function DashboardFilters({
                 data-testid="option-team-handyman"
               >
                 Handyman
+              </DropdownMenuItem>
+            </>
+          )}
+          {categoryFilter === 'library' && (
+            <>
+              <DropdownMenuItem
+                onClick={() => setTeamFilter('show-all')}
+                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                data-testid="option-team-show-all-library"
+              >
+                Show All
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTeamFilter('origination')}
+                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                data-testid="option-team-origination"
+              >
+                Origination
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTeamFilter('processing')}
+                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                data-testid="option-team-processing"
+              >
+                Processing
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTeamFilter('underwriting')}
+                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                data-testid="option-team-underwriting"
+              >
+                Underwriting
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTeamFilter('title')}
+                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                data-testid="option-team-title"
+              >
+                Title
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTeamFilter('notary')}
+                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                data-testid="option-team-notary"
+              >
+                Notary
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTeamFilter('va')}
+                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                data-testid="option-team-va"
+              >
+                VA
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTeamFilter('fha')}
+                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                data-testid="option-team-fha"
+              >
+                FHA
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTeamFilter('conventional')}
+                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                data-testid="option-team-conventional"
+              >
+                Conventional
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTeamFilter('admin')}
+                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                data-testid="option-team-admin"
+              >
+                Admin
               </DropdownMenuItem>
             </>
           )}
