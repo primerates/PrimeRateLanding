@@ -1340,8 +1340,55 @@ export default function AdminSnapshot() {
   };
 
   const getSortedVendors = () => {
-    if (!vendorSortConfig.key) return mockVendorData;
-    return [...mockVendorData].sort((a: any, b: any) => {
+    // Filter vendors based on search parameters
+    const filteredVendors = mockVendorData.filter((vendor: any) => {
+      // If no search parameters are set, return empty array
+      const hasSearchParams = Object.values(vendorSearchParams).some(val => val !== '');
+      if (!hasSearchParams) return false;
+
+      // Match each search parameter if it's filled (partial match for text fields)
+      const matchBusinessName = !vendorSearchParams.businessName || 
+        vendor.businessName.toLowerCase().includes(vendorSearchParams.businessName.toLowerCase());
+      const matchWebsite = !vendorSearchParams.website || 
+        vendor.website.toLowerCase().includes(vendorSearchParams.website.toLowerCase());
+      const matchPhone = !vendorSearchParams.phone || 
+        vendor.phone.includes(vendorSearchParams.phone);
+      const matchEmail = !vendorSearchParams.email || 
+        vendor.email.toLowerCase().includes(vendorSearchParams.email.toLowerCase());
+      const matchServices = !vendorSearchParams.services || 
+        vendor.services.toLowerCase().includes(vendorSearchParams.services.toLowerCase());
+      const matchState = !vendorSearchParams.state || 
+        vendor.state.toLowerCase().includes(vendorSearchParams.state.toLowerCase());
+      const matchInternalRating = !vendorSearchParams.internalRating || 
+        vendor.internalRating.toLowerCase().includes(vendorSearchParams.internalRating.toLowerCase());
+      const matchOnlineRating = !vendorSearchParams.onlineRating || 
+        vendor.onlineRating.toLowerCase().includes(vendorSearchParams.onlineRating.toLowerCase());
+      const matchRatingSource = !vendorSearchParams.ratingSource || 
+        vendor.ratingSource.toLowerCase().includes(vendorSearchParams.ratingSource.toLowerCase());
+      const matchContact = !vendorSearchParams.contact || 
+        vendor.contactName.toLowerCase().includes(vendorSearchParams.contact.toLowerCase());
+      const matchPosition = !vendorSearchParams.position || 
+        vendor.position.toLowerCase().includes(vendorSearchParams.position.toLowerCase());
+      const matchLatestQuote = !vendorSearchParams.latestQuote || 
+        vendor.latestQuote.includes(vendorSearchParams.latestQuote);
+      const matchClientServiced = !vendorSearchParams.clientServiced || 
+        vendor.clientServiced.toLowerCase().includes(vendorSearchParams.clientServiced.toLowerCase());
+      const matchClientPhone = !vendorSearchParams.clientPhone || 
+        vendor.clientPhone.includes(vendorSearchParams.clientPhone);
+      const matchDateOfService = !vendorSearchParams.dateOfService || 
+        vendor.dateOfService === vendorSearchParams.dateOfService;
+      const matchStreetAddress = !vendorSearchParams.streetAddress || 
+        vendor.streetAddress.toLowerCase().includes(vendorSearchParams.streetAddress.toLowerCase());
+
+      return matchBusinessName && matchWebsite && matchPhone && matchEmail && 
+             matchServices && matchState && matchInternalRating && matchOnlineRating &&
+             matchRatingSource && matchContact && matchPosition && matchLatestQuote &&
+             matchClientServiced && matchClientPhone && matchDateOfService && matchStreetAddress;
+    });
+
+    // Sort the filtered results
+    if (!vendorSortConfig.key) return filteredVendors;
+    return [...filteredVendors].sort((a: any, b: any) => {
       const aVal = a[vendorSortConfig.key as string];
       const bVal = b[vendorSortConfig.key as string];
       if (aVal < bVal) return vendorSortConfig.direction === 'asc' ? -1 : 1;
@@ -1360,6 +1407,9 @@ export default function AdminSnapshot() {
 
   // Handle Search Vendors button click
   const handleSearchVendors = () => {
+    // Check if any search criteria is provided
+    const hasSearchParams = Object.values(vendorSearchParams).some(val => val !== '');
+    
     const columns: string[] = [];
     
     // Map search fields to column names
@@ -1380,9 +1430,9 @@ export default function AdminSnapshot() {
     if (vendorSearchParams.dateOfService) columns.push('dateOfService');
     if (vendorSearchParams.streetAddress) columns.push('streetAddress');
     
-    // If no columns selected, show all
+    // Only show columns that have search criteria
     if (columns.length === 0) {
-      setVisibleVendorColumns(['all']);
+      setVisibleVendorColumns([]);
     } else {
       setVisibleVendorColumns(columns);
     }
