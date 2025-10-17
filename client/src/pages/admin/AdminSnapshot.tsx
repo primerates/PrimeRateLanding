@@ -209,26 +209,31 @@ export default function AdminSnapshot() {
   // Performance card title state
   const [performanceCardTitle, setPerformanceCardTitle] = useState('Prime Rate');
 
-  // Vendor search state (Add Vendor card)
+  // Vendor Add state (Add Vendor card)
   const [showVendorSearch, setShowVendorSearch] = useState(false);
   const [isVendorSearchMinimized, setIsVendorSearchMinimized] = useState(false);
+  const [addVendorData, setAddVendorData] = useState({
+    businessName: '', website: '', phone: '', email: '', services: '', state: '',
+    internalRating: '', onlineRating: '', ratingSource: '', contact: '', position: '',
+    latestQuote: '', clientServiced: '', clientPhone: '', dateOfService: '', streetAddress: ''
+  });
+  
+  // Vendor Search state (Search card from magnifying glass)
+  const [showVendorSearchCard, setShowVendorSearchCard] = useState(false);
+  const [isVendorSearchCardMinimized, setIsVendorSearchCardMinimized] = useState(false);
   const [vendorSearchParams, setVendorSearchParams] = useState({
     businessName: '', website: '', phone: '', email: '', services: '', state: '',
     internalRating: '', onlineRating: '', ratingSource: '', contact: '', position: '',
     latestQuote: '', clientServiced: '', clientPhone: '', dateOfService: '', streetAddress: ''
   });
   const [vendorSortConfig, setVendorSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
-  
-  // Vendor Search Card (from magnifying glass) - separate from Add Vendor
-  const [showVendorSearchCard, setShowVendorSearchCard] = useState(false);
-  const [isVendorSearchCardMinimized, setIsVendorSearchCardMinimized] = useState(false);
   const [showVendorWarning, setShowVendorWarning] = useState(false);
   const [showVendorTeamWarning, setShowVendorTeamWarning] = useState(false);
   const [showVendorResults, setShowVendorResults] = useState(false);
   const [visibleVendorColumns, setVisibleVendorColumns] = useState<string[]>(['all']);
   
-  // Mock vendor data
-  const mockVendorData = [
+  // Vendor data (now stateful so it can be updated)
+  const [vendors, setVendors] = useState([
     { id: 1, businessName: 'ABC Inspection Services', website: 'www.abcinspection.com', phone: '(555) 123-4567',
       email: 'info@abcinspection.com', services: 'Property Inspection', state: 'CA', internalRating: '5 Stars',
       onlineRating: '4 Stars', ratingSource: 'Google', contactName: 'Mike Johnson', position: 'Manager',
@@ -244,7 +249,7 @@ export default function AdminSnapshot() {
       onlineRating: '5 Stars', ratingSource: 'BBB', contactName: 'Tom Martinez', position: 'Inspector',
       latestQuote: '$300', clientServiced: 'Robert Wilson', clientPhone: '(555) 765-4321',
       dateOfService: '10/08/2024', streetAddress: '789 Pine Rd' }
-  ];
+  ]);
 
   // Staff search field configuration - maps search fields to table columns
   const staffFieldConfig = [
@@ -1331,6 +1336,78 @@ export default function AdminSnapshot() {
     });
   };
 
+  // Add Vendor functions (separate from search)
+  const handleAddVendorPhoneInput = (e: React.ChangeEvent<HTMLInputElement>, field: 'phone' | 'clientPhone') => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length <= 3) value = value;
+    else if (value.length <= 6) value = '(' + value.slice(0, 3) + ') ' + value.slice(3);
+    else if (value.length <= 10) value = '(' + value.slice(0, 3) + ') ' + value.slice(3, 6) + '-' + value.slice(6);
+    else value = '(' + value.slice(0, 3) + ') ' + value.slice(3, 6) + '-' + value.slice(6, 10);
+    setAddVendorData({ ...addVendorData, [field]: value });
+  };
+
+  const handleAddVendorCurrencyInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/[^0-9]/g, '');
+    if (value) value = parseInt(value).toLocaleString('en-US');
+    else value = '';
+    setAddVendorData({ ...addVendorData, latestQuote: value });
+  };
+
+  const handleAddVendorDateInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) value = value.slice(0, 2) + '/' + value.slice(2);
+    if (value.length >= 5) value = value.slice(0, 5) + '/' + value.slice(5);
+    if (value.length > 10) value = value.slice(0, 10);
+    setAddVendorData({ ...addVendorData, dateOfService: value });
+  };
+
+  const clearAddVendorForm = () => {
+    setAddVendorData({
+      businessName: '', website: '', phone: '', email: '', services: '', state: '',
+      internalRating: '', onlineRating: '', ratingSource: '', contact: '', position: '',
+      latestQuote: '', clientServiced: '', clientPhone: '', dateOfService: '', streetAddress: ''
+    });
+  };
+
+  const handleSaveVendor = () => {
+    // Check if at least business name is filled
+    if (!addVendorData.businessName.trim()) {
+      alert('Please enter at least a business name');
+      return;
+    }
+
+    // Create new vendor object
+    const newVendor = {
+      id: vendors.length + 1,
+      businessName: addVendorData.businessName,
+      website: addVendorData.website,
+      phone: addVendorData.phone,
+      email: addVendorData.email,
+      services: addVendorData.services,
+      state: addVendorData.state,
+      internalRating: addVendorData.internalRating,
+      onlineRating: addVendorData.onlineRating,
+      ratingSource: addVendorData.ratingSource,
+      contactName: addVendorData.contact, // Map contact to contactName
+      position: addVendorData.position,
+      latestQuote: addVendorData.latestQuote ? `$${addVendorData.latestQuote}` : '',
+      clientServiced: addVendorData.clientServiced,
+      clientPhone: addVendorData.clientPhone,
+      dateOfService: addVendorData.dateOfService,
+      streetAddress: addVendorData.streetAddress
+    };
+
+    // Add to vendors list
+    setVendors([...vendors, newVendor]);
+    
+    // Clear form and close
+    clearAddVendorForm();
+    setShowVendorSearch(false);
+    
+    // Show success message
+    alert(`Vendor "${newVendor.businessName}" added successfully!`);
+  };
+
   const handleVendorSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
     if (vendorSortConfig.key === key && vendorSortConfig.direction === 'asc') {
@@ -1341,7 +1418,7 @@ export default function AdminSnapshot() {
 
   const getSortedVendors = () => {
     // Filter vendors based on search parameters
-    const filteredVendors = mockVendorData.filter((vendor: any) => {
+    const filteredVendors = vendors.filter((vendor: any) => {
       // If no search parameters are set, return empty array
       const hasSearchParams = Object.values(vendorSearchParams).some(val => val !== '');
       if (!hasSearchParams) return false;
@@ -2078,18 +2155,18 @@ export default function AdminSnapshot() {
               </div>
               <div className="flex items-center gap-3">
                 <button 
-                  onClick={clearVendorFilters} 
+                  onClick={clearAddVendorForm} 
                   className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
-                  data-testid="button-clear-vendor-filters"
+                  data-testid="button-clear-add-vendor-form"
                 >
-                  Clear Filters
+                  Clear Form
                 </button>
                 <button 
-                  onClick={handleSearchVendors}
+                  onClick={handleSaveVendor}
                   className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
-                  data-testid="button-search-vendors"
+                  data-testid="button-save-vendor"
                 >
-                  Search Vendors
+                  Save Vendor
                 </button>
                 <button
                   onClick={() => setIsVendorSearchMinimized(!isVendorSearchMinimized)}
@@ -2134,8 +2211,8 @@ export default function AdminSnapshot() {
                 <input 
                   type="text" 
                   placeholder="www.example.com" 
-                  value={vendorSearchParams.website} 
-                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, website: e.target.value})} 
+                  value={addVendorData.website} 
+                  onChange={(e) => setVendorSearchParams({...addVendorData, website: e.target.value})} 
                   className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
                   data-testid="input-website"
                 />
@@ -2145,8 +2222,8 @@ export default function AdminSnapshot() {
                 <input 
                   type="text" 
                   placeholder="(555) 123-4567" 
-                  value={vendorSearchParams.phone} 
-                  onChange={(e) => handleVendorPhoneInput(e, 'phone')} 
+                  value={addVendorData.phone} 
+                  onChange={(e) => handleAddVendorPhoneInput(e, 'phone')} 
                   className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
                   data-testid="input-phone"
                 />
@@ -2156,8 +2233,8 @@ export default function AdminSnapshot() {
                 <input 
                   type="email" 
                   placeholder="email@example.com" 
-                  value={vendorSearchParams.email} 
-                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, email: e.target.value})} 
+                  value={addVendorData.email} 
+                  onChange={(e) => setVendorSearchParams({...addVendorData, email: e.target.value})} 
                   className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
                   data-testid="input-email"
                 />
@@ -2169,8 +2246,8 @@ export default function AdminSnapshot() {
               <div>
                 <label className="block text-sm font-medium mb-2 text-purple-300">Services</label>
                 <select 
-                  value={vendorSearchParams.services} 
-                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, services: e.target.value})} 
+                  value={addVendorData.services} 
+                  onChange={(e) => setVendorSearchParams({...addVendorData, services: e.target.value})} 
                   className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
                   data-testid="select-services"
                 >
@@ -2185,8 +2262,8 @@ export default function AdminSnapshot() {
               <div>
                 <label className="block text-sm font-medium mb-2 text-purple-300">State</label>
                 <select 
-                  value={vendorSearchParams.state} 
-                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, state: e.target.value})} 
+                  value={addVendorData.state} 
+                  onChange={(e) => setVendorSearchParams({...addVendorData, state: e.target.value})} 
                   className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
                   data-testid="select-state"
                 >
@@ -2197,8 +2274,8 @@ export default function AdminSnapshot() {
               <div>
                 <label className="block text-sm font-medium mb-2 text-purple-300">Internal Rating</label>
                 <select 
-                  value={vendorSearchParams.internalRating} 
-                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, internalRating: e.target.value})} 
+                  value={addVendorData.internalRating} 
+                  onChange={(e) => setVendorSearchParams({...addVendorData, internalRating: e.target.value})} 
                   className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
                   data-testid="select-internal-rating"
                 >
@@ -2212,8 +2289,8 @@ export default function AdminSnapshot() {
               <div>
                 <label className="block text-sm font-medium mb-2 text-purple-300">Online Rating</label>
                 <select 
-                  value={vendorSearchParams.onlineRating} 
-                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, onlineRating: e.target.value})} 
+                  value={addVendorData.onlineRating} 
+                  onChange={(e) => setVendorSearchParams({...addVendorData, onlineRating: e.target.value})} 
                   className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
                   data-testid="select-online-rating"
                 >
@@ -2231,8 +2308,8 @@ export default function AdminSnapshot() {
               <div>
                 <label className="block text-sm font-medium mb-2 text-purple-300">Rating Source</label>
                 <select 
-                  value={vendorSearchParams.ratingSource} 
-                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, ratingSource: e.target.value})} 
+                  value={addVendorData.ratingSource} 
+                  onChange={(e) => setVendorSearchParams({...addVendorData, ratingSource: e.target.value})} 
                   className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
                   data-testid="select-rating-source"
                 >
@@ -2247,8 +2324,8 @@ export default function AdminSnapshot() {
                 <input 
                   type="text" 
                   placeholder="Enter contact name" 
-                  value={vendorSearchParams.contact} 
-                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, contact: e.target.value})} 
+                  value={addVendorData.contact} 
+                  onChange={(e) => setVendorSearchParams({...addVendorData, contact: e.target.value})} 
                   className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
                   data-testid="input-contact"
                 />
@@ -2258,8 +2335,8 @@ export default function AdminSnapshot() {
                 <input 
                   type="text" 
                   placeholder="Enter position" 
-                  value={vendorSearchParams.position} 
-                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, position: e.target.value})} 
+                  value={addVendorData.position} 
+                  onChange={(e) => setVendorSearchParams({...addVendorData, position: e.target.value})} 
                   className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
                   data-testid="input-position"
                 />
@@ -2271,8 +2348,8 @@ export default function AdminSnapshot() {
                   <input 
                     type="text" 
                     placeholder="0" 
-                    value={vendorSearchParams.latestQuote} 
-                    onChange={handleVendorCurrencyInput} 
+                    value={addVendorData.latestQuote} 
+                    onChange={handleAddVendorCurrencyInput} 
                     className="w-full pl-8 pr-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
                     data-testid="input-latest-quote"
                   />
@@ -2287,8 +2364,8 @@ export default function AdminSnapshot() {
                 <input 
                   type="text" 
                   placeholder="Enter client name" 
-                  value={vendorSearchParams.clientServiced} 
-                  onChange={(e) => setVendorSearchParams({...vendorSearchParams, clientServiced: e.target.value})} 
+                  value={addVendorData.clientServiced} 
+                  onChange={(e) => setVendorSearchParams({...addVendorData, clientServiced: e.target.value})} 
                   className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
                   data-testid="input-client-serviced"
                 />
@@ -2298,8 +2375,8 @@ export default function AdminSnapshot() {
                 <input 
                   type="text" 
                   placeholder="(555) 123-4567" 
-                  value={vendorSearchParams.clientPhone} 
-                  onChange={(e) => handleVendorPhoneInput(e, 'clientPhone')} 
+                  value={addVendorData.clientPhone} 
+                  onChange={(e) => handleAddVendorPhoneInput(e, 'clientPhone')} 
                   className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
                   data-testid="input-client-phone"
                 />
@@ -2309,8 +2386,8 @@ export default function AdminSnapshot() {
                 <input 
                   type="text" 
                   placeholder="MM/DD/YYYY" 
-                  value={vendorSearchParams.dateOfService} 
-                  onChange={handleVendorDateInput} 
+                  value={addVendorData.dateOfService} 
+                  onChange={handleAddVendorDateInput} 
                   className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
                   data-testid="input-date-of-service"
                 />
@@ -2320,7 +2397,7 @@ export default function AdminSnapshot() {
                 <input 
                   type="text" 
                   placeholder="Enter street address" 
-                  value={vendorSearchParams.streetAddress} 
+                  value={addVendorData.streetAddress} 
                   onChange={(e) => setVendorSearchParams({...vendorSearchParams, streetAddress: e.target.value})} 
                   className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
                   data-testid="input-street-address"
