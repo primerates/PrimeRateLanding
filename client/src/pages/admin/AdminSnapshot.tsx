@@ -1765,6 +1765,10 @@ export default function AdminSnapshot() {
                   setShowFinancialsSearch(false); // Close search card
                   setIsFiltersMinimized(true); // Minimize Dashboard card for cleaner data entry
                 } else if (categoryFilter === 'vendor' && teamFilter === 'show-all') {
+                  // If Add Vendor card is already open, ignore the click
+                  if (showVendorSearch) {
+                    return;
+                  }
                   // If in Vendor tab with Show All, close Search card first, then open Add Vendor card
                   setShowVendorSearchCard(false); // Close Search card if open
                   setShowVendorSearch(true);
@@ -1863,6 +1867,10 @@ export default function AdminSnapshot() {
                     setIsRevenueSearchMinimized(false);
                     setShowRevenueForm(false); // Close Revenue Log when Search Card opens (mutual exclusivity)
                   } else if (categoryFilter === 'vendor' && teamFilter === 'show-all') {
+                    // If Search card is already open, ignore the click
+                    if (showVendorSearchCard) {
+                      return;
+                    }
                     setShowVendorSearchCard(true);
                     setIsVendorSearchCardMinimized(false);
                     setAreChartsMinimized(true); // Minimize charts when Search is triggered
