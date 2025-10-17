@@ -54,85 +54,15 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Tools**: Drizzle Kit for migrations.
 
 ### Admin Features
-- **Comments & Posts Management**: Manages client testimonials and internal posts with real-time preview, statistics, and sortable tables.
+- **Comments & Posts Management**: Manages client testimonials and internal posts with real-time preview and sortable tables.
 - **Loan Management System**: Manages client loan applications, supporting multiple loan categories, rate configurations, and quote generation.
-- **PDF Document Extraction System (Quote Tile)**: Supports drag-and-drop PDF upload for various document types (Paystub, Bank Statement, Tax Return, Mortgage Statement, Credit Report) using AWS Textract for OCR and Anthropic Claude for AI-powered structured data extraction.
-- **Library/Testing Sandbox**: Testing environment featuring:
-    - **Theme Settings System**: Self-contained color scheme selector with 3 preset themes (Professional Dashboard, Cyberpunk, Sunset Blaze)
-    - **Theme Preview Cards**: Visual previews showing gradient colors, backgrounds, and accent elements for each theme
-    - **Real-time Application**: Selected themes instantly update borrower card colors including page gradients, card backgrounds, input styles, label colors, title gradients, and border accents
-    - **Light/Dark Mode Toggle**: Works in conjunction with theme settings and brightness controls
-    - **Brightness Controls**: Separate sliders for page and card brightness in light mode
+- **PDF Document Extraction System (Quote Tile)**: Supports drag-and-drop PDF upload for various document types using AWS Textract for OCR and Anthropic Claude for AI-powered structured data extraction.
+- **Library/Testing Sandbox**: Testing environment featuring a theme settings system with 3 preset themes (Professional Dashboard, Cyberpunk, Sunset Blaze), theme preview cards, real-time application of selected themes, light/dark mode toggle, and brightness controls.
 - **Snapshot Analytics Dashboard**: Comprehensive dashboard for financial analytics, marketing campaign management, expense/revenue tracking, and data visualization.
-    - **Key Features**: Interactive filters, real-time financial metrics, conditional card displays, customizable search cards with dynamic column systems for results tables.
-    - **Design**: Purple-to-pink gradient scrollbars, themed icons, consistent dropdown styling across all admin features.
-    - **Functionality**: Transaction Attachments System for expenses/revenue, PDF attachment system for staff and batches.
-    - **Search Card System** (Financials):
-      - **Manual Access**: Magnifying glass icon in Performance card opens category-specific search cards
-      - **Conflict Prevention**: If expense/revenue log form is open, magnifying glass displays warning instead of opening search card
-      - **Expense Search Card** (Financials/Expense): Search icon, date filter dropdown, 12 fields across 3 rows
-        - **Date Filter Dropdown**: Today/MTD/YTD/Date Range selector positioned left of Clear Filters button; when Date Range selected, shows From Date and To Date inputs
-        - Row 1: Log Date (date field), Transaction Date (date field), Clear Date (date field), Amount
-        - Row 2: Invoice #, Check #, Payment Method, Payment Term
-        - Row 3: Category, Area, Paid To, Payee
-      - **Dynamic Transactions Table**: When user fills search fields and clicks "Search Expense", the Transactions table displays only columns matching filled search fields. Default shows all columns. Includes X close button for independent visibility control.
-        - **Field Mapping**: Log Date → logDate, Transaction Date → transactionDate, Clear Date → clearanceDate, Amount → expense (emerald-500 green), Invoice # → invoiceNumber, Check # → checkNumber, Payment Method → paidWith, Payment Term → paymentTerm, Category → expenseCategory, Area → area, Paid To → paidTo, Payee → payee
-        - **State Management**: visibleTransactionColumns state tracks which columns to display, isColumnVisible helper function checks visibility
-        - **Success Notification**: Toast message "Transaction has been recorded" displays when expense is successfully logged
-        - **Flywheel Scrollbar**: Custom horizontal scrollbar with purple-to-pink gradient indicator matching Staff/Direct Mail implementation - draggable indicator syncs with table scroll, click-to-jump on track, instruction text "← Drag or click the scrollbar to navigate →"
-        - **Search Filtering**: Transactions table automatically filters to show only matching records based on filled search parameters (exact match on all fields)
-        - **Auto-Close Search**: When user clicks "Add Entry" while search card is open, search card automatically closes before opening expense log form
-        - **Direct Expense Entry**: When in Expense tab (Financials/Expense), clicking "Add Entry" directly opens Expense Log form (bypasses Add Entry modal)
-        - **Transactions Visibility**: Transactions card only appears when Search card has values and user clicks "Search Expense" button; starts hidden by default
-      - **Revenue Search Card** (Financials/Revenue): DollarSign icon, date filter dropdown, 8 fields across 2 rows
-        - **Date Filter Dropdown**: Today/MTD/YTD/Date Range selector positioned left of Clear Filters button; when Date Range selected, shows From Date and To Date inputs
-        - Row 1: Log Date, Transaction Date, Clear Date, Reference #
-        - Row 2: Revenue Category, Revenue Source, Payment Method, Amount
-        - **Mutual Exclusivity**: Revenue Search Card and Revenue Log card cannot be open simultaneously - opening one automatically closes the other
-      - **Revenue Transactions Table**: Complete feature parity with Expense Transactions
-        - **Field Mapping**: Log Date → logDate, Transaction Date → transactionDate, Clear Date → clearanceDate, Reference # → paymentForm, Revenue Category → revenueCategory, Revenue Source → revenueTerm, Payment Method → paymentFrom, Amount → revenue (emerald-500 green)
-        - **State Management**: visibleRevenueColumns state tracks which columns to display, isRevenueColumnVisible helper function checks visibility
-        - **Flywheel Scrollbar**: Purple-to-pink gradient indicator with drag functionality and click-to-jump navigation
-        - **Dynamic Columns**: Table displays only columns matching filled Revenue Search fields
-        - **Transactions Visibility**: Card only appears when Revenue Search has values and user clicks "Search Revenue" button
-      - **Auto-Hide Logic**: Cards mutually exclusive - switching between Expense/Revenue auto-hides the other; both hide when Team ≠ Expense/Revenue
-      - **Button Standardization**: Clear Filters (left) and Search buttons match at px-3.5 py-1.5 text-sm height
-    - **Team Dropdown Default**: Default value is "Show All" (previously "Select") across all categories (Financials, Marketing, Staff, Vendor)
-    - **Vendor Category Behavior**: When Vendor + "Show All" selected, Performance card stays expanded and chart cards are visible; when Vendor + specific team selected, Performance card minimizes
-    - **Staff Card Auto-Minimize System**: When Staff category is selected with Team ≠ "Show All" and user clicks Add Entry → Add Staff Member, the system automatically minimizes Performance card while closing all Search cards for optimal workflow focus
-    - **Manual Search Card Access**: For both Staff and Marketing categories, Search cards do not auto-display when Team is selected - users must click the magnifying glass icon in the Performance card to open Search
-    - **Marketing Mutual Exclusivity** (Marketing/Direct Mail):
-      - **New Batch and Search Card**: Cannot be open simultaneously - only one can be visible at a time
-      - **Conflict Prevention**: When New Batch card is open and user clicks magnifying glass icon, displays warning: "Please complete or close the open new batch entry"
-      - **Auto-Close Logic**: When Search card is open and user clicks "Add Entry" → "Add New Batch", Search card automatically closes before New Batch card opens
-    - **Marketing Batch List Flow**: When Marketing/Direct Mail is selected, Batch List only appears after user opens Search card and clicks "Search Batch" button
-    - **Vendor Cards System** (Vendor/Show All): Two distinct cards for vendor management
-      - **Add Vendor Card** (via Add Entry button):
-        - **Access Method**: Displays when Vendor category + "Show All" team selected and user clicks "Add Entry"
-        - **Title**: "Add Vendor" with construction/HardHat icon (orange accent)
-        - **Search Fields**: 16 fields across 4 rows with auto-formatting
-          - Row 1: Business Name, Website, Phone (formatted), Email
-          - Row 2: Services (dropdown), State (dropdown), Internal Rating (dropdown), Online Rating (dropdown)
-          - Row 3: Rating Source (dropdown), Contact, Position, Latest Quote ($ formatted with thousands separators)
-          - Row 4: Client Serviced, Client Phone (formatted), Date of Service (MM/DD/YYYY), Street Address
-        - **Controls**: Clear Filters button (px-3.5 py-1.5 text-sm), Search Vendors button, Minimize button, Close button
-        - **Results Table**: Displays when hasVendorSearchCriteria is true (any search field filled)
-        - **Team Dropdown Protection**: When Add Vendor card is open, attempting to change Team dropdown shows warning: "Please complete or close the open add vendor request before changing the team filter"
-        - **Auto-Minimize Charts**: Chart cards automatically minimize when Add Entry is triggered
-      - **Vendor Search Card** (via Magnifying Glass icon):
-        - **Access Method**: Displays when user clicks magnifying glass icon in Performance card
-        - **Conflict Prevention**: If Add Vendor card is open, displays warning: "Please complete or close the open add vendor request"
-        - **Title**: "Search" with magnifying glass/Search icon (indigo accent)
-        - **Same 16 fields and formatting** as Add Vendor card
-        - **Controls**: Clear Filters (px-3.5 py-1.5 text-sm), Search Vendors, Minimize, Close buttons
-        - **Results Table**: Same structure as Add Vendor results, displays when search criteria filled
-        - **Auto-Minimize Charts**: Chart cards automatically minimize when Search is triggered
-      - **Mutual Exclusivity & Auto-Close**: 
-        - Only one vendor card (Add or Search) can be open at a time - displays warning if other is open
-        - When Add Entry clicked with Search card open, Search card automatically closes before Add Vendor opens
-
-### Background Selector System
-Allows customization of dashboard and login page backgrounds with various presets, supporting mode toggling, visual previews, and persistence.
+    - **Key Features**: Interactive filters, real-time financial metrics, conditional card displays, customizable search cards with dynamic column systems for results tables, and transaction attachments system.
+    - **Search Card System**: Provides category-specific search cards for Expenses and Revenue, with date filters and dynamic transaction tables that filter results based on search parameters.
+    - **Vendor Management**: Includes dedicated cards for adding and searching vendors, with comprehensive search fields, dynamic results tables, and sortable columns.
+    - **Workflow Automation**: Implements auto-minimizing and mutual exclusivity logic for various cards and forms to optimize user workflow.
 
 ## External Dependencies
 

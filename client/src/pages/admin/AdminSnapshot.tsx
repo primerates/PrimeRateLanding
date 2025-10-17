@@ -224,6 +224,8 @@ export default function AdminSnapshot() {
   const [isVendorSearchCardMinimized, setIsVendorSearchCardMinimized] = useState(false);
   const [showVendorWarning, setShowVendorWarning] = useState(false);
   const [showVendorTeamWarning, setShowVendorTeamWarning] = useState(false);
+  const [showVendorResults, setShowVendorResults] = useState(false);
+  const [visibleVendorColumns, setVisibleVendorColumns] = useState<string[]>(['all']);
   
   // Mock vendor data
   const mockVendorData = [
@@ -1350,6 +1352,44 @@ export default function AdminSnapshot() {
 
   const hasVendorSearchCriteria = Object.values(vendorSearchParams).some(val => val !== '');
 
+  // Helper function to check if a vendor column should be visible
+  const isVendorColumnVisible = (column: string) => {
+    if (visibleVendorColumns.includes('all')) return true;
+    return visibleVendorColumns.includes(column);
+  };
+
+  // Handle Search Vendors button click
+  const handleSearchVendors = () => {
+    const columns: string[] = [];
+    
+    // Map search fields to column names
+    if (vendorSearchParams.businessName) columns.push('businessName');
+    if (vendorSearchParams.website) columns.push('website');
+    if (vendorSearchParams.phone) columns.push('phone');
+    if (vendorSearchParams.email) columns.push('email');
+    if (vendorSearchParams.services) columns.push('services');
+    if (vendorSearchParams.state) columns.push('state');
+    if (vendorSearchParams.internalRating) columns.push('internalRating');
+    if (vendorSearchParams.onlineRating) columns.push('onlineRating');
+    if (vendorSearchParams.ratingSource) columns.push('ratingSource');
+    if (vendorSearchParams.contact) columns.push('contact');
+    if (vendorSearchParams.position) columns.push('position');
+    if (vendorSearchParams.latestQuote) columns.push('latestQuote');
+    if (vendorSearchParams.clientServiced) columns.push('clientServiced');
+    if (vendorSearchParams.clientPhone) columns.push('clientPhone');
+    if (vendorSearchParams.dateOfService) columns.push('dateOfService');
+    if (vendorSearchParams.streetAddress) columns.push('streetAddress');
+    
+    // If no columns selected, show all
+    if (columns.length === 0) {
+      setVisibleVendorColumns(['all']);
+    } else {
+      setVisibleVendorColumns(columns);
+    }
+    
+    setShowVendorResults(true);
+  };
+
   const handleTransactionDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: 'fromDate' | 'toDate') => {
     let value = e.target.value.replace(/\D/g, '');
     if (value.length >= 2) {
@@ -1987,6 +2027,7 @@ export default function AdminSnapshot() {
                   Clear Filters
                 </button>
                 <button 
+                  onClick={handleSearchVendors}
                   className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
                   data-testid="button-search-vendors"
                 >
@@ -2234,82 +2275,193 @@ export default function AdminSnapshot() {
         )}
 
         {/* Vendor Search Results Table */}
-        {showVendorSearch && hasVendorSearchCriteria && categoryFilter === 'vendor' && teamFilter === 'show-all' && (
+        {showVendorResults && categoryFilter === 'vendor' && teamFilter === 'show-all' && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
-            <h3 className="text-xl font-bold mb-4 text-white">Search Results ({getSortedVendors().length})</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full border border-purple-500/20">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-white">
+                Search Results ({getSortedVendors().length} vendors)
+              </h3>
+              <button
+                onClick={() => setShowVendorResults(false)}
+                className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                title="Close"
+                data-testid="button-close-vendor-results"
+              >
+                <X className="w-5 h-5 text-purple-300" />
+              </button>
+            </div>
+
+            {/* Custom Scrollbar Track */}
+            <div className="mb-4">
+              <div 
+                className="h-2 rounded-full overflow-hidden cursor-pointer bg-slate-700/50"
+                style={{ position: 'relative' }}
+                onClick={(e) => {
+                  const tableContainer = e.currentTarget.parentElement?.nextElementSibling;
+                  if (tableContainer) {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    const percentage = clickX / rect.width;
+                    tableContainer.scrollLeft = percentage * (tableContainer.scrollWidth - tableContainer.clientWidth);
+                  }
+                }}
+              >
+                <div 
+                  id="vendor-scroll-indicator"
+                  className="h-full rounded-full transition-all bg-gradient-to-r from-purple-500 to-pink-500"
+                  style={{ width: '30%', cursor: 'grab' }}
+                  onMouseDown={(e) => {
+                    e.stopPropagation();
+                    const indicator = e.currentTarget;
+                    const track = indicator.parentElement;
+                    const tableContainer = track?.parentElement?.nextElementSibling;
+                    if (!tableContainer) return;
+                    
+                    indicator.style.cursor = 'grabbing';
+                    const startX = e.clientX;
+                    const startScrollLeft = tableContainer.scrollLeft;
+                    const trackWidth = track.offsetWidth;
+                    const scrollWidth = tableContainer.scrollWidth - tableContainer.clientWidth;
+                    
+                    const handleMouseMove = (e: MouseEvent) => {
+                      const deltaX = e.clientX - startX;
+                      const scrollDelta = (deltaX / trackWidth) * scrollWidth;
+                      tableContainer.scrollLeft = startScrollLeft + scrollDelta;
+                    };
+                    
+                    const handleMouseUp = () => {
+                      indicator.style.cursor = 'grab';
+                      document.removeEventListener('mousemove', handleMouseMove);
+                      document.removeEventListener('mouseup', handleMouseUp);
+                    };
+                    
+                    document.addEventListener('mousemove', handleMouseMove);
+                    document.addEventListener('mouseup', handleMouseUp);
+                  }}
+                />
+              </div>
+              <p className="text-xs mt-1 text-slate-400">
+                ← Drag or click the scrollbar to navigate →
+              </p>
+            </div>
+
+            <div 
+              className="overflow-x-auto scrollbar-custom"
+              onScroll={(e) => {
+                const target = e.target as HTMLElement;
+                const scrollPercentage = target.scrollLeft / (target.scrollWidth - target.clientWidth);
+                const indicator = document.getElementById('vendor-scroll-indicator');
+                if (indicator) {
+                  const thumbWidth = (target.clientWidth / target.scrollWidth) * 100;
+                  indicator.style.width = `${Math.max(thumbWidth, 10)}%`;
+                  indicator.style.transform = `translateX(${scrollPercentage * (100 / thumbWidth - 1)}%)`;
+                }
+              }}
+            >
+              <table className="w-full min-w-max">
                 <thead>
-                  <tr className="bg-slate-700/50">
-                    <th onClick={() => handleVendorSort('businessName')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-business-name">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Business Name <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('website')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-website">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Website <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('phone')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-phone">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Phone <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('email')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-email">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Email <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('services')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-services">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Services <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('state')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-state">
-                      <div className="flex items-center gap-2 whitespace-nowrap">State <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('internalRating')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-internal-rating">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Internal Rating <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('onlineRating')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-online-rating">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Online Rating <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('ratingSource')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-rating-source">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Rating Source <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('contactName')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-contact">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Contact <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('position')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-position">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Position <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('latestQuote')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-latest-quote">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Latest Quote <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('clientServiced')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-client-serviced">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Client Serviced <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('clientPhone')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-client-phone">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Client Phone <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('dateOfService')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-date-of-service">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Date of Service <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
-                    <th onClick={() => handleVendorSort('streetAddress')} className="px-4 py-3 text-left text-xs font-bold uppercase cursor-pointer border text-purple-300 border-purple-500/20 hover:bg-slate-700" data-testid="header-street-address">
-                      <div className="flex items-center gap-2 whitespace-nowrap">Street Address <ArrowUpDown className="w-3 h-3" /></div>
-                    </th>
+                  <tr className="border-b border-purple-500/30">
+                    {isVendorColumnVisible('businessName') && (
+                      <th onClick={() => handleVendorSort('businessName')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[180px] text-purple-300 hover:text-purple-200" data-testid="header-business-name">
+                        <div className="flex items-center gap-2">Business Name <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('website') && (
+                      <th onClick={() => handleVendorSort('website')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[180px] text-purple-300 hover:text-purple-200" data-testid="header-website">
+                        <div className="flex items-center gap-2">Website <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('phone') && (
+                      <th onClick={() => handleVendorSort('phone')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200" data-testid="header-phone">
+                        <div className="flex items-center gap-2">Phone <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('email') && (
+                      <th onClick={() => handleVendorSort('email')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[200px] text-purple-300 hover:text-purple-200" data-testid="header-email">
+                        <div className="flex items-center gap-2">Email <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('services') && (
+                      <th onClick={() => handleVendorSort('services')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[160px] text-purple-300 hover:text-purple-200" data-testid="header-services">
+                        <div className="flex items-center gap-2">Services <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('state') && (
+                      <th onClick={() => handleVendorSort('state')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[100px] text-purple-300 hover:text-purple-200" data-testid="header-state">
+                        <div className="flex items-center gap-2">State <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('internalRating') && (
+                      <th onClick={() => handleVendorSort('internalRating')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200" data-testid="header-internal-rating">
+                        <div className="flex items-center gap-2">Internal Rating <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('onlineRating') && (
+                      <th onClick={() => handleVendorSort('onlineRating')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200" data-testid="header-online-rating">
+                        <div className="flex items-center gap-2">Online Rating <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('ratingSource') && (
+                      <th onClick={() => handleVendorSort('ratingSource')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200" data-testid="header-rating-source">
+                        <div className="flex items-center gap-2">Rating Source <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('contact') && (
+                      <th onClick={() => handleVendorSort('contactName')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200" data-testid="header-contact">
+                        <div className="flex items-center gap-2">Contact <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('position') && (
+                      <th onClick={() => handleVendorSort('position')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200" data-testid="header-position">
+                        <div className="flex items-center gap-2">Position <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('latestQuote') && (
+                      <th onClick={() => handleVendorSort('latestQuote')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200" data-testid="header-latest-quote">
+                        <div className="flex items-center gap-2">Latest Quote <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('clientServiced') && (
+                      <th onClick={() => handleVendorSort('clientServiced')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200" data-testid="header-client-serviced">
+                        <div className="flex items-center gap-2">Client Serviced <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('clientPhone') && (
+                      <th onClick={() => handleVendorSort('clientPhone')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200" data-testid="header-client-phone">
+                        <div className="flex items-center gap-2">Client Phone <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('dateOfService') && (
+                      <th onClick={() => handleVendorSort('dateOfService')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200" data-testid="header-date-of-service">
+                        <div className="flex items-center gap-2">Date of Service <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
+                    {isVendorColumnVisible('streetAddress') && (
+                      <th onClick={() => handleVendorSort('streetAddress')} className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200" data-testid="header-street-address">
+                        <div className="flex items-center gap-2">Street Address <ArrowUpDown className="w-4 h-4" /></div>
+                      </th>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
-                  {getSortedVendors().map((v) => (
-                    <tr key={v.id} className="border-b border-purple-500/10 hover:bg-slate-700/30" data-testid={`vendor-row-${v.id}`}>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.businessName}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-purple-300 border-purple-500/10">{v.website}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.phone}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-purple-300 border-purple-500/10">{v.email}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.services}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.state}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.internalRating}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.onlineRating}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.ratingSource}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.contactName}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.position}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap font-semibold border text-green-400 border-purple-500/10">{v.latestQuote}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.clientServiced}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.clientPhone}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.dateOfService}</td>
-                      <td className="px-4 py-3 text-sm whitespace-nowrap border text-white border-purple-500/10">{v.streetAddress}</td>
+                  {getSortedVendors().map((vendor) => (
+                    <tr key={vendor.id} className="border-b transition-colors border-slate-700/50 hover:bg-slate-700/30" data-testid={`vendor-row-${vendor.id}`}>
+                      {isVendorColumnVisible('businessName') && <td className="py-3 px-4 font-medium text-white">{vendor.businessName}</td>}
+                      {isVendorColumnVisible('website') && <td className="py-3 px-4 text-purple-300">{vendor.website}</td>}
+                      {isVendorColumnVisible('phone') && <td className="py-3 px-4 text-slate-300">{vendor.phone}</td>}
+                      {isVendorColumnVisible('email') && <td className="py-3 px-4 text-purple-300">{vendor.email}</td>}
+                      {isVendorColumnVisible('services') && <td className="py-3 px-4 text-slate-300">{vendor.services}</td>}
+                      {isVendorColumnVisible('state') && <td className="py-3 px-4 text-slate-300">{vendor.state}</td>}
+                      {isVendorColumnVisible('internalRating') && <td className="py-3 px-4 text-slate-300">{vendor.internalRating}</td>}
+                      {isVendorColumnVisible('onlineRating') && <td className="py-3 px-4 text-slate-300">{vendor.onlineRating}</td>}
+                      {isVendorColumnVisible('ratingSource') && <td className="py-3 px-4 text-slate-300">{vendor.ratingSource}</td>}
+                      {isVendorColumnVisible('contact') && <td className="py-3 px-4 text-slate-300">{vendor.contactName}</td>}
+                      {isVendorColumnVisible('position') && <td className="py-3 px-4 text-slate-300">{vendor.position}</td>}
+                      {isVendorColumnVisible('latestQuote') && <td className="py-3 px-4 font-semibold text-emerald-500">${vendor.latestQuote}</td>}
+                      {isVendorColumnVisible('clientServiced') && <td className="py-3 px-4 text-slate-300">{vendor.clientServiced}</td>}
+                      {isVendorColumnVisible('clientPhone') && <td className="py-3 px-4 text-slate-300">{vendor.clientPhone}</td>}
+                      {isVendorColumnVisible('dateOfService') && <td className="py-3 px-4 text-slate-300">{vendor.dateOfService}</td>}
+                      {isVendorColumnVisible('streetAddress') && <td className="py-3 px-4 text-slate-300">{vendor.streetAddress}</td>}
                     </tr>
                   ))}
                 </tbody>
@@ -2337,6 +2489,7 @@ export default function AdminSnapshot() {
                   Clear Filters
                 </button>
                 <button 
+                  onClick={handleSearchVendors}
                   className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
                   data-testid="button-search-vendors-action"
                 >

@@ -1,0 +1,483 @@
+import React, { useState } from 'react';
+import { ArrowUpDown } from 'lucide-react';
+
+const VendorResultsTable = () => {
+  const isDarkMode = true;
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  
+  const vendorData = [
+    {
+      id: 1,
+      businessName: 'ABC Inspection Services',
+      website: 'www.abcinspection.com',
+      phone: '(555) 123-4567',
+      email: 'info@abcinspection.com',
+      services: 'Property Inspection',
+      state: 'CA',
+      internalRating: '5 Stars',
+      onlineRating: '4 Stars',
+      ratingSource: 'Google',
+      contact: 'Mike Johnson',
+      position: 'Manager',
+      latestQuote: 450,
+      clientServiced: 'John Smith',
+      clientPhone: '(555) 987-6543',
+      dateOfService: '10/01/2024',
+      streetAddress: '123 Main St'
+    },
+    {
+      id: 2,
+      businessName: 'Premier Appraisal Group',
+      website: 'www.premierappraisal.com',
+      phone: '(555) 234-5678',
+      email: 'contact@premierappraisal.com',
+      services: 'Appraisal',
+      state: 'TX',
+      internalRating: '4 Stars',
+      onlineRating: '5 Stars',
+      ratingSource: 'Yelp',
+      contact: 'Lisa Anderson',
+      position: 'Lead Appraiser',
+      latestQuote: 650,
+      clientServiced: 'Sarah Davis',
+      clientPhone: '(555) 876-5432',
+      dateOfService: '10/05/2024',
+      streetAddress: '456 Oak Ave'
+    },
+    {
+      id: 3,
+      businessName: 'Quality WDO Solutions',
+      website: 'www.qualitywdo.com',
+      phone: '(555) 345-6789',
+      email: 'service@qualitywdo.com',
+      services: 'WDO',
+      state: 'FL',
+      internalRating: '5 Stars',
+      onlineRating: '5 Stars',
+      ratingSource: 'BBB',
+      contact: 'Tom Martinez',
+      position: 'Inspector',
+      latestQuote: 300,
+      clientServiced: 'Robert Wilson',
+      clientPhone: '(555) 765-4321',
+      dateOfService: '10/08/2024',
+      streetAddress: '789 Pine Rd'
+    },
+    {
+      id: 4,
+      businessName: 'Elite Title Services',
+      website: 'www.elitetitle.com',
+      phone: '(555) 456-7890',
+      email: 'contact@elitetitle.com',
+      services: 'Title Search',
+      state: 'NY',
+      internalRating: '5 Stars',
+      onlineRating: '4 Stars',
+      ratingSource: 'Google',
+      contact: 'Jennifer Lee',
+      position: 'Title Officer',
+      latestQuote: 550,
+      clientServiced: 'Michael Brown',
+      clientPhone: '(555) 654-3210',
+      dateOfService: '10/12/2024',
+      streetAddress: '321 Elm St'
+    },
+    {
+      id: 5,
+      businessName: 'Reliable Home Inspections',
+      website: 'www.reliablehome.com',
+      phone: '(555) 567-8901',
+      email: 'info@reliablehome.com',
+      services: 'Property Inspection',
+      state: 'GA',
+      internalRating: '4 Stars',
+      onlineRating: '5 Stars',
+      ratingSource: 'BBB',
+      contact: 'David Chen',
+      position: 'Senior Inspector',
+      latestQuote: 475,
+      clientServiced: 'Amanda White',
+      clientPhone: '(555) 543-2109',
+      dateOfService: '10/15/2024',
+      streetAddress: '987 Maple Dr'
+    },
+    {
+      id: 6,
+      businessName: 'Professional Appraisers Inc',
+      website: 'www.proappraisers.com',
+      phone: '(555) 678-9012',
+      email: 'service@proappraisers.com',
+      services: 'Appraisal',
+      state: 'AZ',
+      internalRating: '5 Stars',
+      onlineRating: '5 Stars',
+      ratingSource: 'Yelp',
+      contact: 'Rachel Green',
+      position: 'Chief Appraiser',
+      latestQuote: 700,
+      clientServiced: 'James Taylor',
+      clientPhone: '(555) 432-1098',
+      dateOfService: '10/18/2024',
+      streetAddress: '654 Cedar Ln'
+    },
+    {
+      id: 7,
+      businessName: 'Accurate Pest Control',
+      website: 'www.accuratepest.com',
+      phone: '(555) 789-0123',
+      email: 'contact@accuratepest.com',
+      services: 'WDO',
+      state: 'NC',
+      internalRating: '4 Stars',
+      onlineRating: '4 Stars',
+      ratingSource: 'Google',
+      contact: 'Kevin Park',
+      position: 'Pest Specialist',
+      latestQuote: 325,
+      clientServiced: 'Lisa Martinez',
+      clientPhone: '(555) 321-0987',
+      dateOfService: '10/20/2024',
+      streetAddress: '147 Birch Ave'
+    }
+  ];
+
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedVendorData = [...vendorData].sort((a, b) => {
+    if (!sortConfig.key) return 0;
+    
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+    
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
+    }
+    
+    if (aValue < bValue) {
+      return sortConfig.direction === 'asc' ? -1 : 1;
+    }
+    if (aValue > bValue) {
+      return sortConfig.direction === 'asc' ? 1 : -1;
+    }
+    return 0;
+  });
+
+  return (
+    <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen p-6">
+      <style>{`
+        .scrollbar-custom::-webkit-scrollbar {
+          height: 8px;
+        }
+        .scrollbar-custom::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .scrollbar-custom::-webkit-scrollbar-thumb {
+          background: transparent;
+          border-radius: 4px;
+        }
+        .scrollbar-custom {
+          scrollbar-width: thin;
+          scrollbar-color: transparent transparent;
+        }
+      `}</style>
+      <div className="max-w-7xl mx-auto">
+        <div className="backdrop-blur-xl rounded-2xl p-6 border shadow-2xl bg-slate-800/50 border-purple-500/20">
+          <div className="mb-6">
+            <h3 className="text-xl font-bold text-white">
+              Search Results ({sortedVendorData.length} vendors)
+            </h3>
+          </div>
+
+          {/* Custom Scrollbar Track */}
+          <div className="mb-4">
+            <div 
+              className="h-2 rounded-full overflow-hidden cursor-pointer bg-slate-700/50"
+              style={{ position: 'relative' }}
+              onClick={(e) => {
+                const tableContainer = e.currentTarget.parentElement.nextElementSibling;
+                const rect = e.currentTarget.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const percentage = clickX / rect.width;
+                tableContainer.scrollLeft = percentage * (tableContainer.scrollWidth - tableContainer.clientWidth);
+              }}
+            >
+              <div 
+                id="scroll-indicator"
+                className="h-full rounded-full transition-all bg-gradient-to-r from-purple-500 to-pink-500"
+                style={{ width: '30%', cursor: 'grab' }}
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  const indicator = e.currentTarget;
+                  const track = indicator.parentElement;
+                  const tableContainer = track.parentElement.nextElementSibling;
+                  
+                  indicator.style.cursor = 'grabbing';
+                  const startX = e.clientX;
+                  const startScrollLeft = tableContainer.scrollLeft;
+                  const trackWidth = track.offsetWidth;
+                  const scrollWidth = tableContainer.scrollWidth - tableContainer.clientWidth;
+                  
+                  const handleMouseMove = (e) => {
+                    const deltaX = e.clientX - startX;
+                    const scrollDelta = (deltaX / trackWidth) * scrollWidth;
+                    tableContainer.scrollLeft = startScrollLeft + scrollDelta;
+                  };
+                  
+                  const handleMouseUp = () => {
+                    indicator.style.cursor = 'grab';
+                    document.removeEventListener('mousemove', handleMouseMove);
+                    document.removeEventListener('mouseup', handleMouseUp);
+                  };
+                  
+                  document.addEventListener('mousemove', handleMouseMove);
+                  document.addEventListener('mouseup', handleMouseUp);
+                }}
+              />
+            </div>
+            <p className="text-xs mt-1 text-slate-400">
+              ← Drag or click the scrollbar to navigate →
+            </p>
+          </div>
+
+          <div 
+            className="overflow-x-auto scrollbar-custom"
+            onScroll={(e) => {
+              const scrollPercentage = e.target.scrollLeft / (e.target.scrollWidth - e.target.clientWidth);
+              const indicator = document.getElementById('scroll-indicator');
+              if (indicator) {
+                const thumbWidth = (e.target.clientWidth / e.target.scrollWidth) * 100;
+                indicator.style.width = `${Math.max(thumbWidth, 10)}%`;
+                indicator.style.transform = `translateX(${scrollPercentage * (100 / thumbWidth - 1)}%)`;
+              }
+            }}
+          >
+            <table className="w-full min-w-max">
+              <thead>
+                <tr className="border-b border-purple-500/30">
+                  <th 
+                    onClick={() => handleSort('businessName')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[180px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Business Name
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('website')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[180px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Website
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('phone')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Phone
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('email')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[200px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Email
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('services')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[160px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Services
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('state')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[100px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      State
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('internalRating')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Internal Rating
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('onlineRating')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Online Rating
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('ratingSource')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Rating Source
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('contact')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Contact
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('position')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Position
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('latestQuote')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Latest Quote
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('clientServiced')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Client Serviced
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('clientPhone')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Client Phone
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('dateOfService')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Date of Service
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('streetAddress')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Street Address
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedVendorData.map((vendor) => (
+                  <tr 
+                    key={vendor.id}
+                    className="border-b transition-colors border-slate-700/50 hover:bg-slate-700/30"
+                  >
+                    <td className="py-3 px-4 font-medium text-white">
+                      {vendor.businessName}
+                    </td>
+                    <td className="py-3 px-4 text-purple-300">
+                      {vendor.website}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {vendor.phone}
+                    </td>
+                    <td className="py-3 px-4 text-purple-300">
+                      {vendor.email}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {vendor.services}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {vendor.state}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {vendor.internalRating}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {vendor.onlineRating}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {vendor.ratingSource}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {vendor.contact}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {vendor.position}
+                    </td>
+                    <td className="py-3 px-4 font-semibold text-emerald-500">
+                      {formatCurrency(vendor.latestQuote)}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {vendor.clientServiced}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {vendor.clientPhone}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {vendor.dateOfService}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {vendor.streetAddress}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default VendorResultsTable;
