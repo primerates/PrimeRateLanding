@@ -1896,8 +1896,9 @@ export default function AdminSnapshot() {
                   if (showVendorSearch) {
                     return;
                   }
-                  // If in Vendor tab with Show All, close Search card first, then open Add Vendor card
+                  // If in Vendor tab with Show All, close Search card and results, then open Add Vendor card
                   setShowVendorSearchCard(false); // Close Search card if open
+                  setShowVendorResults(false); // Close search results if open
                   setShowVendorSearch(true);
                   setIsFiltersMinimized(true); // Minimize Performance card for cleaner view
                   setAreChartsMinimized(true); // Minimize charts when Add Entry is triggered
