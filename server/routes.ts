@@ -1478,10 +1478,10 @@ Return a JSON object with any/all relevant fields found. Include ANY field you f
       const { id } = req.params;
       const { transactionType } = req.body;
 
-      if (!transactionType || (transactionType !== 'expense' && transactionType !== 'revenue' && transactionType !== 'staff' && transactionType !== 'batch')) {
+      if (!transactionType || (transactionType !== 'expense' && transactionType !== 'revenue' && transactionType !== 'staff' && transactionType !== 'batch' && transactionType !== 'library')) {
         return res.status(400).json({
           success: false,
-          message: "Invalid transaction type. Must be 'expense', 'revenue', 'staff', or 'batch'"
+          message: "Invalid transaction type. Must be 'expense', 'revenue', 'staff', 'batch', or 'library'"
         });
       }
 
@@ -1534,10 +1534,10 @@ Return a JSON object with any/all relevant fields found. Include ANY field you f
       const { id } = req.params;
       const { transactionType } = req.query;
 
-      if (!transactionType || (transactionType !== 'expense' && transactionType !== 'revenue' && transactionType !== 'staff' && transactionType !== 'batch')) {
+      if (!transactionType || (transactionType !== 'expense' && transactionType !== 'revenue' && transactionType !== 'staff' && transactionType !== 'batch' && transactionType !== 'library')) {
         return res.status(400).json({
           success: false,
-          message: "Invalid transaction type. Must be 'expense', 'revenue', 'staff', or 'batch'"
+          message: "Invalid transaction type. Must be 'expense', 'revenue', 'staff', 'batch', or 'library'"
         });
       }
 
