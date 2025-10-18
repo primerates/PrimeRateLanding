@@ -1407,6 +1407,22 @@ export default function AdminSnapshot() {
     });
   };
 
+  // Library search handlers
+  const handleLibrarySearchDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: 'logDate' | 'lastUpdate') => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) value = value.slice(0, 2) + '/' + value.slice(2);
+    if (value.length >= 5) value = value.slice(0, 5) + '/' + value.slice(5);
+    if (value.length > 10) value = value.slice(0, 10);
+    setLibrarySearchParams({ ...librarySearchParams, [field]: value });
+  };
+
+  const clearLibrarySearchFilters = () => {
+    setLibrarySearchParams({
+      logDate: '', createdBy: '', area: '', operations: '', documentName: '',
+      documentType: '', lastUpdate: '', complianceDoc: ''
+    });
+  };
+
   const handleSaveLibraryDocument = () => {
     // Check if at least document name is filled
     if (!libraryFormData.documentName.trim()) {
@@ -3948,6 +3964,181 @@ export default function AdminSnapshot() {
                 </tbody>
               </table>
             </div>
+          </div>
+        )}
+
+        {/* Library Search Card - Only shown when Library category with Show All is selected and magnifying glass is clicked */}
+        {showLibrarySearchCard && categoryFilter === 'library' && teamFilter === 'show-all' && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-indigo-500/20 border border-indigo-500/30">
+                  <Search className="w-5 h-5 text-indigo-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Search</h2>
+              </div>
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={clearLibrarySearchFilters}
+                  className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
+                  data-testid="button-clear-library-search-filters"
+                >
+                  Clear Filters
+                </button>
+                <button 
+                  onClick={() => {
+                    // TODO: Implement library search functionality
+                    toast({
+                      title: "Search Library",
+                      description: "Search functionality will be implemented soon",
+                    });
+                  }}
+                  className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
+                  data-testid="button-search-library-action"
+                >
+                  Search Library
+                </button>
+                <button
+                  onClick={() => setIsLibrarySearchCardMinimized(!isLibrarySearchCardMinimized)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title={isLibrarySearchCardMinimized ? "Expand" : "Minimize"}
+                  data-testid="button-toggle-library-search-card"
+                >
+                  {isLibrarySearchCardMinimized ? (
+                    <Plus className="w-5 h-5 text-purple-300" />
+                  ) : (
+                    <Minus className="w-5 h-5 text-purple-300" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowLibrarySearchCard(false)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title="Close"
+                  data-testid="button-close-library-search-card"
+                >
+                  <X className="w-5 h-5 text-purple-300" />
+                </button>
+              </div>
+            </div>
+
+            {!isLibrarySearchCardMinimized && (
+            <>
+              {/* Row 1 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Log Date</label>
+                  <input 
+                    type="text" 
+                    placeholder="MM/DD/YYYY" 
+                    value={librarySearchParams.logDate} 
+                    onChange={(e) => handleLibrarySearchDateInput(e, 'logDate')} 
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                    data-testid="input-search-log-date"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Created By</label>
+                  <input 
+                    type="text" 
+                    placeholder="Enter creator name" 
+                    value={librarySearchParams.createdBy} 
+                    onChange={(e) => setLibrarySearchParams({...librarySearchParams, createdBy: e.target.value})} 
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                    data-testid="input-search-created-by"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Last Update</label>
+                  <input 
+                    type="text" 
+                    placeholder="MM/DD/YYYY" 
+                    value={librarySearchParams.lastUpdate} 
+                    onChange={(e) => handleLibrarySearchDateInput(e, 'lastUpdate')} 
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                    data-testid="input-search-last-update"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Area</label>
+                  <select 
+                    value={librarySearchParams.area} 
+                    onChange={(e) => setLibrarySearchParams({...librarySearchParams, area: e.target.value})} 
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                    data-testid="select-search-area"
+                  >
+                    <option value="">Select</option>
+                    <option value="company">Company</option>
+                    <option value="partner">Partner</option>
+                    <option value="branch">Branch</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Row 2 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Operations</label>
+                  <select 
+                    value={librarySearchParams.operations} 
+                    onChange={(e) => setLibrarySearchParams({...librarySearchParams, operations: e.target.value})} 
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                    data-testid="select-search-operations"
+                  >
+                    <option value="">Select</option>
+                    <option value="loan_showall">Loan - Show All</option>
+                    <option value="loan_mlo">Loan - MLO</option>
+                    <option value="loan_processing">Loan - Processing</option>
+                    <option value="loan_underwriting">Loan - Underwriting</option>
+                    <option value="loan_funding">Loan - Funding</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="comments">Comments</option>
+                    <option value="vendors">Vendors</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Document Name</label>
+                  <input 
+                    type="text" 
+                    placeholder="Enter document name" 
+                    value={librarySearchParams.documentName} 
+                    onChange={(e) => setLibrarySearchParams({...librarySearchParams, documentName: e.target.value})} 
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500" 
+                    data-testid="input-search-document-name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Document Type</label>
+                  <select 
+                    value={librarySearchParams.documentType} 
+                    onChange={(e) => setLibrarySearchParams({...librarySearchParams, documentType: e.target.value})} 
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                    data-testid="select-search-document-type"
+                  >
+                    <option value="">Select</option>
+                    <option value="pdf">PDF</option>
+                    <option value="word">Word</option>
+                    <option value="excel">Excel</option>
+                    <option value="pic">Pic</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Compliance Doc</label>
+                  <select 
+                    value={librarySearchParams.complianceDoc} 
+                    onChange={(e) => setLibrarySearchParams({...librarySearchParams, complianceDoc: e.target.value})} 
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                    data-testid="select-search-compliance-doc"
+                  >
+                    <option value="">Select</option>
+                    <option value="no">No</option>
+                    <option value="internal">Internal Compliance</option>
+                    <option value="lender">Lender Compliance</option>
+                    <option value="regulation">Regulation Compliance</option>
+                  </select>
+                </div>
+              </div>
+            </>
+            )}
           </div>
         )}
 
