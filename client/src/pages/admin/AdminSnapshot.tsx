@@ -663,6 +663,8 @@ export default function AdminSnapshot() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteExpenseId, setDeleteExpenseId] = useState<number | null>(null);
   const [deleteRevenueId, setDeleteRevenueId] = useState<number | null>(null);
+  const [editingLibraryDocumentId, setEditingLibraryDocumentId] = useState<number | null>(null);
+  const [deleteLibraryDocumentId, setDeleteLibraryDocumentId] = useState<number | null>(null);
   const [adminCode, setAdminCode] = useState('');
   const [expenseEntries, setExpenseEntries] = useState([
     {
@@ -1432,30 +1434,63 @@ export default function AdminSnapshot() {
       return;
     }
 
-    // Create new library document object
-    const newDocument = {
-      id: libraryDocuments.length + 1,
-      logDate: libraryFormData.logDate,
-      createdBy: libraryFormData.createdBy,
-      lastUpdate: libraryFormData.lastUpdate,
-      area: libraryFormData.area,
-      operations: libraryFormData.operations,
-      documentName: libraryFormData.documentName,
-      documentType: libraryFormData.documentType,
-      complianceDoc: libraryFormData.complianceDoc
-    };
+    if (isEditMode && editingLibraryDocumentId) {
+      // Update existing library document
+      setLibraryDocuments(libraryDocuments.map(doc => 
+        doc.id === editingLibraryDocumentId ? { ...libraryFormData, id: editingLibraryDocumentId } : doc
+      ));
+      setIsEditMode(false);
+      setEditingLibraryDocumentId(null);
+      alert(`Document "${libraryFormData.documentName}" updated successfully!`);
+    } else {
+      // Create new library document object
+      const newDocument = {
+        id: libraryDocuments.length + 1,
+        logDate: libraryFormData.logDate,
+        createdBy: libraryFormData.createdBy,
+        lastUpdate: libraryFormData.lastUpdate,
+        area: libraryFormData.area,
+        operations: libraryFormData.operations,
+        documentName: libraryFormData.documentName,
+        documentType: libraryFormData.documentType,
+        complianceDoc: libraryFormData.complianceDoc
+      };
 
-    // Add to library documents list
-    setLibraryDocuments([...libraryDocuments, newDocument]);
+      // Add to library documents list
+      setLibraryDocuments([...libraryDocuments, newDocument]);
+      alert(`Document "${newDocument.documentName}" added successfully!`);
+    }
     
     // Clear form
     clearLibraryForm();
     
     // Show results table
     setShowLibraryResults(true);
-    
-    // Show success message
-    alert(`Document "${newDocument.documentName}" added successfully!`);
+  };
+
+  const handleEditLibraryDocument = (doc: any) => {
+    setLibraryFormData({
+      logDate: doc.logDate,
+      createdBy: doc.createdBy,
+      lastUpdate: doc.lastUpdate,
+      area: doc.area,
+      operations: doc.operations,
+      documentName: doc.documentName,
+      documentType: doc.documentType,
+      complianceDoc: doc.complianceDoc
+    });
+    setIsEditMode(true);
+    setEditingLibraryDocumentId(doc.id);
+    setShowLibraryForm(true);
+    setIsLibraryFormMinimized(false); // Expand form when editing
+    setShowLibrarySearchCard(false); // Close search card
+    setOpenActionMenu(null);
+  };
+
+  const handleDeleteLibraryDocument = (docId: number) => {
+    setDeleteLibraryDocumentId(docId);
+    setShowDeleteModal(true);
+    setOpenActionMenu(null);
   };
 
   const handleLibraryDocumentSort = (key: string) => {
@@ -1850,6 +1885,12 @@ export default function AdminSnapshot() {
       setRevenueEntries(revenueEntries.filter(entry => entry.id !== deleteRevenueId));
       setShowDeleteModal(false);
       setDeleteRevenueId(null);
+      setAdminCode('');
+    }
+    if (deleteLibraryDocumentId) {
+      setLibraryDocuments(libraryDocuments.filter(doc => doc.id !== deleteLibraryDocumentId));
+      setShowDeleteModal(false);
+      setDeleteLibraryDocumentId(null);
       setAdminCode('');
     }
   };
@@ -8035,7 +8076,7 @@ function AttachmentIndicator({
   onOpenDialog
 }: { 
   transactionId: string | number; 
-  transactionType: 'expense' | 'revenue' | 'staff';
+  transactionType: 'expense' | 'revenue' | 'staff' | 'library';
   onOpenDialog: () => void;
 }) {
   const { data: attachments = [], isLoading } = useQuery({
