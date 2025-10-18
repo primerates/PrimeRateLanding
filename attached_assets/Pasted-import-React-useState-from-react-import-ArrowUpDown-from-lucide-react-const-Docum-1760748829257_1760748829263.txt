@@ -1,0 +1,361 @@
+import React, { useState } from 'react';
+import { ArrowUpDown } from 'lucide-react';
+
+const DocumentLogTable = () => {
+  const isDarkMode = true;
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  
+  const documentData = [
+    {
+      id: 1,
+      logDate: '10/15/2024',
+      createdBy: 'John Smith',
+      lastUpdate: '10/16/2024',
+      area: 'Underwriting',
+      operations: 'File Review',
+      documentName: 'Credit Report Analysis',
+      documentType: 'Financial',
+      complianceDoc: 'Yes'
+    },
+    {
+      id: 2,
+      logDate: '10/14/2024',
+      createdBy: 'Sarah Johnson',
+      lastUpdate: '10/15/2024',
+      area: 'Processing',
+      operations: 'Document Upload',
+      documentName: 'Income Verification',
+      documentType: 'Employment',
+      complianceDoc: 'Yes'
+    },
+    {
+      id: 3,
+      logDate: '10/13/2024',
+      createdBy: 'Michael Chen',
+      lastUpdate: '10/14/2024',
+      area: 'Closing',
+      operations: 'Final Review',
+      documentName: 'Settlement Statement',
+      documentType: 'Legal',
+      complianceDoc: 'Yes'
+    },
+    {
+      id: 4,
+      logDate: '10/12/2024',
+      createdBy: 'Emily Davis',
+      lastUpdate: '10/13/2024',
+      area: 'Origination',
+      operations: 'Initial Setup',
+      documentName: 'Loan Application',
+      documentType: 'Application',
+      complianceDoc: 'No'
+    },
+    {
+      id: 5,
+      logDate: '10/11/2024',
+      createdBy: 'Robert Martinez',
+      lastUpdate: '10/12/2024',
+      area: 'Underwriting',
+      operations: 'Risk Assessment',
+      documentName: 'Property Appraisal',
+      documentType: 'Valuation',
+      complianceDoc: 'Yes'
+    },
+    {
+      id: 6,
+      logDate: '10/10/2024',
+      createdBy: 'Jennifer Wilson',
+      lastUpdate: '10/11/2024',
+      area: 'Processing',
+      operations: 'Verification',
+      documentName: 'Bank Statements',
+      documentType: 'Financial',
+      complianceDoc: 'No'
+    },
+    {
+      id: 7,
+      logDate: '10/09/2024',
+      createdBy: 'David Brown',
+      lastUpdate: '10/10/2024',
+      area: 'Closing',
+      operations: 'Document Prep',
+      documentName: 'Title Insurance',
+      documentType: 'Legal',
+      complianceDoc: 'Yes'
+    },
+    {
+      id: 8,
+      logDate: '10/08/2024',
+      createdBy: 'Lisa Anderson',
+      lastUpdate: '10/09/2024',
+      area: 'Origination',
+      operations: 'Data Entry',
+      documentName: 'Credit Authorization',
+      documentType: 'Authorization',
+      complianceDoc: 'Yes'
+    },
+    {
+      id: 9,
+      logDate: '10/07/2024',
+      createdBy: 'Kevin Park',
+      lastUpdate: '10/08/2024',
+      area: 'Underwriting',
+      operations: 'Condition Review',
+      documentName: 'Insurance Certificate',
+      documentType: 'Insurance',
+      complianceDoc: 'No'
+    },
+    {
+      id: 10,
+      logDate: '10/06/2024',
+      createdBy: 'Rachel Green',
+      lastUpdate: '10/07/2024',
+      area: 'Processing',
+      operations: 'Quality Check',
+      documentName: 'Tax Returns',
+      documentType: 'Financial',
+      complianceDoc: 'Yes'
+    }
+  ];
+
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedDocumentData = [...documentData].sort((a, b) => {
+    if (!sortConfig.key) return 0;
+    
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+    
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
+    }
+    
+    if (aValue < bValue) {
+      return sortConfig.direction === 'asc' ? -1 : 1;
+    }
+    if (aValue > bValue) {
+      return sortConfig.direction === 'asc' ? 1 : -1;
+    }
+    return 0;
+  });
+
+  return (
+    <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen p-6">
+      <style>{`
+        .scrollbar-custom::-webkit-scrollbar {
+          height: 8px;
+        }
+        .scrollbar-custom::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .scrollbar-custom::-webkit-scrollbar-thumb {
+          background: transparent;
+          border-radius: 4px;
+        }
+        .scrollbar-custom {
+          scrollbar-width: thin;
+          scrollbar-color: transparent transparent;
+        }
+      `}</style>
+      <div className="max-w-7xl mx-auto">
+        <div className="backdrop-blur-xl rounded-2xl p-6 border shadow-2xl bg-slate-800/50 border-purple-500/20">
+          <div className="mb-6">
+            <h3 className="text-xl font-bold text-white">
+              Document Log ({sortedDocumentData.length} entries)
+            </h3>
+          </div>
+
+          {/* Custom Scrollbar Track */}
+          <div className="mb-4">
+            <div 
+              className="h-2 rounded-full overflow-hidden cursor-pointer bg-slate-700/50"
+              style={{ position: 'relative' }}
+              onClick={(e) => {
+                const tableContainer = e.currentTarget.parentElement.nextElementSibling;
+                const rect = e.currentTarget.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const percentage = clickX / rect.width;
+                tableContainer.scrollLeft = percentage * (tableContainer.scrollWidth - tableContainer.clientWidth);
+              }}
+            >
+              <div 
+                id="scroll-indicator"
+                className="h-full rounded-full transition-all bg-gradient-to-r from-purple-500 to-pink-500"
+                style={{ width: '30%', cursor: 'grab' }}
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  const indicator = e.currentTarget;
+                  const track = indicator.parentElement;
+                  const tableContainer = track.parentElement.nextElementSibling;
+                  
+                  indicator.style.cursor = 'grabbing';
+                  const startX = e.clientX;
+                  const startScrollLeft = tableContainer.scrollLeft;
+                  const trackWidth = track.offsetWidth;
+                  const scrollWidth = tableContainer.scrollWidth - tableContainer.clientWidth;
+                  
+                  const handleMouseMove = (e) => {
+                    const deltaX = e.clientX - startX;
+                    const scrollDelta = (deltaX / trackWidth) * scrollWidth;
+                    tableContainer.scrollLeft = startScrollLeft + scrollDelta;
+                  };
+                  
+                  const handleMouseUp = () => {
+                    indicator.style.cursor = 'grab';
+                    document.removeEventListener('mousemove', handleMouseMove);
+                    document.removeEventListener('mouseup', handleMouseUp);
+                  };
+                  
+                  document.addEventListener('mousemove', handleMouseMove);
+                  document.addEventListener('mouseup', handleMouseUp);
+                }}
+              />
+            </div>
+            <p className="text-xs mt-1 text-slate-400">
+              ← Drag or click the scrollbar to navigate →
+            </p>
+          </div>
+
+          <div 
+            className="overflow-x-auto scrollbar-custom"
+            onScroll={(e) => {
+              const scrollPercentage = e.target.scrollLeft / (e.target.scrollWidth - e.target.clientWidth);
+              const indicator = document.getElementById('scroll-indicator');
+              if (indicator) {
+                const thumbWidth = (e.target.clientWidth / e.target.scrollWidth) * 100;
+                indicator.style.width = `${Math.max(thumbWidth, 10)}%`;
+                indicator.style.transform = `translateX(${scrollPercentage * (100 / thumbWidth - 1)}%)`;
+              }
+            }}
+          >
+            <table className="w-full min-w-max">
+              <thead>
+                <tr className="border-b border-purple-500/30">
+                  <th 
+                    onClick={() => handleSort('logDate')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Log Date
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('createdBy')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Created By
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('lastUpdate')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Last Update
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('area')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Area
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('operations')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Operations
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('documentName')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[200px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Document Name
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('documentType')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Document Type
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('complianceDoc')}
+                    className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Compliance Doc
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedDocumentData.map((doc) => (
+                  <tr 
+                    key={doc.id}
+                    className="border-b transition-colors border-slate-700/50 hover:bg-slate-700/30"
+                  >
+                    <td className="py-3 px-4 text-slate-300">
+                      {doc.logDate}
+                    </td>
+                    <td className="py-3 px-4 font-medium text-white">
+                      {doc.createdBy}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {doc.lastUpdate}
+                    </td>
+                    <td className="py-3 px-4 text-purple-300">
+                      {doc.area}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {doc.operations}
+                    </td>
+                    <td className="py-3 px-4 font-medium text-white">
+                      {doc.documentName}
+                    </td>
+                    <td className="py-3 px-4 text-slate-300">
+                      {doc.documentType}
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        doc.complianceDoc === 'Yes' 
+                          ? 'bg-emerald-500/20 text-emerald-400' 
+                          : 'bg-slate-600/50 text-slate-400'
+                      }`}>
+                        {doc.complianceDoc}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DocumentLogTable;

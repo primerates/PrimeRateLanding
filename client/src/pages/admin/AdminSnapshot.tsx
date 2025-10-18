@@ -239,6 +239,11 @@ export default function AdminSnapshot() {
     logDate: '', createdBy: '', area: '', operations: '', documentName: '',
     documentType: '', lastUpdate: '', complianceDoc: ''
   });
+  const [showLibraryResults, setShowLibraryResults] = useState(false);
+  const [libraryDocumentsSortConfig, setLibraryDocumentsSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
+  
+  // Library documents data (stateful array for saved documents)
+  const [libraryDocuments, setLibraryDocuments] = useState<any[]>([]);
   
   // Vendor data (now stateful so it can be updated)
   const [vendors, setVendors] = useState([
@@ -1390,6 +1395,73 @@ export default function AdminSnapshot() {
     setLibraryFormData({
       logDate: '', createdBy: '', area: '', operations: '', documentName: '',
       documentType: '', lastUpdate: '', complianceDoc: ''
+    });
+  };
+
+  const handleSaveLibraryDocument = () => {
+    // Check if at least document name is filled
+    if (!libraryFormData.documentName.trim()) {
+      alert('Please enter at least a document name');
+      return;
+    }
+
+    // Create new library document object
+    const newDocument = {
+      id: libraryDocuments.length + 1,
+      logDate: libraryFormData.logDate,
+      createdBy: libraryFormData.createdBy,
+      lastUpdate: libraryFormData.lastUpdate,
+      area: libraryFormData.area,
+      operations: libraryFormData.operations,
+      documentName: libraryFormData.documentName,
+      documentType: libraryFormData.documentType,
+      complianceDoc: libraryFormData.complianceDoc
+    };
+
+    // Add to library documents list
+    setLibraryDocuments([...libraryDocuments, newDocument]);
+    
+    // Clear form
+    clearLibraryForm();
+    
+    // Show results table
+    setShowLibraryResults(true);
+    
+    // Show success message
+    alert(`Document "${newDocument.documentName}" added successfully!`);
+  };
+
+  const handleLibraryDocumentSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (libraryDocumentsSortConfig.key === key && libraryDocumentsSortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setLibraryDocumentsSortConfig({ key, direction });
+  };
+
+  const getSortedLibraryDocuments = () => {
+    if (libraryDocuments.length === 0) return [];
+    
+    return [...libraryDocuments].sort((a: any, b: any) => {
+      if (!libraryDocumentsSortConfig.key) return 0;
+      
+      const aValue = a[libraryDocumentsSortConfig.key];
+      const bValue = b[libraryDocumentsSortConfig.key];
+      
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return libraryDocumentsSortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+      
+      const aStr = String(aValue || '');
+      const bStr = String(bValue || '');
+      
+      if (aStr < bStr) {
+        return libraryDocumentsSortConfig.direction === 'asc' ? -1 : 1;
+      }
+      if (aStr > bStr) {
+        return libraryDocumentsSortConfig.direction === 'asc' ? 1 : -1;
+      }
+      return 0;
     });
   };
 
