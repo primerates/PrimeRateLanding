@@ -3545,6 +3545,7 @@ export default function AdminSnapshot() {
                   Clear Filters
                 </button>
                 <button 
+                  onClick={handleSaveLibraryDocument}
                   className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
                   data-testid="button-add-library-record"
                 >
@@ -3702,6 +3703,219 @@ export default function AdminSnapshot() {
               </div>
             </>
             )}
+          </div>
+        )}
+
+        {/* Library Document Results Table */}
+        {showLibraryResults && categoryFilter === 'library' && teamFilter === 'show-all' && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-indigo-500/20 border border-indigo-500/30">
+                  <BookOpen className="w-5 h-5 text-indigo-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white">
+                  Document Log ({getSortedLibraryDocuments().length} entries)
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowLibraryResults(false)}
+                className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                title="Close"
+                data-testid="button-close-library-results"
+              >
+                <X className="w-5 h-5 text-purple-300" />
+              </button>
+            </div>
+
+            {/* Custom Scrollbar Track */}
+            <div className="mb-4">
+              <div 
+                className="h-2 rounded-full overflow-hidden cursor-pointer bg-slate-700/50"
+                style={{ position: 'relative' }}
+                onClick={(e) => {
+                  const tableContainer = e.currentTarget.parentElement?.nextElementSibling;
+                  if (tableContainer) {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    const percentage = clickX / rect.width;
+                    tableContainer.scrollLeft = percentage * (tableContainer.scrollWidth - tableContainer.clientWidth);
+                  }
+                }}
+              >
+                <div 
+                  id="library-scroll-indicator"
+                  className="h-full rounded-full transition-all bg-gradient-to-r from-purple-500 to-pink-500"
+                  style={{ width: '30%', cursor: 'grab' }}
+                  onMouseDown={(e) => {
+                    e.stopPropagation();
+                    const indicator = e.currentTarget;
+                    const track = indicator.parentElement;
+                    const tableContainer = track?.parentElement?.nextElementSibling;
+                    if (!tableContainer) return;
+                    
+                    indicator.style.cursor = 'grabbing';
+                    const startX = e.clientX;
+                    const startScrollLeft = tableContainer.scrollLeft;
+                    const trackWidth = track.offsetWidth;
+                    const scrollWidth = tableContainer.scrollWidth - tableContainer.clientWidth;
+                    
+                    const handleMouseMove = (e: MouseEvent) => {
+                      const deltaX = e.clientX - startX;
+                      const scrollDelta = (deltaX / trackWidth) * scrollWidth;
+                      tableContainer.scrollLeft = startScrollLeft + scrollDelta;
+                    };
+                    
+                    const handleMouseUp = () => {
+                      indicator.style.cursor = 'grab';
+                      document.removeEventListener('mousemove', handleMouseMove);
+                      document.removeEventListener('mouseup', handleMouseUp);
+                    };
+                    
+                    document.addEventListener('mousemove', handleMouseMove);
+                    document.addEventListener('mouseup', handleMouseUp);
+                  }}
+                />
+              </div>
+              <p className="text-xs mt-1 text-slate-400">
+                ← Drag or click the scrollbar to navigate →
+              </p>
+            </div>
+
+            <div 
+              className="overflow-x-auto scrollbar-custom"
+              onScroll={(e) => {
+                const target = e.target as HTMLElement;
+                const scrollPercentage = target.scrollLeft / (target.scrollWidth - target.clientWidth);
+                const indicator = document.getElementById('library-scroll-indicator');
+                if (indicator) {
+                  const thumbWidth = (target.clientWidth / target.scrollWidth) * 100;
+                  indicator.style.width = `${Math.max(thumbWidth, 10)}%`;
+                  indicator.style.transform = `translateX(${scrollPercentage * (100 / thumbWidth - 1)}%)`;
+                }
+              }}
+            >
+              <table className="w-full min-w-max">
+                <thead>
+                  <tr className="border-b border-purple-500/30">
+                    <th 
+                      onClick={() => handleLibraryDocumentSort('logDate')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
+                      data-testid="header-log-date"
+                    >
+                      <div className="flex items-center gap-2">
+                        Log Date
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleLibraryDocumentSort('createdBy')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200"
+                      data-testid="header-created-by"
+                    >
+                      <div className="flex items-center gap-2">
+                        Created By
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleLibraryDocumentSort('lastUpdate')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
+                      data-testid="header-last-update"
+                    >
+                      <div className="flex items-center gap-2">
+                        Last Update
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleLibraryDocumentSort('area')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] text-purple-300 hover:text-purple-200"
+                      data-testid="header-area"
+                    >
+                      <div className="flex items-center gap-2">
+                        Area
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleLibraryDocumentSort('operations')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200"
+                      data-testid="header-operations"
+                    >
+                      <div className="flex items-center gap-2">
+                        Operations
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleLibraryDocumentSort('documentName')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[200px] text-purple-300 hover:text-purple-200"
+                      data-testid="header-document-name"
+                    >
+                      <div className="flex items-center gap-2">
+                        Document Name
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleLibraryDocumentSort('documentType')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200"
+                      data-testid="header-document-type"
+                    >
+                      <div className="flex items-center gap-2">
+                        Document Type
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => handleLibraryDocumentSort('complianceDoc')}
+                      className="text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] text-purple-300 hover:text-purple-200"
+                      data-testid="header-compliance-doc"
+                    >
+                      <div className="flex items-center gap-2">
+                        Compliance Doc
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getSortedLibraryDocuments().map((doc: any) => (
+                    <tr 
+                      key={doc.id}
+                      className="border-b transition-colors border-slate-700/50 hover:bg-slate-700/30"
+                      data-testid={`row-library-document-${doc.id}`}
+                    >
+                      <td className="py-3 px-4 text-slate-300">
+                        {doc.logDate}
+                      </td>
+                      <td className="py-3 px-4 font-medium text-white">
+                        {doc.createdBy}
+                      </td>
+                      <td className="py-3 px-4 text-slate-300">
+                        {doc.lastUpdate}
+                      </td>
+                      <td className="py-3 px-4 text-purple-300">
+                        {doc.area}
+                      </td>
+                      <td className="py-3 px-4 text-slate-300">
+                        {doc.operations}
+                      </td>
+                      <td className="py-3 px-4 font-medium text-white">
+                        {doc.documentName}
+                      </td>
+                      <td className="py-3 px-4 text-slate-300">
+                        {doc.documentType}
+                      </td>
+                      <td className="py-3 px-4 text-slate-300">
+                        {doc.complianceDoc}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
