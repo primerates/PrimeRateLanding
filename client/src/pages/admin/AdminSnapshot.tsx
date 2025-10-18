@@ -232,6 +232,14 @@ export default function AdminSnapshot() {
   const [showVendorResults, setShowVendorResults] = useState(false);
   const [visibleVendorColumns, setVisibleVendorColumns] = useState<string[]>(['all']);
   
+  // Library Form state
+  const [showLibraryForm, setShowLibraryForm] = useState(false);
+  const [isLibraryFormMinimized, setIsLibraryFormMinimized] = useState(false);
+  const [libraryFormData, setLibraryFormData] = useState({
+    logDate: '', createdBy: '', area: '', operations: '', documentName: '',
+    documentType: '', lastUpdate: '', complianceDoc: ''
+  });
+  
   // Vendor data (now stateful so it can be updated)
   const [vendors, setVendors] = useState([
     { id: 1, businessName: 'ABC Inspection Services', website: 'www.abcinspection.com', phone: '(555) 123-4567',
@@ -1900,6 +1908,15 @@ export default function AdminSnapshot() {
                   setShowVendorSearchCard(false); // Close Search card if open
                   setShowVendorResults(false); // Close search results if open
                   setShowVendorSearch(true);
+                  setIsFiltersMinimized(true); // Minimize Performance card for cleaner view
+                  setAreChartsMinimized(true); // Minimize charts when Add Entry is triggered
+                } else if (categoryFilter === 'library' && teamFilter === 'show-all') {
+                  // If Add Library card is already open, ignore the click
+                  if (showLibraryForm) {
+                    return;
+                  }
+                  // Open Add to Library card
+                  setShowLibraryForm(true);
                   setIsFiltersMinimized(true); // Minimize Performance card for cleaner view
                   setAreChartsMinimized(true); // Minimize charts when Add Entry is triggered
                 } else {
