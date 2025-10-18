@@ -140,7 +140,7 @@ export default function AdminSnapshot() {
   const [showExpenseNotesDialog, setShowExpenseNotesDialog] = useState(false);
   const [showRevenueNotesDialog, setShowRevenueNotesDialog] = useState(false);
   const [showAttachmentsDialog, setShowAttachmentsDialog] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState<{ id: string | number; type: 'expense' | 'revenue' | 'staff' } | null>(null);
+  const [selectedTransaction, setSelectedTransaction] = useState<{ id: string | number; type: 'expense' | 'revenue' | 'staff' | 'library' } | null>(null);
   const [showExpenseLogAttachmentsDialog, setShowExpenseLogAttachmentsDialog] = useState(false);
   const [showRevenueLogAttachmentsDialog, setShowRevenueLogAttachmentsDialog] = useState(false);
   const [showStaffAttachmentsDialog, setShowStaffAttachmentsDialog] = useState(false);
