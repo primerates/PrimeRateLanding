@@ -3937,6 +3937,12 @@ export default function AdminSnapshot() {
                         <ArrowUpDown className="w-4 h-4" />
                       </div>
                     </th>
+                    <th className="text-center py-3 px-4 text-purple-300">
+                      <Paperclip className="w-4 h-4 mx-auto" />
+                    </th>
+                    <th className="text-left py-3 px-4 text-purple-300">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -3969,6 +3975,56 @@ export default function AdminSnapshot() {
                       </td>
                       <td className="py-3 px-4 text-slate-300">
                         {doc.complianceDoc}
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <AttachmentIndicator 
+                          transactionId={doc.id} 
+                          transactionType="library"
+                          onOpenDialog={() => {
+                            setSelectedTransaction({ id: doc.id, type: 'library' });
+                            setShowAttachmentsDialog(true);
+                          }}
+                        />
+                      </td>
+                      <td className="py-3 px-4 relative">
+                        <button
+                          onClick={() => setOpenActionMenu(openActionMenu === doc.id ? null : doc.id)}
+                          className="text-purple-300 hover:text-white transition-colors"
+                          data-testid={`button-action-menu-${doc.id}`}
+                        >
+                          <MoreVertical className="w-5 h-5" />
+                        </button>
+                        
+                        {/* Action Menu Popup */}
+                        {openActionMenu === doc.id && (
+                          <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-lg border border-purple-500/30 shadow-xl z-50 overflow-hidden">
+                            <button
+                              onClick={() => {
+                                setSelectedTransaction({ id: doc.id, type: 'library' });
+                                setShowAttachmentsDialog(true);
+                                setOpenActionMenu(null);
+                              }}
+                              className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
+                              data-testid={`button-manage-attachments-${doc.id}`}
+                            >
+                              Attach Doc
+                            </button>
+                            <button
+                              onClick={() => handleEditLibraryDocument(doc)}
+                              className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
+                              data-testid={`button-edit-${doc.id}`}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteLibraryDocument(doc.id)}
+                              className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
+                              data-testid={`button-delete-${doc.id}`}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}
