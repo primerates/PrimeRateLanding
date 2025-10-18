@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { queryClient, apiRequest } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Users, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2, Camera, Phone, Mail, Briefcase, Calendar, Shield, Search, Stamp, HardHat } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Users, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2, Camera, Phone, Mail, Briefcase, Calendar, Shield, Search, Stamp, HardHat, BookOpen } from 'lucide-react';
 import { RevenueSourcesChart } from '@/components/dashboard/RevenueSourcesChart';
 import { ExpenseBreakdownChart } from '@/components/dashboard/ExpenseBreakdownChart';
 import { DashboardFilters } from '@/components/dashboard/DashboardFilters';
@@ -1377,6 +1377,22 @@ export default function AdminSnapshot() {
     });
   };
 
+  // Library form handlers
+  const handleLibraryDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: 'logDate' | 'lastUpdate') => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) value = value.slice(0, 2) + '/' + value.slice(2);
+    if (value.length >= 5) value = value.slice(0, 5) + '/' + value.slice(5);
+    if (value.length > 10) value = value.slice(0, 10);
+    setLibraryFormData({ ...libraryFormData, [field]: value });
+  };
+
+  const clearLibraryForm = () => {
+    setLibraryFormData({
+      logDate: '', createdBy: '', area: '', operations: '', documentName: '',
+      documentType: '', lastUpdate: '', complianceDoc: ''
+    });
+  };
+
   const handleSaveVendor = () => {
     // Check if at least business name is filled
     if (!addVendorData.businessName.trim()) {
@@ -2114,8 +2130,8 @@ export default function AdminSnapshot() {
           </div>
         </div>
 
-        {/* Second Card - Charts - Only shown when Staff with non-Show All Team, Marketing with non-Show All Team, Financials with Revenue/Expense, or Vendor with Show All */}
-        {((categoryFilter === 'staff' && teamFilter !== 'show-all') || (categoryFilter === 'marketing' && teamFilter !== 'show-all') || (categoryFilter === 'financials' && (teamFilter === 'revenue-add' || teamFilter === 'expense-add')) || (categoryFilter === 'vendor' && teamFilter === 'show-all')) && (
+        {/* Second Card - Charts - Only shown when Staff with non-Show All Team, Marketing with non-Show All Team, Financials with Revenue/Expense, Vendor with Show All, or Library with Show All */}
+        {((categoryFilter === 'staff' && teamFilter !== 'show-all') || (categoryFilter === 'marketing' && teamFilter !== 'show-all') || (categoryFilter === 'financials' && (teamFilter === 'revenue-add' || teamFilter === 'expense-add')) || (categoryFilter === 'vendor' && teamFilter === 'show-all') || (categoryFilter === 'library' && teamFilter === 'show-all')) && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <RevenueSourcesChart
               categoryFilter={categoryFilter}
@@ -3438,6 +3454,184 @@ export default function AdminSnapshot() {
           </div>
         )}
 
+        {/* Library Form Card - Only shown when Library category with Show All is selected and user clicks Add Entry */}
+        {showLibraryForm && categoryFilter === 'library' && teamFilter === 'show-all' && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-indigo-500/20 border border-indigo-500/30">
+                  <BookOpen className="w-5 h-5 text-indigo-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Add to Library</h2>
+              </div>
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={clearLibraryForm}
+                  className="px-6 py-2.5 rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
+                  data-testid="button-clear-library-form"
+                >
+                  Clear Filters
+                </button>
+                <button 
+                  className="px-4 py-2 rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
+                  data-testid="button-add-library-record"
+                >
+                  Add Record
+                </button>
+                <button
+                  onClick={() => setIsLibraryFormMinimized(!isLibraryFormMinimized)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title={isLibraryFormMinimized ? "Expand" : "Minimize"}
+                  data-testid="button-toggle-library-form"
+                >
+                  {isLibraryFormMinimized ? (
+                    <Plus className="w-5 h-5 text-purple-300" />
+                  ) : (
+                    <Minus className="w-5 h-5 text-purple-300" />
+                  )}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowLibraryForm(false);
+                    setIsFiltersMinimized(false);
+                    setAreChartsMinimized(false);
+                    clearLibraryForm();
+                  }}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title="Close"
+                  data-testid="button-close-library-form"
+                >
+                  <X className="w-5 h-5 text-purple-300" />
+                </button>
+              </div>
+            </div>
+
+            {!isLibraryFormMinimized && (
+            <>
+              {/* Row 1 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Log Date</label>
+                  <input
+                    type="text"
+                    placeholder="MM/DD/YYYY"
+                    value={libraryFormData.logDate}
+                    onChange={(e) => handleLibraryDateInput(e, 'logDate')}
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500"
+                    data-testid="input-log-date"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Created By</label>
+                  <input
+                    type="text"
+                    placeholder="Enter creator name"
+                    value={libraryFormData.createdBy}
+                    onChange={(e) => setLibraryFormData({ ...libraryFormData, createdBy: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500"
+                    data-testid="input-created-by"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Last Update</label>
+                  <input
+                    type="text"
+                    placeholder="MM/DD/YYYY"
+                    value={libraryFormData.lastUpdate}
+                    onChange={(e) => handleLibraryDateInput(e, 'lastUpdate')}
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500"
+                    data-testid="input-last-update"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Area</label>
+                  <select
+                    value={libraryFormData.area}
+                    onChange={(e) => setLibraryFormData({ ...libraryFormData, area: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                    data-testid="select-area"
+                  >
+                    <option value="">Select</option>
+                    <option value="company">Company</option>
+                    <option value="partner">Partner</option>
+                    <option value="branch">Branch</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Row 2 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Operations</label>
+                  <select
+                    value={libraryFormData.operations}
+                    onChange={(e) => setLibraryFormData({ ...libraryFormData, operations: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                    data-testid="select-operations"
+                  >
+                    <option value="">Select</option>
+                    <option value="loan_showall">Loan - Show All</option>
+                    <option value="loan_mlo">Loan - MLO</option>
+                    <option value="loan_processing">Loan - Processing</option>
+                    <option value="loan_underwriting">Loan - Underwriting</option>
+                    <option value="loan_funding">Loan - Funding</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="comments">Comments</option>
+                    <option value="vendors">Vendors</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Document Name</label>
+                  <input
+                    type="text"
+                    placeholder="Enter document name"
+                    value={libraryFormData.documentName}
+                    onChange={(e) => setLibraryFormData({ ...libraryFormData, documentName: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500"
+                    data-testid="input-document-name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Document Type</label>
+                  <select
+                    value={libraryFormData.documentType}
+                    onChange={(e) => setLibraryFormData({ ...libraryFormData, documentType: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                    data-testid="select-document-type"
+                  >
+                    <option value="">Select</option>
+                    <option value="pdf">PDF</option>
+                    <option value="word">Word</option>
+                    <option value="excel">Excel</option>
+                    <option value="pic">Pic</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">Compliance Doc</label>
+                  <select
+                    value={libraryFormData.complianceDoc}
+                    onChange={(e) => setLibraryFormData({ ...libraryFormData, complianceDoc: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                    data-testid="select-compliance-doc"
+                  >
+                    <option value="">Select</option>
+                    <option value="no">No</option>
+                    <option value="internal">Internal Compliance</option>
+                    <option value="lender">Lender Compliance</option>
+                    <option value="regulation">Regulation Compliance</option>
+                  </select>
+                </div>
+              </div>
+            </>
+            )}
+          </div>
+        )}
 
         {/* Staff Form Cards - Only shown when Staff category is selected and Add Entry is clicked */}
         {categoryFilter === 'staff' && showStaffForm && (
