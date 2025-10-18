@@ -3467,13 +3467,13 @@ export default function AdminSnapshot() {
               <div className="flex items-center gap-3">
                 <button 
                   onClick={clearLibraryForm}
-                  className="px-6 py-2.5 rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
+                  className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
                   data-testid="button-clear-library-form"
                 >
                   Clear Filters
                 </button>
                 <button 
-                  className="px-4 py-2 rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
+                  className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
                   data-testid="button-add-library-record"
                 >
                   Add Record
