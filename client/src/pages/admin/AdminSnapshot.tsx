@@ -145,10 +145,12 @@ export default function AdminSnapshot() {
   const [showRevenueLogAttachmentsDialog, setShowRevenueLogAttachmentsDialog] = useState(false);
   const [showStaffAttachmentsDialog, setShowStaffAttachmentsDialog] = useState(false);
   const [showBatchAttachmentsDialog, setShowBatchAttachmentsDialog] = useState(false);
+  const [showLibraryAttachmentsDialog, setShowLibraryAttachmentsDialog] = useState(false);
   const [selectedBatchId, setSelectedBatchId] = useState<string | null>(null);
   const [tempExpenseLogId, setTempExpenseLogId] = useState(() => `temp-expense-${Date.now()}`);
   const [tempRevenueLogId, setTempRevenueLogId] = useState(() => `temp-revenue-${Date.now()}`);
   const [tempStaffId, setTempStaffId] = useState(() => `temp-staff-${Date.now()}`);
+  const [tempLibraryId, setTempLibraryId] = useState(() => `temp-library-${Date.now()}`);
   const [shortcutDropdownOpen, setShortcutDropdownOpen] = useState(false);
   const [screenshareLoading, setScreenshareLoading] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
@@ -3585,6 +3587,15 @@ export default function AdminSnapshot() {
                 <h2 className="text-2xl font-bold text-white">Add to Library</h2>
               </div>
               <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setShowLibraryAttachmentsDialog(true)}
+                  className="flex items-center justify-center gap-2 px-3 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title="Manage Attachments"
+                  data-testid="button-library-attachments"
+                >
+                  <Paperclip className="w-5 h-5 text-purple-300" />
+                  <LibraryAttachmentCount transactionId={tempLibraryId} />
+                </button>
                 <button 
                   onClick={clearLibraryForm}
                   className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-colors bg-slate-700/50 text-white border border-slate-600 hover:bg-slate-700"
@@ -7949,6 +7960,14 @@ export default function AdminSnapshot() {
           transactionId={selectedBatchId || ''}
           transactionType="batch"
         />
+
+        {/* Library Attachments Dialog */}
+        <AttachmentsDialog
+          open={showLibraryAttachmentsDialog}
+          onClose={() => setShowLibraryAttachmentsDialog(false)}
+          transactionId={tempLibraryId}
+          transactionType="library"
+        />
       </div>
     </div>
   );
@@ -7993,6 +8012,27 @@ function StaffAttachmentCount({ transactionId }: { transactionId: string | numbe
     queryKey: ['/api/transactions', 'staff', transactionId, 'attachments'],
     queryFn: async () => {
       const res = await fetch(`/api/transactions/${transactionId}/attachments?transactionType=staff`);
+      if (!res.ok) throw new Error('Failed to fetch attachments');
+      const result = await res.json();
+      return result.data || [];
+    },
+  });
+
+  if (isLoading) return null;
+  if (attachments.length === 0) return <span className="text-purple-300">0</span>;
+  
+  return (
+    <span className="text-purple-300 font-semibold">
+      {attachments.length}
+    </span>
+  );
+}
+
+function LibraryAttachmentCount({ transactionId }: { transactionId: string | number }) {
+  const { data: attachments = [], isLoading } = useQuery({
+    queryKey: ['/api/transactions', 'library', transactionId, 'attachments'],
+    queryFn: async () => {
+      const res = await fetch(`/api/transactions/${transactionId}/attachments?transactionType=library`);
       if (!res.ok) throw new Error('Failed to fetch attachments');
       const result = await res.json();
       return result.data || [];
@@ -8066,7 +8106,7 @@ function AttachmentsDialog({
   open: boolean; 
   onClose: () => void; 
   transactionId?: string | number; 
-  transactionType?: 'expense' | 'revenue' | 'staff' | 'batch';
+  transactionType?: 'expense' | 'revenue' | 'staff' | 'batch' | 'library';
 }) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
