@@ -242,6 +242,15 @@ export default function AdminSnapshot() {
   const [showLibraryResults, setShowLibraryResults] = useState(false);
   const [libraryDocumentsSortConfig, setLibraryDocumentsSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
   
+  // Library Search state (Search card from magnifying glass)
+  const [showLibrarySearchCard, setShowLibrarySearchCard] = useState(false);
+  const [isLibrarySearchCardMinimized, setIsLibrarySearchCardMinimized] = useState(false);
+  const [librarySearchParams, setLibrarySearchParams] = useState({
+    logDate: '', createdBy: '', area: '', operations: '', documentName: '',
+    documentType: '', lastUpdate: '', complianceDoc: ''
+  });
+  const [showLibraryWarning, setShowLibraryWarning] = useState(false);
+  
   // Library documents data (stateful array for saved documents)
   const [libraryDocuments, setLibraryDocuments] = useState<any[]>([]);
   
@@ -2003,7 +2012,14 @@ export default function AdminSnapshot() {
                   if (showLibraryForm) {
                     return;
                   }
-                  // Open Add to Library card
+                  // If Search card is open, show warning
+                  if (showLibrarySearchCard) {
+                    setShowLibraryWarning(true);
+                    return;
+                  }
+                  // Close Search card and results before opening Add to Library card (mutual exclusivity)
+                  setShowLibrarySearchCard(false);
+                  setShowLibraryResults(false);
                   setShowLibraryForm(true);
                   setIsFiltersMinimized(true); // Minimize Performance card for cleaner view
                   setAreChartsMinimized(true); // Minimize charts when Add Entry is triggered
@@ -2084,6 +2100,11 @@ export default function AdminSnapshot() {
                     setShowVendorWarning(true);
                     return;
                   }
+                  // Check if Add Library card is open in Library category
+                  if (showLibraryForm && categoryFilter === 'library') {
+                    setShowLibraryWarning(true);
+                    return;
+                  }
                   
                   // Open appropriate search card based on category
                   if (categoryFilter === 'marketing') {
@@ -2106,6 +2127,17 @@ export default function AdminSnapshot() {
                     }
                     setShowVendorSearchCard(true);
                     setIsVendorSearchCardMinimized(false);
+                    setAreChartsMinimized(true); // Minimize charts when Search is triggered
+                  } else if (categoryFilter === 'library' && teamFilter === 'show-all') {
+                    // If Search card is already open, ignore the click
+                    if (showLibrarySearchCard) {
+                      return;
+                    }
+                    // Close Add to Library form and results before opening search (mutual exclusivity)
+                    setShowLibraryForm(false);
+                    setShowLibraryResults(false);
+                    setShowLibrarySearchCard(true);
+                    setIsLibrarySearchCardMinimized(false);
                     setAreChartsMinimized(true); // Minimize charts when Search is triggered
                   }
                 }}
@@ -7338,6 +7370,27 @@ export default function AdminSnapshot() {
                 onClick={() => setShowVendorTeamWarning(false)}
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
                 data-testid="button-close-vendor-team-warning"
+              >
+                OK
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Library Warning Dialog */}
+        <Dialog open={showLibraryWarning} onOpenChange={setShowLibraryWarning}>
+          <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-white">Library Card Open</DialogTitle>
+              <DialogDescription className="text-purple-200 pt-2">
+                Please complete or close the open add to library card
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end mt-4">
+              <Button
+                onClick={() => setShowLibraryWarning(false)}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
+                data-testid="button-close-library-warning"
               >
                 OK
               </Button>
