@@ -3,6 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import LoanHeader from '../components/Loan/LoanHeader';
 import LoanManagement, { type LoanType } from '../components/Loan/LoanManagement';
 import RefinanceLoanCard from '../components/Loan/RefinanceLoanCard';
+import PurchaseLoanCard from '../components/Loan/PurchaseLoanCard';
 import PrimaryLoanCard from '../components/Loan/PrimaryLoanCard';
 import ExistingLoanCard from '../components/Loan/ExistingLoanCard';
 
@@ -71,7 +72,8 @@ const LoanTab = ({
         setNewRefinanceLoanCards([]);
         setNewRefinanceLoanCardStates({});
       } else if (loanType === 'new-purchase') {
-        // Clear purchase loan data if applicable
+        // Clear purchase loan data
+        form.setValue('bbb' as any, undefined);
         setNewPurchaseLoanCards([]);
         setNewPurchaseLoanCardStates({});
       } else if (loanType === 'current-primary') {
@@ -138,7 +140,8 @@ const LoanTab = ({
         return rest;
       });
     } else if (loanId.startsWith('purchase-')) {
-      // Clear purchase loan data if applicable
+      // Clear purchase loan data (uses 'bbb' prefix)
+      form.setValue('bbb' as any, undefined);
       // Remove from purchase loans
       setNewPurchaseLoanCards(prev => prev.filter(id => id !== loanId));
       setNewPurchaseLoanCardStates(prev => {
@@ -331,8 +334,16 @@ const LoanTab = ({
             />
           ))}
 
-          {/* Purchase Loan Cards - if implemented */}
-          {/* TODO: Add purchase loan card rendering when implemented */}
+          {/* Purchase Loan Cards */}
+          {newPurchaseLoanCards.map(loanId => (
+            <PurchaseLoanCard
+              key={loanId}
+              loanId={loanId}
+              onRemove={handleRemoveLoanCard}
+              expanded={newPurchaseLoanCardStates[loanId] ?? true}
+              onExpandChange={(expanded: boolean) => handleLoanCardExpandChange(loanId, expanded)}
+            />
+          ))}
         </div>
       )}
     </div>
