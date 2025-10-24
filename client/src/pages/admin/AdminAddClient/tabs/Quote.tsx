@@ -4,6 +4,7 @@ import QuoteFormRow1 from '../components/Quote/QuoteFormRow1';
 import QuoteFormRow2 from '../components/Quote/QuoteFormRow2';
 import QuoteFormRow3 from '../components/Quote/QuoteFormRow3';
 import QuotePopupsContainer from '../components/Quote/QuotePopupsContainer';
+import RateDetailsSection from '../components/Quote/RateDetailsSection';
 import { useQuoteState } from '../hooks/useQuoteState';
 
 const QuoteTab = () => {
@@ -115,6 +116,15 @@ const QuoteTab = () => {
                         onUnderwritingChange={state.setUnderwriting}
                     />
                 </CardContent>
+            )}
+
+            {/* Rate Details Section - shown when rates are selected */}
+            {!state.isQuoteCardsMinimized && state.selectedRateIds.length > 0 && (
+                <RateDetailsSection
+                    selectedRateIds={state.selectedRateIds}
+                    selectedLoanCategory={state.selectedLoanCategory}
+                    rateBuydown={state.rateBuydown}
+                />
             )}
 
             {/* All Popups */}
