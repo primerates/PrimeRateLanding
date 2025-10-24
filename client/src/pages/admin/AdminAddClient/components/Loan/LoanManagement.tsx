@@ -72,7 +72,7 @@ const LoanManagement = ({
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
-          {/* First Row - New Loans */}
+          {/* First Row - New Loans and Existing Primary */}
           <div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <FormCheckbox
@@ -101,27 +101,18 @@ const LoanManagement = ({
               />
 
               <FormCheckbox
-                id="property-type-investment-loan-tab"
-                label="New Second + Purchase Loan"
-                checked={false}
-                onCheckedChange={(checked) => handleLoanTypeChange(checked, 'new-second-purchase')}
-                disabled={true}
-                testId="checkbox-property-investment-loan-tab"
-              />
-            </div>
-          </div>
-
-          {/* Second Row - Current/Existing Loans */}
-          <div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <FormCheckbox
                 id="current-primary-loan-tab"
                 label="Existing Primary Loan"
                 checked={hasCurrentPrimaryLoan}
                 onCheckedChange={(checked) => handleLoanTypeChange(checked, 'current-primary')}
                 testId="checkbox-current-primary-loan-tab"
               />
+            </div>
+          </div>
 
+          {/* Second Row - Existing Secondary Loans */}
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <FormCheckbox
                 id="current-second-loan-tab"
                 label="Existing Second Loan"
@@ -136,15 +127,6 @@ const LoanManagement = ({
                 checked={hasCurrentThirdLoan}
                 onCheckedChange={(checked) => handleLoanTypeChange(checked, 'current-third')}
                 testId="checkbox-current-third-loan-tab"
-              />
-
-              <FormCheckbox
-                id="brand-new-loan-tab"
-                label="Other"
-                checked={false}
-                onCheckedChange={(checked) => handleLoanTypeChange(checked, 'current-third')}
-                disabled={true}
-                testId="checkbox-brand-new-loan-tab"
               />
             </div>
           </div>

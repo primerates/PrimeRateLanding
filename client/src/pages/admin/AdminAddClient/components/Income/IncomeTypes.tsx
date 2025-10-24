@@ -118,20 +118,7 @@ const IncomeTypes = ({
                             testId={`checkbox-${isCoBorrower ? 'coborrower-' : ''}vaBenefits`}
                             preventUncheck={true}
                         />
-                        
-                        <IncomeTypeCheckbox
-                            id={`${prefix}-type-disability`}
-                            fieldPath={`${prefix}.incomeTypes.disability`}
-                            label="Other"
-                            testId={`checkbox-${isCoBorrower ? 'coborrower-' : ''}disability`}
-                            disabled={true}
-                            title="Alimony / Child Support"
-                            onCheckedChange={() => {
-                                // Disabled - will be designed later
-                                return;
-                            }}
-                        />
-                        
+
                         <IncomeTypeCheckbox
                             id={`${prefix}-type-property-rental`}
                             fieldPath={`${prefix}.incomeTypes.other`}
