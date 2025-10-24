@@ -30,6 +30,8 @@ interface PropertyFormProps {
   setIsCurrentThirdLoanPreviewOpen: (open: boolean) => void;
   title: string;
   setSubjectProperty: (propertyIndex: number) => void;
+  onAddProperty?: () => void;
+  showAddButton?: boolean;
 }
 
 const PropertyForm = ({
@@ -50,7 +52,9 @@ const PropertyForm = ({
   setIsCurrentSecondLoanPreviewOpen,
   setIsCurrentThirdLoanPreviewOpen,
   title,
-  setSubjectProperty
+  setSubjectProperty,
+  onAddProperty,
+  showAddButton = false
 }: PropertyFormProps) => {
   const form = useFormContext<InsertClient>();
 
@@ -80,8 +84,8 @@ const PropertyForm = ({
               <CardTitle className="flex items-center gap-2 text-lg font-semibold">
                 {title}
                 {form.watch(`property.properties.${propertyIndex}.isSubject`) && (
-                  <span 
-                    className="text-white px-2 py-1 rounded text-xs font-medium" 
+                  <span
+                    className="text-white px-2 py-1 rounded text-xs font-medium"
                     style={{ backgroundColor: '#1a3373' }}
                   >
                     Subject Property
@@ -89,6 +93,26 @@ const PropertyForm = ({
                 )}
               </CardTitle>
               <div className="flex items-center gap-2">
+                {/* Add Property Button - Only for Second Home and Investment */}
+                {showAddButton && onAddProperty && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onAddProperty();
+                    }}
+                    className="hover:bg-blue-500 hover:text-white"
+                    data-testid={`button-add-${propertyUse}`}
+                    title={`Add ${propertyUse === 'second-home' ? 'Second Home' : 'Investment Property'}`}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add {propertyUse === 'second-home' ? 'Second Home' : 'Investment'}
+                  </Button>
+                )}
+
+                {/* Remove Property Button */}
                 <Button
                   type="button"
                   variant="outline"
@@ -103,6 +127,8 @@ const PropertyForm = ({
                   <Minus className="h-4 w-4 mr-2" />
                   Remove
                 </Button>
+
+                {/* Toggle Icon */}
                 {isOpen ? (
                   <Minus className="h-4 w-4" />
                 ) : (

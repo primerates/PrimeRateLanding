@@ -114,7 +114,7 @@ const PropertyTab = ({
             // Add a new property of this type only if it doesn't already exist
             const currentProperties = form.watch('property.properties') || [];
             const hasExistingProperty = currentProperties.some(p => p.use === type);
-            
+
             if (!hasExistingProperty) {
                 const newProperty = {
                     id: `property-${type}-${Date.now()}`,
@@ -136,10 +136,10 @@ const PropertyTab = ({
                     appraisedValue: ''
                 };
                 form.setValue('property.properties', [...currentProperties, newProperty]);
-                
+
                 // Auto-expand the newly created property card
                 setPropertyCardStates(prev => ({ ...prev, [newProperty.id]: true }));
-                
+
                 // Auto-copy address data when properties are selected
                 if (type === 'primary') {
                     setTimeout(() => {
@@ -157,6 +157,59 @@ const PropertyTab = ({
                     }, 100);
                 }
             }
+        }
+    };
+
+    // Handle adding additional properties (for Second Home and Investment)
+    const handleAddProperty = (type: 'primary' | 'second-home' | 'investment' | 'home-purchase') => {
+        const MAX_SECOND_HOME = 3;
+        const MAX_INVESTMENT = 6;
+
+        const currentProperties = form.watch('property.properties') || [];
+        const propertiesOfType = currentProperties.filter(p => p.use === type);
+
+        // Enforce max limits
+        if (type === 'second-home' && propertiesOfType.length >= MAX_SECOND_HOME) {
+            return; // Max second homes reached
+        }
+        if (type === 'investment' && propertiesOfType.length >= MAX_INVESTMENT) {
+            return; // Max investment properties reached
+        }
+
+        // Create new property
+        const newProperty = {
+            id: `property-${type}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+            use: type,
+            propertyType: '',
+            isSubject: false,
+            address: {
+                street: '',
+                unit: '',
+                city: '',
+                state: '',
+                zip: '',
+                county: ''
+            },
+            purchasePrice: '',
+            ownedSince: '',
+            ownedHeldBy: undefined,
+            estimatedValue: '',
+            appraisedValue: ''
+        };
+
+        form.setValue('property.properties', [...currentProperties, newProperty]);
+
+        // Auto-expand the newly created property card
+        setPropertyCardStates(prev => ({ ...prev, [newProperty.id]: true }));
+
+        // Auto-copy address data for second-home or investment
+        if (type === 'second-home' || type === 'investment') {
+            setTimeout(() => {
+                const coBorrowerAddress = form.getValues('coBorrower.residenceAddress');
+                if (coBorrowerAddress && (coBorrowerAddress.street || coBorrowerAddress.city || coBorrowerAddress.state)) {
+                    autoCopyCoBorrowerAddressToProperty();
+                }
+            }, 100);
         }
     };
 
@@ -321,12 +374,20 @@ const PropertyTab = ({
                 
                 return sortedProperties.map((property, index) => {
                     // Find the original index in currentProperties for proper field paths
-                    const originalIndex = currentProperties.findIndex(p => p.id === property.id || 
+                    const originalIndex = currentProperties.findIndex(p => p.id === property.id ||
                         (p.use === property.use && JSON.stringify(p) === JSON.stringify(property)));
-                    
+
                     const propertyId = property.id || `property-${property.use}-${index}`;
                     const isOpen = propertyCardStates[propertyId] ?? false;
-                    
+
+                    // Determine if we should show the "Add" button for this property
+                    const MAX_SECOND_HOME = 3;
+                    const MAX_INVESTMENT = 6;
+                    const propertiesOfType = currentProperties.filter(p => p.use === property.use);
+                    const showAddButton =
+                        (property.use === 'second-home' && propertiesOfType.length < MAX_SECOND_HOME) ||
+                        (property.use === 'investment' && propertiesOfType.length < MAX_INVESTMENT);
+
                     return (
                         <PropertyForm
                             key={propertyId}
@@ -337,7 +398,7 @@ const PropertyTab = ({
                                 setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }));
                             }}
                             onDeleteProperty={() => {
-                                const propertyTitle = property.use === 'primary' ? 'Primary Residence' : 
+                                const propertyTitle = property.use === 'primary' ? 'Primary Residence' :
                                                     `${property.use ? property.use.charAt(0).toUpperCase() + property.use.slice(1).replace('-', ' ') : 'Unknown'}`;
                                 handleDeleteProperty(originalIndex, propertyTitle);
                             }}
@@ -352,9 +413,11 @@ const PropertyTab = ({
                             setIsCurrentLoanPreviewOpen={() => {}}
                             setIsCurrentSecondLoanPreviewOpen={() => {}}
                             setIsCurrentThirdLoanPreviewOpen={() => {}}
-                            title={property.use === 'primary' ? 'Primary Residence' : 
+                            title={property.use === 'primary' ? 'Primary Residence' :
                                 `${property.use ? property.use.charAt(0).toUpperCase() + property.use.slice(1).replace('-', ' ') : 'Unknown'}`}
                             setSubjectProperty={setSubjectProperty}
+                            onAddProperty={() => handleAddProperty(property.use!)}
+                            showAddButton={showAddButton}
                         />
                     );
                 });
