@@ -6,6 +6,9 @@ import RefinanceLoanCard from '../components/Loan/RefinanceLoanCard';
 import PurchaseLoanCard from '../components/Loan/PurchaseLoanCard';
 import PrimaryLoanCard from '../components/Loan/PrimaryLoanCard';
 import ExistingLoanCard from '../components/Loan/ExistingLoanCard';
+import CreditScoresDialog from '../dialogs/CreditScoresDialog';
+
+type FicoType = 'mid-fico' | 'borrower-scores' | 'co-borrower-scores';
 
 interface LoanTabProps {
   showLoanAnimation?: boolean;
@@ -35,6 +38,23 @@ const LoanTab = ({
   const [currentPrimaryLoanCardStates, setCurrentPrimaryLoanCardStates] = useState<Record<string, boolean>>({});
   const [currentSecondLoanCardStates, setCurrentSecondLoanCardStates] = useState<Record<string, boolean>>({});
   const [currentThirdLoanCardStates, setCurrentThirdLoanCardStates] = useState<Record<string, boolean>>({});
+
+  // Credit scores state for refinance loan
+  const [ficoType, setFicoType] = useState<FicoType>('mid-fico');
+  const [borrowerScores, setBorrowerScores] = useState({
+    experian: '',
+    equifax: '',
+    transunion: '',
+    midFico: ''
+  });
+  const [coBorrowerScores, setCoBorrowerScores] = useState({
+    experian: '',
+    equifax: '',
+    transunion: '',
+    midFico: ''
+  });
+  const [isBorrowerDialogOpen, setIsBorrowerDialogOpen] = useState(false);
+  const [isCoBorrowerDialogOpen, setIsCoBorrowerDialogOpen] = useState(false);
 
   // Generic loan type handler
   const handleLoanTypeChange = (checked: boolean, loanType: LoanType) => {
@@ -190,6 +210,45 @@ const LoanTab = ({
     }
   };
 
+  // Credit scores handlers
+  const handleCycleFicoType = () => {
+    setFicoType(prev => {
+      if (prev === 'mid-fico') return 'borrower-scores';
+      if (prev === 'borrower-scores') return 'co-borrower-scores';
+      return 'mid-fico';
+    });
+  };
+
+  const handleOpenBorrowerScores = () => {
+    setIsBorrowerDialogOpen(true);
+  };
+
+  const handleOpenCoBorrowerScores = () => {
+    setIsCoBorrowerDialogOpen(true);
+  };
+
+  const calculateMidFico = () => {
+    // Get the mid FICO from borrower and co-borrower scores
+    const borrowerMidFico = parseInt(borrowerScores.midFico) || 0;
+    const coBorrowerMidFico = parseInt(coBorrowerScores.midFico) || 0;
+
+    if (borrowerMidFico > 0 && coBorrowerMidFico > 0) {
+      // Return the lower of the two
+      return Math.min(borrowerMidFico, coBorrowerMidFico).toString();
+    } else if (borrowerMidFico > 0) {
+      return borrowerMidFico.toString();
+    } else if (coBorrowerMidFico > 0) {
+      return coBorrowerMidFico.toString();
+    }
+    return '';
+  };
+
+  // Check if co-borrower exists
+  const hasCoBorrower = () => {
+    const borrowers = form.watch('borrower.borrowers') || [];
+    return borrowers.some((b: any) => b.borrowerType === 'co-borrower');
+  };
+
   // Get current state of loans for checkboxes
   const hasNewRefinanceLoan = newRefinanceLoanCards.length > 0;
   const hasNewPurchaseLoan = newPurchaseLoanCards.length > 0;
@@ -287,6 +346,12 @@ const LoanTab = ({
               onRemove={handleRemoveLoanCard}
               expanded={newRefinanceLoanCardStates[loanId] ?? true}
               onExpandChange={(expanded: boolean) => handleLoanCardExpandChange(loanId, expanded)}
+              ficoType={ficoType}
+              onCycleFicoType={handleCycleFicoType}
+              onOpenBorrowerScores={handleOpenBorrowerScores}
+              onOpenCoBorrowerScores={handleOpenCoBorrowerScores}
+              calculatedMidFico={calculateMidFico()}
+              hasCoBorrower={hasCoBorrower()}
             />
           ))}
 
@@ -346,6 +411,25 @@ const LoanTab = ({
           ))}
         </div>
       )}
+
+      {/* Credit Scores Dialogs */}
+      <CreditScoresDialog
+        isOpen={isBorrowerDialogOpen}
+        onClose={() => setIsBorrowerDialogOpen(false)}
+        title="Borrower Credit Scores"
+        scores={borrowerScores}
+        onScoresChange={setBorrowerScores}
+        testIdPrefix="borrower-credit-scores"
+      />
+
+      <CreditScoresDialog
+        isOpen={isCoBorrowerDialogOpen}
+        onClose={() => setIsCoBorrowerDialogOpen(false)}
+        title="Co-Borrower Credit Scores"
+        scores={coBorrowerScores}
+        onScoresChange={setCoBorrowerScores}
+        testIdPrefix="co-borrower-credit-scores"
+      />
     </div>
   );
 };

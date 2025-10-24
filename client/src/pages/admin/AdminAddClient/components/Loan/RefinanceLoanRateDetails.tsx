@@ -7,8 +7,27 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import CurrencyInputWithToggle from '../CurrencyInputWithToggle';
 import CurrencyInputWithDropdown from '../CurrencyInputWithDropdown';
+import MidFicoInput from '../MidFicoInput';
 
-const RefinanceLoanRateDetails = () => {
+type FicoType = 'mid-fico' | 'borrower-scores' | 'co-borrower-scores';
+
+interface RefinanceLoanRateDetailsProps {
+  ficoType?: FicoType;
+  onCycleFicoType?: () => void;
+  onOpenBorrowerScores?: () => void;
+  onOpenCoBorrowerScores?: () => void;
+  calculatedMidFico?: string;
+  hasCoBorrower?: boolean;
+}
+
+const RefinanceLoanRateDetails = ({
+  ficoType = 'mid-fico',
+  onCycleFicoType = () => {},
+  onOpenBorrowerScores = () => {},
+  onOpenCoBorrowerScores = () => {},
+  calculatedMidFico = '',
+  hasCoBorrower = false
+}: RefinanceLoanRateDetailsProps) => {
   const form = useFormContext();
 
   return (
@@ -16,32 +35,16 @@ const RefinanceLoanRateDetails = () => {
       <CardContent className="pt-6">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {/* Mid FICO */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between mb-2">
-              <Label htmlFor="abc-midFico" className="text-sm">
-                Mid FICO
-              </Label>
-              <Controller
-                control={form.control}
-                name="abc.midFico"
-                render={({ field }) => (
-                  <Switch
-                    checked={!!field.value}
-                    onCheckedChange={() => { }}
-                    data-testid="toggle-abc-fico-type"
-                    className="scale-[0.8]"
-                  />
-                )}
-              />
-            </div>
-            <Input
-              id="abc-midFico"
-              {...form.register('abc.midFico')}
-              placeholder="Enter"
-              className="border border-input bg-background px-3 rounded-md"
-              data-testid="input-abc-midFico"
-            />
-          </div>
+          <MidFicoInput
+            fieldPrefix="abc"
+            ficoType={ficoType}
+            onCycleFicoType={onCycleFicoType}
+            onClickBorrowerScores={onOpenBorrowerScores}
+            onClickCoBorrowerScores={onOpenCoBorrowerScores}
+            calculatedMidFico={calculatedMidFico}
+            hasCoBorrower={hasCoBorrower}
+            testIdPrefix="abc"
+          />
 
           {/* Rate Lock Status */}
           <div className="space-y-2">

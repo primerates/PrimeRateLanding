@@ -12,11 +12,27 @@ import {
   PREPAYMENT_PENALTY_OPTIONS
 } from '../../data/formOptions';
 
+type FicoType = 'mid-fico' | 'borrower-scores' | 'co-borrower-scores';
+
 interface RefinanceLoanFormProps {
   loanId: string;
+  ficoType?: FicoType;
+  onCycleFicoType?: () => void;
+  onOpenBorrowerScores?: () => void;
+  onOpenCoBorrowerScores?: () => void;
+  calculatedMidFico?: string;
+  hasCoBorrower?: boolean;
 }
 
-const RefinanceLoanForm = ({ loanId }: RefinanceLoanFormProps) => {
+const RefinanceLoanForm = ({
+  loanId,
+  ficoType = 'mid-fico',
+  onCycleFicoType = () => {},
+  onOpenBorrowerScores = () => {},
+  onOpenCoBorrowerScores = () => {},
+  calculatedMidFico = '',
+  hasCoBorrower = false
+}: RefinanceLoanFormProps) => {
   const form = useFormContext();
 
   // Always use abc prefix for refinance loans (matching original code)
@@ -128,7 +144,14 @@ const RefinanceLoanForm = ({ loanId }: RefinanceLoanFormProps) => {
       </div>
 
       {/* Row 3 & 4: Rate Details - Mid FICO through Attached to Property */}
-      <RefinanceLoanRateDetails />
+      <RefinanceLoanRateDetails
+        ficoType={ficoType}
+        onCycleFicoType={onCycleFicoType}
+        onOpenBorrowerScores={onOpenBorrowerScores}
+        onOpenCoBorrowerScores={onOpenCoBorrowerScores}
+        calculatedMidFico={calculatedMidFico}
+        hasCoBorrower={hasCoBorrower}
+      />
     </div>
   );
 };

@@ -6,18 +6,32 @@ import { Plus, Minus } from 'lucide-react';
 import RefinanceLoanForm from './RefinanceLoanForm';
 import DeleteConfirmationDialog from '../../dialogs/DeleteConfirmationDialog';
 
+type FicoType = 'mid-fico' | 'borrower-scores' | 'co-borrower-scores';
+
 interface RefinanceLoanCardProps {
   loanId: string;
   onRemove: (loanId: string) => void;
   expanded?: boolean;
   onExpandChange?: (expanded: boolean) => void;
+  ficoType?: FicoType;
+  onCycleFicoType?: () => void;
+  onOpenBorrowerScores?: () => void;
+  onOpenCoBorrowerScores?: () => void;
+  calculatedMidFico?: string;
+  hasCoBorrower?: boolean;
 }
 
 const RefinanceLoanCard = ({
   loanId,
   onRemove,
   expanded = true,
-  onExpandChange
+  onExpandChange,
+  ficoType = 'mid-fico',
+  onCycleFicoType = () => {},
+  onOpenBorrowerScores = () => {},
+  onOpenCoBorrowerScores = () => {},
+  calculatedMidFico = '',
+  hasCoBorrower = false
 }: RefinanceLoanCardProps) => {
   const [isExpanded, setIsExpanded] = useState(expanded);
   const [deleteDialog, setDeleteDialog] = useState({ isOpen: false });
@@ -94,7 +108,15 @@ const RefinanceLoanCard = ({
           </CollapsibleTrigger>
           <CollapsibleContent>
             <CardContent>
-              <RefinanceLoanForm loanId={loanId} />
+              <RefinanceLoanForm
+                loanId={loanId}
+                ficoType={ficoType}
+                onCycleFicoType={onCycleFicoType}
+                onOpenBorrowerScores={onOpenBorrowerScores}
+                onOpenCoBorrowerScores={onOpenCoBorrowerScores}
+                calculatedMidFico={calculatedMidFico}
+                hasCoBorrower={hasCoBorrower}
+              />
             </CardContent>
           </CollapsibleContent>
         </Collapsible>

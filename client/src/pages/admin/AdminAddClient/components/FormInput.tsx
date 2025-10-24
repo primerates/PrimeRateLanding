@@ -9,6 +9,7 @@ interface FormInputProps {
   placeholder?: string;
   testId?: string;
   className?: string;
+  labelClassName?: string;
   type?: string;
   maxLength?: number;
   required?: boolean;
@@ -25,6 +26,7 @@ const FormInput = ({
   placeholder = '',
   testId,
   className = "space-y-2 max-w-[75%]",
+  labelClassName = "",
   type = "text",
   maxLength,
   required = false,
@@ -40,7 +42,7 @@ const FormInput = ({
   return (
     <div className={className}>
       <div className="min-h-5 flex items-center gap-2">
-        <Label htmlFor={id}>
+        <Label htmlFor={id} className={labelClassName}>
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </Label>
