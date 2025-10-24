@@ -149,7 +149,7 @@ const LoanTab = ({
   };
 
   const handleAddPrimaryLoan = () => {
-    if (currentPrimaryLoans.length < 2) {
+    if (currentPrimaryLoans.length < 10) {
       const newLoanId = `primary-${Date.now()}`;
       setCurrentPrimaryLoans(prev => [...prev, newLoanId]);
       setCurrentPrimaryLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
@@ -157,15 +157,19 @@ const LoanTab = ({
   };
 
   const handleAddSecondLoan = () => {
-    const newLoanId = `second-${Date.now()}`;
-    setCurrentSecondLoans(prev => [...prev, newLoanId]);
-    setCurrentSecondLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+    if (currentSecondLoans.length < 10) {
+      const newLoanId = `second-${Date.now()}`;
+      setCurrentSecondLoans(prev => [...prev, newLoanId]);
+      setCurrentSecondLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+    }
   };
 
   const handleAddThirdLoan = () => {
-    const newLoanId = `third-${Date.now()}`;
-    setCurrentThirdLoans(prev => [...prev, newLoanId]);
-    setCurrentThirdLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+    if (currentThirdLoans.length < 10) {
+      const newLoanId = `third-${Date.now()}`;
+      setCurrentThirdLoans(prev => [...prev, newLoanId]);
+      setCurrentThirdLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+    }
   };
 
   const handleLoanCardExpandChange = (loanId: string, expanded: boolean) => {
@@ -291,7 +295,7 @@ const LoanTab = ({
               onRemove={handleRemoveLoanCard}
               onAdd={handleAddPrimaryLoan}
               currentCount={primaryLoansCount}
-              maxCount={2}
+              maxCount={10}
               expanded={currentPrimaryLoanCardStates[loanId] ?? true}
               onExpandChange={(expanded: boolean) => handleLoanCardExpandChange(loanId, expanded)}
             />
@@ -306,7 +310,7 @@ const LoanTab = ({
               onRemove={handleRemoveLoanCard}
               onAdd={handleAddSecondLoan}
               currentCount={secondLoansCount}
-              maxCount={2}
+              maxCount={10}
               expanded={currentSecondLoanCardStates[loanId] ?? true}
               onExpandChange={(expanded: boolean) => handleLoanCardExpandChange(loanId, expanded)}
             />
@@ -321,7 +325,7 @@ const LoanTab = ({
               onRemove={handleRemoveLoanCard}
               onAdd={handleAddThirdLoan}
               currentCount={thirdLoansCount}
-              maxCount={2}
+              maxCount={10}
               expanded={currentThirdLoanCardStates[loanId] ?? true}
               onExpandChange={(expanded: boolean) => handleLoanCardExpandChange(loanId, expanded)}
             />
