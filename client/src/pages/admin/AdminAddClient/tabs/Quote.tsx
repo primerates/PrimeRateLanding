@@ -124,6 +124,8 @@ const QuoteTab = () => {
                     selectedRateIds={state.selectedRateIds}
                     selectedLoanCategory={state.selectedLoanCategory}
                     rateBuydown={state.rateBuydown}
+                    escrowReserves={state.escrowReserves}
+                    monthlyEscrow={state.monthlyEscrow}
                 />
             )}
 

@@ -75,7 +75,7 @@ const QuoteRateSelect = ({
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-3" align="start">
           <div className="space-y-2">
-            {isEnabled ? (
+            {!isEnabled ? (
               <>
                 {/* Individual rate checkboxes */}
                 {[0, 1, 2, 3].map((rateId) => (
