@@ -144,6 +144,11 @@ export function RevenueSourcesChart({
                 key={index}
                 onMouseEnter={() => setHoveredSegment(index)}
                 onMouseLeave={() => setHoveredSegment(null)}
+                onClick={() => {
+                  if (segment.name === 'Direct Mail') {
+                    setRevenueDetailView('directMail');
+                  }
+                }}
               >
                 <path
                   d={createArc(
