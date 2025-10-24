@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import CurrencyInputWithToggle from '../CurrencyInputWithToggle';
+import CurrencyInputWithDropdown from '../CurrencyInputWithDropdown';
 
 const PurchaseLoanRateDetails = () => {
   const form = useFormContext();
@@ -240,15 +241,16 @@ const PurchaseLoanRateDetails = () => {
 
           {/* Tax & Insurance Payment */}
           <div className="md:col-span-2">
-            <CurrencyInputWithToggle
+            <CurrencyInputWithDropdown
               fieldPrefix="bbb"
               fieldName="taxInsurancePayment"
-              toggleFieldName="taxInsurancePaymentToggle"
-              defaultLabel="Tax & Insurance Payment"
-              toggledLabel="Tax Payment Only"
-              toggledLabel2="Insurance Payment Only"
+              selectorFieldName="taxInsurancePaymentSelector"
+              labelOptions={[
+                { value: 'tax-and-insurance', label: 'Tax & Insurance Payment' },
+                { value: 'tax-only', label: 'Tax Payment Only' },
+                { value: 'insurance-only', label: 'Insurance Payment Only' }
+              ]}
               testId="input-bbb-taxInsurancePayment"
-              tripleToggle={true}
             />
           </div>
 
