@@ -9,13 +9,15 @@ interface SubjectPropertyQuestionProps {
   propertyIndex: number;
   showAnimation?: boolean;
   setSubjectProperty: (propertyIndex: number) => void;
+  loanCount?: number;
 }
 
 const SubjectPropertyQuestion = ({
   propertyId,
   propertyIndex,
   showAnimation = false,
-  setSubjectProperty
+  setSubjectProperty,
+  loanCount = 0
 }: SubjectPropertyQuestionProps) => {
   const form = useFormContext<InsertClient>();
 
@@ -64,18 +66,25 @@ const SubjectPropertyQuestion = ({
           <div className="flex items-center mr-8">
             <Button
               type="button"
-              variant="outline"
+              variant={loanCount > 0 ? "default" : "outline"}
               size="sm"
               onClick={() => {
                 console.log('Loans button clicked');
               }}
-              className="w-24 hover:bg-red-500 hover:text-white"
+              style={loanCount > 0
+                ? { backgroundColor: '#d1d5db', borderColor: '#d1d5db', color: '#374151' }
+                : {}
+              }
+              className={loanCount > 0
+                ? "w-24 text-white border-2"
+                : "w-24 hover:bg-red-500 hover:text-white"
+              }
               data-testid={`button-grey-box-action-${propertyId}`}
               title="Loans"
             >
               <span>
-                <span className="mr-3 font-semibold">0</span>
-                <span>Loans</span>
+                <span className="mr-3 font-semibold">{loanCount}</span>
+                <span>{loanCount === 1 ? 'Loan' : 'Loans'}</span>
               </span>
             </Button>
           </div>

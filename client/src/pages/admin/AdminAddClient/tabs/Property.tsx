@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
 import PropertyHeader from '../components/Property/PropertyHeader';
@@ -343,6 +343,54 @@ const PropertyTab = ({
         setValuationSummaryDialog({ isOpen: false, propertyIndex: null });
     };
 
+    // Watch all loan data once to avoid multiple subscriptions
+    const currentLoanData = form.watch('currentLoan') || {};
+    const currentSecondLoanData = form.watch('currentSecondLoan') || {};
+    const currentThirdLoanData = form.watch('currentThirdLoan') || {};
+    const refinanceLoan = form.watch('newRefinanceLoan');
+    const properties = form.watch('property.properties') || [];
+
+    // Memoize loan count map to prevent re-render issues
+    const propertyLoanCounts = useMemo(() => {
+        const counts: Record<string, number> = {};
+
+        // Helper function to increment count for a property
+        const incrementCount = (propertyId: string) => {
+            counts[propertyId] = (counts[propertyId] || 0) + 1;
+        };
+
+        // Check all existing primary loans
+        Object.values(currentLoanData).forEach((loan: any) => {
+            if (loan?.attachedToProperty) {
+                incrementCount(loan.attachedToProperty);
+            }
+        });
+
+        // Check all existing second loans
+        Object.values(currentSecondLoanData).forEach((loan: any) => {
+            if (loan?.attachedToProperty) {
+                incrementCount(loan.attachedToProperty);
+            }
+        });
+
+        // Check all existing third loans
+        Object.values(currentThirdLoanData).forEach((loan: any) => {
+            if (loan?.attachedToProperty) {
+                incrementCount(loan.attachedToProperty);
+            }
+        });
+
+        // Check refinance loan if it's attached to subject property
+        if (refinanceLoan) {
+            const subjectProperty = properties.find((p: any) => p.isSubject === true);
+            if (subjectProperty?.id) {
+                incrementCount(subjectProperty.id);
+            }
+        }
+
+        return counts;
+    }, [currentLoanData, currentSecondLoanData, currentThirdLoanData, refinanceLoan, properties]);
+
     return (
         <div className="space-y-6">
             <PropertyHeader
@@ -364,17 +412,15 @@ const PropertyTab = ({
             
             {/* Property Forms - Show when property types are selected */}
             {(() => {
-                const currentProperties = form.watch('property.properties') || [];
-                
                 // Sort properties to put Home Purchase first, then Primary, Second Home, Investment
-                const sortedProperties = [...currentProperties].sort((a, b) => {
-                    const order = { 'home-purchase': 0, 'primary': 1, 'second-home': 2, 'investment': 3 };
-                    return (order[a.use] ?? 4) - (order[b.use] ?? 4);
+                const sortedProperties = [...properties].sort((a, b) => {
+                    const order: Record<string, number> = { 'home-purchase': 0, 'primary': 1, 'second-home': 2, 'investment': 3 };
+                    return (order[a.use || ''] ?? 4) - (order[b.use || ''] ?? 4);
                 });
-                
+
                 return sortedProperties.map((property, index) => {
-                    // Find the original index in currentProperties for proper field paths
-                    const originalIndex = currentProperties.findIndex(p => p.id === property.id ||
+                    // Find the original index in properties for proper field paths
+                    const originalIndex = properties.findIndex(p => p.id === property.id ||
                         (p.use === property.use && JSON.stringify(p) === JSON.stringify(property)));
 
                     const propertyId = property.id || `property-${property.use}-${index}`;
@@ -383,10 +429,13 @@ const PropertyTab = ({
                     // Determine if we should show the "Add" button for this property
                     const MAX_SECOND_HOME = 3;
                     const MAX_INVESTMENT = 6;
-                    const propertiesOfType = currentProperties.filter(p => p.use === property.use);
+                    const propertiesOfType = properties.filter(p => p.use === property.use);
                     const showAddButton =
                         (property.use === 'second-home' && propertiesOfType.length < MAX_SECOND_HOME) ||
                         (property.use === 'investment' && propertiesOfType.length < MAX_INVESTMENT);
+
+                    // Get loan count from memoized map
+                    const loanCount = propertyLoanCounts[propertyId] || 0;
 
                     return (
                         <PropertyForm
@@ -418,6 +467,7 @@ const PropertyTab = ({
                             setSubjectProperty={setSubjectProperty}
                             onAddProperty={() => handleAddProperty(property.use!)}
                             showAddButton={showAddButton}
+                            loanCount={loanCount}
                         />
                     );
                 });

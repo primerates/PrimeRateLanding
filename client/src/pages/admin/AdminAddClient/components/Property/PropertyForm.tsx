@@ -32,6 +32,7 @@ interface PropertyFormProps {
   setSubjectProperty: (propertyIndex: number) => void;
   onAddProperty?: () => void;
   showAddButton?: boolean;
+  loanCount?: number;
 }
 
 const PropertyForm = ({
@@ -54,7 +55,8 @@ const PropertyForm = ({
   title,
   setSubjectProperty,
   onAddProperty,
-  showAddButton = false
+  showAddButton = false,
+  loanCount = 0
 }: PropertyFormProps) => {
   const form = useFormContext<InsertClient>();
 
@@ -147,6 +149,7 @@ const PropertyForm = ({
                 propertyIndex={propertyIndex}
                 showAnimation={showAnimation}
                 setSubjectProperty={setSubjectProperty}
+                loanCount={loanCount}
               />
 
               {/* Property Address */}
