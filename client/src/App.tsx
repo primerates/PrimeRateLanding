@@ -17,6 +17,7 @@ import AdminAddVendor from "@/pages/admin/AdminAddVendor";
 import AdminSearch from "@/pages/admin/AdminSearch";
 import AdminSnapshot from "@/pages/admin/AdminSnapshot";
 import AdminLibrary from "@/pages/admin/AdminLibrary";
+import AdminDraftLoanStatus from "@/pages/admin/AdminDraftLoanStatus";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -73,6 +74,11 @@ function Router() {
       <Route path="/admin/library">
         <ProtectedRoute>
           <AdminLibrary />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/draft-loan-status">
+        <ProtectedRoute>
+          <AdminDraftLoanStatus />
         </ProtectedRoute>
       </Route>
       {/* Fallback to 404 */}

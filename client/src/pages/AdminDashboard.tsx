@@ -137,6 +137,7 @@ export default function AdminDashboard() {
     { id: 'reports', label: 'Dashboard', icon: BarChart3, path: '/admin/reports' },
     // Row 3 (items 7+)
     { id: 'library', label: 'Library', icon: FolderOpen, path: '/admin/library' },
+    { id: 'draft-loan-status', label: 'Draft Loan Status', icon: Lock, path: '/admin/draft-loan-status' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/add-comment' },
   ];
 
@@ -169,7 +170,10 @@ export default function AdminDashboard() {
   const getTileHoverClass = (itemId: string, rowNumber: number = 1) => {
     let baseHoverClass = '';
     
-    if (rowNumber === 1) {
+    // Special styling for Draft Loan Status tile
+    if (itemId === 'draft-loan-status') {
+      baseHoverClass = 'border-l-4 border-l-orange-500 hover:border-orange-500';
+    } else if (rowNumber === 1) {
       baseHoverClass = 'border-l-4 border-l-green-500 hover:border-green-500';
     } else if (rowNumber === 2) {
       baseHoverClass = 'border-l-4 border-l-blue-500 hover:border-blue-500';
@@ -513,7 +517,7 @@ export default function AdminDashboard() {
                     isLoaded 
                       ? 'transform scale-x-100 opacity-100' 
                       : 'transform scale-x-0 opacity-0'
-                  } bg-gradient-to-br from-card to-card/80`}
+                  } bg-gradient-to-br from-card to-card/80 relative`}
                   style={{
                     transformOrigin: 'left',
                     transitionDelay: `${1850 + (index * 150)}ms`
@@ -521,6 +525,11 @@ export default function AdminDashboard() {
                   onClick={() => handleMenuClick(item.path)}
                   data-testid={`card-admin-${item.id}`}
                 >
+                  {item.id === 'draft-loan-status' && (
+                    <div className="absolute top-2 right-2 px-2 py-1 bg-orange-500/20 border border-orange-500/30 rounded text-xs font-semibold text-orange-500">
+                      SANDBOX
+                    </div>
+                  )}
                   <CardHeader className="text-center pb-8 pt-8">
                     <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
                       <Icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:rotate-[360deg]" />
