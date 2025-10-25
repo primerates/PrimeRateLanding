@@ -58,6 +58,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Loan Management System**: Manages client loan applications, supporting multiple loan categories, rate configurations, and quote generation.
 - **PDF Document Extraction System (Quote Tile)**: Supports drag-and-drop PDF upload for various document types using AWS Textract for OCR and Anthropic Claude for AI-powered structured data extraction.
 - **Library/Testing Sandbox**: Testing environment featuring a theme settings system with 3 preset themes (Professional Dashboard, Cyberpunk, Sunset Blaze), theme preview cards, real-time application of selected themes, light/dark mode toggle, and brightness controls.
+    - **Draft Loan Status Tile**: Dedicated sandbox area for developing and testing updated loan status codes and features. Distinguished by orange accent border and "SANDBOX" badge.
 - **Snapshot Analytics Dashboard**: Comprehensive dashboard for financial analytics, marketing campaign management, expense/revenue tracking, and data visualization.
     - **Key Features**: Interactive filters, real-time financial metrics, conditional card displays, customizable search cards with dynamic column systems for results tables, and transaction attachments system.
     - **Search Card System**: Provides category-specific search cards for Expenses and Revenue, with date filters and dynamic transaction tables that filter results based on search parameters.
