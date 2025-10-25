@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -42,6 +42,21 @@ const CurrencyInputWithToggle = ({
   const inputId = `${fieldPrefix}-${fieldName}`;
   const toggleTestId = `toggle-${fieldPrefix}-${fieldName.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
   const inputTestId = testId || `input-${fieldPrefix}-${fieldName}`;
+
+  // Watch all form values to trigger recalculation when dependencies change
+  const formValues = form.watch();
+
+  // Automatically update the form field with calculated value
+  useEffect(() => {
+    if (calculateValue) {
+      const calculatedVal = calculateValue(form);
+      const currentValue = form.getValues(fieldPath as any);
+      // Only update if the calculated value is different from current value
+      if (calculatedVal !== currentValue) {
+        form.setValue(fieldPath as any, calculatedVal);
+      }
+    }
+  }, [formValues, calculateValue, form, fieldPath]);
 
   const getLabel = () => {
     if (!showToggle || !toggleFieldPath) return defaultLabel;

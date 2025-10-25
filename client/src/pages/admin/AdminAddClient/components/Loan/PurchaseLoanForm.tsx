@@ -85,9 +85,9 @@ const PurchaseLoanForm = ({ loanId }: PurchaseLoanFormProps) => {
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <ToggleAmountInput
           fieldPrefix={fieldPrefix}
-          fieldName="loanBalance"
+          fieldName="loanAmount"
           defaultLabel="New Loan Amount"
-          testId={`input-${fieldPrefix}-loanBalance`}
+          testId={`input-${fieldPrefix}-loanAmount`}
           className="space-y-2"
           showToggle={false}
         />
