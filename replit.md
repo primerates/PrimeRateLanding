@@ -63,22 +63,6 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - **Search Card System**: Provides category-specific search cards for Expenses and Revenue, with date filters and dynamic transaction tables that filter results based on search parameters.
     - **Vendor Management**: Includes dedicated cards for adding and searching vendors, with comprehensive search fields, dynamic results tables, and sortable columns.
     - **Workflow Automation**: Implements auto-minimizing and mutual exclusivity logic for various cards and forms to optimize user workflow.
-- **Loan Status Dashboard (Standalone)**: Comprehensive single-loan detail view (1,400+ line React component) accessible via "Loan Status" category filter. Features include:
-    - **Performance Metrics**: Header with 5 key metrics (Category, Loan Amount, Interest Rate, Days to Close, Completion) with change indicators
-    - **8 Navigation Tabs**: Docs Pending, Services, Rate Lock, Team, Loan Details, Email, Notes, Activity
-    - **Two-Card Layout**: Left card displays document cards with expandable tables; right card shows visualization icons
-    - **Expandable Tables**: Click document cards to reveal detailed tables with custom horizontal scroll indicators, dropdown filters (Pending/Received/Show All), and column sorting
-    - **Dynamic Visualizations**:
-      - Stacked paper icon (default, changes color per tab)
-      - Lock icon for Rate Lock tab
-      - Clipboard checklist for Services tab
-      - Icon boxes (percentage, dollar, home) for Loan Details tab
-      - Pie chart in overview mode
-    - **Modals**: Complete modal system with Request, Clear, and Activity forms including file upload functionality
-    - **Service Tracker**: Modal with progress timeline, milestones, dropdown menu, and animated progress bars
-    - **Loan Timeline**: Vertical timeline modal with event cards, status badges, and staggered animations
-    - **Animations**: Framer Motion for smooth modal transitions, table expansions, and timeline events
-    - **Styling**: Purple gradient theme with emerald-green financial accents, glass morphism effects, and smooth 500ms transitions
 
 ## External Dependencies
 
