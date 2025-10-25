@@ -19,7 +19,7 @@ const PurchaseLoanForm = ({ loanId }: PurchaseLoanFormProps) => {
   const form = useFormContext();
 
   // Always use bbb prefix for purchase loans (matching original code)
-  const fieldPrefix = 'bbb';
+  const fieldPrefix = 'newPurchaseLoan';
 
   // Purchase-specific loan purpose options
   const PURCHASE_LOAN_PURPOSE_OPTIONS = [

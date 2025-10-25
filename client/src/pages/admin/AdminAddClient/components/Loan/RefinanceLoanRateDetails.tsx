@@ -36,24 +36,24 @@ const RefinanceLoanRateDetails = ({
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {/* Mid FICO */}
           <MidFicoInput
-            fieldPrefix="abc"
+            fieldPrefix="newRefinanceLoan"
             ficoType={ficoType}
             onCycleFicoType={onCycleFicoType}
             onClickBorrowerScores={onOpenBorrowerScores}
             onClickCoBorrowerScores={onOpenCoBorrowerScores}
             calculatedMidFico={calculatedMidFico}
             hasCoBorrower={hasCoBorrower}
-            testIdPrefix="abc"
+            testIdPrefix="newRefinanceLoan"
           />
 
           {/* Rate Lock Status */}
           <div className="space-y-2">
             <Controller
               control={form.control}
-              name="abc.rateLockStatus"
+              name="newRefinanceLoan.rateLockStatus"
               render={({ field }) => (
                 <Label
-                  htmlFor="abc-rateLockStatus"
+                  htmlFor="newRefinanceLoan-rateLockStatus"
                   className={(field.value === 'not-locked' || field.value === 'expired' || !field.value) ? 'text-red-500' : ''}
                 >
                   Rate Lock Status
@@ -61,7 +61,7 @@ const RefinanceLoanRateDetails = ({
               )}
             />
             <Controller
-              name="abc.rateLockStatus"
+              name="newRefinanceLoan.rateLockStatus"
               control={form.control}
               defaultValue="not-locked"
               render={({ field }) => (
@@ -69,7 +69,7 @@ const RefinanceLoanRateDetails = ({
                   value={field.value || "not-locked"}
                   onValueChange={field.onChange}
                 >
-                  <SelectTrigger data-testid="select-abc-rateLockStatus">
+                  <SelectTrigger data-testid="select-newRefinanceLoan-rateLockStatus">
                     <SelectValue placeholder="Not Locked" />
                   </SelectTrigger>
                   <SelectContent>
@@ -85,33 +85,33 @@ const RefinanceLoanRateDetails = ({
           {/* Rate Lock Date */}
           <div className="space-y-2">
             <div className="flex items-center justify-between mb-2">
-              <Label htmlFor="abc-rateLockDate" className="text-sm">
-                {form.watch("abc.rateLockDateToggle") ? "Lock Date - 10 Year Bond" : "Rate Lock Date"}
+              <Label htmlFor="newRefinanceLoan-rateLockDate" className="text-sm">
+                {form.watch("newRefinanceLoan.rateLockDateToggle") ? "Lock Date - 10 Year Bond" : "Rate Lock Date"}
               </Label>
               <Controller
                 control={form.control}
-                name="abc.rateLockDateToggle"
+                name="newRefinanceLoan.rateLockDateToggle"
                 defaultValue={false}
                 render={({ field }) => (
                   <Switch
                     checked={!!field.value}
                     onCheckedChange={field.onChange}
-                    data-testid="toggle-abc-rateLockDate"
+                    data-testid="toggle-newRefinanceLoan-rateLockDate"
                     className="scale-[0.8]"
                   />
                 )}
               />
             </div>
-            {form.watch("abc.rateLockDateToggle") ? (
+            {form.watch("newRefinanceLoan.rateLockDateToggle") ? (
               <Input
-                id="abc-rateLockDate"
-                {...form.register('abc.rateLockDate')}
-                data-testid="input-abc-rateLockDate"
+                id="newRefinanceLoan-rateLockDate"
+                {...form.register('newRefinanceLoan.rateLockDate')}
+                data-testid="input-newRefinanceLoan-rateLockDate"
               />
             ) : (
               <Input
-                id="abc-rateLockDate"
-                value={form.watch('abc.rateLockDate') || ''}
+                id="newRefinanceLoan-rateLockDate"
+                value={form.watch('newRefinanceLoan.rateLockDate') || ''}
                 onChange={(e) => {
                   const value = e.target.value.replace(/\D/g, '');
                   let formatted = '';
@@ -124,11 +124,11 @@ const RefinanceLoanRateDetails = ({
                       }
                     }
                   }
-                  form.setValue('abc.rateLockDate', formatted);
+                  form.setValue('newRefinanceLoan.rateLockDate', formatted);
                 }}
                 placeholder="MM/DD/YYYY"
                 maxLength={10}
-                data-testid="input-abc-rateLockDate"
+                data-testid="input-newRefinanceLoan-rateLockDate"
               />
             )}
           </div>
@@ -136,37 +136,37 @@ const RefinanceLoanRateDetails = ({
           {/* Rate Lock Expiration */}
           <div className="space-y-2">
             <div className="flex items-center justify-between mb-2">
-              <Label htmlFor="abc-rateLockExpiration" className="text-sm">
-                {form.watch("abc.rateLockExpirationToggle") ? "Rate Lock Duration" : "Rate Lock Expiration"}
+              <Label htmlFor="newRefinanceLoan-rateLockExpiration" className="text-sm">
+                {form.watch("newRefinanceLoan.rateLockExpirationToggle") ? "Rate Lock Duration" : "Rate Lock Expiration"}
               </Label>
               <Controller
                 control={form.control}
-                name="abc.rateLockExpirationToggle"
+                name="newRefinanceLoan.rateLockExpirationToggle"
                 defaultValue={false}
                 render={({ field }) => (
                   <Switch
                     checked={!!field.value}
                     onCheckedChange={field.onChange}
-                    data-testid="toggle-abc-rateLockExpiration"
+                    data-testid="toggle-newRefinanceLoan-rateLockExpiration"
                     className="scale-[0.8]"
                   />
                 )}
               />
             </div>
-            {form.watch("abc.rateLockExpirationToggle") ? (
+            {form.watch("newRefinanceLoan.rateLockExpirationToggle") ? (
               <Input
-                id="abc-rateLockExpiration"
-                value={form.watch('abc.rateLockExpiration') || ''}
+                id="newRefinanceLoan-rateLockExpiration"
+                value={form.watch('newRefinanceLoan.rateLockExpiration') || ''}
                 onChange={(e) => {
-                  form.setValue('abc.rateLockExpiration', e.target.value);
+                  form.setValue('newRefinanceLoan.rateLockExpiration', e.target.value);
                 }}
                 placeholder="Enter duration"
-                data-testid="input-abc-rateLockExpiration"
+                data-testid="input-newRefinanceLoan-rateLockExpiration"
               />
             ) : (
               <Input
-                id="abc-rateLockExpiration"
-                value={form.watch('abc.rateLockExpiration') || ''}
+                id="newRefinanceLoan-rateLockExpiration"
+                value={form.watch('newRefinanceLoan.rateLockExpiration') || ''}
                 onChange={(e) => {
                   const value = e.target.value.replace(/\D/g, '');
                   let formatted = '';
@@ -179,11 +179,11 @@ const RefinanceLoanRateDetails = ({
                       }
                     }
                   }
-                  form.setValue('abc.rateLockExpiration', formatted);
+                  form.setValue('newRefinanceLoan.rateLockExpiration', formatted);
                 }}
                 placeholder="MM/DD/YYYY"
                 maxLength={10}
-                data-testid="input-abc-rateLockExpiration"
+                data-testid="input-newRefinanceLoan-rateLockExpiration"
               />
             )}
           </div>
@@ -191,18 +191,18 @@ const RefinanceLoanRateDetails = ({
           {/* Lender Credit/Broker Credit */}
           <div className="space-y-2">
             <div className="flex items-center justify-between mb-2">
-              <Label htmlFor="abc-lenderCredit" className="text-sm">
-                {form.watch("abc.brokerCreditToggle") ? "Broker Credit" : "Lender Credit"}
+              <Label htmlFor="newRefinanceLoan-lenderCredit" className="text-sm">
+                {form.watch("newRefinanceLoan.brokerCreditToggle") ? "Broker Credit" : "Lender Credit"}
               </Label>
               <Controller
                 control={form.control}
-                name="abc.brokerCreditToggle"
+                name="newRefinanceLoan.brokerCreditToggle"
                 defaultValue={false}
                 render={({ field }) => (
                   <Switch
                     checked={!!field.value}
                     onCheckedChange={field.onChange}
-                    data-testid="toggle-abc-brokerCredit"
+                    data-testid="toggle-newRefinanceLoan-brokerCredit"
                     className="scale-[0.8]"
                   />
                 )}
@@ -210,7 +210,7 @@ const RefinanceLoanRateDetails = ({
             </div>
             <Controller
               control={form.control}
-              name="abc.lenderCredit"
+              name="newRefinanceLoan.lenderCredit"
               defaultValue=""
               render={({ field }) => {
                 const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
@@ -220,7 +220,7 @@ const RefinanceLoanRateDetails = ({
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
-                      id="abc-lenderCredit"
+                      id="newRefinanceLoan-lenderCredit"
                       type="text"
                       placeholder="0"
                       value={displayValue}
@@ -229,7 +229,7 @@ const RefinanceLoanRateDetails = ({
                         field.onChange(value);
                       }}
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-abc-lenderCredit"
+                      data-testid="input-newRefinanceLoan-lenderCredit"
                     />
                   </div>
                 );
@@ -242,10 +242,10 @@ const RefinanceLoanRateDetails = ({
         <div className="grid grid-cols-1 md:grid-cols-10 gap-4 mt-6">
           {/* Interest Rate */}
           <div className="space-y-2 md:col-span-1">
-            <Label htmlFor="abc-interestRate">Interest Rate</Label>
+            <Label htmlFor="newRefinanceLoan-interestRate">Interest Rate</Label>
             <Controller
               control={form.control}
-              name="abc.interestRate"
+              name="newRefinanceLoan.interestRate"
               defaultValue=""
               render={({ field }) => {
                 const numVal = field.value ? field.value.replace(/[^\d.]/g, '') : '';
@@ -258,7 +258,7 @@ const RefinanceLoanRateDetails = ({
                 return (
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <Input
-                      id="abc-interestRate"
+                      id="newRefinanceLoan-interestRate"
                       type="text"
                       placeholder="0.000"
                       value={displayValue}
@@ -270,7 +270,7 @@ const RefinanceLoanRateDetails = ({
                         field.onChange(value);
                       }}
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-abc-interestRate"
+                      data-testid="input-newRefinanceLoan-interestRate"
                     />
                     <span className="text-muted-foreground text-sm">%</span>
                   </div>
@@ -282,19 +282,19 @@ const RefinanceLoanRateDetails = ({
           {/* Principal & Interest Payment */}
           <div className="md:col-span-2">
             <CurrencyInputWithToggle
-              fieldPrefix="abc"
+              fieldPrefix="newRefinanceLoan"
               fieldName="principalAndInterestPayment"
               toggleFieldName="principalInterestPaymentToggle"
               defaultLabel="Principal & Interest Payment"
               toggledLabel="Interest Only Payment"
-              testId="input-abc-principalInterestPayment"
+              testId="input-newRefinanceLoan-principalInterestPayment"
             />
           </div>
 
           {/* Tax & Insurance Payment */}
           <div className="md:col-span-2">
             <CurrencyInputWithDropdown
-              fieldPrefix="abc"
+              fieldPrefix="newRefinanceLoan"
               fieldName="taxInsurancePayment"
               selectorFieldName="taxInsurancePaymentSelector"
               labelOptions={[
@@ -302,23 +302,23 @@ const RefinanceLoanRateDetails = ({
                 { value: 'tax-only', label: 'Tax Payment Only' },
                 { value: 'insurance-only', label: 'Insurance Payment Only' }
               ]}
-              testId="input-abc-taxInsurancePayment"
+              testId="input-newRefinanceLoan-taxInsurancePayment"
             />
           </div>
 
           {/* Total Monthly Payment */}
           <div className="md:col-span-2">
             <CurrencyInputWithToggle
-              fieldPrefix="abc"
+              fieldPrefix="newRefinanceLoan"
               fieldName="totalMonthlyPayment"
               defaultLabel="Total Monthly Payment"
-              testId="input-abc-totalMonthlyPayment"
+              testId="input-newRefinanceLoan-totalMonthlyPayment"
               showToggle={false}
               readOnly={true}
               bgMuted={true}
               calculateValue={(form) => {
-                const principalAndInterest = form.watch("abc.principalAndInterestPayment") || '';
-                const taxInsurance = form.watch("abc.taxInsurancePayment") || '';
+                const principalAndInterest = form.watch("newRefinanceLoan.principalAndInterestPayment") || '';
+                const taxInsurance = form.watch("newRefinanceLoan.taxInsurancePayment") || '';
 
                 const pi = principalAndInterest ? parseInt(principalAndInterest.replace(/,/g, '')) : 0;
                 const ti = taxInsurance ? parseInt(taxInsurance.replace(/,/g, '')) : 0;
@@ -331,20 +331,20 @@ const RefinanceLoanRateDetails = ({
           {/* HOA */}
           <div className="md:col-span-1">
             <CurrencyInputWithToggle
-              fieldPrefix="abc"
+              fieldPrefix="newRefinanceLoan"
               fieldName="hoa"
               defaultLabel="HOA"
-              testId="input-abc-hoa"
+              testId="input-newRefinanceLoan-hoa"
               showToggle={false}
             />
           </div>
 
           {/* Attached to Property */}
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="abc-attachedToProperty">Attached to Property</Label>
+            <Label htmlFor="newRefinanceLoan-attachedToProperty">Attached to Property</Label>
             <Controller
               control={form.control}
-              name="abc.attachedToProperty"
+              name="newRefinanceLoan.attachedToProperty"
               render={({ field }) => (
                 <Select
                   value={field.value}
@@ -352,7 +352,7 @@ const RefinanceLoanRateDetails = ({
                     field.onChange(value);
                   }}
                 >
-                  <SelectTrigger data-testid="select-abc-attachedToProperty">
+                  <SelectTrigger data-testid="select-newRefinanceLoan-attachedToProperty">
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent>

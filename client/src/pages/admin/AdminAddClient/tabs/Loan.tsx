@@ -88,12 +88,12 @@ const LoanTab = ({
       // Remove loan cards of the specific type and clear form data
       if (loanType === 'new-refinance') {
         // Clear refinance loan data
-        form.setValue('abc' as any, undefined);
+        form.setValue('newRefinanceLoan' as any, undefined);
         setNewRefinanceLoanCards([]);
         setNewRefinanceLoanCardStates({});
       } else if (loanType === 'new-purchase') {
         // Clear purchase loan data
-        form.setValue('bbb' as any, undefined);
+        form.setValue('newPurchaseLoan' as any, undefined);
         setNewPurchaseLoanCards([]);
         setNewPurchaseLoanCardStates({});
       } else if (loanType === 'current-primary') {
@@ -151,8 +151,8 @@ const LoanTab = ({
         return rest;
       });
     } else if (loanId.startsWith('refinance-')) {
-      // Clear refinance loan data (uses 'abc' prefix)
-      form.setValue('abc' as any, undefined);
+      // Clear refinance loan data
+      form.setValue('newRefinanceLoan' as any, undefined);
       // Remove from refinance loans
       setNewRefinanceLoanCards(prev => prev.filter(id => id !== loanId));
       setNewRefinanceLoanCardStates(prev => {
@@ -160,8 +160,8 @@ const LoanTab = ({
         return rest;
       });
     } else if (loanId.startsWith('purchase-')) {
-      // Clear purchase loan data (uses 'bbb' prefix)
-      form.setValue('bbb' as any, undefined);
+      // Clear purchase loan data
+      form.setValue('newPurchaseLoan' as any, undefined);
       // Remove from purchase loans
       setNewPurchaseLoanCards(prev => prev.filter(id => id !== loanId));
       setNewPurchaseLoanCardStates(prev => {

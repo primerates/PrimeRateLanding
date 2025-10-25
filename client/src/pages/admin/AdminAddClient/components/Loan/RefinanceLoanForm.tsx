@@ -35,8 +35,8 @@ const RefinanceLoanForm = ({
 }: RefinanceLoanFormProps) => {
   const form = useFormContext();
 
-  // Always use abc prefix for refinance loans (matching original code)
-  const fieldPrefix = 'abc';
+  // Use newRefinanceLoan as the field prefix
+  const fieldPrefix = 'newRefinanceLoan';
 
   return (
     <div className="space-y-6">

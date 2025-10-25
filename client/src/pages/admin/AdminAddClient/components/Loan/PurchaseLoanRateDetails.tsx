@@ -18,28 +18,28 @@ const PurchaseLoanRateDetails = () => {
           {/* Mid FICO */}
           <div className="space-y-2">
             <div className="flex items-center justify-between mb-2">
-              <Label htmlFor="bbb-midFico" className="text-sm">
+              <Label htmlFor="newPurchaseLoan-midFico" className="text-sm">
                 Mid FICO
               </Label>
               <Controller
                 control={form.control}
-                name="bbb.midFico"
+                name="newPurchaseLoan.midFico"
                 render={({ field }) => (
                   <Switch
                     checked={!!field.value}
                     onCheckedChange={() => { }}
-                    data-testid="toggle-bbb-fico-type"
+                    data-testid="toggle-newPurchaseLoan-fico-type"
                     className="scale-[0.8]"
                   />
                 )}
               />
             </div>
             <Input
-              id="bbb-midFico"
-              {...form.register('bbb.midFico')}
+              id="newPurchaseLoan-midFico"
+              {...form.register('newPurchaseLoan.midFico')}
               placeholder="Enter"
               className="border border-input bg-background px-3 rounded-md"
-              data-testid="input-bbb-midFico"
+              data-testid="input-newPurchaseLoan-midFico"
             />
           </div>
 
@@ -47,10 +47,10 @@ const PurchaseLoanRateDetails = () => {
           <div className="space-y-2">
             <Controller
               control={form.control}
-              name="bbb.rateLockStatus"
+              name="newPurchaseLoan.rateLockStatus"
               render={({ field }) => (
                 <Label
-                  htmlFor="bbb-rateLockStatus"
+                  htmlFor="newPurchaseLoan-rateLockStatus"
                   className={(field.value === 'not-locked' || field.value === 'expired' || !field.value) ? 'text-red-500' : ''}
                 >
                   Rate Lock Status
@@ -58,7 +58,7 @@ const PurchaseLoanRateDetails = () => {
               )}
             />
             <Controller
-              name="bbb.rateLockStatus"
+              name="newPurchaseLoan.rateLockStatus"
               control={form.control}
               defaultValue="not-locked"
               render={({ field }) => (
@@ -66,7 +66,7 @@ const PurchaseLoanRateDetails = () => {
                   value={field.value || "not-locked"}
                   onValueChange={field.onChange}
                 >
-                  <SelectTrigger data-testid="select-bbb-rateLockStatus">
+                  <SelectTrigger data-testid="select-newPurchaseLoan-rateLockStatus">
                     <SelectValue placeholder="Not Locked" />
                   </SelectTrigger>
                   <SelectContent>
@@ -82,33 +82,33 @@ const PurchaseLoanRateDetails = () => {
           {/* Rate Lock Date */}
           <div className="space-y-2">
             <div className="flex items-center justify-between mb-2">
-              <Label htmlFor="bbb-rateLockDate" className="text-sm">
-                {form.watch("bbb.rateLockDateToggle") ? "Lock Date - 10 Year Bond" : "Rate Lock Date"}
+              <Label htmlFor="newPurchaseLoan-rateLockDate" className="text-sm">
+                {form.watch("newPurchaseLoan.rateLockDateToggle") ? "Lock Date - 10 Year Bond" : "Rate Lock Date"}
               </Label>
               <Controller
                 control={form.control}
-                name="bbb.rateLockDateToggle"
+                name="newPurchaseLoan.rateLockDateToggle"
                 defaultValue={false}
                 render={({ field }) => (
                   <Switch
                     checked={!!field.value}
                     onCheckedChange={field.onChange}
-                    data-testid="toggle-bbb-rateLockDate"
+                    data-testid="toggle-newPurchaseLoan-rateLockDate"
                     className="scale-[0.8]"
                   />
                 )}
               />
             </div>
-            {form.watch("bbb.rateLockDateToggle") ? (
+            {form.watch("newPurchaseLoan.rateLockDateToggle") ? (
               <Input
-                id="bbb-rateLockDate"
-                {...form.register('bbb.rateLockDate')}
-                data-testid="input-bbb-rateLockDate"
+                id="newPurchaseLoan-rateLockDate"
+                {...form.register('newPurchaseLoan.rateLockDate')}
+                data-testid="input-newPurchaseLoan-rateLockDate"
               />
             ) : (
               <Input
-                id="bbb-rateLockDate"
-                value={form.watch('bbb.rateLockDate') || ''}
+                id="newPurchaseLoan-rateLockDate"
+                value={form.watch('newPurchaseLoan.rateLockDate') || ''}
                 onChange={(e) => {
                   const value = e.target.value.replace(/\D/g, '');
                   let formatted = '';
@@ -121,11 +121,11 @@ const PurchaseLoanRateDetails = () => {
                       }
                     }
                   }
-                  form.setValue('bbb.rateLockDate', formatted);
+                  form.setValue('newPurchaseLoan.rateLockDate', formatted);
                 }}
                 placeholder="MM/DD/YYYY"
                 maxLength={10}
-                data-testid="input-bbb-rateLockDate"
+                data-testid="input-newPurchaseLoan-rateLockDate"
               />
             )}
           </div>
@@ -133,37 +133,37 @@ const PurchaseLoanRateDetails = () => {
           {/* Rate Lock Expiration */}
           <div className="space-y-2">
             <div className="flex items-center justify-between mb-2">
-              <Label htmlFor="bbb-rateLockExpiration" className="text-sm">
-                {form.watch("bbb.rateLockExpirationToggle") ? "Rate Lock Duration" : "Rate Lock Expiration"}
+              <Label htmlFor="newPurchaseLoan-rateLockExpiration" className="text-sm">
+                {form.watch("newPurchaseLoan.rateLockExpirationToggle") ? "Rate Lock Duration" : "Rate Lock Expiration"}
               </Label>
               <Controller
                 control={form.control}
-                name="bbb.rateLockExpirationToggle"
+                name="newPurchaseLoan.rateLockExpirationToggle"
                 defaultValue={false}
                 render={({ field }) => (
                   <Switch
                     checked={!!field.value}
                     onCheckedChange={field.onChange}
-                    data-testid="toggle-bbb-rateLockExpiration"
+                    data-testid="toggle-newPurchaseLoan-rateLockExpiration"
                     className="scale-[0.8]"
                   />
                 )}
               />
             </div>
-            {form.watch("bbb.rateLockExpirationToggle") ? (
+            {form.watch("newPurchaseLoan.rateLockExpirationToggle") ? (
               <Input
-                id="bbb-rateLockExpiration"
-                value={form.watch('bbb.rateLockExpiration') || ''}
+                id="newPurchaseLoan-rateLockExpiration"
+                value={form.watch('newPurchaseLoan.rateLockExpiration') || ''}
                 onChange={(e) => {
-                  form.setValue('bbb.rateLockExpiration', e.target.value);
+                  form.setValue('newPurchaseLoan.rateLockExpiration', e.target.value);
                 }}
                 placeholder="Enter duration"
-                data-testid="input-bbb-rateLockExpiration"
+                data-testid="input-newPurchaseLoan-rateLockExpiration"
               />
             ) : (
               <Input
-                id="bbb-rateLockExpiration"
-                value={form.watch('bbb.rateLockExpiration') || ''}
+                id="newPurchaseLoan-rateLockExpiration"
+                value={form.watch('newPurchaseLoan.rateLockExpiration') || ''}
                 onChange={(e) => {
                   const value = e.target.value.replace(/\D/g, '');
                   let formatted = '';
@@ -176,11 +176,11 @@ const PurchaseLoanRateDetails = () => {
                       }
                     }
                   }
-                  form.setValue('bbb.rateLockExpiration', formatted);
+                  form.setValue('newPurchaseLoan.rateLockExpiration', formatted);
                 }}
                 placeholder="MM/DD/YYYY"
                 maxLength={10}
-                data-testid="input-bbb-rateLockExpiration"
+                data-testid="input-newPurchaseLoan-rateLockExpiration"
               />
             )}
           </div>
@@ -190,10 +190,10 @@ const PurchaseLoanRateDetails = () => {
         <div className="grid grid-cols-1 md:grid-cols-10 gap-4 mt-6">
           {/* Interest Rate */}
           <div className="space-y-2 md:col-span-1">
-            <Label htmlFor="bbb-interestRate">Interest Rate</Label>
+            <Label htmlFor="newPurchaseLoan-interestRate">Interest Rate</Label>
             <Controller
               control={form.control}
-              name="bbb.interestRate"
+              name="newPurchaseLoan.interestRate"
               defaultValue=""
               render={({ field }) => {
                 const numVal = field.value ? field.value.replace(/[^\d.]/g, '') : '';
@@ -206,7 +206,7 @@ const PurchaseLoanRateDetails = () => {
                 return (
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <Input
-                      id="bbb-interestRate"
+                      id="newPurchaseLoan-interestRate"
                       type="text"
                       placeholder="0.000"
                       value={displayValue}
@@ -218,7 +218,7 @@ const PurchaseLoanRateDetails = () => {
                         field.onChange(value);
                       }}
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-bbb-interestRate"
+                      data-testid="input-newPurchaseLoan-interestRate"
                     />
                     <span className="text-muted-foreground text-sm">%</span>
                   </div>
@@ -230,19 +230,19 @@ const PurchaseLoanRateDetails = () => {
           {/* Principal & Interest Payment */}
           <div className="md:col-span-2">
             <CurrencyInputWithToggle
-              fieldPrefix="bbb"
+              fieldPrefix="newPurchaseLoan"
               fieldName="principalAndInterestPayment"
               toggleFieldName="principalInterestPaymentToggle"
               defaultLabel="Principal & Interest Payment"
               toggledLabel="Interest Only Payment"
-              testId="input-bbb-principalInterestPayment"
+              testId="input-newPurchaseLoan-principalInterestPayment"
             />
           </div>
 
           {/* Tax & Insurance Payment */}
           <div className="md:col-span-2">
             <CurrencyInputWithDropdown
-              fieldPrefix="bbb"
+              fieldPrefix="newPurchaseLoan"
               fieldName="taxInsurancePayment"
               selectorFieldName="taxInsurancePaymentSelector"
               labelOptions={[
@@ -250,23 +250,23 @@ const PurchaseLoanRateDetails = () => {
                 { value: 'tax-only', label: 'Tax Payment Only' },
                 { value: 'insurance-only', label: 'Insurance Payment Only' }
               ]}
-              testId="input-bbb-taxInsurancePayment"
+              testId="input-newPurchaseLoan-taxInsurancePayment"
             />
           </div>
 
           {/* Total Monthly Payment */}
           <div className="md:col-span-2">
             <CurrencyInputWithToggle
-              fieldPrefix="bbb"
+              fieldPrefix="newPurchaseLoan"
               fieldName="totalMonthlyPayment"
               defaultLabel="Total Monthly Payment"
-              testId="input-bbb-totalMonthlyPayment"
+              testId="input-newPurchaseLoan-totalMonthlyPayment"
               showToggle={false}
               readOnly={true}
               bgMuted={true}
               calculateValue={(form) => {
-                const principalAndInterest = form.watch("bbb.principalAndInterestPayment") || '';
-                const taxInsurance = form.watch("bbb.taxInsurancePayment") || '';
+                const principalAndInterest = form.watch("newPurchaseLoan.principalAndInterestPayment") || '';
+                const taxInsurance = form.watch("newPurchaseLoan.taxInsurancePayment") || '';
 
                 const pi = principalAndInterest ? parseInt(principalAndInterest.replace(/,/g, '')) : 0;
                 const ti = taxInsurance ? parseInt(taxInsurance.replace(/,/g, '')) : 0;
@@ -279,20 +279,20 @@ const PurchaseLoanRateDetails = () => {
           {/* HOA */}
           <div className="md:col-span-1">
             <CurrencyInputWithToggle
-              fieldPrefix="bbb"
+              fieldPrefix="newPurchaseLoan"
               fieldName="hoa"
               defaultLabel="HOA"
-              testId="input-bbb-hoa"
+              testId="input-newPurchaseLoan-hoa"
               showToggle={false}
             />
           </div>
 
           {/* Attached to Property */}
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="bbb-attachedToProperty">Attached to Property</Label>
+            <Label htmlFor="newPurchaseLoan-attachedToProperty">Attached to Property</Label>
             <Controller
               control={form.control}
-              name="bbb.attachedToProperty"
+              name="newPurchaseLoan.attachedToProperty"
               render={({ field }) => (
                 <Select
                   value={field.value}
@@ -300,7 +300,7 @@ const PurchaseLoanRateDetails = () => {
                     field.onChange(value);
                   }}
                 >
-                  <SelectTrigger data-testid="select-bbb-attachedToProperty">
+                  <SelectTrigger data-testid="select-newPurchaseLoan-attachedToProperty">
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent>

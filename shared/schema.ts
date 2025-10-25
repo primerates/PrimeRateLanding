@@ -356,6 +356,60 @@ export const newLoanSchema = z.object({
   lockPeriod: z.string().optional(),
 });
 
+// New Refinance Loan schema
+export const newRefinanceLoanSchema = z.object({
+  lenderName: z.string().optional(),
+  loanNumber: z.string().optional(),
+  loanCategory: z.string().optional(),
+  loanPurpose: z.string().optional(),
+  docType: z.string().optional(),
+  loanBalance: z.string().optional(),
+  loanTerm: z.string().optional(),
+  cashOutAmount: z.string().optional(),
+  cashOutAmountToggle: z.boolean().optional(),
+  totalDebtPayOff: z.string().optional(),
+  totalDebtPayOffToggle: z.boolean().optional(),
+  prepaymentPenalty: z.string().optional(),
+  midFico: z.string().optional(),
+  loanProgram: z.string().optional(),
+  loanDuration: z.string().optional(),
+  rate: z.string().optional(),
+  apr: z.string().optional(),
+  totalLoanCosts: z.string().optional(),
+  lenderCredit: z.string().optional(),
+  lenderCreditToggle: z.boolean().optional(),
+  adjustedLenderCredit: z.string().optional(),
+  estimatedCashToClose: z.string().optional(),
+  estimatedCashToCloseToggle: z.boolean().optional(),
+  attachedToProperty: z.string().optional(),
+}).optional();
+
+// New Purchase Loan schema
+export const newPurchaseLoanSchema = z.object({
+  lenderName: z.string().optional(),
+  loanNumber: z.string().optional(),
+  loanCategory: z.string().optional(),
+  loanPurpose: z.string().optional(),
+  docType: z.string().optional(),
+  loanAmount: z.string().optional(),
+  downPayment: z.string().optional(),
+  downPaymentPercentage: z.string().optional(),
+  loanTerm: z.string().optional(),
+  prepaymentPenalty: z.string().optional(),
+  midFico: z.string().optional(),
+  loanProgram: z.string().optional(),
+  loanDuration: z.string().optional(),
+  rate: z.string().optional(),
+  apr: z.string().optional(),
+  totalLoanCosts: z.string().optional(),
+  lenderCredit: z.string().optional(),
+  lenderCreditToggle: z.boolean().optional(),
+  adjustedLenderCredit: z.string().optional(),
+  estimatedCashToClose: z.string().optional(),
+  estimatedCashToCloseToggle: z.boolean().optional(),
+  attachedToProperty: z.string().optional(),
+}).optional();
+
 export const vendorsSchema = z.object({
   realtor: z.string().optional(),
   appraiser: z.string().optional(),
@@ -378,6 +432,8 @@ export const clientSchema = z.object({
   secondLoan: currentLoanSchema.optional(),
   thirdLoan: currentLoanSchema.optional(),
   newLoan: newLoanSchema.optional(),
+  newRefinanceLoan: newRefinanceLoanSchema,
+  newPurchaseLoan: newPurchaseLoanSchema,
   vendors: vendorsSchema.optional(),
   // Metadata
   createdAt: z.string().optional(),
