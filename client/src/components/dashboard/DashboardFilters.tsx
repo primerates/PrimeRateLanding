@@ -44,6 +44,7 @@ export function DashboardFilters({
             <span>
               {categoryFilter === 'select' && 'Select'}
               {categoryFilter === 'financials' && 'Financials'}
+              {categoryFilter === 'loan-status' && 'Loan Status'}
               {categoryFilter === 'marketing' && 'Marketing'}
               {categoryFilter === 'staff' && 'Staff'}
               {categoryFilter === 'vendor' && 'Vendor'}
@@ -105,6 +106,16 @@ export function DashboardFilters({
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
+              setCategoryFilter('loan-status');
+              setTeamFilter('show-all');
+            }}
+            className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+            data-testid="option-category-loan-status"
+          >
+            Loan Status
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
               setCategoryFilter('library');
               setTeamFilter('show-all');
             }}
@@ -128,7 +139,6 @@ export function DashboardFilters({
               {teamFilter === 'revenue-add' && 'Revenue'}
               {teamFilter === 'expense-add' && 'Expense'}
               {teamFilter === 'pl-statement' && 'P&L Statement'}
-              {teamFilter === 'loan-status' && 'Loan Status'}
               {teamFilter === 'direct-mail' && 'Direct Mail'}
               {teamFilter === 'lead-vendor' && 'Lead Vendor'}
               {teamFilter === 'social-media' && 'Social Media'}
@@ -185,13 +195,6 @@ export function DashboardFilters({
                 data-testid="option-team-pl-statement"
               >
                 P&L Statement
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setTeamFilter('loan-status')}
-                className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                data-testid="option-team-loan-status"
-              >
-                Loan Status
               </DropdownMenuItem>
             </>
           )}
