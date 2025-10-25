@@ -63,6 +63,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - **Search Card System**: Provides category-specific search cards for Expenses and Revenue, with date filters and dynamic transaction tables that filter results based on search parameters.
     - **Vendor Management**: Includes dedicated cards for adding and searching vendors, with comprehensive search fields, dynamic results tables, and sortable columns.
     - **Workflow Automation**: Implements auto-minimizing and mutual exclusivity logic for various cards and forms to optimize user workflow.
+- **Loan Status Dashboard (Standalone)**: Completely standalone single-loan detail view accessible via "Loan Status" category filter. Features performance metrics, tabbed navigation (Docs Pending, Services, Rate Lock, Team, Loan Details, Activity), dual-view mode (detail/overview toggle), stacked icon visualizations, and modal-based updates. Designed as foundation for new design theme with purple gradient styling.
 
 ## External Dependencies
 
