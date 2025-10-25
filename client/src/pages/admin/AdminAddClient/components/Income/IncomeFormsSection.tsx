@@ -180,6 +180,8 @@ const IncomeFormsSection = ({
                         calculatedAdjustedNewFhaMip=""
                         setShowIncomeCardAnimation={setShowIncomeCardAnimation}
                         showAddButton={employerCards.length < 3}
+                        fieldPrefix={fieldPrefix}
+                        employerType="employers"
                     />
                 );
             })}
@@ -216,6 +218,8 @@ const IncomeFormsSection = ({
                         setShowIncomeCardAnimation={setShowIncomeCardAnimation}
                         showAddButton={secondEmployerCards.length < 2}
                         title="Second Employer"
+                        fieldPrefix={fieldPrefix}
+                        employerType="secondEmployers"
                     />
                 );
             })}

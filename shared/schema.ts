@@ -147,6 +147,7 @@ export const incomeSchema = z.object({
   
   // Multiple Main Employers (new structure for dynamic cards)
   employers: z.record(z.string(), z.object({
+    employerStatus: z.enum(["current", "prior"]).optional(), // Current or Prior Employer selection
     employerName: z.string().optional(),
     jobTitle: z.string().optional(),
     monthlyIncome: z.string().optional(),
@@ -165,6 +166,7 @@ export const incomeSchema = z.object({
   
   // Multiple Second Employers (new structure for dynamic cards)
   secondEmployers: z.record(z.string(), z.object({
+    employerStatus: z.enum(["current", "prior"]).optional(), // Current or Prior Employer selection
     employerName: z.string().optional(),
     jobTitle: z.string().optional(),
     monthlyIncome: z.string().optional(),

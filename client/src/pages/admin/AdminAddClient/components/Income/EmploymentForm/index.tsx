@@ -35,6 +35,8 @@ interface EmploymentFormProps {
   setShowIncomeCardAnimation: (updater: (prev: any) => any) => void;
   showAddButton?: boolean;
   title?: string;
+  fieldPrefix: 'income' | 'coBorrowerIncome';
+  employerType: 'employers' | 'secondEmployers';
 }
 
 const EmploymentForm = ({
@@ -52,14 +54,16 @@ const EmploymentForm = ({
   calculatedAdjustedNewFhaMip,
   setShowIncomeCardAnimation,
   showAddButton = true,
-  title = "Borrower Employer"
-}: EmploymentFormProps) => {  
+  title = "Borrower Employer",
+  fieldPrefix,
+  employerType
+}: EmploymentFormProps) => {
   const form = useFormContext<InsertClient>();
 
   return (
     <Card key={cardId} className="transition-colors duration-200">
-      <Collapsible 
-        open={isOpen} 
+      <Collapsible
+        open={isOpen}
         onOpenChange={(open) => {
           onOpenChange(open);
           if (open) {
@@ -95,7 +99,7 @@ const EmploymentForm = ({
                   Add Employer
                 </Button>
               )}
-              
+
               {/* Delete Employer Button */}
               <Button
                 type="button"
@@ -109,12 +113,12 @@ const EmploymentForm = ({
                 <Minus className="h-4 w-4 mr-2" />
                 Remove
               </Button>
-              
+
               <CollapsibleTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="hover:bg-orange-500 hover:text-white" 
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="hover:bg-orange-500 hover:text-white"
                   data-testid={`button-toggle-income-${propertyId}`}
                   title={isOpen ? 'Minimize' : 'Expand'}
                   key={`employment-income-${propertyId}-${isOpen}`}
@@ -125,12 +129,17 @@ const EmploymentForm = ({
             </div>
           </div>
         </CardHeader>
-      
+
         <CollapsibleContent>
           <CardContent>
             <div className="space-y-6">
               {/* Employment Type Selection */}
-              <EmploymentTypeRadio showAnimation={showAnimation} />
+              <EmploymentTypeRadio
+                showAnimation={showAnimation}
+                cardId={cardId}
+                fieldPrefix={fieldPrefix}
+                employerType={employerType}
+              />
 
               {/* Employment Information - Single Row */}
               <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
