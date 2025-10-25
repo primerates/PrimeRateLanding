@@ -76,10 +76,10 @@ const ExistingLoanRateDetails = ({ loanId, loanType }: ExistingLoanRateDetailsPr
 
           {/* Monthly Payment */}
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor={`${loanId}-monthlyEscrow`}>Monthly Payment</Label>
+            <Label htmlFor={`${loanId}-totalMonthlyPayment`}>Monthly Payment</Label>
             <Controller
               control={form.control}
-              name={`${fieldPrefix}.escrowPayment` as any}
+              name={`${fieldPrefix}.totalMonthlyPayment` as any}
               defaultValue=""
               render={({ field }) => {
                 const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
@@ -89,7 +89,7 @@ const ExistingLoanRateDetails = ({ loanId, loanType }: ExistingLoanRateDetailsPr
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
-                      id={`${loanId}-monthlyEscrow`}
+                      id={`${loanId}-totalMonthlyPayment`}
                       type="text"
                       placeholder="0"
                       value={displayValue}
@@ -98,7 +98,7 @@ const ExistingLoanRateDetails = ({ loanId, loanType }: ExistingLoanRateDetailsPr
                         field.onChange(value);
                       }}
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid={`input-${loanId}-monthlyEscrow`}
+                      data-testid={`input-${loanId}-totalMonthlyPayment`}
                     />
                   </div>
                 );

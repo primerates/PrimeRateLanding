@@ -342,7 +342,7 @@ export const existingSecondThirdLoanEntrySchema = z.object({
   // Rate Details Section fields
   interestRate: z.string().optional(),
   principalAndInterestPayment: z.string().optional(),
-  escrowPayment: z.string().optional(),
+  totalMonthlyPayment: z.string().optional(),
   prePaymentPenalty: z.string().optional(),
   attachedToProperty: z.string().optional(),
 });
