@@ -322,6 +322,9 @@ const LoanTab = ({
         showLoanAnimation={showLoanAnimation}
         newRefinanceLoanCards={newRefinanceLoanCards}
         newPurchaseLoanCards={newPurchaseLoanCards}
+        currentPrimaryLoans={currentPrimaryLoans}
+        currentSecondLoans={currentSecondLoans}
+        currentThirdLoans={currentThirdLoans}
       />
 
       <LoanManagement

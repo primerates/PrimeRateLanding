@@ -312,39 +312,49 @@ export const propertySchema = z.object({
   properties: z.array(propertyEntrySchema).optional(),
 });
 
-export const currentLoanSchema = z.object({
-  currentLender: z.string().optional(),
+// Individual existing primary loan entry schema
+export const existingPrimaryLoanEntrySchema = z.object({
   lenderName: z.string().optional(),
   loanNumber: z.string().optional(),
+  loanPurpose: z.string().optional(),
   loanStartDate: z.string().optional(),
-  remainingTermPerCreditReport: z.string().optional(),
-  currentBalance: z.string().optional(),
-  currentRate: z.string().optional(),
+  remainingTerm: z.string().optional(),
+  loanCategory: z.string().optional(),
+  loanBalance: z.string().optional(),
+  loanTerm: z.string().optional(),
+  loanDuration: z.string().optional(),
+  prepaymentPenalty: z.string().optional(),
+  // Rate Details Section fields
+  interestRate: z.string().optional(),
   principalAndInterestPayment: z.string().optional(),
-  escrowPayment: z.string().optional(),
+  taxInsurancePayment: z.string().optional(),
   totalMonthlyPayment: z.string().optional(),
-  monthlyPayment: z.string().optional(),
-  hoaPayment: z.string().optional(),
-  prepaymentPenalty: z.enum(['Yes - see notes', 'No']).optional(),
-  statementBalance: z.object({
-    mode: z.enum(['Statement Balance', 'Pay Off Demand']).optional(),
-    amount: z.string().optional(),
-  }).optional(),
-  attachedToProperty: z.string().optional(), // Property ID for attachment system
-  propertyAddress: z.object({
-    street: z.string().optional(),
-    unit: z.string().optional(),
-    city: z.string().optional(),
-    state: z.string().optional(),
-    zipCode: z.string().optional(),
-    county: z.string().optional(),
-  }).optional(),
+  attachedToProperty: z.string().optional(),
+});
+
+// Individual existing second/third loan entry schema
+export const existingSecondThirdLoanEntrySchema = z.object({
+  lenderName: z.string().optional(),
+  loanNumber: z.string().optional(),
   loanCategory: z.string().optional(),
   loanProgram: z.string().optional(),
   loanDuration: z.string().optional(),
-  loanTerm: z.string().optional(),
-  loanPurpose: z.string().optional(),
+  // Rate Details Section fields
+  interestRate: z.string().optional(),
+  principalAndInterestPayment: z.string().optional(),
+  escrowPayment: z.string().optional(),
+  prePaymentPenalty: z.string().optional(),
+  attachedToProperty: z.string().optional(),
 });
+
+// Schema to support multiple existing primary loans (using record with loanId as key)
+export const currentLoanSchema = z.record(z.string(), existingPrimaryLoanEntrySchema).default({});
+
+// Schema to support multiple existing second loans (using record with loanId as key)
+export const currentSecondLoanSchema = z.record(z.string(), existingSecondThirdLoanEntrySchema).default({});
+
+// Schema to support multiple existing third loans (using record with loanId as key)
+export const currentThirdLoanSchema = z.record(z.string(), existingSecondThirdLoanEntrySchema).default({});
 
 export const newLoanSchema = z.object({
   loanAmount: z.string().optional(),
@@ -460,9 +470,9 @@ export const clientSchema = z.object({
   income: incomeSchema.optional(),
   coBorrowerIncome: incomeSchema.optional(),
   property: propertySchema.optional(),
-  currentLoan: currentLoanSchema.optional(),
-  secondLoan: currentLoanSchema.optional(),
-  thirdLoan: currentLoanSchema.optional(),
+  currentLoan: currentLoanSchema,
+  currentSecondLoan: currentSecondLoanSchema,
+  currentThirdLoan: currentThirdLoanSchema,
   newLoan: newLoanSchema.optional(),
   newRefinanceLoan: newRefinanceLoanSchema,
   newPurchaseLoan: newPurchaseLoanSchema,

@@ -8,12 +8,18 @@ interface LoanHeaderProps {
   showLoanAnimation?: boolean;
   newRefinanceLoanCards?: string[];
   newPurchaseLoanCards?: string[];
+  currentPrimaryLoans?: string[];
+  currentSecondLoans?: string[];
+  currentThirdLoans?: string[];
 }
 
 const LoanHeader = ({
   showLoanAnimation = false,
   newRefinanceLoanCards = [],
-  newPurchaseLoanCards = []
+  newPurchaseLoanCards = [],
+  currentPrimaryLoans = [],
+  currentSecondLoans = [],
+  currentThirdLoans = []
 }: LoanHeaderProps) => {
   const form = useFormContext<InsertClient>();
 
@@ -58,6 +64,11 @@ const LoanHeader = ({
     return newRefinanceLoanCards.length + newPurchaseLoanCards.length;
   };
 
+  // Calculate existing loans count
+  const getExistingLoansCount = () => {
+    return currentPrimaryLoans.length + currentSecondLoans.length + currentThirdLoans.length;
+  };
+
   return (
     <Card className="transition-all duration-700">
       <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
@@ -93,7 +104,7 @@ const LoanHeader = ({
         
         <CircularMetric
           label="Existing Loans"
-          value={0}
+          value={getExistingLoansCount()}
           showAnimation={showLoanAnimation}
           testId="text-loan-term"
         />
