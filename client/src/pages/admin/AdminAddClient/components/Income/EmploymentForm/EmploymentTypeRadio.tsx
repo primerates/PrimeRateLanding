@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
@@ -19,6 +20,14 @@ const EmploymentTypeRadio = ({
   const form = useFormContext<InsertClient>();
   const fieldPath = `${fieldPrefix}.${employerType}.${cardId}.employerStatus` as any;
   const value = form.watch(fieldPath) || 'current'; // Default to 'current'
+
+  // Initialize the default value on mount if not already set
+  useEffect(() => {
+    const currentValue = form.getValues(fieldPath);
+    if (!currentValue) {
+      form.setValue(fieldPath, 'current');
+    }
+  }, [fieldPath, form]);
 
   const handleChange = (newValue: 'current' | 'prior') => {
     form.setValue(fieldPath, newValue);

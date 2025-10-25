@@ -28,6 +28,7 @@ interface SelfEmploymentFormProps {
   setShowIncomeCardAnimation: (updater: (prev: any) => any) => void;
   showAddButton?: boolean;
   title?: string;
+  fieldPrefix: 'income' | 'coBorrowerIncome';
 }
 
 const SelfEmploymentForm = ({
@@ -41,10 +42,28 @@ const SelfEmploymentForm = ({
   getSelfEmploymentFieldPath,
   setShowIncomeCardAnimation,
   showAddButton = true,
-  title = "Borrower Self-Employment"
-}: SelfEmploymentFormProps) => {  
+  title = "Borrower Self-Employment",
+  fieldPrefix
+}: SelfEmploymentFormProps) => {
   const form = useFormContext<InsertClient>();
 
+  // Get the business status field value
+  const fieldPath = `${fieldPrefix}.selfEmployers.${cardId}.businessStatus` as any;
+  const businessStatus = form.watch(fieldPath) || 'current'; // Default to 'current'
+
+  // Initialize the default value on mount if not already set
+  useEffect(() => {
+    const currentValue = form.getValues(fieldPath);
+    if (!currentValue) {
+      form.setValue(fieldPath, 'current');
+    }
+  }, [fieldPath, form]);
+
+  const handleBusinessStatusChange = (newValue: 'current' | 'prior') => {
+    form.setValue(fieldPath, newValue);
+  };
+
+  const radioName = `self-employment-type-${cardId}`;
 
   // Utility function to calculate years and months in business
   const calculateYearsInBusiness = (formationDate: string, endDate?: string, isPresent?: boolean) => {
@@ -249,21 +268,26 @@ const SelfEmploymentForm = ({
                         <input
                           type="radio"
                           id={`self-employment-current-${cardId}`}
-                          name={`self-employment-type-${cardId}`}
+                          name={radioName}
+                          value="current"
+                          checked={businessStatus === 'current'}
+                          onChange={() => handleBusinessStatusChange('current')}
                           data-testid={`radio-self-employment-current-${cardId}`}
-                          defaultChecked
                         />
-                        <Label htmlFor={`self-employment-current-${cardId}`}>Current</Label>
+                        <Label htmlFor={`self-employment-current-${cardId}`} className="cursor-pointer">Current</Label>
                       </div>
-                      
+
                       <div className="flex items-center space-x-2">
                         <input
                           type="radio"
                           id={`self-employment-prior-${cardId}`}
-                          name={`self-employment-type-${cardId}`}
+                          name={radioName}
+                          value="prior"
+                          checked={businessStatus === 'prior'}
+                          onChange={() => handleBusinessStatusChange('prior')}
                           data-testid={`radio-self-employment-prior-${cardId}`}
                         />
-                        <Label htmlFor={`self-employment-prior-${cardId}`}>Prior</Label>
+                        <Label htmlFor={`self-employment-prior-${cardId}`} className="cursor-pointer">Prior</Label>
                       </div>
                     </div>
                     

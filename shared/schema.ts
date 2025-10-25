@@ -214,6 +214,7 @@ export const incomeSchema = z.object({
   
   // Multiple Self-Employment (new structure for dynamic cards)
   selfEmployers: z.record(z.string(), z.object({
+    businessStatus: z.enum(["current", "prior"]).optional(), // Current or Prior business selection
     businessName: z.string().optional(),
     businessMonthlyIncome: z.string().optional(),
     yearsInBusinessYears: z.string().optional(),

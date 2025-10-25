@@ -226,8 +226,8 @@ const IncomeFormsSection = ({
 
             {/* Self Employment Form - Show when self employment is selected */}
             {form.watch(`${fieldPrefix}.incomeTypes.selfEmployment` as any) && (selfEmploymentCards || ['default']).map((cardId) => {
-                const propertyId = cardId === 'default' ? 
-                    (fieldPrefix === 'coBorrowerIncome' ? 'co-borrower-self-employment-template-card' : 'self-employment-template-card') : 
+                const propertyId = cardId === 'default' ?
+                    (fieldPrefix === 'coBorrowerIncome' ? 'co-borrower-self-employment-template-card' : 'self-employment-template-card') :
                     cardId;
                 const isOpen = selfEmploymentPropertyCardStates[propertyId] ?? true;
 
@@ -254,6 +254,7 @@ const IncomeFormsSection = ({
                         setShowIncomeCardAnimation={setShowIncomeCardAnimation}
                         showAddButton={selfEmploymentCards.length < 2}
                         title={fieldPrefix === 'income' ? 'Borrower Self-Employment' : 'Co-Borrower Self-Employment'}
+                        fieldPrefix={fieldPrefix}
                     />
                 );
             })}
