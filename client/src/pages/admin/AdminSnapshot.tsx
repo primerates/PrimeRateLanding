@@ -8,6 +8,7 @@ import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft
 import { RevenueSourcesChart } from '@/components/dashboard/RevenueSourcesChart';
 import { ExpenseBreakdownChart } from '@/components/dashboard/ExpenseBreakdownChart';
 import { DashboardFilters } from '@/components/dashboard/DashboardFilters';
+import { LoanStatusDashboard } from '@/components/dashboard/LoanStatusDashboard';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -2338,6 +2339,11 @@ export default function AdminSnapshot() {
               }}
             />
           </div>
+        )}
+
+        {/* Loan Status Dashboard - Only shown when Loan Status category is selected */}
+        {categoryFilter === 'loan-status' && (
+          <LoanStatusDashboard />
         )}
 
         {/* Vendor Search Card - Only shown when Vendor category with Show All is selected and user clicks Add Entry */}

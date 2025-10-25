@@ -1,0 +1,3073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loan Status Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%);
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 1.875rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    .header .client-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      background: rgba(30, 41, 59, 0.5);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      color: #d1d5db;
+      font-size: 0.875rem;
+    }
+
+    .nav-card {
+      background: rgba(30, 41, 59, 0.5);
+      backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      padding: 1rem;
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Performance Card Styles */
+    .performance-card {
+      background: rgba(30, 41, 59, 0.5);
+      backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 1200px) {
+      .performance-card {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+    }
+
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .metric-label {
+      color: #94a3b8;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .metric-value {
+      color: white;
+      font-size: 1.875rem;
+      font-weight: bold;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+
+    .metric-unit {
+      font-size: 1rem;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .metric-change {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+    }
+
+    .metric-change.positive {
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .metric-change.negative {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .metric-change svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .nav-pills {
+      display: inline-flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-pill {
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-pill.active {
+      background: linear-gradient(to right, #9333ea, #ec4899);
+      color: white;
+      box-shadow: 0 10px 15px -3px rgba(147, 51, 234, 0.4);
+      transform: scale(1.05);
+    }
+
+    .nav-pill:not(.active) {
+      background: transparent;
+      color: #d8b4fe;
+    }
+
+    .nav-pill:not(.active):hover {
+      background: rgba(71, 85, 105, 0.5);
+      color: white;
+    }
+
+    .badge {
+      padding: 0.125rem 0.375rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    .nav-pill.active .badge {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    .nav-pill:not(.active) .badge {
+      background: rgba(168, 85, 247, 0.2);
+      color: #d8b4fe;
+    }
+
+    .two-col-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+    }
+
+    .card {
+      background: rgba(30, 41, 59, 0.5);
+      backdrop-filter: blur(12px);
+      padding: 1.5rem;
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .card:first-child {
+      border-radius: 1rem 0 0 1rem;
+      border-right: none;
+    }
+
+    .card:last-child {
+      border-radius: 0 1rem 1rem 0;
+    }
+
+    .docs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .doc-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 0.5rem;
+      cursor: pointer;
+      border-radius: 0.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .doc-item:hover {
+      background: rgba(71, 85, 105, 0.2);
+    }
+
+    .doc-item-content {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+      transition: all 0.3s;
+    }
+
+    .eye-icon {
+      position: absolute;
+      right: -30px;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      color: #d8b4fe;
+      width: 24px;
+      height: 24px;
+      pointer-events: none;
+    }
+
+    .doc-item:hover .eye-icon {
+      right: 10px;
+      opacity: 1;
+    }
+
+    /* Expandable Details Card */
+    .details-card {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                  opacity 0.3s ease,
+                  margin 0.3s ease;
+      opacity: 0;
+      margin-top: 0;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(88, 28, 135, 0.7) 100%);
+      backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      padding: 0 1.5rem;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    .details-card.expanded {
+      max-height: 500px;
+      opacity: 1;
+      margin-top: 1rem;
+      padding: 1.5rem;
+    }
+
+    .details-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+    }
+
+    .details-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    .close-details-btn {
+      background: transparent;
+      border: none;
+      color: #d8b4fe;
+      cursor: pointer;
+      font-size: 1.5rem;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .close-details-btn:hover {
+      background: rgba(168, 85, 247, 0.2);
+      color: white;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .detail-item {
+      background: rgba(15, 23, 42, 0.5);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(168, 85, 247, 0.2);
+    }
+
+    .detail-label {
+      color: #d8b4fe;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .detail-value {
+      color: white;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    /* Rolldown Table Styles */
+    .table-container {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                  opacity 0.3s ease,
+                  margin 0.3s ease;
+      opacity: 0;
+      margin-top: 0;
+    }
+
+    .table-container.expanded {
+      max-height: 600px;
+      opacity: 1;
+      margin-top: 1rem;
+    }
+
+    .table-wrapper {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(88, 28, 135, 0.7) 100%);
+      backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .table-title-dropdown-wrapper {
+      position: relative;
+    }
+
+    .clickable-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .clickable-title:hover {
+      color: #d8b4fe;
+    }
+
+    .dropdown-arrow {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.3s;
+    }
+
+    .clickable-title:hover .dropdown-arrow {
+      color: #d8b4fe;
+    }
+
+    .title-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 0.5rem;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      min-width: 200px;
+      display: none;
+      z-index: 100;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .title-dropdown-menu.active {
+      display: block;
+    }
+
+    .dropdown-option {
+      padding: 0.75rem 1rem;
+      color: #cbd5e1;
+      cursor: pointer;
+      border-radius: 0.375rem;
+      transition: all 0.2s;
+      font-size: 0.875rem;
+    }
+
+    .dropdown-option:hover {
+      background: rgba(168, 85, 247, 0.2);
+      color: white;
+    }
+
+    .dropdown-option.selected {
+      background: rgba(168, 85, 247, 0.3);
+      color: white;
+      font-weight: 600;
+    }
+
+    .table-title {
+      font-size: 1.125rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    .close-table-btn {
+      background: transparent;
+      border: none;
+      color: #d8b4fe;
+      cursor: pointer;
+      font-size: 1.5rem;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .close-table-btn:hover {
+      background: rgba(168, 85, 247, 0.2);
+      color: white;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-thumb {
+      background: transparent;
+      border-radius: 4px;
+    }
+
+    .scrollbar-custom {
+      scrollbar-width: thin;
+      scrollbar-color: transparent transparent;
+    }
+
+    .table-body-wrapper {
+      max-height: 280px; /* Approximately 4 rows */
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .table-body-wrapper::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .table-body-wrapper::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.3);
+      border-radius: 4px;
+    }
+
+    .table-body-wrapper::-webkit-scrollbar-thumb {
+      background: rgba(168, 85, 247, 0.5);
+      border-radius: 4px;
+    }
+
+    .table-body-wrapper::-webkit-scrollbar-thumb:hover {
+      background: rgba(168, 85, 247, 0.7);
+    }
+
+    .table-scroll-wrapper {
+      max-height: 340px;
+      overflow-y: auto;
+    }
+
+    .table-scroll-wrapper::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .table-scroll-wrapper::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.3);
+      border-radius: 4px;
+    }
+
+    .table-scroll-wrapper::-webkit-scrollbar-thumb {
+      background: rgba(168, 85, 247, 0.5);
+      border-radius: 4px;
+    }
+
+    .table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+      background: rgba(168, 85, 247, 0.7);
+    }
+
+    .data-table tbody::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .data-table tbody::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.3);
+      border-radius: 4px;
+    }
+
+    .data-table tbody::-webkit-scrollbar-thumb {
+      background: rgba(168, 85, 247, 0.5);
+      border-radius: 4px;
+    }
+
+    .data-table tbody::-webkit-scrollbar-thumb:hover {
+      background: rgba(168, 85, 247, 0.7);
+    }
+
+    .scroll-track {
+      height: 8px;
+      background: rgba(71, 85, 105, 0.5);
+      border-radius: 9999px;
+      overflow: hidden;
+      cursor: pointer;
+      margin-bottom: 0.5rem;
+    }
+
+    .scroll-indicator {
+      height: 100%;
+      background: linear-gradient(to right, #9333ea, #ec4899);
+      border-radius: 9999px;
+      cursor: grab;
+      transition: all 0.1s;
+    }
+
+    .scroll-indicator:active {
+      cursor: grabbing;
+    }
+
+    .data-table {
+      width: 100%;
+      min-width: max-content;
+      border-collapse: collapse;
+    }
+
+    .data-table thead tr {
+      border-bottom: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      color: #d8b4fe;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .data-table th:hover {
+      color: white;
+    }
+
+    .data-table td {
+      padding: 0.75rem 1rem;
+      color: #cbd5e1;
+      font-size: 0.875rem;
+      border-bottom: 1px solid rgba(71, 85, 105, 0.5);
+      white-space: nowrap;
+    }
+
+    .data-table tbody tr {
+      transition: all 0.2s;
+    }
+
+    .data-table tbody tr:hover {
+      background: rgba(71, 85, 105, 0.3);
+    }
+
+    .sort-icon {
+      display: inline-block;
+      margin-left: 0.5rem;
+      width: 16px;
+      height: 16px;
+      vertical-align: middle;
+    }
+
+    .accent-line {
+      width: 4px;
+      height: 3rem;
+      border-radius: 9999px;
+    }
+
+    .accent-blue {
+      background: linear-gradient(to bottom, #3b82f6, #2563eb);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+
+    .accent-purple {
+      background: linear-gradient(to bottom, #8b5cf6, #7c3aed);
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+    }
+
+    .accent-emerald {
+      background: linear-gradient(to bottom, #10b981, #059669);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+
+    .doc-content {
+      flex: 1;
+    }
+
+    .doc-title {
+      color: white;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .doc-subtitle {
+      color: #94a3b8;
+      font-size: 0.875rem;
+    }
+
+    .doc-date {
+      position: absolute;
+      right: 4.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .doc-item:hover .doc-date {
+      right: 6.5rem;
+    }
+
+    .doc-count-badge {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(168, 85, 247, 0.2);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      color: #d8b4fe;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .doc-item:hover .doc-count-badge {
+      background: rgba(168, 85, 247, 0.3);
+      border-color: rgba(168, 85, 247, 0.5);
+      color: white;
+      right: 3rem;
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .icon-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+      position: relative;
+    }
+
+    .stacked-icon {
+      width: 210px;
+      height: 210px;
+      flex-shrink: 0;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(88, 28, 135, 0.95) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: 1rem;
+      padding: 2rem;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: #d8b4fe;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .close-btn:hover {
+      background: rgba(168, 85, 247, 0.2);
+      color: white;
+    }
+
+    .modal-date {
+      color: #d8b4fe;
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      color: white;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-select,
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 0.5rem;
+      color: white;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .form-select:focus,
+    .form-input:focus {
+      outline: none;
+      border-color: rgba(168, 85, 247, 0.6);
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+    }
+
+    .form-select option {
+      background: #1e293b;
+      color: white;
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: linear-gradient(to right, #9333ea, #ec4899);
+      border: none;
+      border-radius: 0.5rem;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 1.5rem;
+    }
+
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -5px rgba(147, 51, 234, 0.5);
+    }
+
+    .save-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Choice Buttons */
+    .choice-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .choice-btn {
+      flex: 1;
+      padding: 1.5rem;
+      background: rgba(15, 23, 42, 0.5);
+      border: 2px solid rgba(168, 85, 247, 0.3);
+      border-radius: 0.75rem;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .choice-btn:hover {
+      background: rgba(147, 51, 234, 0.3);
+      border-color: rgba(168, 85, 247, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -5px rgba(147, 51, 234, 0.3);
+    }
+
+    /* File Upload Button */
+    .file-upload-btn {
+      display: block;
+      width: 100%;
+      padding: 0.75rem;
+      background: rgba(15, 23, 42, 0.5);
+      border: 2px dashed rgba(168, 85, 247, 0.3);
+      border-radius: 0.5rem;
+      color: #d8b4fe;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .file-upload-btn:hover {
+      border-color: rgba(168, 85, 247, 0.6);
+      background: rgba(168, 85, 247, 0.1);
+      color: white;
+    }
+
+    /* Document Checkboxes */
+    .doc-checkbox-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .doc-checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: rgba(15, 23, 42, 0.3);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .doc-checkbox-item:hover {
+      background: rgba(15, 23, 42, 0.5);
+      border-color: rgba(168, 85, 247, 0.4);
+    }
+
+    .doc-checkbox-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: #9333ea;
+    }
+
+    .doc-checkbox-label {
+      color: white;
+      font-size: 0.875rem;
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .back-btn {
+      background: rgba(71, 85, 105, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: #cbd5e1;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(71, 85, 105, 0.7);
+      color: white;
+    }
+
+    .status-pending {
+      color: #ef4444;
+      font-weight: 600;
+    }
+
+    /* Toggle Button Styles */
+    .view-toggle-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 40px;
+      height: 40px;
+      background: rgba(168, 85, 247, 0.2);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 10;
+    }
+
+    .view-toggle-btn:hover {
+      background: rgba(168, 85, 247, 0.3);
+      border-color: rgba(168, 85, 247, 0.5);
+      transform: scale(1.05);
+    }
+
+    .view-toggle-btn svg {
+      width: 24px;
+      height: 24px;
+      color: #d8b4fe;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .view-toggle-btn.active svg {
+      transform: rotate(180deg);
+    }
+
+    /* Stage Cards for Overview */
+    .stage-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .stage-card {
+      background: rgba(15, 23, 42, 0.5);
+      padding: 1rem 1rem 1rem 1.25rem;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      border-left: 4px solid;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stage-card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border-radius: 0.75rem;
+      padding: 2px;
+      background: linear-gradient(45deg, transparent, transparent);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .stage-card[data-color="#3b82f6"] {
+      border-left-color: #3b82f6;
+    }
+
+    .stage-card[data-color="#3b82f6"]:hover::before {
+      background: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6);
+      opacity: 1;
+      animation: borderGlow 2s linear infinite;
+    }
+
+    .stage-card[data-color="#8b5cf6"] {
+      border-left-color: #8b5cf6;
+    }
+
+    .stage-card[data-color="#8b5cf6"]:hover::before {
+      background: linear-gradient(90deg, #8b5cf6, #a78bfa, #8b5cf6);
+      opacity: 1;
+      animation: borderGlow 2s linear infinite;
+    }
+
+    .stage-card[data-color="#10b981"] {
+      border-left-color: #10b981;
+    }
+
+    .stage-card[data-color="#10b981"]:hover::before {
+      background: linear-gradient(90deg, #10b981, #34d399, #10b981);
+      opacity: 1;
+      animation: borderGlow 2s linear infinite;
+    }
+
+    @keyframes borderGlow {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 200% 50%;
+      }
+    }
+
+    @keyframes rollUp {
+      0% {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+        max-height: 100px;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-30px) rotateX(-10deg);
+        max-height: 0;
+      }
+    }
+
+    @keyframes rollDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-30px) rotateX(-10deg);
+        max-height: 0;
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+        max-height: 100px;
+      }
+    }
+
+    .doc-item.rolling-up {
+      animation: rollUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    .doc-item.rolling-down {
+      animation: rollDown 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    .stage-card:hover {
+      background: rgba(15, 23, 42, 0.7);
+      border-color: rgba(168, 85, 247, 0.4);
+      transform: translateX(4px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .stage-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 0.25rem;
+    }
+
+    .stage-count {
+      color: #94a3b8;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    /* Pie Chart Styles */
+    .pie-chart-container {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 280px;
+      height: 280px;
+    }
+
+    .pie-chart {
+      width: 280px;
+      height: 280px;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Morph Animation Classes */
+    .morphing {
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .fade-out {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    .fade-in {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Service Tracker Styles */
+    .service-tracker-container {
+      margin-top: 1.5rem;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .service-tracker-container.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .service-tracker-card {
+      background: rgba(30, 41, 59, 0.5);
+      backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .tracker-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .tracker-close-btn {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+      width: 32px;
+      height: 32px;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      line-height: 1;
+    }
+
+    .tracker-close-btn:hover {
+      background: rgba(239, 68, 68, 0.3);
+      border-color: rgba(239, 68, 68, 0.5);
+      transform: scale(1.1);
+    }
+
+    .tracker-title-dropdown-wrapper {
+      position: relative;
+    }
+
+    .tracker-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .tracker-title:hover {
+      color: #d8b4fe;
+    }
+
+    .tracker-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 0.5rem;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      min-width: 200px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 100;
+    }
+
+    .tracker-dropdown-menu.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .service-wrapper {
+      background: rgba(15, 23, 42, 0.4);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(168, 85, 247, 0.15);
+    }
+
+    .service-wrapper:last-child {
+      margin-bottom: 0;
+    }
+
+    .service-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 0.375rem;
+    }
+
+    .progress-timeline {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 2rem 0 1rem 0;
+      min-height: 80px;
+      margin-bottom: 1rem;
+    }
+
+    .progress-line-background {
+      position: absolute;
+      left: 0;
+      top: 2rem;
+      width: calc(100% - 3.5rem);
+      height: 3px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 2px;
+    }
+
+    .progress-line {
+      position: absolute;
+      left: 0;
+      top: 2rem;
+      height: 3px;
+      background: linear-gradient(to right, #ec4899, #8b5cf6);
+      border-radius: 2px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1;
+    }
+
+    .milestones-container {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .milestone {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .milestone-circle {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #3b82f6;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+      position: absolute;
+      top: -4px;
+      transform: translateY(-50%);
+    }
+
+    .milestone-label {
+      font-size: 0.75rem;
+      color: #3b82f6;
+      text-align: center;
+      white-space: nowrap;
+      font-weight: 500;
+      margin-top: 1.25rem;
+    }
+
+    .milestone-date {
+      font-size: 0.875rem;
+      color: #64748b;
+      text-align: center;
+      margin-top: 0.25rem;
+      white-space: nowrap;
+    }
+
+    .progress-percentage {
+      position: absolute;
+      right: 0;
+      top: 2rem;
+      transform: translateY(-50%);
+      font-size: 0.875rem;
+      font-weight: bold;
+      color: #94a3b8;
+      transition: color 0.3s;
+      margin-left: 0.5rem;
+    }
+
+    .progress-percentage.complete {
+      color: #10b981;
+    }
+
+  </style>
+</head>
+<body>
+  
+  <div class="container">
+    
+    <!-- Header -->
+    <div class="header">
+      <div>
+        <h1>Loan Status</h1>
+        <div style="color: #94a3b8; font-size: 0.875rem; margin-top: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>John Doe • Mary Doe</span>
+          <svg onclick="toggleLoanTimeline()" style="width: 18px; height: 18px; cursor: pointer; color: #a78bfa; transition: all 0.3s;" onmouseover="this.style.color='#d8b4fe'" onmouseout="this.style.color='#a78bfa'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </div>
+      </div>
+      <button class="client-badge" id="updateBtn" onclick="openModal()" style="cursor: pointer;">
+        Update Docs
+      </button>
+    </div>
+
+    <!-- Performance Card -->
+    <div class="performance-card">
+      <div class="metric-item">
+        <div class="metric-label">Category</div>
+        <div class="metric-value">
+          VA
+        </div>
+      </div>
+      
+      <div class="metric-item">
+        <div class="metric-label">Loan Amount</div>
+        <div class="metric-value">
+          $425,000
+        </div>
+      </div>
+      
+      <div class="metric-item">
+        <div class="metric-label">Interest Rate</div>
+        <div class="metric-value">
+          6.75<span class="metric-unit">%</span>
+          <span class="metric-change positive">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m18 15-6-6-6 6"/>
+            </svg>
+            0.25%
+          </span>
+        </div>
+      </div>
+      
+      <div class="metric-item">
+        <div class="metric-label">Days to Close</div>
+        <div class="metric-value">
+          23
+          <span class="metric-change negative">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+            3 days
+          </span>
+        </div>
+      </div>
+      
+      <div class="metric-item">
+        <div class="metric-label">Completion</div>
+        <div class="metric-value">
+          72<span class="metric-unit">%</span>
+          <span class="metric-change positive">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m18 15-6-6-6 6"/>
+            </svg>
+            12%
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Pills -->
+    <div class="nav-container">
+      <div class="nav-pills">
+        <button class="nav-pill active" onclick="switchTab('docs')">
+          Docs Pending
+        </button>
+        <button class="nav-pill" onclick="switchTab('services')">
+          Services
+        </button>
+        <button class="nav-pill" onclick="switchTab('ratelock')">
+          Rate Lock
+        </button>
+        <button class="nav-pill">
+          Team
+        </button>
+        <button class="nav-pill">
+          Loan Details
+        </button>
+        <button class="nav-pill">
+          Email
+        </button>
+        <button class="nav-pill">
+          Notes
+        </button>
+        <button class="nav-pill">
+          Activity
+        </button>
+      </div>
+    </div>
+
+    <!-- Two Card Layout -->
+    <div class="two-col-grid">
+      
+      <!-- Left Card - Documents -->
+      <div class="card">
+        <!-- Detail View - Document List -->
+        <div class="docs-list morphing" id="docsList">
+          <!-- Documents will be dynamically populated here -->
+        </div>
+        
+        <!-- Overview View - Stage Cards -->
+        <div class="stage-cards morphing" id="stageCards" style="display: none; opacity: 0;">
+          <div class="stage-card" data-color="#3b82f6">
+            <div class="stage-title">Loan Prep</div>
+            <div class="stage-count">8 Docs Requested</div>
+          </div>
+          
+          <div class="stage-card" data-color="#8b5cf6">
+            <div class="stage-title">Initial Approval</div>
+            <div class="stage-count">4 Docs Requested</div>
+          </div>
+          
+          <div class="stage-card" data-color="#10b981">
+            <div class="stage-title">Final Approval</div>
+            <div class="stage-count">2 Docs Requested</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Card - Icon -->
+      <div class="card icon-card">
+        <!-- Toggle Button -->
+        <button class="view-toggle-btn" id="viewToggle" onclick="toggleView()">
+          <svg id="toggleIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <!-- Stack icon (default) -->
+            <path d="M3 8L12 3L21 8L12 13L3 8Z"/>
+            <path d="M3 12L12 17L21 12"/>
+            <path d="M3 16L12 21L21 16"/>
+          </svg>
+        </button>
+        
+        <!-- Detail View - Paper Stack Icon -->
+        <svg class="stacked-icon morphing" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" id="stackedIcon" style="opacity: 1; transform: scale(1) rotate(0deg);">
+          <!-- Layers will be dynamically generated -->
+        </svg>
+        
+        <!-- Overview View - Pie Chart -->
+        <div class="pie-chart-container morphing" id="pieChartContainer" style="display: none; opacity: 0; transform: scale(0.8) rotate(180deg);">
+          <svg class="pie-chart" viewBox="0 0 280 280" id="pieChart">
+            <!-- Pie chart will be dynamically generated -->
+          </svg>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Loan Timeline Container -->
+    <div class="service-tracker-container" id="loanTimelineContainer">
+      <div class="service-tracker-card">
+        <div class="tracker-header">
+          <div class="tracker-title" style="cursor: default;">
+            Loan Timeline
+          </div>
+          <button class="tracker-close-btn" onclick="closeLoanTimeline()">×</button>
+        </div>
+
+        <div id="loanTimelineContent">
+          <!-- Loan timeline will be added here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Tables Container (appears below the two-card section) -->
+    <div id="tablesContainer">
+      <!-- Expandable tables will be dynamically added here -->
+    </div>
+
+    <!-- Service Tracker Container -->
+    <div class="service-tracker-container" id="serviceTrackerContainer">
+      <div class="service-tracker-card">
+        <div class="tracker-header">
+          <div class="tracker-title-dropdown-wrapper">
+            <div class="tracker-title" onclick="toggleTrackerDropdown()">
+              Pending Services
+              <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;">
+                <path d="m6 9 6 6 6-6"/>
+              </svg>
+            </div>
+            <div class="tracker-dropdown-menu" id="trackerDropdown">
+              <div class="dropdown-option" onclick="selectTrackerFilter('pending')">Pending Services</div>
+              <div class="dropdown-option" onclick="selectTrackerFilter('completed')">Completed Services</div>
+              <div class="dropdown-option" onclick="selectTrackerFilter('all')">See All</div>
+            </div>
+          </div>
+          <button class="tracker-close-btn" onclick="closeServiceTracker()">×</button>
+        </div>
+
+        <div id="serviceTrackersContent">
+          <!-- Service trackers will be added here -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal Overlay -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      
+      <!-- Step 1: Initial Choice -->
+      <div id="choiceStep">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modalTitle">Update Documents</h2>
+          <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+        
+        <div class="choice-buttons">
+          <button class="choice-btn" id="requestBtn" onclick="showRequestDocs()">
+            📝<br><span id="requestBtnText">Request Docs</span>
+          </button>
+          <button class="choice-btn" id="clearBtn" onclick="showClearDocs()">
+            ✓<br><span id="clearBtnText">Clear Docs</span>
+          </button>
+          <button class="choice-btn" id="trackBtn" onclick="showTrackServices()" style="display: none;">
+            📊<br><span>Track Services</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: Request Documents Form -->
+      <div id="requestStep" style="display: none;">
+        <div class="modal-header">
+          <h2 class="modal-title">Request Documents</h2>
+          <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+        
+        <div class="modal-date" id="currentDate"></div>
+
+        <form onsubmit="return handleRequestSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">Loan Stage</label>
+            <select class="form-select" required>
+              <option value="">Select</option>
+              <option value="loan-prep">Loan Prep</option>
+              <option value="pre-approval-purchase">Pre-Approval Purchase</option>
+              <option value="pre-approval-refi">Pre-Approval Refi</option>
+              <option value="initial-approval">Initial Approval</option>
+              <option value="final-approval">Final Approval</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-select" required>
+              <option value="">Select</option>
+              <option value="mortgage">Mortgage</option>
+              <option value="income">Income</option>
+              <option value="insurance">Insurance</option>
+              <option value="taxes">Taxes</option>
+              <option value="id">ID</option>
+              <option value="property">Property</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Document</label>
+            <input type="text" class="form-input" placeholder="Enter document name" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Document From</label>
+            <select class="form-select" required>
+              <option value="">Select</option>
+              <option value="john-doe">John Doe</option>
+              <option value="jane-doe">Jane Doe</option>
+              <option value="both">John & Jane Doe</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Request Method</label>
+            <select class="form-select" required>
+              <option value="">Select</option>
+              <option value="email">Email</option>
+              <option value="text">Text</option>
+              <option value="call">Call</option>
+            </select>
+          </div>
+
+          <button type="button" class="back-btn" onclick="showChoice()" style="margin-bottom: 1rem;">← Back</button>
+          <button type="submit" class="save-btn">Save</button>
+        </form>
+      </div>
+
+      <!-- Step 3: Clear Documents Form -->
+      <div id="clearStep" style="display: none;">
+        <div class="modal-header">
+          <h2 class="modal-title">Clear Received Documents</h2>
+          <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+        
+        <div class="modal-date" id="currentDate2"></div>
+
+        <form onsubmit="return handleClearSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">Request Date</label>
+            <input type="date" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Received Method</label>
+            <select class="form-select" required>
+              <option value="">Select</option>
+              <option value="upload">Upload</option>
+              <option value="email">Email</option>
+              <option value="text">Text</option>
+              <option value="mail">Mail</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Document</label>
+            <input type="file" id="fileInput" style="display: none;">
+            <button type="button" class="file-upload-btn" onclick="document.getElementById('fileInput').click()">
+              📎 Click to Attach Document
+            </button>
+            <span id="fileName" style="color: #d8b4fe; font-size: 0.75rem; margin-top: 0.5rem; display: block;"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Clear</label>
+            <div class="doc-checkbox-list" id="clearDocsList">
+              <!-- Will be populated dynamically -->
+            </div>
+          </div>
+
+          <button type="button" class="back-btn" onclick="showChoice()" style="margin-bottom: 1rem;">← Back</button>
+          <button type="submit" class="save-btn">Save</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Set current date
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const today = new Date().toLocaleDateString('en-US', options);
+    document.getElementById('currentDate').textContent = today;
+    document.getElementById('currentDate2').textContent = today;
+
+    // File input handler
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const fileName = e.target.files[0]?.name || '';
+      document.getElementById('fileName').textContent = fileName ? '✓ ' + fileName : '';
+    });
+
+    // Document colors for stacking
+    const documentColors = [
+      { name: 'blue', gradient: 'linear-gradient(to bottom, #3b82f6, #2563eb)', color: '#3b82f6', shadow: 'rgba(59, 130, 246, 0.5)' },
+      { name: 'purple', gradient: 'linear-gradient(to bottom, #8b5cf6, #7c3aed)', color: '#8b5cf6', shadow: 'rgba(168, 85, 247, 0.5)' },
+      { name: 'emerald', gradient: 'linear-gradient(to bottom, #10b981, #059669)', color: '#10b981', shadow: 'rgba(16, 185, 129, 0.5)' },
+      { name: 'amber', gradient: 'linear-gradient(to bottom, #f59e0b, #d97706)', color: '#f59e0b', shadow: 'rgba(245, 158, 11, 0.5)' },
+      { name: 'rose', gradient: 'linear-gradient(to bottom, #f43f5e, #e11d48)', color: '#f43f5e', shadow: 'rgba(244, 63, 94, 0.5)' },
+      { name: 'cyan', gradient: 'linear-gradient(to bottom, #06b6d4, #0891b2)', color: '#06b6d4', shadow: 'rgba(6, 182, 212, 0.5)' }
+    ];
+
+    let documents = [
+      { 
+        name: 'Pay Stubs', 
+        subtitle: 'Requested By: Perry Paul', 
+        colorIndex: 0, 
+        tableData: [
+          { requestDate: '10/15/2025', documentRequested: 'Pay Stub Oct 2025', loanCategory: 'Income', loanPurpose: 'Purchase', loanStage: 'Pre-Approval', requestedBy: 'Perry Paul', clearedBy: 'Sarah Johnson', attachedDoc: 'paystub_oct.pdf' },
+          { requestDate: '10/01/2025', documentRequested: 'Pay Stub Sep 2025', loanCategory: 'Income', loanPurpose: 'Purchase', loanStage: 'Pre-Approval', requestedBy: 'Perry Paul', clearedBy: '-', attachedDoc: '-' },
+          { requestDate: '09/15/2025', documentRequested: 'Pay Stub Aug 2025', loanCategory: 'Income', loanPurpose: 'Purchase', loanStage: 'Pre-Approval', requestedBy: 'Perry Paul', clearedBy: 'Sarah Johnson', attachedDoc: 'paystub_aug.pdf' },
+          { requestDate: '09/01/2025', documentRequested: 'Pay Stub Jul 2025', loanCategory: 'Income', loanPurpose: 'Purchase', loanStage: 'Pre-Approval', requestedBy: 'Perry Paul', clearedBy: 'Sarah Johnson', attachedDoc: 'paystub_jul.pdf' },
+          { requestDate: '08/15/2025', documentRequested: 'Pay Stub Jun 2025', loanCategory: 'Income', loanPurpose: 'Purchase', loanStage: 'Pre-Approval', requestedBy: 'Perry Paul', clearedBy: '-', attachedDoc: '-' }
+        ]
+      },
+      { 
+        name: 'Income Verification', 
+        subtitle: 'Requested By: Perry Paul', 
+        colorIndex: 1, 
+        tableData: [
+          { requestDate: '10/16/2025', documentRequested: 'W2 Form 2024', loanCategory: 'Income', loanPurpose: 'Purchase', loanStage: 'Initial Approval', requestedBy: 'Perry Paul', clearedBy: 'Michael Chen', attachedDoc: 'w2_2024.pdf' },
+          { requestDate: '10/16/2025', documentRequested: 'Employment Letter', loanCategory: 'Income', loanPurpose: 'Purchase', loanStage: 'Initial Approval', requestedBy: 'Perry Paul', clearedBy: '-', attachedDoc: '-' }
+        ]
+      },
+      { 
+        name: 'Ins. Replace Cost', 
+        subtitle: 'Requested By: Perry Paul', 
+        colorIndex: 2, 
+        tableData: [
+          { requestDate: '10/17/2025', documentRequested: 'Home Insurance Quote', loanCategory: 'Insurance', loanPurpose: 'Purchase', loanStage: 'Final Approval', requestedBy: 'Perry Paul', clearedBy: 'Emily Davis', attachedDoc: 'insurance_quote.pdf' }
+        ]
+      }
+    ];
+
+    let services = [
+      { 
+        name: 'Appraisal', 
+        subtitle: 'Requested By: Perry Paul', 
+        colorIndex: 0, 
+        tableData: [
+          { requestDate: '10/10/2025', documentRequested: 'Property Appraisal', loanCategory: 'Appraisal', loanPurpose: 'Purchase', loanStage: 'Initial Approval', requestedBy: 'Perry Paul', clearedBy: 'Tom Anderson', attachedDoc: 'appraisal_report.pdf' },
+          { requestDate: '09/28/2025', documentRequested: 'Appraisal Review', loanCategory: 'Appraisal', loanPurpose: 'Purchase', loanStage: 'Initial Approval', requestedBy: 'Perry Paul', clearedBy: '-', attachedDoc: '-' }
+        ]
+      },
+      { 
+        name: 'WDO Inspection', 
+        subtitle: 'Requested By: Perry Paul', 
+        colorIndex: 1, 
+        tableData: [
+          { requestDate: '10/12/2025', documentRequested: 'Termite Inspection', loanCategory: 'Inspection', loanPurpose: 'Purchase', loanStage: 'Final Approval', requestedBy: 'Perry Paul', clearedBy: 'Lisa Brown', attachedDoc: 'wdo_report.pdf' },
+          { requestDate: '10/12/2025', documentRequested: 'WDO Certification', loanCategory: 'Inspection', loanPurpose: 'Purchase', loanStage: 'Final Approval', requestedBy: 'Perry Paul', clearedBy: '-', attachedDoc: '-' }
+        ]
+      },
+      { 
+        name: 'Water Test Inspection', 
+        subtitle: 'Requested By: Perry Paul', 
+        colorIndex: 2, 
+        tableData: [
+          { requestDate: '10/14/2025', documentRequested: 'Water Quality Test', loanCategory: 'Inspection', loanPurpose: 'Purchase', loanStage: 'Final Approval', requestedBy: 'Perry Paul', clearedBy: 'John Smith', attachedDoc: 'water_test.pdf' }
+        ]
+      }
+    ];
+
+    let rateLock = [
+      { 
+        name: 'Locked', 
+        subtitle: 'Rate Lock Status', 
+        colorIndex: 0,
+        customLabel: 'Lock Date',
+        tableData: [
+          { requestDate: '10/10/2025', documentRequested: 'Rate Lock Confirmation', loanCategory: 'Rate Lock', loanPurpose: 'Purchase', loanStage: 'Initial Approval', requestedBy: 'Perry Paul', clearedBy: 'System', attachedDoc: 'rate_lock.pdf' }
+        ]
+      },
+      { 
+        name: '18 days', 
+        subtitle: 'Lock Expires', 
+        colorIndex: 1,
+        customLabel: 'Locked Expiration',
+        tableData: [
+          { requestDate: '11/11/2025', documentRequested: 'Rate Lock Expiration', loanCategory: 'Rate Lock', loanPurpose: 'Purchase', loanStage: 'Initial Approval', requestedBy: 'Perry Paul', clearedBy: '-', attachedDoc: '-' }
+        ]
+      },
+      { 
+        name: 'Perry Paul', 
+        subtitle: 'Locked By', 
+        colorIndex: 2,
+        customLabel: 'Lock Request',
+        tableData: [
+          { requestDate: '10/10/2025', documentRequested: 'Rate Lock Request', loanCategory: 'Rate Lock', loanPurpose: 'Purchase', loanStage: 'Initial Approval', requestedBy: 'Perry Paul', clearedBy: 'Approved', attachedDoc: 'lock_request.pdf' }
+        ]
+      }
+    ];
+
+    let currentTab = 'docs'; // Track current tab: 'docs' or 'services'
+    let currentData = documents; // Current data to display
+
+    function switchTab(tab) {
+      // Don't switch if already on this tab
+      if (currentTab === tab) return;
+      
+      const oldTab = currentTab;
+      currentTab = tab;
+      
+      // Update navigation pill active state
+      document.querySelectorAll('.nav-pill').forEach(pill => {
+        pill.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // Get all current doc items
+      const docItems = document.querySelectorAll('.doc-item');
+      const stackIcon = document.getElementById('stackedIcon');
+      
+      // Rotate and fade out the stack icon - slower and smoother
+      stackIcon.style.transition = 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      stackIcon.style.transform = 'rotate(180deg) scale(0.85)';
+      stackIcon.style.opacity = '0';
+      
+      // Roll up existing items with staggered delay
+      docItems.forEach((item, index) => {
+        setTimeout(() => {
+          item.classList.add('rolling-up');
+        }, index * 80);
+      });
+      
+      // Wait for roll-up to complete, then switch data and roll down
+      setTimeout(() => {
+        // Update data source and button text
+        if (tab === 'docs') {
+          currentData = documents;
+          document.getElementById('updateBtn').textContent = 'Update Docs';
+        } else if (tab === 'services') {
+          currentData = services;
+          document.getElementById('updateBtn').textContent = 'Update Services';
+        } else if (tab === 'ratelock') {
+          currentData = rateLock;
+          document.getElementById('updateBtn').textContent = 'Update Rate Lock';
+        }
+        
+        // Reset to detail view if in overview mode
+        if (isOverviewMode) {
+          toggleView();
+        }
+        
+        // Re-render the list
+        updateDocumentsList();
+        
+        // Roll down new items with staggered delay
+        const newDocItems = document.querySelectorAll('.doc-item');
+        newDocItems.forEach((item, index) => {
+          item.style.opacity = '0';
+          setTimeout(() => {
+            item.classList.add('rolling-down');
+          }, index * 80);
+        });
+        
+        // Rotate and fade in the stack icon - slower and smoother
+        updateStackIcon();
+        setTimeout(() => {
+          stackIcon.style.transform = 'rotate(0deg) scale(1)';
+          stackIcon.style.opacity = '1';
+        }, 150);
+        
+      }, docItems.length * 80 + 600);
+    }
+
+    // Modal navigation functions
+    function openModal() {
+      document.getElementById('modalOverlay').classList.add('active');
+      
+      // Update modal text based on current tab
+      if (currentTab === 'docs') {
+        document.getElementById('modalTitle').textContent = 'Update Documents';
+        document.getElementById('requestBtnText').textContent = 'Request Docs';
+        document.getElementById('clearBtnText').textContent = 'Clear Docs';
+        document.getElementById('trackBtn').style.display = 'none';
+        document.getElementById('requestBtn').style.display = 'block';
+        document.getElementById('clearBtn').style.display = 'block';
+      } else if (currentTab === 'services') {
+        document.getElementById('modalTitle').textContent = 'Update Services';
+        document.getElementById('requestBtnText').textContent = 'Request Services';
+        document.getElementById('clearBtnText').textContent = 'Clear Services';
+        document.getElementById('trackBtn').style.display = 'block';
+        document.getElementById('trackBtn').querySelector('span').textContent = 'Track Services';
+        document.getElementById('requestBtn').style.display = 'block';
+        document.getElementById('clearBtn').style.display = 'block';
+      } else if (currentTab === 'ratelock') {
+        document.getElementById('modalTitle').textContent = 'Update Rate Lock';
+        document.getElementById('requestBtnText').textContent = 'Lock Rate';
+        document.getElementById('clearBtnText').textContent = 'Extend Lock';
+        document.getElementById('trackBtn').style.display = 'block';
+        document.getElementById('trackBtn').querySelector('span').textContent = 'Lock History';
+        document.getElementById('requestBtn').style.display = 'block';
+        document.getElementById('clearBtn').style.display = 'block';
+      }
+      
+      showChoice();
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    function closeModalOnOverlay(event) {
+      if (event.target === document.getElementById('modalOverlay')) {
+        closeModal();
+      }
+    }
+
+    function showChoice() {
+      document.getElementById('choiceStep').style.display = 'block';
+      document.getElementById('requestStep').style.display = 'none';
+      document.getElementById('clearStep').style.display = 'none';
+    }
+
+    function showRequestDocs() {
+      document.getElementById('choiceStep').style.display = 'none';
+      document.getElementById('requestStep').style.display = 'block';
+      document.getElementById('clearStep').style.display = 'none';
+    }
+
+    function showClearDocs() {
+      document.getElementById('choiceStep').style.display = 'none';
+      document.getElementById('requestStep').style.display = 'none';
+      document.getElementById('clearStep').style.display = 'block';
+      populateClearDocsList();
+    }
+
+    function showTrackServices() {
+      closeModal();
+      const trackerContainer = document.getElementById('serviceTrackerContainer');
+      trackerContainer.classList.add('active');
+      
+      // Scroll to tracker
+      setTimeout(() => {
+        trackerContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+      
+      // Populate tracker data
+      renderServiceTrackers();
+    }
+
+    function renderServiceTrackers() {
+      const trackersContent = document.getElementById('serviceTrackersContent');
+      
+      const serviceTrackers = [
+        {
+          name: 'Appraisal',
+          milestones: [
+            { label: 'Service Ordered', completed: true },
+            { label: 'Service Completed', completed: true },
+            { label: 'Report Reviewed', completed: true },
+            { label: 'Report Cleared', completed: true }
+          ]
+        },
+        {
+          name: 'WDO Inspection',
+          milestones: [
+            { label: 'Service Ordered', completed: true },
+            { label: 'Service Completed', completed: true },
+            { label: 'Report Reviewed', completed: false },
+            { label: 'Report Cleared', completed: false }
+          ]
+        },
+        {
+          name: 'Water Test Inspection',
+          milestones: [
+            { label: 'Service Ordered', completed: true },
+            { label: 'Service Completed', completed: false },
+            { label: 'Report Reviewed', completed: false },
+            { label: 'Report Cleared', completed: false }
+          ]
+        }
+      ];
+      
+      trackersContent.innerHTML = serviceTrackers.map(service => {
+        const completedMilestones = service.milestones.filter(m => m.completed);
+        const totalMilestones = service.milestones.length;
+        const progressPercent = (completedMilestones.length / totalMilestones) * 100;
+        const isComplete = progressPercent === 100;
+        
+        // Padding percentages - start 8% in, end 8% before the end
+        const startPadding = 8;
+        const endPadding = 8;
+        const usableRange = 100 - startPadding - endPadding; // 84%
+        
+        // Calculate where the last completed milestone is
+        const lastCompletedIndex = completedMilestones.length > 0 
+          ? service.milestones.findIndex(m => m.label === completedMilestones[completedMilestones.length - 1].label)
+          : -1;
+        
+        // Progress bar extends to the last completed milestone position
+        let progressBarWidth;
+        if (isComplete) {
+          progressBarWidth = 'calc(100% - 3.5rem)'; // Full width for 100%
+        } else if (lastCompletedIndex >= 0) {
+          const positionInRange = (lastCompletedIndex / (totalMilestones - 1)) * usableRange;
+          const endPosition = startPadding + positionInRange;
+          progressBarWidth = `calc((100% - 3.5rem) * ${endPosition / 100})`;
+        } else {
+          progressBarWidth = '0';
+        }
+        
+        return `
+          <div class="service-wrapper">
+            <div class="service-name">${service.name}</div>
+            <div class="progress-timeline">
+              <div class="progress-line-background"></div>
+              <div class="progress-line" style="width: ${progressBarWidth};"></div>
+              <div class="milestones-container" style="width: calc(100% - 3.5rem);">
+                ${completedMilestones.map((milestone, index) => {
+                  // Find the original index of this milestone in the full list
+                  const originalIndex = service.milestones.findIndex(m => m.label === milestone.label);
+                  // Calculate position based on original index, not completed index
+                  const positionInRange = (originalIndex / (totalMilestones - 1)) * usableRange;
+                  const position = startPadding + positionInRange;
+                  return `
+                    <div class="milestone" style="position: absolute; left: ${position}%; transform: translateX(-50%);">
+                      <div class="milestone-circle"></div>
+                      <div class="milestone-label">${milestone.label}</div>
+                      <div class="milestone-date">10/24/2025</div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+              <div class="progress-percentage ${isComplete ? 'complete' : ''}">${Math.round(progressPercent)}%</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleTrackerDropdown() {
+      const dropdown = document.getElementById('trackerDropdown');
+      dropdown.classList.toggle('active');
+    }
+
+    function selectTrackerFilter(filter) {
+      const trackerTitle = document.querySelector('.tracker-title');
+      
+      if (filter === 'pending') {
+        trackerTitle.childNodes[0].textContent = 'Pending Services ';
+      } else if (filter === 'completed') {
+        trackerTitle.childNodes[0].textContent = 'Completed Services ';
+      } else {
+        trackerTitle.childNodes[0].textContent = 'See All ';
+      }
+      
+      document.getElementById('trackerDropdown').classList.remove('active');
+    }
+
+    function closeServiceTracker() {
+      const trackerContainer = document.getElementById('serviceTrackerContainer');
+      trackerContainer.classList.remove('active');
+    }
+
+    function toggleLoanTimeline() {
+      const timelineContainer = document.getElementById('loanTimelineContainer');
+      
+      if (timelineContainer.classList.contains('active')) {
+        timelineContainer.classList.remove('active');
+      } else {
+        timelineContainer.classList.add('active');
+        
+        // Scroll to timeline
+        setTimeout(() => {
+          timelineContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+        
+        // Populate timeline data
+        renderLoanTimeline();
+      }
+    }
+
+    function closeLoanTimeline() {
+      const timelineContainer = document.getElementById('loanTimelineContainer');
+      timelineContainer.classList.remove('active');
+    }
+
+    function renderLoanTimeline() {
+      const timelineContent = document.getElementById('loanTimelineContent');
+      
+      const loanMilestones = [
+        { label: 'Quote', completed: true },
+        { label: 'Loan Prep', completed: true },
+        { label: 'Loan Start', completed: true },
+        { label: 'Initial Approval', completed: true },
+        { label: 'Appraisal Ordered', completed: true },
+        { label: 'Final Approval', completed: false },
+        { label: 'Clear to Close', completed: false },
+        { label: 'Funding', completed: false }
+      ];
+      
+      const completedMilestones = loanMilestones.filter(m => m.completed);
+      const totalMilestones = loanMilestones.length;
+      const progressPercent = (completedMilestones.length / totalMilestones) * 100;
+      const isComplete = progressPercent === 100;
+      
+      // Padding percentages
+      const startPadding = 8;
+      const endPadding = 8;
+      const usableRange = 100 - startPadding - endPadding;
+      
+      // Calculate where the last completed milestone is
+      const lastCompletedIndex = completedMilestones.length > 0 
+        ? loanMilestones.findIndex(m => m.label === completedMilestones[completedMilestones.length - 1].label)
+        : -1;
+      
+      // Progress bar extends to the last completed milestone position
+      let progressBarWidth;
+      if (isComplete) {
+        progressBarWidth = 'calc(100% - 3.5rem)';
+      } else if (lastCompletedIndex >= 0) {
+        const positionInRange = (lastCompletedIndex / (totalMilestones - 1)) * usableRange;
+        const endPosition = startPadding + positionInRange;
+        progressBarWidth = `calc((100% - 3.5rem) * ${endPosition / 100})`;
+      } else {
+        progressBarWidth = '0';
+      }
+      
+      timelineContent.innerHTML = `
+        <div class="service-wrapper">
+          <div class="progress-timeline">
+            <div class="progress-line-background"></div>
+            <div class="progress-line" style="width: ${progressBarWidth};"></div>
+            <div class="milestones-container" style="width: calc(100% - 3.5rem);">
+              ${completedMilestones.map((milestone, index) => {
+                const originalIndex = loanMilestones.findIndex(m => m.label === milestone.label);
+                const positionInRange = (originalIndex / (totalMilestones - 1)) * usableRange;
+                const position = startPadding + positionInRange;
+                return `
+                  <div class="milestone" style="position: absolute; left: ${position}%; transform: translateX(-50%);">
+                    <div class="milestone-circle"></div>
+                    <div class="milestone-label">${milestone.label}</div>
+                    <div class="milestone-date">10/24/2025</div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+            <div class="progress-percentage ${isComplete ? 'complete' : ''}">${Math.round(progressPercent)}%</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function populateClearDocsList() {
+      const list = document.getElementById('clearDocsList');
+      list.innerHTML = '';
+      
+      documents.forEach((doc, index) => {
+        const item = document.createElement('label');
+        item.className = 'doc-checkbox-item';
+        item.innerHTML = `
+          <input type="checkbox" value="${index}" name="clearDoc">
+          <span class="doc-checkbox-label">${doc.name}</span>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    // Request Docs Submit
+    function handleRequestSubmit(event) {
+      event.preventDefault();
+      
+      try {
+        const form = event.target;
+        const documentName = form.querySelector('input[type="text"]').value;
+        const categorySelect = form.querySelectorAll('.form-select')[1];
+        const category = categorySelect.options[categorySelect.selectedIndex].text;
+        
+        const newColorIndex = documents.length % documentColors.length;
+        documents.push({
+          name: documentName,
+          subtitle: category,
+          colorIndex: newColorIndex
+        });
+        
+        updateDocumentsList();
+        updateStackIcon();
+        
+        form.reset();
+        closeModal();
+        
+        setTimeout(() => {
+          alert('Document "' + documentName + '" requested successfully!');
+        }, 100);
+      } catch (error) {
+        console.error('Error adding document:', error);
+        alert('Error adding document. Please try again.');
+      }
+      
+      return false;
+    }
+
+    // Clear Docs Submit
+    function handleClearSubmit(event) {
+      event.preventDefault();
+      
+      try {
+        const checkboxes = document.querySelectorAll('input[name="clearDoc"]:checked');
+        const indicesToRemove = Array.from(checkboxes).map(cb => parseInt(cb.value)).sort((a, b) => b - a);
+        
+        if (indicesToRemove.length === 0) {
+          alert('Please select at least one document to clear.');
+          return false;
+        }
+        
+        // Remove documents in reverse order to maintain correct indices
+        indicesToRemove.forEach(index => {
+          documents.splice(index, 1);
+        });
+        
+        updateDocumentsList();
+        updateStackIcon();
+        
+        event.target.reset();
+        closeModal();
+        
+        setTimeout(() => {
+          alert(indicesToRemove.length + ' document(s) cleared successfully!');
+        }, 100);
+      } catch (error) {
+        console.error('Error clearing documents:', error);
+        alert('Error clearing documents. Please try again.');
+      }
+      
+      return false;
+    }
+
+    let sortConfigs = {}; // Track sort config for each table
+    let currentOpenTable = null;
+
+    function updateDocumentsList() {
+      const docsList = document.querySelector('.docs-list');
+      const tablesContainer = document.getElementById('tablesContainer');
+      docsList.innerHTML = '';
+      tablesContainer.innerHTML = '';
+      
+      currentData.forEach((doc, index) => {
+        const color = documentColors[doc.colorIndex];
+        const docItem = document.createElement('div');
+        docItem.className = 'doc-item';
+        docItem.onclick = () => toggleTable(index);
+        docItem.innerHTML = `
+          <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <div class="doc-item-content">
+            <div class="accent-line" style="background: ${color.gradient}; box-shadow: 0 0 10px ${color.shadow};"></div>
+            <div class="doc-content">
+              <div class="doc-title">${doc.name}</div>
+              <div class="doc-subtitle">${doc.subtitle}</div>
+            </div>
+          </div>
+          ${doc.customLabel ? `
+            <div class="doc-date" style="right: 4.5rem;">${doc.customLabel}: 10/24/2025</div>
+          ` : `
+            <div class="doc-date">10/24/2025</div>
+          `}
+          <div class="doc-count-badge">${doc.tableData.length}</div>
+        `;
+        docsList.appendChild(docItem);
+        
+        // Add table container to the separate tables container
+        const tablesContainer = document.getElementById('tablesContainer');
+        const tableContainer = document.createElement('div');
+        tableContainer.className = 'table-container';
+        tableContainer.id = `table-${index}`;
+        tableContainer.innerHTML = `
+          <div class="table-wrapper">
+            <div class="table-header">
+              <div class="table-title-dropdown-wrapper">
+                <h3 class="table-title clickable-title" onclick="toggleTitleDropdown(${index})">
+                  ${currentTab === 'docs' ? 'Documents Pending' : currentTab === 'services' ? 'Pending Services' : 'Rate Lock Details'}
+                  <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m6 9 6 6 6-6"/>
+                  </svg>
+                </h3>
+                <div class="title-dropdown-menu" id="title-dropdown-${index}">
+                  <div class="dropdown-option" onclick="selectFilter(${index}, 'pending')">${currentTab === 'docs' ? 'Documents Pending' : currentTab === 'services' ? 'Pending Services' : 'Rate Lock Details'}</div>
+                  <div class="dropdown-option" onclick="selectFilter(${index}, 'received')">${currentTab === 'docs' ? 'Documents Received' : currentTab === 'services' ? 'Completed Services' : 'Rate Lock History'}</div>
+                  <div class="dropdown-option" onclick="selectFilter(${index}, 'all')">Show All</div>
+                </div>
+              </div>
+              <button class="close-table-btn" onclick="event.stopPropagation(); closeTable(${index})">×</button>
+            </div>
+            
+            <div class="scroll-track" id="scroll-track-${index}">
+              <div class="scroll-indicator" id="scroll-indicator-${index}" style="width: 30%"></div>
+            </div>
+            
+            <div class="scrollbar-custom" id="table-scroll-${index}" style="overflow-x: auto;">
+              <div class="table-scroll-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th onclick="sortTable(${index}, 'requestDate')">
+                        Request Date
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>
+                        </svg>
+                      </th>
+                      <th onclick="sortTable(${index}, 'status')">
+                        Status
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>
+                        </svg>
+                      </th>
+                      <th onclick="sortTable(${index}, 'documentRequested')">
+                        Document Requested
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>
+                        </svg>
+                      </th>
+                      <th onclick="sortTable(${index}, 'loanCategory')">
+                        Loan Category
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>
+                        </svg>
+                      </th>
+                      <th onclick="sortTable(${index}, 'loanPurpose')">
+                        Loan Purpose
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>
+                        </svg>
+                      </th>
+                      <th onclick="sortTable(${index}, 'loanStage')">
+                        Loan Stage
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>
+                        </svg>
+                      </th>
+                      <th onclick="sortTable(${index}, 'requestedBy')">
+                        Requested By
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>
+                        </svg>
+                      </th>
+                      <th onclick="sortTable(${index}, 'clearedBy')">
+                        Cleared By
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>
+                        </svg>
+                      </th>
+                      <th onclick="sortTable(${index}, 'attachedDoc')">
+                        Attached Doc
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>
+                        </svg>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-body-${index}">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        `;
+        tablesContainer.appendChild(tableContainer);
+        
+        // Initialize sort config
+        sortConfigs[index] = { key: null, direction: 'asc' };
+        
+        // Render initial table data
+        renderTableData(index);
+        
+        // Setup scroll sync
+        setupScrollSync(index);
+      });
+    }
+
+    function renderTableData(index) {
+      const tbody = document.getElementById(`table-body-${index}`);
+      const doc = documents[index];
+      const sortConfig = sortConfigs[index];
+      
+      let sortedData = [...doc.tableData];
+      
+      if (sortConfig.key) {
+        sortedData.sort((a, b) => {
+          const aValue = a[sortConfig.key];
+          const bValue = b[sortConfig.key];
+          
+          if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+          if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+          return 0;
+        });
+      }
+      
+      tbody.innerHTML = sortedData.map(row => `
+        <tr>
+          <td>${row.requestDate}</td>
+          <td><span class="status-pending">Pending</span></td>
+          <td>${row.documentRequested}</td>
+          <td>${row.loanCategory}</td>
+          <td>${row.loanPurpose}</td>
+          <td>${row.loanStage}</td>
+          <td>${row.requestedBy}</td>
+          <td>${row.clearedBy}</td>
+          <td>${row.attachedDoc}</td>
+        </tr>
+      `).join('');
+    }
+
+    function sortTable(index, key) {
+      const sortConfig = sortConfigs[index];
+      
+      if (sortConfig.key === key) {
+        sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortConfig.key = key;
+        sortConfig.direction = 'asc';
+      }
+      
+      renderTableData(index);
+    }
+
+    function setupScrollSync(index) {
+      const scrollContainer = document.getElementById(`table-scroll-${index}`);
+      const indicator = document.getElementById(`scroll-indicator-${index}`);
+      const track = document.getElementById(`scroll-track-${index}`);
+      
+      scrollContainer.addEventListener('scroll', () => {
+        const scrollPercentage = scrollContainer.scrollLeft / (scrollContainer.scrollWidth - scrollContainer.clientWidth);
+        const thumbWidth = (scrollContainer.clientWidth / scrollContainer.scrollWidth) * 100;
+        indicator.style.width = `${Math.max(thumbWidth, 10)}%`;
+        indicator.style.transform = `translateX(${scrollPercentage * (100 / Math.max(thumbWidth, 10) - 1) * 100}%)`;
+      });
+      
+      // Draggable indicator
+      indicator.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        const startX = e.clientX;
+        const startScrollLeft = scrollContainer.scrollLeft;
+        const trackWidth = track.offsetWidth;
+        const scrollWidth = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+        
+        const handleMouseMove = (e) => {
+          const deltaX = e.clientX - startX;
+          const scrollDelta = (deltaX / trackWidth) * scrollWidth;
+          scrollContainer.scrollLeft = startScrollLeft + scrollDelta;
+        };
+        
+        const handleMouseUp = () => {
+          document.removeEventListener('mousemove', handleMouseMove);
+          document.removeEventListener('mouseup', handleMouseUp);
+        };
+        
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+      });
+      
+      // Click on track to jump
+      track.addEventListener('click', (e) => {
+        const rect = track.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const percentage = clickX / rect.width;
+        scrollContainer.scrollLeft = percentage * (scrollContainer.scrollWidth - scrollContainer.clientWidth);
+      });
+    }
+
+    function toggleTable(index) {
+      const tableContainer = document.getElementById(`table-${index}`);
+      
+      if (currentOpenTable !== null && currentOpenTable !== index) {
+        closeTable(currentOpenTable);
+      }
+      
+      if (tableContainer.classList.contains('expanded')) {
+        closeTable(index);
+      } else {
+        tableContainer.classList.add('expanded');
+        currentOpenTable = index;
+      }
+    }
+
+    function toggleTitleDropdown(index) {
+      const dropdown = document.getElementById(`title-dropdown-${index}`);
+      const wasActive = dropdown.classList.contains('active');
+      
+      // Close all dropdowns first
+      document.querySelectorAll('.title-dropdown-menu').forEach(menu => {
+        menu.classList.remove('active');
+      });
+      
+      // Toggle the clicked one
+      if (!wasActive) {
+        dropdown.classList.add('active');
+      }
+    }
+
+    function selectFilter(index, filterValue) {
+      // Update the title based on selection
+      const tableTitle = document.querySelector(`#table-${index} .clickable-title`);
+      const dropdownArrow = tableTitle.querySelector('.dropdown-arrow');
+      
+      if (filterValue === 'pending') {
+        if (currentTab === 'docs') {
+          tableTitle.childNodes[0].textContent = 'Documents Pending ';
+        } else if (currentTab === 'services') {
+          tableTitle.childNodes[0].textContent = 'Pending Services ';
+        } else if (currentTab === 'ratelock') {
+          tableTitle.childNodes[0].textContent = 'Rate Lock Details ';
+        }
+      } else if (filterValue === 'received') {
+        if (currentTab === 'docs') {
+          tableTitle.childNodes[0].textContent = 'Documents Received ';
+        } else if (currentTab === 'services') {
+          tableTitle.childNodes[0].textContent = 'Completed Services ';
+        } else if (currentTab === 'ratelock') {
+          tableTitle.childNodes[0].textContent = 'Rate Lock History ';
+        }
+      } else {
+        tableTitle.childNodes[0].textContent = 'Show All ';
+      }
+      
+      // Close the dropdown
+      document.getElementById(`title-dropdown-${index}`).classList.remove('active');
+      
+      // Re-render table data (in future this would actually filter)
+      renderTableData(index);
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.table-title-dropdown-wrapper')) {
+        document.querySelectorAll('.title-dropdown-menu').forEach(menu => {
+          menu.classList.remove('active');
+        });
+      }
+    });
+
+    function closeTable(index) {
+      const tableContainer = document.getElementById(`table-${index}`);
+      if (tableContainer) {
+        tableContainer.classList.remove('expanded');
+        if (currentOpenTable === index) {
+          currentOpenTable = null;
+        }
+      }
+    }
+
+    function updateStackIcon() {
+      const svg = document.getElementById('stackedIcon');
+      
+      console.log('Updating stack icon, currentTab:', currentTab);
+      svg.innerHTML = '';
+      
+      if (currentTab === 'ratelock') {
+        // Show lock icon matching the uploaded image style
+        // Lock body (rounded rectangle with gradient)
+        const lockBody = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        lockBody.setAttribute('x', '5');
+        lockBody.setAttribute('y', '13');
+        lockBody.setAttribute('width', '14');
+        lockBody.setAttribute('height', '10');
+        lockBody.setAttribute('rx', '2');
+        lockBody.setAttribute('fill', '#10b981');
+        lockBody.setAttribute('stroke', '#475569');
+        lockBody.setAttribute('stroke-width', '1.5');
+        
+        // Shackle (rounded U-shape)
+        const shackle = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        shackle.setAttribute('d', 'M8.5 13V9.5C8.5 7.5 9.8 6 12 6C14.2 6 15.5 7.5 15.5 9.5V13');
+        shackle.setAttribute('stroke', '#475569');
+        shackle.setAttribute('stroke-width', '2.5');
+        shackle.setAttribute('fill', 'none');
+        shackle.setAttribute('stroke-linecap', 'round');
+        
+        // Keyhole - circle part
+        const keyholeCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        keyholeCircle.setAttribute('cx', '12');
+        keyholeCircle.setAttribute('cy', '17');
+        keyholeCircle.setAttribute('r', '1.5');
+        keyholeCircle.setAttribute('fill', '#475569');
+        
+        // Keyhole - slot part
+        const keyholeSlot = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        keyholeSlot.setAttribute('x', '11.3');
+        keyholeSlot.setAttribute('y', '17.5');
+        keyholeSlot.setAttribute('width', '1.4');
+        keyholeSlot.setAttribute('height', '2.5');
+        keyholeSlot.setAttribute('rx', '0.3');
+        keyholeSlot.setAttribute('fill', '#475569');
+        
+        svg.appendChild(shackle);
+        svg.appendChild(lockBody);
+        svg.appendChild(keyholeCircle);
+        svg.appendChild(keyholeSlot);
+      } else if (currentTab === 'services') {
+        // Show clipboard checklist icon for Services
+        // Clipboard board (outer rounded rectangle)
+        const clipboardBoard = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        clipboardBoard.setAttribute('x', '4');
+        clipboardBoard.setAttribute('y', '6');
+        clipboardBoard.setAttribute('width', '16');
+        clipboardBoard.setAttribute('height', '16');
+        clipboardBoard.setAttribute('rx', '2');
+        clipboardBoard.setAttribute('fill', 'none');
+        clipboardBoard.setAttribute('stroke', '#3b82f6');
+        clipboardBoard.setAttribute('stroke-width', '1.5');
+        
+        // Clipboard clip (top)
+        const clip = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        clip.setAttribute('x', '9');
+        clip.setAttribute('y', '4');
+        clip.setAttribute('width', '6');
+        clip.setAttribute('height', '3');
+        clip.setAttribute('rx', '1');
+        clip.setAttribute('fill', '#f59e0b');
+        clip.setAttribute('stroke', '#3b82f6');
+        clip.setAttribute('stroke-width', '1.5');
+        
+        // Checkmark 1
+        const check1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        check1.setAttribute('d', 'M7 11L9 13L13 9');
+        check1.setAttribute('stroke', '#3b82f6');
+        check1.setAttribute('stroke-width', '1.5');
+        check1.setAttribute('fill', 'none');
+        check1.setAttribute('stroke-linecap', 'round');
+        check1.setAttribute('stroke-linejoin', 'round');
+        
+        // Checkmark 2
+        const check2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        check2.setAttribute('d', 'M7 15L9 17L13 13');
+        check2.setAttribute('stroke', '#3b82f6');
+        check2.setAttribute('stroke-width', '1.5');
+        check2.setAttribute('fill', 'none');
+        check2.setAttribute('stroke-linecap', 'round');
+        check2.setAttribute('stroke-linejoin', 'round');
+        
+        // Line 1
+        const line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line1.setAttribute('x1', '14');
+        line1.setAttribute('y1', '11');
+        line1.setAttribute('x2', '17');
+        line1.setAttribute('y2', '11');
+        line1.setAttribute('stroke', '#3b82f6');
+        line1.setAttribute('stroke-width', '1.5');
+        line1.setAttribute('stroke-linecap', 'round');
+        
+        // Line 2
+        const line2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line2.setAttribute('x1', '14');
+        line2.setAttribute('y1', '15');
+        line2.setAttribute('x2', '17');
+        line2.setAttribute('y2', '15');
+        line2.setAttribute('stroke', '#3b82f6');
+        line2.setAttribute('stroke-width', '1.5');
+        line2.setAttribute('stroke-linecap', 'round');
+        
+        svg.appendChild(clipboardBoard);
+        svg.appendChild(clip);
+        svg.appendChild(check1);
+        svg.appendChild(check2);
+        svg.appendChild(line1);
+        svg.appendChild(line2);
+      } else {
+        // Show stacked papers for other tabs
+        const baseY = 8;
+        const spacing = 4;
+        
+        currentData.forEach((doc, index) => {
+          const color = documentColors[doc.colorIndex];
+          const yPos = baseY + (index * spacing);
+          
+          console.log(`Creating layer ${index} for ${doc.name} with color ${color.color}`);
+          
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          if (index === 0) {
+            path.setAttribute('d', `M3 ${yPos}L12 ${yPos - 5}L21 ${yPos}L12 ${yPos + 5}L3 ${yPos}Z`);
+          } else {
+            path.setAttribute('d', `M3 ${yPos}L12 ${yPos + 5}L21 ${yPos}`);
+          }
+          path.setAttribute('stroke', color.color);
+          path.setAttribute('stroke-width', '1.5');
+          path.setAttribute('stroke-linecap', 'round');
+          path.setAttribute('stroke-linejoin', 'round');
+          path.setAttribute('fill', 'none');
+          
+          svg.appendChild(path);
+        });
+      }
+      
+      console.log('Stack icon updated, SVG children:', svg.children.length);
+    }
+
+    let isOverviewMode = false;
+
+    function generateStageCards() {
+      const stageCards = document.getElementById('stageCards');
+      stageCards.innerHTML = '';
+      
+      if (currentTab === 'ratelock') {
+        // Rate Lock stage cards
+        const rateLockStages = [
+          { title: 'Locked', count: 'Rate Locked', color: '#3b82f6' },
+          { title: '18 Days', count: 'Until Expiration', color: '#8b5cf6' },
+          { title: 'Perry Paul', count: 'Locked By', color: '#10b981' }
+        ];
+        
+        rateLockStages.forEach(stage => {
+          const card = document.createElement('div');
+          card.className = 'stage-card';
+          card.setAttribute('data-color', stage.color);
+          card.innerHTML = `
+            <div class="stage-title">${stage.title}</div>
+            <div class="stage-count">${stage.count}</div>
+          `;
+          stageCards.appendChild(card);
+        });
+      } else if (currentTab === 'services') {
+        // Services stage cards
+        const servicesStages = [
+          { title: 'Appraisal', count: 'Completed', color: '#3b82f6' },
+          { title: 'WDO Inspection', count: 'In Progress', color: '#8b5cf6' },
+          { title: 'Water Test', count: 'Pending', color: '#10b981' }
+        ];
+        
+        servicesStages.forEach(stage => {
+          const card = document.createElement('div');
+          card.className = 'stage-card';
+          card.setAttribute('data-color', stage.color);
+          card.innerHTML = `
+            <div class="stage-title">${stage.title}</div>
+            <div class="stage-count">${stage.count}</div>
+          `;
+          stageCards.appendChild(card);
+        });
+      } else {
+        // Docs stage cards
+        const stages = [
+          { title: 'Loan Prep', count: '8 Docs Requested', color: '#3b82f6' },
+          { title: 'Initial Approval', count: '4 Docs Requested', color: '#8b5cf6' },
+          { title: 'Final Approval', count: '2 Docs Requested', color: '#10b981' }
+        ];
+        
+        stages.forEach(stage => {
+          const card = document.createElement('div');
+          card.className = 'stage-card';
+          card.setAttribute('data-color', stage.color);
+          card.innerHTML = `
+            <div class="stage-title">${stage.title}</div>
+            <div class="stage-count">${stage.count}</div>
+          `;
+          stageCards.appendChild(card);
+        });
+      }
+    }
+
+    function toggleView() {
+      isOverviewMode = !isOverviewMode;
+      
+      const docsList = document.getElementById('docsList');
+      const stageCards = document.getElementById('stageCards');
+      const stackedIcon = document.getElementById('stackedIcon');
+      const pieChartContainer = document.getElementById('pieChartContainer');
+      const toggleBtn = document.getElementById('viewToggle');
+      const toggleIcon = document.getElementById('toggleIcon');
+      
+      if (isOverviewMode) {
+        // Switch to overview mode
+        // Fade out detail view
+        docsList.classList.add('fade-out');
+        
+        setTimeout(() => {
+          docsList.style.display = 'none';
+          
+          // Generate stage cards based on current tab
+          generateStageCards();
+          
+          // Show overview view
+          stageCards.style.display = 'flex';
+          
+          setTimeout(() => {
+            stageCards.classList.remove('fade-out');
+            stageCards.classList.add('fade-in');
+            stageCards.style.opacity = '1';
+          }, 50);
+        }, 300);
+        
+        // Morph stack icon into pie chart
+        stackedIcon.style.opacity = '0';
+        stackedIcon.style.transform = 'scale(0.8) rotate(180deg)';
+        
+        setTimeout(() => {
+          pieChartContainer.style.display = 'flex';
+          setTimeout(() => {
+            pieChartContainer.style.opacity = '1';
+            pieChartContainer.style.transform = 'scale(1) rotate(0deg)';
+          }, 50);
+        }, 300);
+        
+        // Update toggle icon to pie chart
+        toggleIcon.innerHTML = `
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2a10 10 0 0 1 10 10L12 12Z"/>
+        `;
+        toggleBtn.classList.add('active');
+        
+        // Generate pie chart
+        generatePieChart();
+        
+      } else {
+        // Switch back to detail view
+        // Fade out overview
+        stageCards.classList.add('fade-out');
+        
+        setTimeout(() => {
+          stageCards.style.display = 'none';
+          
+          // Show detail view
+          docsList.style.display = 'flex';
+          
+          setTimeout(() => {
+            docsList.classList.remove('fade-out');
+            docsList.classList.add('fade-in');
+          }, 50);
+        }, 300);
+        
+        // Morph pie chart back to stack icon
+        pieChartContainer.style.opacity = '0';
+        pieChartContainer.style.transform = 'scale(0.8) rotate(-180deg)';
+        
+        setTimeout(() => {
+          pieChartContainer.style.display = 'none';
+          stackedIcon.style.opacity = '1';
+          stackedIcon.style.transform = 'scale(1) rotate(0deg)';
+        }, 300);
+        
+        // Update toggle icon back to stack
+        toggleIcon.innerHTML = `
+          <path d="M3 8L12 3L21 8L12 13L3 8Z"/>
+          <path d="M3 12L12 17L21 12"/>
+          <path d="M3 16L12 21L21 16"/>
+        `;
+        toggleBtn.classList.remove('active');
+      }
+    }
+
+    function generatePieChart() {
+      const pieChart = document.getElementById('pieChart');
+      pieChart.innerHTML = '';
+      
+      if (currentTab === 'ratelock') {
+        // Rate Lock pie chart - show time remaining (18 days out of ~24 days = 75%)
+        const daysRemaining = 18;
+        const totalDays = 24;
+        const percentComplete = (daysRemaining / totalDays) * 100;
+        
+        const centerX = 140;
+        const centerY = 140;
+        const radius = 110;
+        
+        // Background circle (gray - expired portion)
+        const bgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        bgCircle.setAttribute('cx', centerX);
+        bgCircle.setAttribute('cy', centerY);
+        bgCircle.setAttribute('r', radius);
+        bgCircle.setAttribute('fill', 'rgba(148, 163, 184, 0.2)');
+        pieChart.appendChild(bgCircle);
+        
+        // Green arc for remaining time (starting from top, going clockwise)
+        const angle = (percentComplete / 100) * 360;
+        const endAngle = -90 + angle;
+        const startX = centerX + radius * Math.cos((-90 * Math.PI) / 180);
+        const startY = centerY + radius * Math.sin((-90 * Math.PI) / 180);
+        const endX = centerX + radius * Math.cos((endAngle * Math.PI) / 180);
+        const endY = centerY + radius * Math.sin((endAngle * Math.PI) / 180);
+        const largeArc = angle > 180 ? 1 : 0;
+        
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M ${centerX} ${centerY} L ${startX} ${startY} A ${radius} ${radius} 0 ${largeArc} 1 ${endX} ${endY} Z`);
+        path.setAttribute('fill', '#10b981');
+        path.setAttribute('stroke', 'rgba(16, 185, 129, 0.3)');
+        path.setAttribute('stroke-width', '2');
+        pieChart.appendChild(path);
+        
+        // Center circle (white background for text)
+        const centerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        centerCircle.setAttribute('cx', centerX);
+        centerCircle.setAttribute('cy', centerY);
+        centerCircle.setAttribute('r', radius * 0.65);
+        centerCircle.setAttribute('fill', 'rgba(30, 41, 59, 0.95)');
+        centerCircle.setAttribute('stroke', 'rgba(16, 185, 129, 0.3)');
+        centerCircle.setAttribute('stroke-width', '2');
+        pieChart.appendChild(centerCircle);
+        
+        // Center text - days remaining
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', centerX);
+        text.setAttribute('y', centerY - 10);
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('fill', '#10b981');
+        text.setAttribute('font-size', '42');
+        text.setAttribute('font-weight', 'bold');
+        text.textContent = daysRemaining;
+        pieChart.appendChild(text);
+        
+        const subtext = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        subtext.setAttribute('x', centerX);
+        subtext.setAttribute('y', centerY + 20);
+        subtext.setAttribute('text-anchor', 'middle');
+        subtext.setAttribute('fill', '#94a3b8');
+        subtext.setAttribute('font-size', '16');
+        subtext.textContent = 'days left';
+        pieChart.appendChild(subtext);
+        
+      } else {
+        // Original pie chart for Docs/Services
+        const data = [
+          { label: 'Loan Prep', value: 8, color: '#3b82f6' },
+          { label: 'Initial Approval', value: 4, color: '#8b5cf6' },
+          { label: 'Final Approval', value: 2, color: '#10b981' }
+        ];
+        
+        const total = data.reduce((sum, item) => sum + item.value, 0);
+        const centerX = 140;
+        const centerY = 140;
+        const radius = 110;
+        
+        let currentAngle = -90; // Start at top
+      
+      data.forEach((item, index) => {
+        const percentage = item.value / total;
+        const angle = percentage * 360;
+        const endAngle = currentAngle + angle;
+        
+        // Convert angles to radians
+        const startRad = (currentAngle * Math.PI) / 180;
+        const endRad = (endAngle * Math.PI) / 180;
+        
+        // Calculate arc points
+        const x1 = centerX + radius * Math.cos(startRad);
+        const y1 = centerY + radius * Math.sin(startRad);
+        const x2 = centerX + radius * Math.cos(endRad);
+        const y2 = centerY + radius * Math.sin(endRad);
+        
+        // Large arc flag
+        const largeArc = angle > 180 ? 1 : 0;
+        
+        // Create path
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const pathData = `
+          M ${centerX} ${centerY}
+          L ${x1} ${y1}
+          A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2}
+          Z
+        `;
+        
+        path.setAttribute('d', pathData);
+        path.setAttribute('fill', item.color);
+        path.setAttribute('stroke', 'rgba(255, 255, 255, 0.1)');
+        path.setAttribute('stroke-width', '2');
+        path.setAttribute('opacity', '0');
+        path.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        path.style.transitionDelay = `${index * 0.1}s`;
+        
+        pieChart.appendChild(path);
+        
+        // Animate in
+        setTimeout(() => {
+          path.setAttribute('opacity', '0.9');
+        }, 50);
+        
+        // Add subtle hover effect - just brighten and slightly scale
+        path.addEventListener('mouseenter', () => {
+          path.setAttribute('opacity', '1');
+          path.style.filter = 'brightness(1.2)';
+          path.style.transform = 'scale(1.02)';
+          path.style.transformOrigin = 'center';
+        });
+        
+        path.addEventListener('mouseleave', () => {
+          path.setAttribute('opacity', '0.9');
+          path.style.filter = 'brightness(1)';
+          path.style.transform = 'scale(1)';
+        });
+        
+        // Add percentage label in the middle of each segment
+        const midAngle = (currentAngle + endAngle) / 2;
+        const midRad = (midAngle * Math.PI) / 180;
+        const labelRadius = radius * 0.7; // Position label 70% out from center
+        const labelX = centerX + labelRadius * Math.cos(midRad);
+        const labelY = centerY + labelRadius * Math.sin(midRad);
+        
+        const percentText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        percentText.setAttribute('x', labelX);
+        percentText.setAttribute('y', labelY);
+        percentText.setAttribute('text-anchor', 'middle');
+        percentText.setAttribute('dominant-baseline', 'middle');
+        percentText.setAttribute('fill', 'white');
+        percentText.setAttribute('font-size', '16');
+        percentText.setAttribute('font-weight', 'bold');
+        percentText.setAttribute('opacity', '0');
+        percentText.style.pointerEvents = 'none';
+        percentText.style.transition = 'opacity 0.3s ease';
+        percentText.textContent = `${Math.round(percentage * 100)}%`;
+        
+        pieChart.appendChild(percentText);
+        
+        // Fade in percentage after segment animation
+        setTimeout(() => {
+          percentText.setAttribute('opacity', '1');
+        }, 600 + (index * 100));
+        
+        currentAngle = endAngle;
+      });
+      
+      // Add center circle for donut effect
+      const centerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      centerCircle.setAttribute('cx', centerX);
+      centerCircle.setAttribute('cy', centerY);
+      centerCircle.setAttribute('r', '55');
+      centerCircle.setAttribute('fill', 'rgba(30, 41, 59, 0.95)');
+      pieChart.appendChild(centerCircle);
+      
+      // Add total count in center
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', centerX);
+      text.setAttribute('y', centerY - 5);
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('fill', 'white');
+      text.setAttribute('font-size', '32');
+      text.setAttribute('font-weight', 'bold');
+      text.textContent = total;
+      pieChart.appendChild(text);
+      
+      const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      label.setAttribute('x', centerX);
+      label.setAttribute('y', centerY + 20);
+      label.setAttribute('text-anchor', 'middle');
+      label.setAttribute('fill', '#94a3b8');
+      label.setAttribute('font-size', '14');
+      label.textContent = 'Total Docs';
+      pieChart.appendChild(label);
+      }
+    }
+
+    // Initialize
+    updateDocumentsList();
+    updateStackIcon();
+  </script>
+
+</body>
+</html>
