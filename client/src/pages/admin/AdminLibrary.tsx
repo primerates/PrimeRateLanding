@@ -401,6 +401,38 @@ export default function AdminLibrary() {
           </div>
         </div>
 
+        {/* Draft Loan Status Tile - Sandbox Area */}
+        <Card className={`backdrop-blur-xl border-l-4 transition-all duration-300 shadow-2xl mb-6 ${getCardBackground()} ${
+          isLightMode
+            ? 'border-l-orange-500'
+            : 'border-l-orange-500'
+        }`}>
+          <CardHeader className={`border-b ${isLightMode ? 'border-purple-200' : 'border-purple-500/20'}`}>
+            <div className="flex items-center justify-between">
+              <CardTitle className={`text-2xl transition-colors ${getSectionTitleClasses()}`}>
+                Draft Loan Status
+              </CardTitle>
+              <div className="px-3 py-1 bg-orange-500/20 border border-orange-500/30 rounded-lg">
+                <span className={`text-xs font-semibold ${isLightMode ? 'text-orange-700' : 'text-orange-300'}`}>
+                  SANDBOX
+                </span>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <div className={`p-8 text-center rounded-lg border-2 border-dashed ${
+              isLightMode ? 'border-purple-300 bg-purple-50/50' : 'border-purple-500/30 bg-purple-500/5'
+            }`}>
+              <p className={`text-lg font-medium mb-2 ${isLightMode ? 'text-slate-700' : 'text-purple-200'}`}>
+                Sandbox Area for Loan Status Development
+              </p>
+              <p className={`text-sm ${isLightMode ? 'text-slate-500' : 'text-purple-300/70'}`}>
+                This tile is ready for your updated loan status codes and features.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Main Content - Borrower Card with Dashboard Theme */}
         <Card className={`backdrop-blur-xl border-l-4 transition-all duration-300 shadow-2xl ${getCardBackground()} ${
           isLightMode
