@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
 import { toast } from '@/hooks/use-toast';
@@ -8,6 +7,7 @@ import FormSelect from '../FormSelect';
 import DateInput from '../DateInput';
 import AppraisalIcon from '../AppraisalIcon';
 import ValuationButtons from './ValuationButtons';
+import CurrencyInputField from '../CurrencyInputField';
 
 interface PropertyDetailsProps {
   propertyId: string;
@@ -49,15 +49,10 @@ const PropertyDetails = ({
             <AppraisalIcon index={propertyIndex} control={form.control} />
           </Button>
         </div>
-        <Input
+        <CurrencyInputField
+          name={getPropertyFieldPath('purchasePrice')}
           id={`property-purchase-price-${propertyId}`}
-          value={form.watch(getPropertyFieldPath('purchasePrice') as any) || ''}
-          onChange={(e) => {
-            const value = e.target.value.replace(/[^\d.]/g, '');
-            form.setValue(getPropertyFieldPath('purchasePrice') as any, value);
-          }}
-          placeholder="$0.00"
-          data-testid={`input-property-purchase-price-${propertyId}`}
+          testId={`input-property-purchase-price-${propertyId}`}
         />
       </div>
 
@@ -123,15 +118,10 @@ const PropertyDetails = ({
             openValuationSummary={openValuationSummary}
           />
         </div>
-        <Input
+        <CurrencyInputField
+          name={getPropertyFieldPath('estimatedValue')}
           id={`property-estimated-value-${propertyId}`}
-          value={form.watch(getPropertyFieldPath('estimatedValue') as any) || ''}
-          onChange={(e) => {
-            const value = e.target.value.replace(/[^\d.]/g, '');
-            form.setValue(getPropertyFieldPath('estimatedValue') as any, value);
-          }}
-          placeholder="$0.00"
-          data-testid={`input-property-estimated-value-${propertyId}`}
+          testId={`input-property-estimated-value-${propertyId}`}
         />
       </div>
 
@@ -150,15 +140,10 @@ const PropertyDetails = ({
             <AppraisalIcon index={propertyIndex} control={form.control} />
           </Button>
         </div>
-        <Input
+        <CurrencyInputField
+          name={getPropertyFieldPath('appraisedValue')}
           id={`property-appraised-value-${propertyId}`}
-          value={form.watch(getPropertyFieldPath('appraisedValue') as any) || ''}
-          onChange={(e) => {
-            const value = e.target.value.replace(/[^\d.]/g, '');
-            form.setValue(getPropertyFieldPath('appraisedValue') as any, value);
-          }}
-          placeholder="$0.00"
-          data-testid={`input-property-appraised-value-${propertyId}`}
+          testId={`input-property-appraised-value-${propertyId}`}
         />
       </div>
 
