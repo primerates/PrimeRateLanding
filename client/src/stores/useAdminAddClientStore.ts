@@ -60,6 +60,13 @@ interface AddAdminClientStore {
   coBorrowerSecondEmployerCountyOptions: Record<string, CountyOptions[]>;
   countyLookupLoading: CountyLookupLoading;
   isBorrowerCurrentResidencePresent: boolean;
+  // Loan state
+  newRefinanceLoanCards: string[];
+  newPurchaseLoanCards: string[];
+  currentPrimaryLoans: string[];
+  currentSecondLoans: string[];
+  currentThirdLoans: string[];
+  loanCardStates: Record<string, boolean>;
   setUnsavedChangesDialog: (dialog: { isOpen: boolean }) => void;
   setMaritalStatusDialog: (dialog: { isOpen: boolean }) => void;
   setIsShowingDMBatch: (isShowing: boolean) => void;
@@ -88,6 +95,13 @@ interface AddAdminClientStore {
   setCoBorrowerSecondEmployerCountyOptions: (options: Record<string, CountyOptions[]>) => void;
   setCountyLookupLoading: (loading: (prev: CountyLookupLoading) => CountyLookupLoading) => void;
   setIsBorrowerCurrentResidencePresent: (isPresent: boolean) => void;
+  // Loan actions
+  addLoan: (type: 'refinance' | 'purchase' | 'primary' | 'second' | 'third') => string;
+  removeLoan: (loanId: string) => void;
+  clearLoansOfType: (type: 'refinance' | 'purchase' | 'primary' | 'second' | 'third') => void;
+  setLoanCardExpanded: (loanId: string, expanded: boolean) => void;
+  expandAllLoans: () => void;
+  minimizeAllLoans: () => void;
 }
 
 export const useAdminAddClientStore = create<AddAdminClientStore>()(
@@ -139,6 +153,14 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
         coBorrowerSecondEmployer: false
       },
       isBorrowerCurrentResidencePresent: false,
+
+      // Loan state initialization
+      newRefinanceLoanCards: [],
+      newPurchaseLoanCards: [],
+      currentPrimaryLoans: [],
+      currentSecondLoans: [],
+      currentThirdLoans: [],
+      loanCardStates: {},
       
       setUnsavedChangesDialog: (dialog) =>
         set(() => ({
@@ -275,6 +297,110 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
         set(() => ({
           isBorrowerCurrentResidencePresent: isPresent,
         })),
+
+      // Loan actions
+      addLoan: (type) => {
+        const newLoanId = `${type}-${Date.now()}`;
+        set((state) => {
+          const newState: Partial<AddAdminClientStore> = {
+            loanCardStates: { ...state.loanCardStates, [newLoanId]: true }
+          };
+
+          if (type === 'refinance') {
+            newState.newRefinanceLoanCards = [...state.newRefinanceLoanCards, newLoanId];
+          } else if (type === 'purchase') {
+            newState.newPurchaseLoanCards = [...state.newPurchaseLoanCards, newLoanId];
+          } else if (type === 'primary') {
+            newState.currentPrimaryLoans = [...state.currentPrimaryLoans, newLoanId];
+          } else if (type === 'second') {
+            newState.currentSecondLoans = [...state.currentSecondLoans, newLoanId];
+          } else if (type === 'third') {
+            newState.currentThirdLoans = [...state.currentThirdLoans, newLoanId];
+          }
+
+          return newState;
+        });
+        return newLoanId;
+      },
+
+      removeLoan: (loanId) =>
+        set((state) => {
+          const { [loanId]: _, ...restCardStates } = state.loanCardStates;
+          const newState: Partial<AddAdminClientStore> = {
+            loanCardStates: restCardStates
+          };
+
+          if (loanId.startsWith('refinance-')) {
+            newState.newRefinanceLoanCards = state.newRefinanceLoanCards.filter(id => id !== loanId);
+          } else if (loanId.startsWith('purchase-')) {
+            newState.newPurchaseLoanCards = state.newPurchaseLoanCards.filter(id => id !== loanId);
+          } else if (loanId.startsWith('primary-')) {
+            newState.currentPrimaryLoans = state.currentPrimaryLoans.filter(id => id !== loanId);
+          } else if (loanId.startsWith('second-')) {
+            newState.currentSecondLoans = state.currentSecondLoans.filter(id => id !== loanId);
+          } else if (loanId.startsWith('third-')) {
+            newState.currentThirdLoans = state.currentThirdLoans.filter(id => id !== loanId);
+          }
+
+          return newState;
+        }),
+
+      clearLoansOfType: (type) =>
+        set((state) => {
+          const newState: Partial<AddAdminClientStore> = {
+            loanCardStates: { ...state.loanCardStates }
+          };
+
+          if (type === 'refinance') {
+            state.newRefinanceLoanCards.forEach(id => delete newState.loanCardStates![id]);
+            newState.newRefinanceLoanCards = [];
+          } else if (type === 'purchase') {
+            state.newPurchaseLoanCards.forEach(id => delete newState.loanCardStates![id]);
+            newState.newPurchaseLoanCards = [];
+          } else if (type === 'primary') {
+            state.currentPrimaryLoans.forEach(id => delete newState.loanCardStates![id]);
+            newState.currentPrimaryLoans = [];
+          } else if (type === 'second') {
+            state.currentSecondLoans.forEach(id => delete newState.loanCardStates![id]);
+            newState.currentSecondLoans = [];
+          } else if (type === 'third') {
+            state.currentThirdLoans.forEach(id => delete newState.loanCardStates![id]);
+            newState.currentThirdLoans = [];
+          }
+
+          return newState;
+        }),
+
+      setLoanCardExpanded: (loanId, expanded) =>
+        set((state) => ({
+          loanCardStates: { ...state.loanCardStates, [loanId]: expanded }
+        })),
+
+      expandAllLoans: () =>
+        set((state) => {
+          const expandedStates: Record<string, boolean> = {};
+          [
+            ...state.newRefinanceLoanCards,
+            ...state.newPurchaseLoanCards,
+            ...state.currentPrimaryLoans,
+            ...state.currentSecondLoans,
+            ...state.currentThirdLoans
+          ].forEach(id => { expandedStates[id] = true; });
+          return { loanCardStates: expandedStates };
+        }),
+
+      minimizeAllLoans: () =>
+        set((state) => {
+          const minimizedStates: Record<string, boolean> = {};
+          [
+            ...state.newRefinanceLoanCards,
+            ...state.newPurchaseLoanCards,
+            ...state.currentPrimaryLoans,
+            ...state.currentSecondLoans,
+            ...state.currentThirdLoans
+          ].forEach(id => { minimizedStates[id] = false; });
+          return { loanCardStates: minimizedStates };
+        }),
     }),
     { name: 'add-client-store' }
   )

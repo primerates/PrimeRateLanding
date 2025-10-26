@@ -39,7 +39,7 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
     const fieldPrefix = isPrimary ? 'borrower' : 'coBorrower';
     const title = isPrimary ? 'Borrower' : 'Co-Borrower';
     const borderColor = isPrimary ? 'border-l-green-500 hover:border-green-500' : 'border-l-blue-500 hover:border-blue-500';
-    
+
     // Dynamic state selection based on borrower type
     const isOpen = isPrimary ? isBorrowerOpen : isCoBorrowerOpen;
     const setIsOpen = isPrimary ? setIsBorrowerOpen : setIsCoBorrowerOpen;
@@ -49,6 +49,9 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
     const currentMonths = useWatch({ name: `${fieldPrefix}.monthsAtAddress` as any, control: form.control });
     const priorYears = useWatch({ name: `${fieldPrefix}.priorYearsAtAddress` as any, control: form.control });
     const priorMonths = useWatch({ name: `${fieldPrefix}.priorMonthsAtAddress` as any, control: form.control });
+
+    // Watch all form values once to avoid multiple subscriptions
+    const borrowerData = useWatch({ name: fieldPrefix as any, control: form.control }) || {};
 
     // Copy borrower data to co-borrower function
     const copyBorrowerToCoResidence = () => {        
@@ -187,7 +190,7 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <FormInput
                                 label="First Name"
-                                value={form.watch(`${fieldPrefix}.firstName` as any) || ''}
+                                value={borrowerData.firstName || ''}
                                 onChange={(value) => form.setValue(`${fieldPrefix}.firstName` as any, value)}
                                 id={`${fieldPrefix}-firstName`}
                                 testId={`input-${fieldPrefix}-firstName`}
@@ -195,7 +198,7 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
                             />
                             <FormInput
                                 label="Middle Name"
-                                value={form.watch(`${fieldPrefix}.middleName` as any) || ''}
+                                value={borrowerData.middleName || ''}
                                 onChange={(value) => form.setValue(`${fieldPrefix}.middleName` as any, value)}
                                 id={`${fieldPrefix}-middleName`}
                                 testId={`input-${fieldPrefix}-middleName`}
@@ -203,7 +206,7 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
                             />
                             <FormInput
                                 label="Last Name"
-                                value={form.watch(`${fieldPrefix}.lastName` as any) || ''}
+                                value={borrowerData.lastName || ''}
                                 onChange={(value) => form.setValue(`${fieldPrefix}.lastName` as any, value)}
                                 id={`${fieldPrefix}-lastName`}
                                 testId={`input-${fieldPrefix}-lastName`}
@@ -211,7 +214,7 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
                             />
                             <DateInput
                                 label="Date of Birth"
-                                value={form.watch(`${fieldPrefix}.dateOfBirth` as any) || ''}
+                                value={borrowerData.dateOfBirth || ''}
                                 onChange={(value) => form.setValue(`${fieldPrefix}.dateOfBirth` as any, value)}
                                 id={`${fieldPrefix}-dateOfBirth`}
                                 testId={`input-${fieldPrefix}-dateOfBirth`}
@@ -219,7 +222,7 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
                             />
                             <SSNInput
                                 label="SSN"
-                                value={form.watch(`${fieldPrefix}.ssn` as any) || ''}
+                                value={borrowerData.ssn || ''}
                                 onChange={(value) => form.setValue(`${fieldPrefix}.ssn` as any, value)}
                                 id={`${fieldPrefix}-ssn`}
                                 testId={`input-${fieldPrefix}-ssn`}
@@ -230,7 +233,7 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <FormSelect
                                 label="Marital Status"
-                                value={form.watch(`${fieldPrefix}.maritalStatus` as any) || 'Select'}
+                                value={borrowerData.maritalStatus || 'Select'}
                                 onValueChange={(value) => {
                                     form.setValue(`${fieldPrefix}.maritalStatus` as any, value);
                                     // Only trigger co-borrower popup for primary borrower
@@ -245,7 +248,7 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
                             />
                             <FormSelect
                                 label="Relationship to Co-borrower"
-                                value={form.watch(`${fieldPrefix}.relationshipToBorrower` as any) || 'N/A'}
+                                value={borrowerData.relationshipToBorrower || 'N/A'}
                                 onValueChange={(value) => form.setValue(`${fieldPrefix}.relationshipToBorrower` as any, value)}
                                 options={RELATIONSHIP_OPTIONS}
                                 placeholder="N/A"
@@ -254,7 +257,7 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
                             />
                             <PhoneInput
                                 label="Phone"
-                                value={form.watch(`${fieldPrefix}.phone` as any) || ''}
+                                value={borrowerData.phone || ''}
                                 onChange={(value) => form.setValue(`${fieldPrefix}.phone` as any, value)}
                                 id={`${fieldPrefix}-phone`}
                                 testId={`input-${fieldPrefix}-phone`}
@@ -263,7 +266,7 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
                             />
                             <FormInput
                                 label="Email"
-                                value={form.watch(`${fieldPrefix}.email` as any) || ''}
+                                value={borrowerData.email || ''}
                                 onChange={(value) => form.setValue(`${fieldPrefix}.email` as any, value)}
                                 id={`${fieldPrefix}-email`}
                                 testId={`input-${fieldPrefix}-email`}
@@ -271,7 +274,7 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
                             />
                             <FormSelect
                                 label="Preferred Contact Time"
-                                value={form.watch(`${fieldPrefix}.preferredContactTime` as any) || 'Select'}
+                                value={borrowerData.preferredContactTime || 'Select'}
                                 onValueChange={(value) => form.setValue(`${fieldPrefix}.preferredContactTime` as any, value)}
                                 options={CONTACT_TIME_OPTIONS}
                                 placeholder="Select"

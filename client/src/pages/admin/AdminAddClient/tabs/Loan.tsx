@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 import LoanHeader from '../components/Loan/LoanHeader';
 import LoanManagement, { type LoanType } from '../components/Loan/LoanManagement';
 import RefinanceLoanCard from '../components/Loan/RefinanceLoanCard';
@@ -25,19 +26,21 @@ const LoanTab = ({
 }: LoanTabProps) => {
   const form = useFormContext();
 
-  // Separate state for each loan type - matching original architecture
-  const [newRefinanceLoanCards, setNewRefinanceLoanCards] = useState<string[]>([]);
-  const [newPurchaseLoanCards, setNewPurchaseLoanCards] = useState<string[]>([]);
-  const [currentPrimaryLoans, setCurrentPrimaryLoans] = useState<string[]>([]);
-  const [currentSecondLoans, setCurrentSecondLoans] = useState<string[]>([]);
-  const [currentThirdLoans, setCurrentThirdLoans] = useState<string[]>([]);
-
-  // Separate collapsible/expanded states for each loan type
-  const [newRefinanceLoanCardStates, setNewRefinanceLoanCardStates] = useState<Record<string, boolean>>({});
-  const [newPurchaseLoanCardStates, setNewPurchaseLoanCardStates] = useState<Record<string, boolean>>({});
-  const [currentPrimaryLoanCardStates, setCurrentPrimaryLoanCardStates] = useState<Record<string, boolean>>({});
-  const [currentSecondLoanCardStates, setCurrentSecondLoanCardStates] = useState<Record<string, boolean>>({});
-  const [currentThirdLoanCardStates, setCurrentThirdLoanCardStates] = useState<Record<string, boolean>>({});
+  // Use Zustand store for loan state
+  const {
+    newRefinanceLoanCards,
+    newPurchaseLoanCards,
+    currentPrimaryLoans,
+    currentSecondLoans,
+    currentThirdLoans,
+    loanCardStates,
+    addLoan,
+    removeLoan,
+    clearLoansOfType,
+    setLoanCardExpanded,
+    expandAllLoans,
+    minimizeAllLoans
+  } = useAdminAddClientStore();
 
   // Credit scores state for refinance loan
   const [ficoType, setFicoType] = useState<FicoType>('mid-fico');
@@ -63,151 +66,86 @@ const LoanTab = ({
     if (checked) {
       // Add new loan card
       if (loanType === 'new-refinance') {
-        const newLoanId = `refinance-${Date.now()}`;
-        setNewRefinanceLoanCards(prev => [...prev, newLoanId]);
-        setNewRefinanceLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+        addLoan('refinance');
       } else if (loanType === 'new-purchase') {
-        const newLoanId = `purchase-${Date.now()}`;
-        setNewPurchaseLoanCards(prev => [...prev, newLoanId]);
-        setNewPurchaseLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+        addLoan('purchase');
       } else if (loanType === 'current-primary') {
-        const newLoanId = `primary-${Date.now()}`;
-        setCurrentPrimaryLoans(prev => [...prev, newLoanId]);
-        setCurrentPrimaryLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+        addLoan('primary');
       } else if (loanType === 'current-second') {
-        const newLoanId = `second-${Date.now()}`;
-        setCurrentSecondLoans(prev => [...prev, newLoanId]);
-        setCurrentSecondLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+        addLoan('second');
       } else if (loanType === 'current-third') {
-        const newLoanId = `third-${Date.now()}`;
-        setCurrentThirdLoans(prev => [...prev, newLoanId]);
-        setCurrentThirdLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+        addLoan('third');
       }
-      // TODO: Implement other loan types (second+purchase)
     } else {
       // Remove loan cards of the specific type and clear form data
       if (loanType === 'new-refinance') {
         // Clear refinance loan data
         form.setValue('newRefinanceLoan' as any, undefined);
-        setNewRefinanceLoanCards([]);
-        setNewRefinanceLoanCardStates({});
+        clearLoansOfType('refinance');
       } else if (loanType === 'new-purchase') {
         // Clear purchase loan data
         form.setValue('newPurchaseLoan' as any, undefined);
-        setNewPurchaseLoanCards([]);
-        setNewPurchaseLoanCardStates({});
+        clearLoansOfType('purchase');
       } else if (loanType === 'current-primary') {
         // Clear all primary loan data
         currentPrimaryLoans.forEach(loanId => {
           form.setValue(`currentLoan.${loanId}` as any, undefined);
         });
-        setCurrentPrimaryLoans([]);
-        setCurrentPrimaryLoanCardStates({});
+        clearLoansOfType('primary');
       } else if (loanType === 'current-second') {
         // Clear all second loan data
         currentSecondLoans.forEach(loanId => {
           form.setValue(`currentSecondLoan.${loanId}` as any, undefined);
         });
-        setCurrentSecondLoans([]);
-        setCurrentSecondLoanCardStates({});
+        clearLoansOfType('second');
       } else if (loanType === 'current-third') {
         // Clear all third loan data
         currentThirdLoans.forEach(loanId => {
           form.setValue(`currentThirdLoan.${loanId}` as any, undefined);
         });
-        setCurrentThirdLoans([]);
-        setCurrentThirdLoanCardStates({});
+        clearLoansOfType('third');
       }
     }
   };
 
   const handleRemoveLoanCard = (loanId: string) => {
-    // Determine loan type from loanId prefix
+    // Clear form data based on loan type
     if (loanId.startsWith('primary-')) {
-      // Clear primary loan data
       form.setValue(`currentLoan.${loanId}` as any, undefined);
-      // Remove from primary loans
-      setCurrentPrimaryLoans(prev => prev.filter(id => id !== loanId));
-      setCurrentPrimaryLoanCardStates(prev => {
-        const { [loanId]: _, ...rest } = prev;
-        return rest;
-      });
     } else if (loanId.startsWith('second-')) {
-      // Clear second loan data
       form.setValue(`currentSecondLoan.${loanId}` as any, undefined);
-      // Remove from second loans
-      setCurrentSecondLoans(prev => prev.filter(id => id !== loanId));
-      setCurrentSecondLoanCardStates(prev => {
-        const { [loanId]: _, ...rest } = prev;
-        return rest;
-      });
     } else if (loanId.startsWith('third-')) {
-      // Clear third loan data
       form.setValue(`currentThirdLoan.${loanId}` as any, undefined);
-      // Remove from third loans
-      setCurrentThirdLoans(prev => prev.filter(id => id !== loanId));
-      setCurrentThirdLoanCardStates(prev => {
-        const { [loanId]: _, ...rest } = prev;
-        return rest;
-      });
     } else if (loanId.startsWith('refinance-')) {
-      // Clear refinance loan data
       form.setValue('newRefinanceLoan' as any, undefined);
-      // Remove from refinance loans
-      setNewRefinanceLoanCards(prev => prev.filter(id => id !== loanId));
-      setNewRefinanceLoanCardStates(prev => {
-        const { [loanId]: _, ...rest } = prev;
-        return rest;
-      });
     } else if (loanId.startsWith('purchase-')) {
-      // Clear purchase loan data
       form.setValue('newPurchaseLoan' as any, undefined);
-      // Remove from purchase loans
-      setNewPurchaseLoanCards(prev => prev.filter(id => id !== loanId));
-      setNewPurchaseLoanCardStates(prev => {
-        const { [loanId]: _, ...rest } = prev;
-        return rest;
-      });
     }
+
+    // Remove from Zustand store
+    removeLoan(loanId);
   };
 
   const handleAddPrimaryLoan = () => {
     if (currentPrimaryLoans.length < 10) {
-      const newLoanId = `primary-${Date.now()}`;
-      setCurrentPrimaryLoans(prev => [...prev, newLoanId]);
-      setCurrentPrimaryLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+      addLoan('primary');
     }
   };
 
   const handleAddSecondLoan = () => {
     if (currentSecondLoans.length < 10) {
-      const newLoanId = `second-${Date.now()}`;
-      setCurrentSecondLoans(prev => [...prev, newLoanId]);
-      setCurrentSecondLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+      addLoan('second');
     }
   };
 
   const handleAddThirdLoan = () => {
     if (currentThirdLoans.length < 10) {
-      const newLoanId = `third-${Date.now()}`;
-      setCurrentThirdLoans(prev => [...prev, newLoanId]);
-      setCurrentThirdLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+      addLoan('third');
     }
   };
 
   const handleLoanCardExpandChange = (loanId: string, expanded: boolean) => {
-    // Update the appropriate state based on loan type
-    if (loanId.startsWith('primary-')) {
-      setCurrentPrimaryLoanCardStates(prev => ({ ...prev, [loanId]: expanded }));
-    } else if (loanId.startsWith('second-')) {
-      setCurrentSecondLoanCardStates(prev => ({ ...prev, [loanId]: expanded }));
-    } else if (loanId.startsWith('third-')) {
-      setCurrentThirdLoanCardStates(prev => ({ ...prev, [loanId]: expanded }));
-    } else if (loanId.startsWith('refinance-')) {
-      setNewRefinanceLoanCardStates(prev => ({ ...prev, [loanId]: expanded }));
-    } else if (loanId.startsWith('purchase-')) {
-      setNewPurchaseLoanCardStates(prev => ({ ...prev, [loanId]: expanded }));
-    }
+    setLoanCardExpanded(loanId, expanded);
   };
 
   // Credit scores handlers
@@ -261,61 +199,6 @@ const LoanTab = ({
   const secondLoansCount = currentSecondLoans.length;
   const thirdLoansCount = currentThirdLoans.length;
 
-  // Expand/collapse handlers
-  const handleExpandAllLoans = () => {
-    // Expand all refinance loans
-    const expandedRefinance: Record<string, boolean> = {};
-    newRefinanceLoanCards.forEach(id => { expandedRefinance[id] = true; });
-    setNewRefinanceLoanCardStates(expandedRefinance);
-
-    // Expand all purchase loans
-    const expandedPurchase: Record<string, boolean> = {};
-    newPurchaseLoanCards.forEach(id => { expandedPurchase[id] = true; });
-    setNewPurchaseLoanCardStates(expandedPurchase);
-
-    // Expand all primary loans
-    const expandedPrimary: Record<string, boolean> = {};
-    currentPrimaryLoans.forEach(id => { expandedPrimary[id] = true; });
-    setCurrentPrimaryLoanCardStates(expandedPrimary);
-
-    // Expand all second loans
-    const expandedSecond: Record<string, boolean> = {};
-    currentSecondLoans.forEach(id => { expandedSecond[id] = true; });
-    setCurrentSecondLoanCardStates(expandedSecond);
-
-    // Expand all third loans
-    const expandedThird: Record<string, boolean> = {};
-    currentThirdLoans.forEach(id => { expandedThird[id] = true; });
-    setCurrentThirdLoanCardStates(expandedThird);
-  };
-
-  const handleMinimizeAllLoans = () => {
-    // Minimize all refinance loans
-    const minimizedRefinance: Record<string, boolean> = {};
-    newRefinanceLoanCards.forEach(id => { minimizedRefinance[id] = false; });
-    setNewRefinanceLoanCardStates(minimizedRefinance);
-
-    // Minimize all purchase loans
-    const minimizedPurchase: Record<string, boolean> = {};
-    newPurchaseLoanCards.forEach(id => { minimizedPurchase[id] = false; });
-    setNewPurchaseLoanCardStates(minimizedPurchase);
-
-    // Minimize all primary loans
-    const minimizedPrimary: Record<string, boolean> = {};
-    currentPrimaryLoans.forEach(id => { minimizedPrimary[id] = false; });
-    setCurrentPrimaryLoanCardStates(minimizedPrimary);
-
-    // Minimize all second loans
-    const minimizedSecond: Record<string, boolean> = {};
-    currentSecondLoans.forEach(id => { minimizedSecond[id] = false; });
-    setCurrentSecondLoanCardStates(minimizedSecond);
-
-    // Minimize all third loans
-    const minimizedThird: Record<string, boolean> = {};
-    currentThirdLoans.forEach(id => { minimizedThird[id] = false; });
-    setCurrentThirdLoanCardStates(minimizedThird);
-  };
-
   return (
     <div className="space-y-6">
       <LoanHeader
@@ -334,8 +217,8 @@ const LoanTab = ({
         hasCurrentPrimaryLoan={hasCurrentPrimaryLoan}
         hasCurrentSecondLoan={hasCurrentSecondLoan}
         hasCurrentThirdLoan={hasCurrentThirdLoan}
-        onExpandAll={handleExpandAllLoans}
-        onMinimizeAll={handleMinimizeAllLoans}
+        onExpandAll={expandAllLoans}
+        onMinimizeAll={minimizeAllLoans}
       />
 
       {/* Render Loan Cards */}
@@ -347,7 +230,7 @@ const LoanTab = ({
               key={loanId}
               loanId={loanId}
               onRemove={handleRemoveLoanCard}
-              expanded={newRefinanceLoanCardStates[loanId] ?? true}
+              expanded={loanCardStates[loanId] ?? true}
               onExpandChange={(expanded: boolean) => handleLoanCardExpandChange(loanId, expanded)}
               ficoType={ficoType}
               onCycleFicoType={handleCycleFicoType}
@@ -367,7 +250,7 @@ const LoanTab = ({
               onAdd={handleAddPrimaryLoan}
               currentCount={primaryLoansCount}
               maxCount={10}
-              expanded={currentPrimaryLoanCardStates[loanId] ?? true}
+              expanded={loanCardStates[loanId] ?? true}
               onExpandChange={(expanded: boolean) => handleLoanCardExpandChange(loanId, expanded)}
             />
           ))}
@@ -382,7 +265,7 @@ const LoanTab = ({
               onAdd={handleAddSecondLoan}
               currentCount={secondLoansCount}
               maxCount={10}
-              expanded={currentSecondLoanCardStates[loanId] ?? true}
+              expanded={loanCardStates[loanId] ?? true}
               onExpandChange={(expanded: boolean) => handleLoanCardExpandChange(loanId, expanded)}
             />
           ))}
@@ -397,7 +280,7 @@ const LoanTab = ({
               onAdd={handleAddThirdLoan}
               currentCount={thirdLoansCount}
               maxCount={10}
-              expanded={currentThirdLoanCardStates[loanId] ?? true}
+              expanded={loanCardStates[loanId] ?? true}
               onExpandChange={(expanded: boolean) => handleLoanCardExpandChange(loanId, expanded)}
             />
           ))}
@@ -408,7 +291,7 @@ const LoanTab = ({
               key={loanId}
               loanId={loanId}
               onRemove={handleRemoveLoanCard}
-              expanded={newPurchaseLoanCardStates[loanId] ?? true}
+              expanded={loanCardStates[loanId] ?? true}
               onExpandChange={(expanded: boolean) => handleLoanCardExpandChange(loanId, expanded)}
             />
           ))}

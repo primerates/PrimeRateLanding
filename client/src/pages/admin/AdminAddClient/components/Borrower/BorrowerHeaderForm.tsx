@@ -16,15 +16,15 @@ const BorrowerHeaderForm = () => {
     const form = useFormContext<InsertClient>();
     const { isShowingDMBatch, setIsShowingDMBatch } = useAdminAddClientStore();
 
-    // Use form.watch for validation/conditional rendering
-    const borrowerStage = form.watch('borrower.stage');
+    // Watch borrower data once to minimize subscriptions
+    const borrowerData = form.watch('borrower') || {};
 
     return (
         <Card>
             <CardContent className="grid grid-cols-1 md:grid-cols-6 gap-4 pt-6">
                 <FormSelect
                     label="Stage"
-                    value={borrowerStage || 'Lead'}
+                    value={borrowerData.stage || 'Lead'}
                     onValueChange={(value) => form.setValue('borrower.stage', value as any)}
                     options={STAGE_OPTIONS}
                     placeholder="Lead"
@@ -54,7 +54,7 @@ const BorrowerHeaderForm = () => {
 
                 <ManageableSelect
                     label="Source"
-                    value={form.watch('borrower.source') || ''}
+                    value={borrowerData.source || ''}
                     builtInOptions={BUILT_IN_SOURCES}
                     onValueChange={(value) => form.setValue('borrower.source', value as any)}
                     testId="select-borrower-source"
@@ -69,7 +69,7 @@ const BorrowerHeaderForm = () => {
 
                 <DateInput
                     label="Initial Call Date"
-                    value={form.watch('borrower.callDate') || ''}
+                    value={borrowerData.callDate || ''}
                     onChange={(value) => form.setValue('borrower.callDate', value)}
                     id="borrower-callDate"
                     testId="input-borrower-callDate"
@@ -77,7 +77,7 @@ const BorrowerHeaderForm = () => {
 
                 <DateInput
                     label="Loan Start Date"
-                    value={form.watch('borrower.startDate') || ''}
+                    value={borrowerData.startDate || ''}
                     onChange={(value) => form.setValue('borrower.startDate', value)}
                     id="borrower-startDate"
                     testId="input-borrower-startDate"
@@ -85,7 +85,7 @@ const BorrowerHeaderForm = () => {
 
                 <FormInput
                     label="Loan Duration"
-                    value={form.watch('borrower.loanDuration') || ''}
+                    value={borrowerData.loanDuration || ''}
                     onChange={(value) => form.setValue('borrower.loanDuration', value)}
                     id="borrower-loanDuration"
                     testId="input-borrower-loanDuration"

@@ -350,6 +350,13 @@ const PropertyTab = ({
     const refinanceLoan = form.watch('newRefinanceLoan');
     const properties = form.watch('property.properties') || [];
 
+    // Create stable dependencies by stringifying the data
+    const currentLoanDataStr = JSON.stringify(currentLoanData);
+    const currentSecondLoanDataStr = JSON.stringify(currentSecondLoanData);
+    const currentThirdLoanDataStr = JSON.stringify(currentThirdLoanData);
+    const refinanceLoanStr = JSON.stringify(refinanceLoan);
+    const propertiesStr = JSON.stringify(properties);
+
     // Memoize loan count map to prevent re-render issues
     const propertyLoanCounts = useMemo(() => {
         const counts: Record<string, number> = {};
@@ -389,7 +396,7 @@ const PropertyTab = ({
         }
 
         return counts;
-    }, [currentLoanData, currentSecondLoanData, currentThirdLoanData, refinanceLoan, properties]);
+    }, [currentLoanDataStr, currentSecondLoanDataStr, currentThirdLoanDataStr, refinanceLoanStr, propertiesStr]);
 
     return (
         <div className="space-y-6">

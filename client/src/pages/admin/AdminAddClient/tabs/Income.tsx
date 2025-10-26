@@ -224,8 +224,12 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         form.setValue(monthsPath as any, months);
     };
 
+    // Watch all income data once to minimize subscriptions
+    const incomeData = form.watch('income') || {};
+    const coBorrowerIncomeData = form.watch('coBorrowerIncome') || {};
+
     // Watch for employment checkbox changes and ensure default card exists when checked
-    const isEmploymentChecked = form.watch('income.incomeTypes.employment');
+    const isEmploymentChecked = incomeData?.incomeTypes?.employment;
     useEffect(() => {
         if (isEmploymentChecked && borrowerEmployerCards.length === 0) {
             setBorrowerEmployerCards(['default']);
@@ -233,7 +237,7 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
     }, [isEmploymentChecked, borrowerEmployerCards.length]);
 
     // Watch for second employment checkbox changes and ensure default card exists when checked
-    const isSecondEmploymentChecked = form.watch('income.incomeTypes.secondEmployment');
+    const isSecondEmploymentChecked = incomeData?.incomeTypes?.secondEmployment;
     useEffect(() => {
         if (isSecondEmploymentChecked && secondEmployerCards.length === 0) {
             setSecondEmployerCards(['default']);
@@ -241,10 +245,10 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
     }, [isSecondEmploymentChecked, secondEmployerCards.length]);
 
     // Watch for pension checkbox changes and ensure default pension exists when checked
-    const isPensionChecked = form.watch('income.incomeTypes.pension');
+    const isPensionChecked = incomeData?.incomeTypes?.pension;
     useEffect(() => {
         if (isPensionChecked) {
-            const currentPensions = form.watch('income.pensions') || [];
+            const currentPensions = incomeData.pensions || [];
             if (currentPensions.length === 0) {
                 const defaultPension = {
                     id: `pension-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
@@ -255,10 +259,10 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
                 form.setValue('income.pensions', [defaultPension]);
             }
         }
-    }, [isPensionChecked, form]);
+    }, [isPensionChecked, form, incomeData.pensions]);
 
     // Watch for co-borrower employment checkbox changes and ensure default card exists when checked
-    const isCoBorrowerEmploymentChecked = form.watch('coBorrowerIncome.incomeTypes.employment');
+    const isCoBorrowerEmploymentChecked = coBorrowerIncomeData?.incomeTypes?.employment;
     useEffect(() => {
         if (isCoBorrowerEmploymentChecked && coBorrowerEmployerCards.length === 0) {
             setCoBorrowerEmployerCards(['default']);
@@ -266,7 +270,7 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
     }, [isCoBorrowerEmploymentChecked, coBorrowerEmployerCards.length]);
 
     // Watch for co-borrower second employment checkbox changes and ensure default card exists when checked
-    const isCoBorrowerSecondEmploymentChecked = form.watch('coBorrowerIncome.incomeTypes.secondEmployment');
+    const isCoBorrowerSecondEmploymentChecked = coBorrowerIncomeData?.incomeTypes?.secondEmployment;
     useEffect(() => {
         if (isCoBorrowerSecondEmploymentChecked && coBorrowerSecondEmployerCards.length === 0) {
             setCoBorrowerSecondEmployerCards(['default']);
@@ -274,10 +278,10 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
     }, [isCoBorrowerSecondEmploymentChecked, coBorrowerSecondEmployerCards.length]);
 
     // Watch for co-borrower pension checkbox changes and ensure default pension exists when checked
-    const isCoBorrowerPensionChecked = form.watch('coBorrowerIncome.incomeTypes.pension');
+    const isCoBorrowerPensionChecked = coBorrowerIncomeData?.incomeTypes?.pension;
     useEffect(() => {
         if (isCoBorrowerPensionChecked) {
-            const currentPensions = form.watch('coBorrowerIncome.pensions') || [];
+            const currentPensions = coBorrowerIncomeData.pensions || [];
             if (currentPensions.length === 0) {
                 const defaultPension = {
                     id: `pension-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
@@ -288,64 +292,57 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
                 form.setValue('coBorrowerIncome.pensions', [defaultPension]);
             }
         }
-    }, [isCoBorrowerPensionChecked, form]);
+    }, [isCoBorrowerPensionChecked, form, coBorrowerIncomeData.pensions]);
 
-    // Watch all individual employer income fields dynamically
-    const allEmployerIncomes = borrowerEmployerCards.map(cardId =>
-        form.watch(getEmployerFieldPath(cardId, 'monthlyIncome') as any)
-    );
+    // Create stable dependency for useMemo
+    const incomeDataStr = JSON.stringify(incomeData);
 
     // Calculate total borrower income - full implementation from AdminAddClient
     const totalBorrowerIncome = useMemo(() => {
-        const borrowerIncomeData = form.watch('income');
-
         // Calculate total main employment income from all employer cards
-        const employmentIncome = borrowerIncomeData?.employers && typeof borrowerIncomeData.employers === 'object'
-            ? Object.values(borrowerIncomeData.employers).reduce((total, employer: any) => {
+        const employmentIncome = incomeData?.employers && typeof incomeData.employers === 'object'
+            ? Object.values(incomeData.employers).reduce((total, employer: any) => {
                 return total + (employer && typeof employer === 'object' ? parseMonetaryValue(employer.monthlyIncome) : 0);
             }, 0)
-            : parseMonetaryValue(borrowerIncomeData?.monthlyIncome); // fallback for backward compatibility
+            : parseMonetaryValue(incomeData?.monthlyIncome); // fallback for backward compatibility
 
         // Calculate total second employment income from all cards
-        const secondEmploymentIncome = borrowerIncomeData?.secondEmployers && typeof borrowerIncomeData.secondEmployers === 'object'
-            ? Object.values(borrowerIncomeData.secondEmployers).reduce((total, employer: any) => {
+        const secondEmploymentIncome = incomeData?.secondEmployers && typeof incomeData.secondEmployers === 'object'
+            ? Object.values(incomeData.secondEmployers).reduce((total, employer: any) => {
                 return total + (employer && typeof employer === 'object' ? parseMonetaryValue(employer.monthlyIncome) : 0);
             }, 0)
-            : parseMonetaryValue(borrowerIncomeData?.secondMonthlyIncome); // fallback for backward compatibility
+            : parseMonetaryValue(incomeData?.secondMonthlyIncome); // fallback for backward compatibility
 
         // Calculate total self-employment income from all cards
-        const businessIncome = borrowerIncomeData?.selfEmployers && typeof borrowerIncomeData.selfEmployers === 'object'
-            ? Object.values(borrowerIncomeData.selfEmployers).reduce((total, business: any) => {
+        const businessIncome = incomeData?.selfEmployers && typeof incomeData.selfEmployers === 'object'
+            ? Object.values(incomeData.selfEmployers).reduce((total, business: any) => {
                 return total + (business && typeof business === 'object' ? parseMonetaryValue(business.businessMonthlyIncome) : 0);
             }, 0)
-            : parseMonetaryValue(borrowerIncomeData?.businessMonthlyIncome); // fallback for backward compatibility
+            : parseMonetaryValue(incomeData?.businessMonthlyIncome); // fallback for backward compatibility
 
-        const pensionIncome = borrowerIncomeData?.pensions?.reduce((total: number, pension: any) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
-        const socialSecurityIncome = parseMonetaryValue(borrowerIncomeData?.socialSecurityMonthlyAmount);
-        const vaBenefitsIncome = parseMonetaryValue(borrowerIncomeData?.vaBenefitsMonthlyAmount);
-        const disabilityIncome = parseMonetaryValue(borrowerIncomeData?.disabilityMonthlyAmount);
-        const otherIncome = parseMonetaryValue(borrowerIncomeData?.otherIncomeMonthlyAmount);
+        const pensionIncome = incomeData?.pensions?.reduce((total: number, pension: any) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
+        const socialSecurityIncome = parseMonetaryValue(incomeData?.socialSecurityMonthlyAmount);
+        const vaBenefitsIncome = parseMonetaryValue(incomeData?.vaBenefitsMonthlyAmount);
+        const disabilityIncome = parseMonetaryValue(incomeData?.disabilityMonthlyAmount);
+        const otherIncome = parseMonetaryValue(incomeData?.otherIncomeMonthlyAmount);
 
         const total = employmentIncome + secondEmploymentIncome + businessIncome +
             pensionIncome + socialSecurityIncome + vaBenefitsIncome +
             disabilityIncome + otherIncome;
 
         return total;
-    }, [form.watch('income'), form.watch('income.employers'), allEmployerIncomes]);
+    }, [incomeDataStr]);
 
     const totalBorrowerIncomeFormatted = useMemo(() =>
         formatCurrency(totalBorrowerIncome),
         [totalBorrowerIncome]
     );
 
+    // Create stable dependency for co-borrower income useMemo
+    const coBorrowerIncomeDataStr = JSON.stringify(coBorrowerIncomeData);
+
     // Calculate total co-borrower income
-    const allCoBorrowerEmployerIncomes = coBorrowerEmployerCards.map(cardId =>
-        form.watch(getCoBorrowerEmployerFieldPath(cardId, 'monthlyIncome') as any)
-    );
-
     const totalCoBorrowerIncome = useMemo(() => {
-        const coBorrowerIncomeData = form.watch('coBorrowerIncome');
-
         // Calculate total main employment income from all employer cards
         const employmentIncome = coBorrowerIncomeData?.employers && typeof coBorrowerIncomeData.employers === 'object'
             ? Object.values(coBorrowerIncomeData.employers).reduce((total, employer: any) => {
@@ -361,14 +358,14 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
             : 0;
 
         const businessIncome = parseMonetaryValue(coBorrowerIncomeData?.businessMonthlyIncome);
-        
+
         // Calculate pension income from pensions array
         const pensionIncome = coBorrowerIncomeData?.pensions && Array.isArray(coBorrowerIncomeData.pensions)
             ? coBorrowerIncomeData.pensions.reduce((total, pension: any) => {
                 return total + parseMonetaryValue(pension?.monthlyAmount);
             }, 0)
             : 0;
-            
+
         const socialSecurityIncome = parseMonetaryValue(coBorrowerIncomeData?.socialSecurityMonthlyAmount);
         const vaBenefitsIncome = parseMonetaryValue(coBorrowerIncomeData?.vaBenefitsMonthlyAmount);
         const disabilityIncome = parseMonetaryValue(coBorrowerIncomeData?.disabilityMonthlyAmount);
@@ -379,7 +376,7 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
             disabilityIncome + otherIncome;
 
         return total;
-    }, [form.watch('coBorrowerIncome'), form.watch('coBorrowerIncome.employers'), allCoBorrowerEmployerIncomes]);
+    }, [coBorrowerIncomeDataStr]);
 
     const totalCoBorrowerIncomeFormatted = useMemo(() =>
         formatCurrency(totalCoBorrowerIncome),
@@ -407,7 +404,7 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
             });
             return newState;
         });
-        
+
         // Open all second employment form cards
         setSecondPropertyCardStates(prev => {
             const newState = { ...prev };
@@ -418,19 +415,19 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
             });
             return newState;
         });
-        
+
         // Open social security form if it exists
-        if (form.watch('income.incomeTypes.socialSecurity')) {
+        if (incomeData?.incomeTypes?.socialSecurity) {
             setIsSocialSecurityOpen(true);
         }
-        
+
         // Open pension form if it exists
-        if (form.watch('income.incomeTypes.pension')) {
+        if (incomeData?.incomeTypes?.pension) {
             setIsPensionOpen(true);
         }
-        
+
         // Open disability form if it exists
-        if (form.watch('income.incomeTypes.vaBenefits')) {
+        if (incomeData?.incomeTypes?.vaBenefits) {
             setIsDisabilityOpen(true);
         }
     };
@@ -446,7 +443,7 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
             });
             return newState;
         });
-        
+
         // Close all second employment form cards
         setSecondPropertyCardStates(prev => {
             const newState = { ...prev };
@@ -457,19 +454,19 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
             });
             return newState;
         });
-        
+
         // Close social security form if it exists
-        if (form.watch('income.incomeTypes.socialSecurity')) {
+        if (incomeData?.incomeTypes?.socialSecurity) {
             setIsSocialSecurityOpen(false);
         }
-        
+
         // Close pension form if it exists
-        if (form.watch('income.incomeTypes.pension')) {
+        if (incomeData?.incomeTypes?.pension) {
             setIsPensionOpen(false);
         }
-        
+
         // Close disability form if it exists
-        if (form.watch('income.incomeTypes.vaBenefits')) {
+        if (incomeData?.incomeTypes?.vaBenefits) {
             setIsDisabilityOpen(false);
         }
     };

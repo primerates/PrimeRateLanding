@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useFormContext } from 'react-hook-form';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { type InsertClient } from '@shared/schema';
 import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 import FormInput from '../FormInput';
@@ -48,6 +48,9 @@ const AddressForm = ({ isPrimary = true, addressType = 'current' }: AddressFormP
     };
 
     const addressFieldPath = getFieldPath();
+
+    // Watch address data once to minimize subscriptions
+    const addressData = form.watch(addressFieldPath as any) || {};
 
     // Dynamic county options and setters based on borrower type and address type
     const getCountyState = () => {
@@ -112,8 +115,8 @@ const AddressForm = ({ isPrimary = true, addressType = 'current' }: AddressFormP
 
     // Duration calculator
     const { displayValue, years, months } = useMemo(() => {
-        const fromDate = form.watch(`${addressFieldPath}.from` as any) || '';
-        const toDate = form.watch(`${addressFieldPath}.to` as any) || '';
+        const fromDate = addressData.from || '';
+        const toDate = addressData.to || '';
 
         if (!fromDate || !toDate) return { displayValue: '', years: 0, months: 0 };
 
@@ -151,10 +154,10 @@ const AddressForm = ({ isPrimary = true, addressType = 'current' }: AddressFormP
         }
 
         return { displayValue: display, years: calcYears, months: calcMonths };
-    }, [form.watch(`${addressFieldPath}.from` as any), form.watch(`${addressFieldPath}.to` as any)]);
+    }, [addressData.from, addressData.to]);
 
     // Update form values for years and months
-    useMemo(() => {
+    useEffect(() => {
         const yearsField = addressType === 'current' ? `${fieldPrefix}.yearsAtAddress` :
             addressType === 'prior' ? `${fieldPrefix}.priorYearsAtAddress` :
                 `${fieldPrefix}.priorYearsAtAddress2`;
@@ -171,8 +174,13 @@ const AddressForm = ({ isPrimary = true, addressType = 'current' }: AddressFormP
 
         const borrowerAddress = form.getValues(`${addressFieldPath}` as any);
 
-        const properties = form.watch('property.properties') || [];
-        const primaryPropertyIndex = properties.findIndex(p => p.use === 'primary');
+        // Get properties array when needed, not via watch
+        const properties = form.getValues('property.properties') || [];
+
+        // Safely check if properties is an array before using findIndex
+        if (!Array.isArray(properties)) return;
+
+        const primaryPropertyIndex = properties.findIndex(p => p?.use === 'primary');
 
         if (primaryPropertyIndex >= 0 && borrowerAddress) {
             form.setValue(`property.properties.${primaryPropertyIndex}.address` as any, {
@@ -232,7 +240,7 @@ const AddressForm = ({ isPrimary = true, addressType = 'current' }: AddressFormP
                     <div className="md:col-span-3">
                         <FormInput
                             label="Street Address"
-                            value={form.watch(`${addressFieldPath}.street` as any) || ''}
+                            value={addressData.street || ''}
                             onChange={(value) => {
                                 form.setValue(`${addressFieldPath}.street` as any, value);
                                 setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
@@ -246,7 +254,7 @@ const AddressForm = ({ isPrimary = true, addressType = 'current' }: AddressFormP
                     <div className="md:col-span-1">
                         <FormInput
                             label="Unit/Apt"
-                            value={form.watch(`${addressFieldPath}.unit` as any) || ''}
+                            value={addressData.unit || ''}
                             onChange={(value) => {
                                 form.setValue(`${addressFieldPath}.unit` as any, value);
                                 setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
@@ -260,7 +268,7 @@ const AddressForm = ({ isPrimary = true, addressType = 'current' }: AddressFormP
                     <div className="md:col-span-2">
                         <FormInput
                             label="City"
-                            value={form.watch(`${addressFieldPath}.city` as any) || ''}
+                            value={addressData.city || ''}
                             onChange={(value) => {
                                 form.setValue(`${addressFieldPath}.city` as any, value);
                                 setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
@@ -274,7 +282,7 @@ const AddressForm = ({ isPrimary = true, addressType = 'current' }: AddressFormP
                     <div className="md:col-span-1">
                         <FormSelect
                             label="State"
-                            value={form.watch(`${addressFieldPath}.state` as any) || ''}
+                            value={addressData.state || ''}
                             onValueChange={(value) => {
                                 form.setValue(`${addressFieldPath}.state` as any, value);
                                 setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
@@ -290,7 +298,7 @@ const AddressForm = ({ isPrimary = true, addressType = 'current' }: AddressFormP
                     <div className="md:col-span-1">
                         <FormInput
                             label="ZIP Code"
-                            value={form.watch(`${addressFieldPath}.zip` as any) || ''}
+                            value={addressData.zip || ''}
                             onChange={(value) => {
                                 form.setValue(`${addressFieldPath}.zip` as any, value);
                                 setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
@@ -306,7 +314,7 @@ const AddressForm = ({ isPrimary = true, addressType = 'current' }: AddressFormP
                         {countyOptions.length > 0 ? (
                             <FormSelect
                                 label="County"
-                                value={form.watch(`${addressFieldPath}.county` as any) || ''}
+                                value={addressData.county || ''}
                                 onValueChange={(value) => {
                                     if (value === 'manual-entry') {
                                         form.setValue(`${addressFieldPath}.county` as any, '');
@@ -328,7 +336,7 @@ const AddressForm = ({ isPrimary = true, addressType = 'current' }: AddressFormP
                         ) : (
                             <FormInput
                                 label="County"
-                                value={form.watch(`${addressFieldPath}.county` as any) || ''}
+                                value={addressData.county || ''}
                                 onChange={(value) => {
                                     form.setValue(`${addressFieldPath}.county` as any, value);
                                     setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
@@ -347,7 +355,7 @@ const AddressForm = ({ isPrimary = true, addressType = 'current' }: AddressFormP
                             id={`${fieldPrefix}-${addressType}-from`}
                             type="text"
                             placeholder="mm/dd/yyyy"
-                            value={form.watch(`${addressFieldPath}.from` as any) || ''}
+                            value={addressData.from || ''}
                             onChange={(e) => {
                                 const input = e.target.value;
                                 const currentValue = form.getValues(`${addressFieldPath}.from` as any) || '';
@@ -411,7 +419,7 @@ const AddressForm = ({ isPrimary = true, addressType = 'current' }: AddressFormP
                             id={`${fieldPrefix}-${addressType}-to`}
                             type="text"
                             placeholder="mm/dd/yyyy"
-                            value={addressType === 'current' && isBorrowerCurrentResidencePresent ? 'Present' : form.watch(`${addressFieldPath}.to` as any) || ''}
+                            value={addressType === 'current' && isBorrowerCurrentResidencePresent ? 'Present' : addressData.to || ''}
                             onChange={(e) => {
                                 if (addressType === 'current' && isBorrowerCurrentResidencePresent) return; // Disable editing when Present
 
