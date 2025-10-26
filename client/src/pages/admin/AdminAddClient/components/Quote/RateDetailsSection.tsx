@@ -1,9 +1,11 @@
-import { useState, useRef } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import ExistingLoanCard from './RateDetailsSection/components/ExistingLoanCard';
+import RateBuyDownCard from './RateDetailsSection/components/RateBuyDownCard';
+import PayOffInterestCard from './RateDetailsSection/components/PayOffInterestCard';
+import LoanAmountPaymentCard from './RateDetailsSection/components/LoanAmountPaymentCard';
 
 interface RateDetailsSectionProps {
     selectedRateIds: number[];
@@ -13,13 +15,47 @@ interface RateDetailsSectionProps {
     monthlyEscrow?: string;
 }
 
-const RateDetailsSection = ({
-    selectedRateIds,
-    selectedLoanCategory,
-    rateBuydown,
-    escrowReserves = 'escrow-not-included',
-    monthlyEscrow = 'select'
-}: RateDetailsSectionProps) => {
+export interface RateDetailsSectionRef {
+    getQuoteData: () => QuoteData;
+}
+
+export interface QuoteData {
+    quotes: {
+        [key: string]: {
+            loanProgram: string;
+            rate: string;
+            existingLoanBalance?: string;
+            cashOutAmount?: string;
+            rateBuyDown?: string;
+            vaFundingFee?: string;
+            fhaUpfrontMip?: string;
+            thirdPartyServices?: {
+                appraisalInspection?: string;
+                underwritingServices?: string;
+                processingServices?: string;
+                creditReportServices?: string;
+                titleEscrowServices?: string;
+                stateTaxRecording?: string;
+            };
+            payOffInterest?: string;
+            newEscrowReserves?: string;
+            newEstLoanAmount?: string;
+            newMonthlyPayment?: string;
+            totalMonthlySavings?: string;
+        };
+    };
+}
+
+const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionProps>((
+    {
+        selectedRateIds,
+        selectedLoanCategory,
+        rateBuydown,
+        escrowReserves = 'escrow-not-included',
+        monthlyEscrow = 'select'
+    },
+    ref
+) => {
     // Loan Program state
     const [quoteLoanProgram, setQuoteLoanProgram] = useState('');
     const [showLoanProgramControls, setShowLoanProgramControls] = useState(false);
@@ -43,8 +79,8 @@ const RateDetailsSection = ({
     const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(Array(4).fill(''));
 
     // VA Funding Fee / FHA MIP state
-    const [vaFundingFeeValues, setVaFundingFeeValues] = useState<string[]>(Array(4).fill(''));
-    const [fhaUpfrontMipValue, setFhaUpfrontMipValue] = useState('0');
+    const [vaFundingFeeValues] = useState<string[]>(Array(4).fill(''));
+    const [fhaUpfrontMipValue] = useState('0');
 
     // Third Party Services state
     const [thirdPartyServiceValues, setThirdPartyServiceValues] = useState<{
@@ -110,9 +146,41 @@ const RateDetailsSection = ({
 
     const showCashOut = selectedLoanCategory.includes('Cash Out');
 
-    const isVALoan = selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ');
-    const isFHALoan = selectedLoanCategory?.startsWith('FHA - ');
-    const showVAFHASection = isVALoan || isFHALoan;
+    // Expose getQuoteData method to parent components
+    useImperativeHandle(ref, () => ({
+        getQuoteData: (): QuoteData => {
+            const quotes: QuoteData['quotes'] = {};
+
+            selectedRateIds.forEach((rateId, index) => {
+                const rateKey = `rate${index + 1}`;
+
+                quotes[rateKey] = {
+                    loanProgram: quoteLoanProgram,
+                    rate: rateValues[rateId] || '',
+                    existingLoanBalance: existingLoanBalanceValues[rateId] || '',
+                    cashOutAmount: cashOutAmountValues[rateId] || '',
+                    rateBuyDown: rateBuyDownValues[rateId] || '',
+                    vaFundingFee: vaFundingFeeValues[rateId] || '',
+                    fhaUpfrontMip: fhaUpfrontMipValue,
+                    thirdPartyServices: {
+                        appraisalInspection: thirdPartyServiceValues['s2']?.[rateId] || '',
+                        underwritingServices: thirdPartyServiceValues['s4']?.[rateId] || '',
+                        processingServices: thirdPartyServiceValues['s8']?.[rateId] || '',
+                        creditReportServices: thirdPartyServiceValues['s9']?.[rateId] || '',
+                        titleEscrowServices: thirdPartyServiceValues['s5']?.[rateId] || '',
+                        stateTaxRecording: thirdPartyServiceValues['s7']?.[rateId] || '',
+                    },
+                    payOffInterest: payOffInterestValues[rateId] || '',
+                    newEscrowReserves: calculatedTotalMonthlyEscrow > 0 ? calculatedTotalMonthlyEscrow.toString() : '',
+                    newEstLoanAmount: newEstLoanAmountValues[rateId] || '',
+                    newMonthlyPayment: newMonthlyPaymentValues[rateId] || '',
+                    totalMonthlySavings: totalMonthlySavingsValues[rateId] || '',
+                };
+            });
+
+            return { quotes };
+        }
+    }));
 
     return (
         <div id="quote-printable-content">
@@ -246,550 +314,74 @@ const RateDetailsSection = ({
 
             {/* Existing Loan Balance Card */}
             {showExistingLoanBalance && (
-                <Card
-                    className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-green-500 hover:border-2 hover:border-green-500 transition-colors flex-none"
-                    style={{ width: columnWidth, maxWidth: '100%' }}
-                >
-                    <CardContent className="pt-6 space-y-6">
-                        <div className="grid gap-4" style={{ gridTemplateColumns: gridCols }}>
-                            <div className="flex items-center justify-end pr-4">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        if (isExistingLoanBalanceSameMode) {
-                                            const firstValue = existingLoanBalanceValues[selectedRateIds[0]] || '';
-                                            const newValues = [...existingLoanBalanceValues];
-                                            selectedRateIds.forEach(id => newValues[id] = firstValue);
-                                            setExistingLoanBalanceValues(newValues);
-                                        }
-                                        setIsExistingLoanBalanceSameMode(!isExistingLoanBalanceSameMode);
-                                    }}
-                                    className="text-base font-semibold text-right hover:text-blue-600 cursor-pointer"
-                                    data-testid="button-existing-loan-balance-toggle"
-                                >
-                                    {isExistingLoanBalanceSameMode ? 'Same' : 'Existing Loan Balance:'}
-                                </button>
-                            </div>
-                            {selectedRateIds.map((rateId) => {
-                                const numVal = existingLoanBalanceValues[rateId] ? existingLoanBalanceValues[rateId].replace(/[^\d]/g, '') : '';
-                                const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-
-                                return (
-                                    <div key={rateId} className="flex justify-center">
-                                        <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                            <span className="text-muted-foreground text-sm">$</span>
-                                            <Input
-                                                type="text"
-                                                placeholder=""
-                                                value={displayValue}
-                                                onChange={(e) => {
-                                                    const value = e.target.value.replace(/[^\d]/g, '');
-                                                    const newValues = [...existingLoanBalanceValues];
-                                                    newValues[rateId] = value;
-                                                    setExistingLoanBalanceValues(newValues);
-                                                }}
-                                                className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                                data-testid={`input-existing-loan-balance-${rateId}`}
-                                            />
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-
-                        {/* Cash Out Amount */}
-                        {showCashOut && (
-                            <div className="grid gap-4" style={{ gridTemplateColumns: gridCols }}>
-                                <div className="flex items-center justify-end pr-4">
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            if (isCashOutSameMode) {
-                                                const firstValue = cashOutAmountValues[selectedRateIds[0]] || '';
-                                                const newValues = [...cashOutAmountValues];
-                                                selectedRateIds.forEach(id => newValues[id] = firstValue);
-                                                setCashOutAmountValues(newValues);
-                                            }
-                                            setIsCashOutSameMode(!isCashOutSameMode);
-                                        }}
-                                        className="text-base font-semibold text-right hover:text-blue-600 cursor-pointer"
-                                        data-testid="button-cash-out-toggle"
-                                    >
-                                        {isCashOutSameMode ? 'Same' : 'Cash Out Amount'}
-                                    </button>
-                                </div>
-                                {selectedRateIds.map((rateId) => {
-                                    const numVal = cashOutAmountValues[rateId] ? cashOutAmountValues[rateId].replace(/[^\d]/g, '') : '';
-                                    const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-
-                                    return (
-                                        <div key={rateId} className="flex justify-center">
-                                            <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                                <span className="text-muted-foreground text-sm">$</span>
-                                                <Input
-                                                    type="text"
-                                                    placeholder=""
-                                                    value={displayValue}
-                                                    onChange={(e) => {
-                                                        const value = e.target.value.replace(/[^\d]/g, '');
-                                                        const newValues = [...cashOutAmountValues];
-                                                        newValues[rateId] = value;
-                                                        setCashOutAmountValues(newValues);
-                                                    }}
-                                                    className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                                    data-testid={`input-cash-out-amount-${rateId}`}
-                                                />
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
+                <ExistingLoanCard
+                    selectedRateIds={selectedRateIds}
+                    existingLoanBalanceValues={existingLoanBalanceValues}
+                    setExistingLoanBalanceValues={setExistingLoanBalanceValues}
+                    isExistingLoanBalanceSameMode={isExistingLoanBalanceSameMode}
+                    setIsExistingLoanBalanceSameMode={setIsExistingLoanBalanceSameMode}
+                    cashOutAmountValues={cashOutAmountValues}
+                    setCashOutAmountValues={setCashOutAmountValues}
+                    isCashOutSameMode={isCashOutSameMode}
+                    setIsCashOutSameMode={setIsCashOutSameMode}
+                    showCashOut={showCashOut}
+                    columnWidth={columnWidth}
+                    gridCols={gridCols}
+                />
             )}
 
             {/* Rate Buy Down Card */}
             {rateBuydown !== 'no' && (
-                <Card
-                    className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-cyan-500 hover:border-2 hover:border-cyan-500 transition-colors flex-none"
-                    style={{ width: columnWidth, maxWidth: '100%' }}
-                >
-                    <CardContent className="pt-6 space-y-6">
-                        <div className="grid gap-4" style={{ gridTemplateColumns: gridCols }}>
-                            <div className="flex items-center justify-end pr-4">
-                                <Label className="text-base font-semibold text-right">Rate Buy Down</Label>
-                            </div>
-                            {selectedRateIds.map((rateId) => {
-                                const numVal = rateBuyDownValues[rateId] ? rateBuyDownValues[rateId].replace(/[^\d]/g, '') : '';
-                                const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-
-                                return (
-                                    <div key={rateId} className="flex justify-center">
-                                        <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                            <span className="text-muted-foreground text-sm">$</span>
-                                            <Input
-                                                type="text"
-                                                placeholder=""
-                                                value={displayValue}
-                                                onChange={(e) => {
-                                                    const value = e.target.value.replace(/[^\d]/g, '');
-                                                    const newValues = [...rateBuyDownValues];
-                                                    newValues[rateId] = value;
-                                                    setRateBuyDownValues(newValues);
-                                                }}
-                                                className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                                data-testid={`input-rate-buy-down-${rateId}`}
-                                            />
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-
-                        {/* VA Funding Fee / FHA Upfront MIP Section */}
-                        {showVAFHASection && (
-                            <div className="border-t pt-6">
-                                <div className="grid gap-4 mb-6" style={{ gridTemplateColumns: gridCols }}>
-                                    <div className="flex items-center justify-end pr-4 gap-2">
-                                        <Label className="text-base font-semibold text-right">
-                                            {isFHALoan ? 'New FHA Upfront MIP' : 'VA Funding Fee'}
-                                        </Label>
-                                    </div>
-                                    {selectedRateIds.map((rateId) => {
-                                        if (isVALoan) {
-                                            // VA Loan: display-only input showing calculated values
-                                            const rawVal = vaFundingFeeValues[rateId] || '';
-                                            const cleanVal = rawVal.replace(/[^\d.]/g, '');
-
-                                            let displayValue = '';
-                                            if (cleanVal) {
-                                                const parts = cleanVal.split('.');
-                                                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                                                displayValue = parts.join('.');
-                                            }
-
-                                            return (
-                                                <div key={rateId} className="flex justify-center">
-                                                    <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                                        <span className="text-muted-foreground text-sm">$</span>
-                                                        <Input
-                                                            type="text"
-                                                            placeholder=""
-                                                            value={displayValue}
-                                                            disabled
-                                                            className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
-                                                            data-testid={`input-va-funding-fee-${rateId}`}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            );
-                                        }
-
-                                        // FHA Loan: disabled input showing calculated value
-                                        const displayValue = fhaUpfrontMipValue || '0';
-
-                                        return (
-                                            <div key={rateId} className="flex justify-center">
-                                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                                    <span className="text-muted-foreground text-sm">$</span>
-                                                    <Input
-                                                        type="text"
-                                                        placeholder="0"
-                                                        value={displayValue}
-                                                        disabled
-                                                        className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
-                                                        data-testid={`input-fha-upfront-mip-${rateId}`}
-                                                    />
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Third Party Services Section */}
-                        <div className={`${rateBuydown !== 'no' ? 'border-t' : ''} pt-6`}>
-                            {currentThirdPartyServices.map((category, categoryIndex) => (
-                                <div key={category.id} className={categoryIndex > 0 ? 'mt-6 pt-6 border-t border-border' : ''}>
-                                    {/* Category Header */}
-                                    <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: gridCols }}>
-                                        <div className="flex items-center justify-end pr-4 gap-2">
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    const isInSameMode = categorySameModes[category.id];
-                                                    if (isInSameMode) {
-                                                        // Copy first field value to all fields for ALL services in this category
-                                                        category.services.forEach(service => {
-                                                            const firstValue = thirdPartyServiceValues[service.id]?.[selectedRateIds[0]] || '';
-                                                            const newValues = [...thirdPartyServiceValues[service.id]];
-                                                            selectedRateIds.forEach(id => newValues[id] = firstValue);
-                                                            setThirdPartyServiceValues(prev => ({
-                                                                ...prev,
-                                                                [service.id]: newValues
-                                                            }));
-                                                        });
-                                                    }
-                                                    // Toggle the mode
-                                                    setCategorySameModes(prev => ({
-                                                        ...prev,
-                                                        [category.id]: !isInSameMode
-                                                    }));
-                                                }}
-                                                className="text-base font-semibold text-right hover:text-blue-600 cursor-pointer"
-                                                data-testid={`button-category-toggle-${category.id}`}
-                                            >
-                                                {categorySameModes[category.id] ? 'Same' : category.categoryName}
-                                            </button>
-                                        </div>
-                                        {selectedRateIds.map((rateId) => (
-                                            <div key={rateId} className="flex justify-center">
-                                                <div className="w-3/4"></div>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    {/* Services under this category */}
-                                    {category.services.map((service, serviceIndex) => {
-                                        // Filter logic for services based on loan category
-                                        // Hide VA Funding Fee (s1) - it has its own section
-                                        if (service.id === 's1') return null;
-
-                                        // Hide Appraisal Inspection (s2) when VA Rate & Term or IRRRL is selected
-                                        if (service.id === 's2' &&
-                                            (selectedLoanCategory?.includes('Rate & Term') || selectedLoanCategory?.includes('IRRRL'))) {
-                                            return null;
-                                        }
-
-                                        // Hide Appraisal Inspection (s2) when FHA Rate & Term or Streamline is selected
-                                        if (service.id === 's2' && isFHALoan &&
-                                            (selectedLoanCategory?.includes('Rate & Term') || selectedLoanCategory?.includes('Streamline'))) {
-                                            return null;
-                                        }
-
-                                        // Hide Pay Off Interest (s6) - it has its own section
-                                        if (service.id === 's6') return null;
-
-                                        return (
-                                            <div
-                                                key={service.id}
-                                                className={`grid gap-4 ${serviceIndex < category.services.length - 1 ? 'mb-2' : ''}`}
-                                                style={{ gridTemplateColumns: gridCols }}
-                                            >
-                                                <div className="flex items-center justify-end pr-4">
-                                                    <Label className="text-sm text-right text-muted-foreground">• {service.serviceName}</Label>
-                                                </div>
-                                                {selectedRateIds.map((rateId) => {
-                                                    const numVal = thirdPartyServiceValues[service.id]?.[rateId]
-                                                        ? thirdPartyServiceValues[service.id][rateId].replace(/[^\d]/g, '')
-                                                        : '';
-                                                    const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-
-                                                    return (
-                                                        <div key={rateId} className="flex justify-center">
-                                                            <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                                                <span className="text-muted-foreground text-sm">$</span>
-                                                                <Input
-                                                                    type="text"
-                                                                    placeholder=""
-                                                                    value={displayValue}
-                                                                    onChange={(e) => {
-                                                                        const value = e.target.value.replace(/[^\d]/g, '');
-                                                                        setThirdPartyServiceValues(prev => {
-                                                                            const newValues = { ...prev };
-                                                                            if (!newValues[service.id]) {
-                                                                                newValues[service.id] = Array(4).fill('');
-                                                                            }
-                                                                            const updatedArray = [...newValues[service.id]];
-                                                                            updatedArray[rateId] = value;
-                                                                            newValues[service.id] = updatedArray;
-                                                                            return newValues;
-                                                                        });
-                                                                    }}
-                                                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                                                    data-testid={`input-service-${service.id}-${rateId}`}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            ))}
-                        </div>
-                    </CardContent>
-                </Card>
+                <RateBuyDownCard
+                    selectedRateIds={selectedRateIds}
+                    selectedLoanCategory={selectedLoanCategory}
+                    rateBuyDownValues={rateBuyDownValues}
+                    setRateBuyDownValues={setRateBuyDownValues}
+                    vaFundingFeeValues={vaFundingFeeValues}
+                    fhaUpfrontMipValue={fhaUpfrontMipValue}
+                    thirdPartyServiceValues={thirdPartyServiceValues}
+                    setThirdPartyServiceValues={setThirdPartyServiceValues}
+                    categorySameModes={categorySameModes}
+                    setCategorySameModes={setCategorySameModes}
+                    currentThirdPartyServices={currentThirdPartyServices}
+                    columnWidth={columnWidth}
+                    gridCols={gridCols}
+                />
             )}
 
             {/* Pay Off Interest & New Escrow Reserves Card */}
-            <Card
-                className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-violet-400 hover:border-2 hover:border-violet-400 transition-colors flex-none"
-                style={{ width: columnWidth, maxWidth: '100%' }}
-            >
-                <CardContent className="pt-6 space-y-6">
-                    {/* Pay Off Interest Section - Standalone */}
-                    <div>
-                        <div className="grid gap-4" style={{ gridTemplateColumns: gridCols }}>
-                            <div className="flex items-center justify-end pr-4">
-                                <Label className="text-base font-bold text-right whitespace-nowrap">Pay Off Interest</Label>
-                            </div>
-                            {selectedRateIds.map((rateId) => {
-                                const numVal = payOffInterestValues[rateId] ? payOffInterestValues[rateId].replace(/[^\d]/g, '') : '';
-                                const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-
-                                return (
-                                    <div key={rateId} className="flex justify-center">
-                                        <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                            <span className="text-muted-foreground text-sm">$</span>
-                                            <Input
-                                                type="text"
-                                                placeholder=""
-                                                value={displayValue}
-                                                onChange={(e) => {
-                                                    const value = e.target.value.replace(/[^\d]/g, '');
-                                                    const newValues = [...payOffInterestValues];
-                                                    newValues[rateId] = value;
-                                                    setPayOffInterestValues(newValues);
-                                                    // Also update thirdPartyServiceValues['s6'] to keep them in sync
-                                                    setThirdPartyServiceValues(prev => ({
-                                                        ...prev,
-                                                        's6': newValues
-                                                    }));
-                                                }}
-                                                className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                                data-testid={`input-payoff-interest-${rateId}`}
-                                            />
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    {/* New Escrow Reserves Section - Conditionally shown */}
-                    {escrowReserves !== 'escrow-not-included' && (
-                        <div className="border-t pt-6">
-                            <div className="grid gap-4" style={{ gridTemplateColumns: gridCols }}>
-                                <div className="flex flex-col items-end justify-center pr-4">
-                                    <div className="flex items-center gap-2 flex-shrink-0">
-                                        <Label className="text-base font-bold text-right whitespace-nowrap">New Escrow Reserves</Label>
-                                    </div>
-                                    {monthlyEscrow && monthlyEscrow !== 'select' && (
-                                        <span className="text-sm text-muted-foreground text-right mt-1">
-                                            {monthlyEscrow === 'includes-tax-insurance' && 'Includes Tax & Insurance'}
-                                            {monthlyEscrow === 'includes-tax-only' && 'Includes Tax Only'}
-                                            {monthlyEscrow === 'includes-insurance-only' && 'Includes Insurance Only'}
-                                        </span>
-                                    )}
-                                </div>
-                                {selectedRateIds.map((rateId) => {
-                                    const displayValue = calculatedTotalMonthlyEscrow > 0 ? calculatedTotalMonthlyEscrow.toLocaleString('en-US') : '';
-
-                                    return (
-                                        <div key={rateId} className="flex justify-center">
-                                            <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                                <span className="text-muted-foreground text-sm">$</span>
-                                                <Input
-                                                    type="text"
-                                                    placeholder=""
-                                                    value={displayValue}
-                                                    readOnly
-                                                    className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                                    data-testid={`input-escrow-reserves-${rateId}`}
-                                                />
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+            <PayOffInterestCard
+                selectedRateIds={selectedRateIds}
+                payOffInterestValues={payOffInterestValues}
+                setPayOffInterestValues={setPayOffInterestValues}
+                setThirdPartyServiceValues={setThirdPartyServiceValues}
+                escrowReserves={escrowReserves}
+                monthlyEscrow={monthlyEscrow}
+                calculatedTotalMonthlyEscrow={calculatedTotalMonthlyEscrow}
+                columnWidth={columnWidth}
+                gridCols={gridCols}
+            />
 
             {/* New Est. Loan Amount & New Monthly Payment Card */}
-            <Card
-                className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500 hover:border-2 hover:border-blue-500 transition-colors flex-none"
-                style={{ width: columnWidth, maxWidth: '100%' }}
-            >
-                <CardContent className="pt-6 space-y-6">
-                    {/* New Est. Loan Amount Row */}
-                    <div className="grid gap-4" style={{ gridTemplateColumns: gridCols }}>
-                        <div className="flex items-center justify-end pr-4 gap-2 flex-shrink-0">
-                            {isMonthlyPaymentRowExpanded ? (
-                                <ChevronDown
-                                    className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
-                                    onClick={() => setIsMonthlyPaymentRowExpanded(false)}
-                                    data-testid="icon-collapse-monthly-payment"
-                                />
-                            ) : (
-                                <ChevronUp
-                                    className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
-                                    onClick={() => setIsMonthlyPaymentRowExpanded(true)}
-                                    data-testid="icon-expand-monthly-payment"
-                                />
-                            )}
-                            <Label className="text-base font-bold text-right whitespace-nowrap">New Est. Loan Amount</Label>
-                        </div>
-                        {selectedRateIds.map((rateId) => {
-                            const numVal = newEstLoanAmountValues[rateId] ? newEstLoanAmountValues[rateId].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-
-                            return (
-                                <div key={rateId} className="flex justify-center">
-                                    <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                        <span className="text-muted-foreground text-sm">$</span>
-                                        <Input
-                                            type="text"
-                                            placeholder=""
-                                            value={displayValue}
-                                            onChange={(e) => {
-                                                const value = e.target.value.replace(/[^\d]/g, '');
-                                                const newValues = [...newEstLoanAmountValues];
-                                                newValues[rateId] = value;
-                                                setNewEstLoanAmountValues(newValues);
-                                            }}
-                                            className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                            data-testid={`input-new-est-loan-amount-${rateId}`}
-                                        />
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    {/* New Monthly Payment Row - Collapsible */}
-                    {isMonthlyPaymentRowExpanded && (
-                        <div className="border-t pt-6">
-                            <div className="grid gap-4" style={{ gridTemplateColumns: gridCols }}>
-                                <div className="flex items-center justify-end pr-4 gap-2 flex-shrink-0">
-                                    {isSavingsRowExpanded ? (
-                                        <ChevronDown
-                                            className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
-                                            onClick={() => setIsSavingsRowExpanded(false)}
-                                            data-testid="icon-collapse-savings"
-                                        />
-                                    ) : (
-                                        <ChevronUp
-                                            className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
-                                            onClick={() => setIsSavingsRowExpanded(true)}
-                                            data-testid="icon-expand-savings"
-                                        />
-                                    )}
-                                    <Label className="text-base font-bold text-right whitespace-nowrap">New Monthly Payment</Label>
-                                </div>
-                                {selectedRateIds.map((rateId) => {
-                                    const numVal = newMonthlyPaymentValues[rateId] ? newMonthlyPaymentValues[rateId].replace(/[^\d]/g, '') : '';
-                                    const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-
-                                    return (
-                                        <div key={rateId} className="flex justify-center">
-                                            <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                                <span className="text-muted-foreground text-sm">$</span>
-                                                <Input
-                                                    type="text"
-                                                    placeholder=""
-                                                    value={displayValue}
-                                                    onChange={(e) => {
-                                                        const value = e.target.value.replace(/[^\d]/g, '');
-                                                        const newValues = [...newMonthlyPaymentValues];
-                                                        newValues[rateId] = value;
-                                                        setNewMonthlyPaymentValues(newValues);
-                                                    }}
-                                                    className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                                    data-testid={`input-new-monthly-payment-${rateId}`}
-                                                />
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Total Monthly Savings Row - Collapsible under New Monthly Payment */}
-                    {isMonthlyPaymentRowExpanded && isSavingsRowExpanded && (
-                        <div className="border-t pt-6">
-                            <div className="grid gap-4" style={{ gridTemplateColumns: gridCols }}>
-                                <div className="flex items-center justify-end pr-4">
-                                    <Label className="text-base font-bold text-right whitespace-nowrap">Total Monthly Savings</Label>
-                                </div>
-                                {selectedRateIds.map((rateId) => {
-                                    const numVal = totalMonthlySavingsValues[rateId] ? totalMonthlySavingsValues[rateId].replace(/[^\d]/g, '') : '';
-                                    const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-
-                                    return (
-                                        <div key={rateId} className="flex justify-center">
-                                            <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                                <span className="text-muted-foreground text-sm">$</span>
-                                                <Input
-                                                    type="text"
-                                                    placeholder=""
-                                                    value={displayValue}
-                                                    onChange={(e) => {
-                                                        const value = e.target.value.replace(/[^\d]/g, '');
-                                                        const newValues = [...totalMonthlySavingsValues];
-                                                        newValues[rateId] = value;
-                                                        setTotalMonthlySavingsValues(newValues);
-                                                    }}
-                                                    className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                                    data-testid={`input-total-monthly-savings-${rateId}`}
-                                                />
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+            <LoanAmountPaymentCard
+                selectedRateIds={selectedRateIds}
+                newEstLoanAmountValues={newEstLoanAmountValues}
+                setNewEstLoanAmountValues={setNewEstLoanAmountValues}
+                newMonthlyPaymentValues={newMonthlyPaymentValues}
+                setNewMonthlyPaymentValues={setNewMonthlyPaymentValues}
+                totalMonthlySavingsValues={totalMonthlySavingsValues}
+                setTotalMonthlySavingsValues={setTotalMonthlySavingsValues}
+                isMonthlyPaymentRowExpanded={isMonthlyPaymentRowExpanded}
+                setIsMonthlyPaymentRowExpanded={setIsMonthlyPaymentRowExpanded}
+                isSavingsRowExpanded={isSavingsRowExpanded}
+                setIsSavingsRowExpanded={setIsSavingsRowExpanded}
+                columnWidth={columnWidth}
+                gridCols={gridCols}
+            />
         </div>
     );
-};
+});
+
+RateDetailsSection.displayName = 'RateDetailsSection';
 
 export default RateDetailsSection;

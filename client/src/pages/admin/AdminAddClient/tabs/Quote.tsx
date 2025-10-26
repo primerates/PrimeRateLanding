@@ -1,14 +1,30 @@
+import { useRef, forwardRef, useImperativeHandle } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import ActionButtons from '../components/Quote/ActionButtons';
 import QuoteFormRow1 from '../components/Quote/QuoteFormRow1';
 import QuoteFormRow2 from '../components/Quote/QuoteFormRow2';
 import QuoteFormRow3 from '../components/Quote/QuoteFormRow3';
 import QuotePopupsContainer from '../components/Quote/QuotePopupsContainer';
-import RateDetailsSection from '../components/Quote/RateDetailsSection';
+import RateDetailsSection, { type RateDetailsSectionRef, type QuoteData } from '../components/Quote/RateDetailsSection';
 import { useQuoteState } from '../hooks/useQuoteState';
 
-const QuoteTab = () => {
+export interface QuoteTabRef {
+    getQuoteData: () => QuoteData | null;
+}
+
+const QuoteTab = forwardRef<QuoteTabRef>((_, ref) => {
     const state = useQuoteState();
+    const rateDetailsSectionRef = useRef<RateDetailsSectionRef>(null);
+
+    // Expose getQuoteData method to parent components
+    useImperativeHandle(ref, () => ({
+        getQuoteData: (): QuoteData | null => {
+            if (rateDetailsSectionRef.current) {
+                return rateDetailsSectionRef.current.getQuoteData();
+            }
+            return null;
+        }
+    }));
 
     return (
         <Card className="mb-6 transition-all duration-700 animate-roll-down">
@@ -121,6 +137,7 @@ const QuoteTab = () => {
             {/* Rate Details Section - shown when rates are selected */}
             {!state.isQuoteCardsMinimized && state.selectedRateIds.length > 0 && (
                 <RateDetailsSection
+                    ref={rateDetailsSectionRef}
                     selectedRateIds={state.selectedRateIds}
                     selectedLoanCategory={state.selectedLoanCategory}
                     rateBuydown={state.rateBuydown}
@@ -165,6 +182,8 @@ const QuoteTab = () => {
             />
         </Card>
     );
-};
+});
+
+QuoteTab.displayName = 'QuoteTab';
 
 export default QuoteTab;

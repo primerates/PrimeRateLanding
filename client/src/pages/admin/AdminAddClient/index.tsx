@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import AddClientHeader from './components/Header';
 import { useToast } from '@/hooks/use-toast';
@@ -11,11 +11,13 @@ import { insertClientSchema, type InsertClient } from '@shared/schema';
 import { useForm, useWatch, useFormContext, UseFormReturn, Controller, FormProvider, useController } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { defaultClientFormValues } from './data/defaultFormValues';
+import type { QuoteTabRef } from './tabs/Quote';
 
 const AddClientPage = () => {
 
     const { toast } = useToast();
     const { animations, triggerTabAnimation, updateAnimation } = useAnimations();
+    const quoteTabRef = useRef<QuoteTabRef>(null);
 
     useEffect(() => {
         // Trigger entry animation on component mount
@@ -29,7 +31,20 @@ const AddClientPage = () => {
     });
 
     const onSubmit = (data: InsertClient) => {
-        console.log("Form submitted successfully!", data);
+        // Collect quote data from the Quote tab
+        const quoteData = quoteTabRef.current?.getQuoteData();
+
+        const completeData = {
+            ...data,
+            ...quoteData
+        };
+
+        console.log("Form submitted successfully!", completeData);
+
+        toast({
+            title: "Success",
+            description: "Client data saved successfully!"
+        });
     };
 
     const onError = (errors: any) => {
@@ -63,9 +78,14 @@ const AddClientPage = () => {
 
                                 {TABS_DATA.map((tab) => {
                                     const Component = tab.component;
+                                    const isQuoteTab = tab.value === 'quote';
                                     return (
                                         <TabsContent key={tab.value} value={tab.value} className="space-y-6">
-                                            <Component animations={animations} />
+                                            {isQuoteTab ? (
+                                                <Component animations={animations} ref={quoteTabRef} />
+                                            ) : (
+                                                <Component animations={animations} />
+                                            )}
                                         </TabsContent>
                                     );
                                 })}
