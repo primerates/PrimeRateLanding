@@ -5,17 +5,10 @@ import AddCategoryDialog from '../../dialogs/AddCategoryDialog';
 import AddProgramDialog from '../../dialogs/AddProgramDialog';
 import RemoveCategoryDialog from '../../dialogs/RemoveCategoryDialog';
 import RemoveProgramDialog from '../../dialogs/RemoveProgramDialog';
+import { useAdminAddClientStore, type LoanCategory, type LoanProgram } from '@/stores/useAdminAddClientStore';
 
-export interface LoanCategory {
-  id: string;
-  name: string;
-  programs: LoanProgram[];
-}
-
-export interface LoanProgram {
-  id: string;
-  name: string;
-}
+// Re-export types for backward compatibility with other components
+export type { LoanCategory, LoanProgram };
 
 interface LoanProgramSelectProps {
   value?: string;
@@ -56,113 +49,70 @@ const LoanProgramSelect = ({
   testId = 'select-loan-program',
   className = 'space-y-2 max-w-[75%]'
 }: LoanProgramSelectProps) => {
-  // State for custom categories and programs
-  const [customCategories, setCustomCategories] = useState<LoanCategory[]>([]);
-  const [removedBuiltInCategories, setRemovedBuiltInCategories] = useState<string[]>([]);
-  const [removedBuiltInPrograms, setRemovedBuiltInPrograms] = useState<string[]>([]);
+  // Get state and actions from Zustand store
+  const customCategories = useAdminAddClientStore((state) => state.customLoanCategories);
+  const removedBuiltInCategories = useAdminAddClientStore((state) => state.removedBuiltInCategories);
+  const removedBuiltInPrograms = useAdminAddClientStore((state) => state.removedBuiltInPrograms);
+  const addLoanCategory = useAdminAddClientStore((state) => state.addLoanCategory);
+  const addLoanProgram = useAdminAddClientStore((state) => state.addLoanProgram);
+  const removeLoanCategory = useAdminAddClientStore((state) => state.removeLoanCategory);
+  const removeLoanProgram = useAdminAddClientStore((state) => state.removeLoanProgram);
 
-  // Dialog states
+  // Dialog states (kept local as they don't need persistence)
   const [showAddCategoryDialog, setShowAddCategoryDialog] = useState(false);
   const [showAddProgramDialog, setShowAddProgramDialog] = useState(false);
   const [showRemoveCategoryDialog, setShowRemoveCategoryDialog] = useState(false);
   const [showRemoveProgramDialog, setShowRemoveProgramDialog] = useState(false);
 
   const handleAddCategory = (categoryName: string) => {
-    const newCategory: LoanCategory = {
-      id: categoryName.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now(),
-      name: categoryName,
-      programs: []
-    };
-    setCustomCategories(prev => [...prev, newCategory]);
+    addLoanCategory(categoryName);
   };
 
   const handleAddProgram = (programName: string, categoryId: string) => {
-    const newProgram: LoanProgram = {
-      id: programName.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now(),
-      name: programName
-    };
-
-    // Check if it's a built-in category
-    if (categoryId === 'fixed-rate' || categoryId === 'adjustable-rate') {
-      // Add to custom categories as a copy
-      const builtInCategory = BUILT_IN_CATEGORIES[categoryId];
-      const existingCustomCopy = customCategories.find(cat => cat.id === categoryId);
-
-      if (existingCustomCopy) {
-        // Add program to existing custom copy
-        setCustomCategories(prev =>
-          prev.map(cat =>
-            cat.id === categoryId
-              ? { ...cat, programs: [...cat.programs, newProgram] }
-              : cat
-          )
-        );
-      } else {
-        // Create custom copy of built-in category with new program
-        setCustomCategories(prev => [
-          ...prev,
-          {
-            id: categoryId,
-            name: builtInCategory.name,
-            programs: [newProgram]
-          }
-        ]);
-      }
-    } else {
-      // Add to custom category
-      setCustomCategories(prev =>
-        prev.map(cat =>
-          cat.id === categoryId
-            ? { ...cat, programs: [...cat.programs, newProgram] }
-            : cat
-        )
-      );
-    }
+    addLoanProgram(programName, categoryId);
   };
 
   const handleRemoveCategory = (categoryId: string) => {
-    // Check if it's a built-in category
-    if (categoryId === 'fixed-rate' || categoryId === 'adjustable-rate') {
-      setRemovedBuiltInCategories(prev => [...prev, categoryId]);
-    } else {
-      // Remove custom category
-      setCustomCategories(prev => prev.filter(cat => cat.id !== categoryId));
-    }
+    removeLoanCategory(categoryId);
   };
 
   const handleRemoveProgram = (programId: string, categoryId: string) => {
-    // Check if it's a built-in program
-    const isBuiltInProgram = Object.values(BUILT_IN_CATEGORIES).some(cat =>
-      cat.programs.some(prog => prog.id === programId)
-    );
-
-    if (isBuiltInProgram) {
-      setRemovedBuiltInPrograms(prev => [...prev, programId]);
-    } else {
-      // Remove from custom category
-      setCustomCategories(prev =>
-        prev.map(cat =>
-          cat.id === categoryId
-            ? { ...cat, programs: cat.programs.filter(prog => prog.id !== programId) }
-            : cat
-        )
-      );
-    }
+    removeLoanProgram(programId, categoryId);
   };
 
   // Get all available categories (built-in + custom, excluding removed)
+  // This merges built-in programs with custom programs for each category
   const getAvailableCategories = () => {
     const categories: LoanCategory[] = [];
 
-    // Add built-in categories if not removed
+    // Add built-in categories if not removed, with merged programs
     Object.values(BUILT_IN_CATEGORIES).forEach(cat => {
       if (!removedBuiltInCategories.includes(cat.id)) {
-        categories.push(cat);
+        // Get built-in programs for this category
+        const builtInPrograms = cat.programs || [];
+
+        // Get custom programs added to this built-in category
+        const customProgramsForCategory = customCategories.find(c => c.id === cat.id)?.programs || [];
+
+        // Merge both, filtering out removed built-in programs
+        const availableBuiltInPrograms = builtInPrograms.filter(
+          prog => !removedBuiltInPrograms.includes(prog.id)
+        );
+
+        const allPrograms = [...availableBuiltInPrograms, ...customProgramsForCategory];
+
+        categories.push({
+          ...cat,
+          programs: allPrograms
+        });
       }
     });
 
-    // Add custom categories
-    categories.push(...customCategories);
+    // Add pure custom categories (not associated with built-in categories)
+    const pureCustomCategories = customCategories.filter(
+      cat => cat.id !== 'fixed-rate' && cat.id !== 'adjustable-rate'
+    );
+    categories.push(...pureCustomCategories);
 
     return categories;
   };
@@ -230,21 +180,8 @@ const LoanProgramSelect = ({
 
             {/* Render categories and their programs */}
             {getAvailableCategories().map(category => {
-              // Get programs for this category
-              const builtInPrograms =
-                BUILT_IN_CATEGORIES[category.id as keyof typeof BUILT_IN_CATEGORIES]?.programs || [];
-              const customPrograms =
-                customCategories.find(cat => cat.id === category.id)?.programs || [];
-
-              // Filter out removed built-in programs
-              const availableBuiltInPrograms = builtInPrograms.filter(
-                prog => !removedBuiltInPrograms.includes(prog.id)
-              );
-
-              const allPrograms = [...availableBuiltInPrograms, ...customPrograms];
-
-              // Only show category if it has programs
-              if (allPrograms.length === 0) return null;
+              // Only show category if it has programs (already merged in getAvailableCategories)
+              if (category.programs.length === 0) return null;
 
               return (
                 <div key={category.id}>
@@ -253,7 +190,7 @@ const LoanProgramSelect = ({
                     {category.name}
                   </div>
                   {/* Programs under this category */}
-                  {allPrograms.map(program => (
+                  {category.programs.map(program => (
                     <SelectItem
                       key={program.id}
                       value={program.id}

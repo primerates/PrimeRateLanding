@@ -29,6 +29,17 @@ interface CountyLookupLoading {
   coBorrowerSecondEmployer: boolean;
 }
 
+export interface LoanCategory {
+  id: string;
+  name: string;
+  programs: LoanProgram[];
+}
+
+export interface LoanProgram {
+  id: string;
+  name: string;
+}
+
 interface AddAdminClientStore {
   unsavedChangesDialog: {
     isOpen: boolean;
@@ -67,6 +78,10 @@ interface AddAdminClientStore {
   currentSecondLoans: string[];
   currentThirdLoans: string[];
   loanCardStates: Record<string, boolean>;
+  // Loan program/category state
+  customLoanCategories: LoanCategory[];
+  removedBuiltInCategories: string[];
+  removedBuiltInPrograms: string[];
   setUnsavedChangesDialog: (dialog: { isOpen: boolean }) => void;
   setMaritalStatusDialog: (dialog: { isOpen: boolean }) => void;
   setIsShowingDMBatch: (isShowing: boolean) => void;
@@ -102,6 +117,11 @@ interface AddAdminClientStore {
   setLoanCardExpanded: (loanId: string, expanded: boolean) => void;
   expandAllLoans: () => void;
   minimizeAllLoans: () => void;
+  // Loan program/category actions
+  addLoanCategory: (categoryName: string) => void;
+  addLoanProgram: (programName: string, categoryId: string) => void;
+  removeLoanCategory: (categoryId: string) => void;
+  removeLoanProgram: (programId: string, categoryId: string) => void;
 }
 
 export const useAdminAddClientStore = create<AddAdminClientStore>()(
@@ -161,6 +181,11 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
       currentSecondLoans: [],
       currentThirdLoans: [],
       loanCardStates: {},
+
+      // Loan program/category state initialization
+      customLoanCategories: [],
+      removedBuiltInCategories: [],
+      removedBuiltInPrograms: [],
       
       setUnsavedChangesDialog: (dialog) =>
         set(() => ({
@@ -400,6 +425,108 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
             ...state.currentThirdLoans
           ].forEach(id => { minimizedStates[id] = false; });
           return { loanCardStates: minimizedStates };
+        }),
+
+      // Loan program/category actions
+      addLoanCategory: (categoryName) =>
+        set((state) => {
+          const newCategory: LoanCategory = {
+            id: categoryName.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now(),
+            name: categoryName,
+            programs: []
+          };
+          return {
+            customLoanCategories: [...state.customLoanCategories, newCategory]
+          };
+        }),
+
+      addLoanProgram: (programName, categoryId) =>
+        set((state) => {
+          const newProgram: LoanProgram = {
+            id: programName.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now(),
+            name: programName
+          };
+
+          // Check if it's a built-in category (fixed-rate or adjustable-rate)
+          const BUILT_IN_CATEGORY_IDS = ['fixed-rate', 'adjustable-rate'];
+
+          if (BUILT_IN_CATEGORY_IDS.includes(categoryId)) {
+            // Find existing custom copy or create new one
+            const existingCustomCopy = state.customLoanCategories.find(cat => cat.id === categoryId);
+
+            if (existingCustomCopy) {
+              // Add program to existing custom copy
+              return {
+                customLoanCategories: state.customLoanCategories.map(cat =>
+                  cat.id === categoryId
+                    ? { ...cat, programs: [...cat.programs, newProgram] }
+                    : cat
+                )
+              };
+            } else {
+              // Create custom copy of built-in category with new program
+              // Note: We only store the new program, built-in programs are managed separately
+              const newCategoryCopy: LoanCategory = {
+                id: categoryId,
+                name: categoryId === 'fixed-rate' ? 'Fixed Rate' : 'Adjustable Rate',
+                programs: [newProgram]
+              };
+              return {
+                customLoanCategories: [...state.customLoanCategories, newCategoryCopy]
+              };
+            }
+          } else {
+            // Add to custom category
+            return {
+              customLoanCategories: state.customLoanCategories.map(cat =>
+                cat.id === categoryId
+                  ? { ...cat, programs: [...cat.programs, newProgram] }
+                  : cat
+              )
+            };
+          }
+        }),
+
+      removeLoanCategory: (categoryId) =>
+        set((state) => {
+          const BUILT_IN_CATEGORY_IDS = ['fixed-rate', 'adjustable-rate'];
+
+          if (BUILT_IN_CATEGORY_IDS.includes(categoryId)) {
+            // Mark built-in category as removed
+            return {
+              removedBuiltInCategories: [...state.removedBuiltInCategories, categoryId]
+            };
+          } else {
+            // Remove custom category
+            return {
+              customLoanCategories: state.customLoanCategories.filter(cat => cat.id !== categoryId)
+            };
+          }
+        }),
+
+      removeLoanProgram: (programId, categoryId) =>
+        set((state) => {
+          // Check if it's a built-in program
+          const BUILT_IN_PROGRAMS = [
+            '30-year-fixed', '25-year-fixed', '20-year-fixed', '15-year-fixed', '10-year-fixed',
+            '10-1-arm', '7-1-arm', '5-1-arm', '3-1-arm', '1-1-arm'
+          ];
+
+          if (BUILT_IN_PROGRAMS.includes(programId)) {
+            // Mark built-in program as removed
+            return {
+              removedBuiltInPrograms: [...state.removedBuiltInPrograms, programId]
+            };
+          } else {
+            // Remove from custom category
+            return {
+              customLoanCategories: state.customLoanCategories.map(cat =>
+                cat.id === categoryId
+                  ? { ...cat, programs: cat.programs.filter(prog => prog.id !== programId) }
+                  : cat
+              )
+            };
+          }
         }),
     }),
     { name: 'add-client-store' }

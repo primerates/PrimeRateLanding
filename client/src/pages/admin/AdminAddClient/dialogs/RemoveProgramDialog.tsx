@@ -49,10 +49,11 @@ const RemoveProgramDialog = ({
   };
 
   // Get programs for selected category
+  // Note: availableCategories already has merged built-in + custom programs with removed ones filtered out
   const getAvailablePrograms = () => {
     if (!selectedCategory) return [];
     const category = availableCategories.find(cat => cat.id === selectedCategory);
-    return category?.programs.filter(prog => !removedBuiltInPrograms.includes(prog.id)) || [];
+    return category?.programs || [];
   };
 
   return (
