@@ -82,6 +82,11 @@ interface AddAdminClientStore {
   customLoanCategories: LoanCategory[];
   removedBuiltInCategories: string[];
   removedBuiltInPrograms: string[];
+  // Lender/Title state
+  customLenders: Array<{ id: string; name: string }>;
+  removedBuiltInLenders: string[];
+  customTitles: Array<{ id: string; name: string }>;
+  removedBuiltInTitles: string[];
   setUnsavedChangesDialog: (dialog: { isOpen: boolean }) => void;
   setMaritalStatusDialog: (dialog: { isOpen: boolean }) => void;
   setIsShowingDMBatch: (isShowing: boolean) => void;
@@ -122,6 +127,11 @@ interface AddAdminClientStore {
   addLoanProgram: (programName: string, categoryId: string) => void;
   removeLoanCategory: (categoryId: string) => void;
   removeLoanProgram: (programId: string, categoryId: string) => void;
+  // Lender/Title actions
+  addLender: (lenderName: string) => void;
+  removeLender: (lenderId: string) => void;
+  addTitle: (titleName: string) => void;
+  removeTitle: (titleId: string) => void;
 }
 
 export const useAdminAddClientStore = create<AddAdminClientStore>()(
@@ -186,6 +196,12 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
       customLoanCategories: [],
       removedBuiltInCategories: [],
       removedBuiltInPrograms: [],
+
+      // Lender/Title state initialization
+      customLenders: [],
+      removedBuiltInLenders: [],
+      customTitles: [],
+      removedBuiltInTitles: [],
       
       setUnsavedChangesDialog: (dialog) =>
         set(() => ({
@@ -525,6 +541,59 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
                   ? { ...cat, programs: cat.programs.filter(prog => prog.id !== programId) }
                   : cat
               )
+            };
+          }
+        }),
+
+      // Lender/Title actions
+      addLender: (lenderName) =>
+        set((state) => {
+          const lenderId = lenderName.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+          return {
+            customLenders: [...state.customLenders, { id: lenderId, name: lenderName }]
+          };
+        }),
+
+      removeLender: (lenderId) =>
+        set((state) => {
+          // Check if it's a built-in lender
+          const BUILT_IN_LENDERS = ['uwm', 'pennymac', 'rocket-mortgage', 'wells-fargo', 'quicken-loans'];
+
+          if (BUILT_IN_LENDERS.includes(lenderId)) {
+            // Mark built-in lender as removed
+            return {
+              removedBuiltInLenders: [...state.removedBuiltInLenders, lenderId]
+            };
+          } else {
+            // Remove custom lender
+            return {
+              customLenders: state.customLenders.filter(lender => lender.id !== lenderId)
+            };
+          }
+        }),
+
+      addTitle: (titleName) =>
+        set((state) => {
+          const titleId = titleName.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+          return {
+            customTitles: [...state.customTitles, { id: titleId, name: titleName }]
+          };
+        }),
+
+      removeTitle: (titleId) =>
+        set((state) => {
+          // Check if it's a built-in title
+          const BUILT_IN_TITLES = ['first-american-title', 'reltco', 'chicago-title', 'fidelity-national', 'old-republic'];
+
+          if (BUILT_IN_TITLES.includes(titleId)) {
+            // Mark built-in title as removed
+            return {
+              removedBuiltInTitles: [...state.removedBuiltInTitles, titleId]
+            };
+          } else {
+            // Remove custom title
+            return {
+              customTitles: state.customTitles.filter(title => title.id !== titleId)
             };
           }
         }),

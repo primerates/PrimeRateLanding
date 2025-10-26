@@ -6,6 +6,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import AddOptionDialog from '../../dialogs/AddOptionDialog';
 import RemoveOptionDialog from '../../dialogs/RemoveOptionDialog';
+import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 
 interface OptionItem {
   value: string;
@@ -36,6 +37,9 @@ interface LenderTitleSelectProps {
   inputPlaceholder?: string;
   selectLabel?: string;
 
+  // Type of options (lender or title)
+  optionType: 'lender' | 'title';
+
   testId?: string;
   className?: string;
 }
@@ -57,25 +61,37 @@ const LenderTitleSelect = ({
   inputLabel = 'Option Name',
   inputPlaceholder = 'Enter option name',
   selectLabel = 'Option to Remove',
+  optionType,
   testId = 'select-item',
   className = 'space-y-2'
 }: LenderTitleSelectProps) => {
-  const [removedOptions, setRemovedOptions] = useState<string[]>([]);
-  const [customOptions, setCustomOptions] = useState<{ id: string; name: string }[]>([]);
+  // Get state and actions from Zustand store based on optionType
+  const customOptions = useAdminAddClientStore((state) =>
+    optionType === 'lender' ? state.customLenders : state.customTitles
+  );
+  const removedOptions = useAdminAddClientStore((state) =>
+    optionType === 'lender' ? state.removedBuiltInLenders : state.removedBuiltInTitles
+  );
+  const addOption = useAdminAddClientStore((state) =>
+    optionType === 'lender' ? state.addLender : state.addTitle
+  );
+  const removeOption = useAdminAddClientStore((state) =>
+    optionType === 'lender' ? state.removeLender : state.removeTitle
+  );
+
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
 
   const handleAddOption = (optionName: string) => {
-    const optionId = optionName.toLowerCase().replace(/\s+/g, '-');
-    setCustomOptions(prev => [...prev, { id: optionId, name: optionName }]);
+    addOption(optionName);
   };
 
   const handleRemoveOption = (optionValue: string) => {
-    setRemovedOptions(prev => [...prev, optionValue]);
+    removeOption(optionValue);
   };
 
   const handleRemoveCustomOption = (optionId: string) => {
-    setCustomOptions(prev => prev.filter(option => option.id !== optionId));
+    removeOption(optionId);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

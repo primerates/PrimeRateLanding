@@ -111,6 +111,7 @@ const QuoteFormRow3 = ({
                 inputLabel="Lender Name"
                 inputPlaceholder="Enter lender name"
                 selectLabel="Lender to Remove"
+                optionType="lender"
                 testId="select-lender"
                 className="space-y-2"
             />
@@ -132,6 +133,7 @@ const QuoteFormRow3 = ({
                 inputLabel="Title Company Name"
                 inputPlaceholder="Enter title company name"
                 selectLabel="Title Company to Remove"
+                optionType="title"
                 testId="select-title"
                 className="space-y-2"
             />
