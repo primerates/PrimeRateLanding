@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
 import FormInput from '../FormInput';
 import FormSelect from '../FormSelect';
 import { US_STATES_OPTIONS } from '../../data/formOptions';
+import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 
 interface PropertyAddressProps {
   propertyId: string;
@@ -14,6 +16,54 @@ const PropertyAddress = ({
   propertyIndex
 }: PropertyAddressProps) => {
   const form = useFormContext<InsertClient>();
+  const {
+    countyLookupLoading,
+    setCountyLookupLoading
+  } = useAdminAddClientStore();
+
+  const [countyOptions, setCountyOptions] = useState<Array<{ value: string; label: string }>>([]);
+
+  // Generate unique loading key
+  const loadingKey = `property-${propertyIndex}`;
+
+  const lookupCountyFromZip = async (zipCode: string): Promise<Array<{ value: string; label: string }>> => {
+    if (!zipCode || zipCode.length < 5) return [];
+
+    try {
+      const response = await fetch(`/api/county-lookup/${zipCode}`);
+      if (response.ok) {
+        const data = await response.json();
+        return data.counties || [];
+      }
+    } catch (error) {
+      console.error('County lookup failed:', error);
+    }
+    return [];
+  };
+
+  const handleZipCodeLookup = async (zipCode: string) => {
+    if (!zipCode || zipCode.length < 5) {
+      setCountyOptions([]);
+      return;
+    }
+
+    setCountyLookupLoading((prev) => ({ ...prev, [loadingKey]: true }));
+    const counties = await lookupCountyFromZip(zipCode);
+
+    if (counties.length === 1) {
+      // Auto-fill single county result
+      form.setValue(getPropertyFieldPath('county') as any, counties[0].label, { shouldDirty: true });
+      setCountyOptions([]); // Keep as input field but with value filled
+    } else if (counties.length > 1) {
+      // Show dropdown for multiple counties
+      setCountyOptions(counties);
+    } else {
+      // No counties found, keep as input field
+      setCountyOptions([]);
+    }
+
+    setCountyLookupLoading((prev) => ({ ...prev, [loadingKey]: false }));
+  };
 
   const getPropertyFieldPath = (field: string) => {
     return `property.properties.${propertyIndex}.address.${field}`;
@@ -94,21 +144,47 @@ const PropertyAddress = ({
         label="ZIP Code *"
         value={getFieldValue('zip')}
         onChange={(value) => handleFieldChange('zip', value)}
+        onBlur={(e) => !isPrimaryResidence && handleZipCodeLookup(e.target.value)}
         id={`property-address-zip-${propertyId}`}
         testId={`display-property-zip-${propertyId}`}
         className="space-y-2 md:col-span-1"
         disabled={isPrimaryResidence}
       />
       
-      <FormInput
-        label="County"
-        value={getFieldValue('county')}
-        onChange={(value) => handleFieldChange('county', value)}
-        id={`property-address-county-${propertyId}`}
-        testId={`display-property-county-${propertyId}`}
-        className="space-y-2 md:col-span-2"
-        disabled={isPrimaryResidence}
-      />
+      {countyOptions.length > 0 && !isPrimaryResidence ? (
+        <FormSelect
+          label="County"
+          value={getFieldValue('county')}
+          onValueChange={(value) => {
+            if (value === 'manual-entry') {
+              handleFieldChange('county', '');
+              setCountyOptions([]);
+            } else {
+              // Find the selected county to get its label for display
+              const selectedCounty = countyOptions.find(county => county.value === value);
+              form.setValue(getPropertyFieldPath('county') as any, selectedCounty?.label || value, { shouldDirty: true });
+            }
+          }}
+          options={[
+            ...countyOptions,
+            { value: 'manual-entry', label: 'Enter county manually' }
+          ]}
+          placeholder={(countyLookupLoading as any)[loadingKey] ? "Looking up counties..." : "Select county"}
+          testId={`select-property-county-${propertyId}`}
+          className="space-y-2 md:col-span-2"
+        />
+      ) : (
+        <FormInput
+          label="County"
+          value={getFieldValue('county')}
+          onChange={(value) => handleFieldChange('county', value)}
+          placeholder={(countyLookupLoading as any)[loadingKey] ? "Looking up counties..." : ""}
+          id={`property-address-county-${propertyId}`}
+          testId={`display-property-county-${propertyId}`}
+          className="space-y-2 md:col-span-2"
+          disabled={isPrimaryResidence}
+        />
+      )}
       
       <FormSelect
         label="Property Type *"
