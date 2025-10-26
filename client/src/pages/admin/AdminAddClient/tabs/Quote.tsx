@@ -19,10 +19,34 @@ const QuoteTab = forwardRef<QuoteTabRef>((_, ref) => {
     // Expose getQuoteData method to parent components
     useImperativeHandle(ref, () => ({
         getQuoteData: (): QuoteData | null => {
-            if (rateDetailsSectionRef.current) {
-                return rateDetailsSectionRef.current.getQuoteData();
-            }
-            return null;
+            // Get rates data from RateDetailsSection
+            const ratesData = rateDetailsSectionRef.current?.getQuoteData();
+
+            // Construct the complete quotes object with 15 top-level fields + rates
+            const quotes: QuoteData['quotes'] = {
+                // Top-level 15 quote fields from QuoteFormRow1, Row2, and Row3
+                loanCategory: state.selectedLoanCategory,
+                loanTerm: state.isCustomTerm ? state.customTerm : state.loanTerm,
+                loanProgram: state.selectedLoanProgram,
+                propertyUse: state.selectedPropertyUse,
+                propertyType: state.selectedPropertyType,
+                selectedState: state.selectedState,
+                rateBuydown: state.rateBuydown,
+                escrowReserves: state.escrowReserves,
+                monthlyEscrow: state.monthlyEscrow,
+                midFico: state.isMidFicoEstimateMode ? state.estimatedFicoValue : undefined,
+                ltvRatio: state.isLtvEstimateMode ? state.estimatedLtvValue : undefined,
+                lender: state.isLenderCreditMode ? undefined : state.selectedLender,
+                lenderCredit: state.isLenderCreditMode ? state.lenderCreditAmount : undefined,
+                title: state.isTitleSellerCreditMode ? undefined : state.selectedTitle,
+                titleSellerCredit: state.isTitleSellerCreditMode ? state.titleSellerCreditAmount : undefined,
+                underwriting: state.underwriting,
+
+                // Nested rates object
+                rates: (ratesData || {}) as QuoteData['quotes']['rates']
+            };
+
+            return { quotes };
         }
     }));
 

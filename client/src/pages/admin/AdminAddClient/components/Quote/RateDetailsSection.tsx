@@ -16,32 +16,53 @@ interface RateDetailsSectionProps {
 }
 
 export interface RateDetailsSectionRef {
-    getQuoteData: () => QuoteData;
+    getQuoteData: () => Partial<QuoteData['quotes']['rates']>;
 }
 
 export interface QuoteData {
     quotes: {
-        [key: string]: {
-            loanProgram: string;
-            rate: string;
-            existingLoanBalance?: string;
-            cashOutAmount?: string;
-            rateBuyDown?: string;
-            vaFundingFee?: string;
-            fhaUpfrontMip?: string;
-            thirdPartyServices?: {
-                appraisalInspection?: string;
-                underwritingServices?: string;
-                processingServices?: string;
-                creditReportServices?: string;
-                titleEscrowServices?: string;
-                stateTaxRecording?: string;
+        // Top-level 15 quote fields (will be populated by QuoteTab)
+        loanCategory?: string;
+        loanTerm?: string;
+        loanProgram?: string;
+        propertyUse?: string;
+        propertyType?: string;
+        selectedState?: string;
+        rateBuydown?: string;
+        escrowReserves?: string;
+        monthlyEscrow?: string;
+        midFico?: string;
+        ltvRatio?: string;
+        lender?: string;
+        lenderCredit?: string;
+        title?: string;
+        titleSellerCredit?: string;
+        underwriting?: string;
+
+        // Nested rates object
+        rates: {
+            [key: string]: {
+                loanProgram: string;
+                rate: string;
+                existingLoanBalance?: string;
+                cashOutAmount?: string;
+                rateBuyDown?: string;
+                vaFundingFee?: string;
+                fhaUpfrontMip?: string;
+                thirdPartyServices?: {
+                    appraisalInspection?: string;
+                    underwritingServices?: string;
+                    processingServices?: string;
+                    creditReportServices?: string;
+                    titleEscrowServices?: string;
+                    stateTaxRecording?: string;
+                };
+                payOffInterest?: string;
+                newEscrowReserves?: string;
+                newEstLoanAmount?: string;
+                newMonthlyPayment?: string;
+                totalMonthlySavings?: string;
             };
-            payOffInterest?: string;
-            newEscrowReserves?: string;
-            newEstLoanAmount?: string;
-            newMonthlyPayment?: string;
-            totalMonthlySavings?: string;
         };
     };
 }
@@ -148,13 +169,13 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
 
     // Expose getQuoteData method to parent components
     useImperativeHandle(ref, () => ({
-        getQuoteData: (): QuoteData => {
-            const quotes: QuoteData['quotes'] = {};
+        getQuoteData: (): Partial<QuoteData['quotes']['rates']> => {
+            const rates: QuoteData['quotes']['rates'] = {};
 
             selectedRateIds.forEach((rateId, index) => {
                 const rateKey = `rate${index + 1}`;
 
-                quotes[rateKey] = {
+                rates[rateKey] = {
                     loanProgram: quoteLoanProgram,
                     rate: rateValues[rateId] || '',
                     existingLoanBalance: existingLoanBalanceValues[rateId] || '',
@@ -178,7 +199,7 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                 };
             });
 
-            return { quotes };
+            return rates;
         }
     }));
 
