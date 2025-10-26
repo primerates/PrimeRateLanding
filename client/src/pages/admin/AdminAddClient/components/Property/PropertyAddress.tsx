@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
 import FormInput from '../FormInput';
@@ -65,6 +65,57 @@ const PropertyAddress = ({
     setCountyLookupLoading((prev) => ({ ...prev, [loadingKey]: false }));
   };
 
+  // Handler for property address changes - triggers auto-copy to attached loans
+  const handlePropertyAddressChange = () => {
+    const properties = form.watch('property.properties') || [];
+    if (propertyIndex < 0 || propertyIndex >= properties.length) return;
+
+    const property = properties[propertyIndex];
+    if (!property || !property.address) return;
+
+    const propertyAddress = property.address;
+    const propertyId = property.id;    
+
+    // Prepare the address object to copy
+    const addressToCopy = {
+      street: propertyAddress.street || '',
+      unit: propertyAddress.unit || '',
+      city: propertyAddress.city || '',
+      state: propertyAddress.state || '',
+      zipCode: propertyAddress.zip || '',
+      county: propertyAddress.county || ''
+    };
+
+    // Check all current loans
+    const currentLoanData = form.watch('currentLoan') || {};
+
+    Object.keys(currentLoanData).forEach((loanId) => {
+      const loan = currentLoanData[loanId];
+      if (loan?.attachedToProperty === propertyId) {
+        form.setValue(`currentLoan.${loanId}.propertyAddress` as any, addressToCopy);
+      }
+    });
+
+    // Check all second loans
+    const currentSecondLoanData = form.watch('currentSecondLoan') || {};
+    Object.keys(currentSecondLoanData).forEach((loanId) => {
+      const loan = currentSecondLoanData[loanId];
+      
+      if (loan?.attachedToProperty === propertyId) {
+        form.setValue(`currentSecondLoan.${loanId}.propertyAddress` as any, addressToCopy);
+      }
+    });
+
+    // Check all third loans
+    const currentThirdLoanData = form.watch('currentThirdLoan') || {};
+    Object.keys(currentThirdLoanData).forEach((loanId) => {
+      const loan = currentThirdLoanData[loanId];
+      if (loan?.attachedToProperty === propertyId) {
+        form.setValue(`currentThirdLoan.${loanId}.propertyAddress` as any, addressToCopy);
+      }
+    });
+  };
+
   const getPropertyFieldPath = (field: string) => {
     return `property.properties.${propertyIndex}.address.${field}`;
   };
@@ -73,6 +124,37 @@ const PropertyAddress = ({
   const propertyUse = form.watch(`property.properties.${propertyIndex}.use` as any);
   const isPrimaryResidence = propertyUse === 'primary';
   const isCoBorrowerProperty = propertyUse === 'second-home' || propertyUse === 'investment';
+
+  // Watch borrower and co-borrower addresses for syncing
+  const borrowerAddress = form.watch('borrower.residenceAddress' as any);
+  const coBorrowerAddress = form.watch('coBorrower.residenceAddress' as any);
+
+  // For primary residence, sync borrower address to property address
+  // For co-borrower properties, initially sync co-borrower address
+  useEffect(() => {
+    if (isPrimaryResidence && borrowerAddress) {
+      form.setValue(getPropertyFieldPath('street') as any, borrowerAddress.street || '', { shouldDirty: false });
+      form.setValue(getPropertyFieldPath('unit') as any, borrowerAddress.unit || '', { shouldDirty: false });
+      form.setValue(getPropertyFieldPath('city') as any, borrowerAddress.city || '', { shouldDirty: false });
+      form.setValue(getPropertyFieldPath('state') as any, borrowerAddress.state || '', { shouldDirty: false });
+      form.setValue(getPropertyFieldPath('zip') as any, borrowerAddress.zip || '', { shouldDirty: false });
+      form.setValue(getPropertyFieldPath('county') as any, borrowerAddress.county || '', { shouldDirty: false });
+
+      // Also copy to attached loans for primary residence
+      setTimeout(() => handlePropertyAddressChange(), 100);
+    } else if (isCoBorrowerProperty && coBorrowerAddress) {
+      // Only sync if property address is empty (initial sync only)
+      const currentStreet = form.watch(getPropertyFieldPath('street') as any);
+      if (!currentStreet) {
+        form.setValue(getPropertyFieldPath('street') as any, coBorrowerAddress.street || '', { shouldDirty: false });
+        form.setValue(getPropertyFieldPath('unit') as any, coBorrowerAddress.unit || '', { shouldDirty: false });
+        form.setValue(getPropertyFieldPath('city') as any, coBorrowerAddress.city || '', { shouldDirty: false });
+        form.setValue(getPropertyFieldPath('state') as any, coBorrowerAddress.state || '', { shouldDirty: false });
+        form.setValue(getPropertyFieldPath('zip') as any, coBorrowerAddress.zip || '', { shouldDirty: false });
+        form.setValue(getPropertyFieldPath('county') as any, coBorrowerAddress.county || '', { shouldDirty: false });
+      }
+    }
+  }, [isPrimaryResidence, isCoBorrowerProperty, borrowerAddress, coBorrowerAddress, propertyIndex, form]);
 
   // Get values from appropriate address source
   const getFieldValue = (field: string) => {
@@ -102,6 +184,7 @@ const PropertyAddress = ({
         label="Street Address *"
         value={getFieldValue('street')}
         onChange={(value) => handleFieldChange('street', value)}
+        onBlur={() => !isPrimaryResidence && setTimeout(() => handlePropertyAddressChange(), 1000)}
         id={`property-address-street-${propertyId}`}
         testId={`display-property-street-${propertyId}`}
         className="space-y-2 md:col-span-3"
@@ -122,6 +205,7 @@ const PropertyAddress = ({
         label="City *"
         value={getFieldValue('city')}
         onChange={(value) => handleFieldChange('city', value)}
+        onBlur={() => !isPrimaryResidence && setTimeout(() => handlePropertyAddressChange(), 1000)}
         id={`property-address-city-${propertyId}`}
         testId={`display-property-city-${propertyId}`}
         className="space-y-2 md:col-span-2"
@@ -131,7 +215,12 @@ const PropertyAddress = ({
       <FormSelect
         label="State *"
         value={getFieldValue('state')}
-        onValueChange={(value) => handleFieldChange('state', value)}
+        onValueChange={(value) => {
+          handleFieldChange('state', value);
+          if (!isPrimaryResidence) {
+            setTimeout(() => handlePropertyAddressChange(), 100);
+          }
+        }}
         options={US_STATES_OPTIONS}
         placeholder="Select State"
         testId={`select-property-state-${propertyId}`}
@@ -144,7 +233,12 @@ const PropertyAddress = ({
         label="ZIP Code *"
         value={getFieldValue('zip')}
         onChange={(value) => handleFieldChange('zip', value)}
-        onBlur={(e) => !isPrimaryResidence && handleZipCodeLookup(e.target.value)}
+        onBlur={(e) => {
+          if (!isPrimaryResidence) {
+            handleZipCodeLookup(e.target.value);
+            setTimeout(() => handlePropertyAddressChange(), 1000);
+          }
+        }}
         id={`property-address-zip-${propertyId}`}
         testId={`display-property-zip-${propertyId}`}
         className="space-y-2 md:col-span-1"
@@ -163,6 +257,7 @@ const PropertyAddress = ({
               // Find the selected county to get its label for display
               const selectedCounty = countyOptions.find(county => county.value === value);
               form.setValue(getPropertyFieldPath('county') as any, selectedCounty?.label || value, { shouldDirty: true });
+              setTimeout(() => handlePropertyAddressChange(), 100);
             }
           }}
           options={[
@@ -178,6 +273,7 @@ const PropertyAddress = ({
           label="County"
           value={getFieldValue('county')}
           onChange={(value) => handleFieldChange('county', value)}
+          onBlur={() => !isPrimaryResidence && setTimeout(() => handlePropertyAddressChange(), 1000)}
           placeholder={(countyLookupLoading as any)[loadingKey] ? "Looking up counties..." : ""}
           id={`property-address-county-${propertyId}`}
           testId={`display-property-county-${propertyId}`}

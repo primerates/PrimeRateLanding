@@ -112,6 +112,22 @@ const PrimaryLoanRateDetails = ({ loanId }: PrimaryLoanRateDetailsProps) => {
                   value={field.value}
                   onValueChange={(value) => {
                     field.onChange(value);
+
+                    // Copy property address to loan when attached
+                    if (value && value !== 'select' && value !== 'Other') {
+                      const properties = form.watch('property.properties') || [];
+                      const selectedProperty = properties.find((p: any) => p.id === value);
+                      if (selectedProperty?.address) {
+                        form.setValue(`${fieldPrefix}.propertyAddress` as any, {
+                          street: selectedProperty.address.street || '',
+                          unit: selectedProperty.address.unit || '',
+                          city: selectedProperty.address.city || '',
+                          state: selectedProperty.address.state || '',
+                          zipCode: selectedProperty.address.zip || '',
+                          county: selectedProperty.address.county || ''
+                        });
+                      }
+                    }
                   }}
                 >
                   <SelectTrigger data-testid={`select-${loanId}-attachedToProperty`}>

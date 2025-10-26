@@ -330,6 +330,14 @@ export const existingPrimaryLoanEntrySchema = z.object({
   taxInsurancePayment: z.string().optional(),
   totalMonthlyPayment: z.string().optional(),
   attachedToProperty: z.string().optional(),
+  propertyAddress: z.object({
+    street: z.string().optional(),
+    unit: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    zipCode: z.string().optional(),
+    county: z.string().optional(),
+  }).optional(),
 });
 
 // Individual existing second/third loan entry schema
@@ -345,6 +353,14 @@ export const existingSecondThirdLoanEntrySchema = z.object({
   totalMonthlyPayment: z.string().optional(),
   prePaymentPenalty: z.string().optional(),
   attachedToProperty: z.string().optional(),
+  propertyAddress: z.object({
+    street: z.string().optional(),
+    unit: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    zipCode: z.string().optional(),
+    county: z.string().optional(),
+  }).optional(),
 });
 
 // Schema to support multiple existing primary loans (using record with loanId as key)
@@ -397,6 +413,14 @@ export const newRefinanceLoanSchema = z.object({
   totalMonthlyPayment: z.string().optional(),
   hoa: z.string().optional(),
   attachedToProperty: z.string().optional(),
+  propertyAddress: z.object({
+    street: z.string().optional(),
+    unit: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    zipCode: z.string().optional(),
+    county: z.string().optional(),
+  }).optional(),
   // Additional fields
   loanProgram: z.string().optional(),
   loanDuration: z.string().optional(),
@@ -440,6 +464,14 @@ export const newPurchaseLoanSchema = z.object({
   totalMonthlyPayment: z.string().optional(),
   hoa: z.string().optional(),
   attachedToProperty: z.string().optional(),
+  propertyAddress: z.object({
+    street: z.string().optional(),
+    unit: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    zipCode: z.string().optional(),
+    county: z.string().optional(),
+  }).optional(),
   // Additional fields
   loanProgram: z.string().optional(),
   loanDuration: z.string().optional(),
