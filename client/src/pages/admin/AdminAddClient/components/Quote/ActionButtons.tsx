@@ -27,6 +27,7 @@ const ActionButtons = ({
   return (
     <div className="flex justify-end items-center gap-2 pt-4 px-4">
       <Button
+        type="button"
         variant="ghost"
         size="sm"
         className="hover:bg-pink-500 hover:text-white"
@@ -37,6 +38,7 @@ const ActionButtons = ({
         <Pin className="h-4 w-4" />
       </Button>
       <Button
+        type="button"
         variant="ghost"
         size="sm"
         className="hover:bg-purple-500 hover:text-white"
@@ -47,6 +49,7 @@ const ActionButtons = ({
         <FileText className="h-4 w-4" />
       </Button>
       <Button
+        type="button"
         variant="ghost"
         size="sm"
         className="hover:bg-yellow-500 hover:text-white"
@@ -57,6 +60,7 @@ const ActionButtons = ({
         <StickyNote className="h-4 w-4" />
       </Button>
       <Button
+        type="button"
         variant="ghost"
         size="sm"
         className="hover:bg-teal-500 hover:text-white"
@@ -67,6 +71,7 @@ const ActionButtons = ({
         <BookOpen className="h-4 w-4" />
       </Button>
       <Button
+        type="button"
         variant="ghost"
         size="sm"
         className="hover:bg-blue-500 hover:text-white"
@@ -77,6 +82,7 @@ const ActionButtons = ({
         <Calculator className="h-4 w-4" />
       </Button>
       <Button
+        type="button"
         variant="ghost"
         size="sm"
         className="hover:bg-green-500 hover:text-white"
@@ -87,6 +93,7 @@ const ActionButtons = ({
         <Printer className="h-4 w-4" />
       </Button>
       <Button
+        type="button"
         variant="ghost"
         size="sm"
         className="hover:bg-orange-500 hover:text-white"
