@@ -207,10 +207,12 @@ const EmploymentForm = ({
               </div>
 
               {/* Employer Address Row */}
-              <EmployerAddressRow 
+              <EmployerAddressRow
                 calculatedAdjustedNewFhaMip={calculatedAdjustedNewFhaMip}
                 cardId={cardId}
                 getEmployerFieldPath={getEmployerFieldPath}
+                fieldPrefix={fieldPrefix}
+                employmentType={employerType}
               />
             </div>
           </CardContent>

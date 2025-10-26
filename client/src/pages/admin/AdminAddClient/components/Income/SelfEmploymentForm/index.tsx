@@ -15,6 +15,7 @@ import DateInput from '../../DateInput';
 import { US_STATES_OPTIONS, FORMATION_OPTIONS } from '../../../data/formOptions';
 import BusinessDescriptionDialog from '../../../dialogs/BusinessDescriptionDialog';
 import TaxPreparerDialog from '../../../dialogs/TaxPreparerDialog';
+import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 
 interface SelfEmploymentFormProps {
   cardId: string;
@@ -134,6 +135,55 @@ const SelfEmploymentForm = ({
   // Dialog states
   const [isBusinessDescriptionOpen, setIsBusinessDescriptionOpen] = useState(false);
   const [isTaxPreparerOpen, setIsTaxPreparerOpen] = useState(false);
+
+  // County lookup state
+  const {
+    countyLookupLoading,
+    setCountyLookupLoading
+  } = useAdminAddClientStore();
+  const [countyOptions, setCountyOptions] = useState<Array<{ value: string; label: string }>>([]);
+
+  // Generate unique loading key
+  const loadingKey = `${fieldPrefix}-selfEmployers-${cardId}`;
+
+  const lookupCountyFromZip = async (zipCode: string): Promise<Array<{ value: string; label: string }>> => {
+    if (!zipCode || zipCode.length < 5) return [];
+
+    try {
+      const response = await fetch(`/api/county-lookup/${zipCode}`);
+      if (response.ok) {
+        const data = await response.json();
+        return data.counties || [];
+      }
+    } catch (error) {
+      console.error('County lookup failed:', error);
+    }
+    return [];
+  };
+
+  const handleZipCodeLookup = async (zipCode: string) => {
+    if (!zipCode || zipCode.length < 5) {
+      setCountyOptions([]);
+      return;
+    }
+
+    setCountyLookupLoading((prev) => ({ ...prev, [loadingKey]: true }));
+    const counties = await lookupCountyFromZip(zipCode);
+
+    if (counties.length === 1) {
+      // Auto-fill single county result
+      form.setValue(getSelfEmploymentFieldPath(cardId, 'businessAddress.county') as any, counties[0].label, { shouldDirty: true });
+      setCountyOptions([]); // Keep as input field but with value filled
+    } else if (counties.length > 1) {
+      // Show dropdown for multiple counties
+      setCountyOptions(counties);
+    } else {
+      // No counties found, keep as input field
+      setCountyOptions([]);
+    }
+
+    setCountyLookupLoading((prev) => ({ ...prev, [loadingKey]: false }));
+  };
 
   // Dialog handlers
   const handleOpenBusinessDescription = () => {
@@ -522,6 +572,7 @@ const SelfEmploymentForm = ({
                     label="ZIP Code"
                     value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessAddress.zip') as any) || ''}
                     onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'businessAddress.zip') as any, value)}
+                    onBlur={(e) => handleZipCodeLookup(e.target.value)}
                     id={`self-employment-zip-code-${cardId}`}
                     testId={`input-self-employment-zip-code-${cardId}`}
                     className="space-y-2"
@@ -530,14 +581,39 @@ const SelfEmploymentForm = ({
                 </div>
                 
                 <div className="md:col-span-2">
-                  <FormInput
-                    label="County"
-                    value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessAddress.county') as any) || ''}
-                    onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'businessAddress.county') as any, value)}
-                    id={`self-employment-county-${cardId}`}
-                    testId={`input-self-employment-county-${cardId}`}
-                    className="space-y-2"
-                  />
+                  {countyOptions.length > 0 ? (
+                    <FormSelect
+                      label="County"
+                      value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessAddress.county') as any) || ''}
+                      onValueChange={(value) => {
+                        if (value === 'manual-entry') {
+                          form.setValue(getSelfEmploymentFieldPath(cardId, 'businessAddress.county') as any, '');
+                          setCountyOptions([]);
+                        } else {
+                          // Find the selected county to get its label for display
+                          const selectedCounty = countyOptions.find(county => county.value === value);
+                          form.setValue(getSelfEmploymentFieldPath(cardId, 'businessAddress.county') as any, selectedCounty?.label || value, { shouldDirty: true });
+                        }
+                      }}
+                      options={[
+                        ...countyOptions,
+                        { value: 'manual-entry', label: 'Enter county manually' }
+                      ]}
+                      placeholder={(countyLookupLoading as any)[loadingKey] ? "Looking up counties..." : "Select county"}
+                      testId={`select-self-employment-county-${cardId}`}
+                      className="space-y-2"
+                    />
+                  ) : (
+                    <FormInput
+                      label="County"
+                      value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessAddress.county') as any) || ''}
+                      onChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'businessAddress.county') as any, value)}
+                      placeholder={(countyLookupLoading as any)[loadingKey] ? "Looking up counties..." : ""}
+                      id={`self-employment-county-${cardId}`}
+                      testId={`input-self-employment-county-${cardId}`}
+                      className="space-y-2"
+                    />
+                  )}
                 </div>
                 
                 <div className="md:col-span-2">
