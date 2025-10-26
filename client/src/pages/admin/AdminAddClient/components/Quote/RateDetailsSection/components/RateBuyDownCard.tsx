@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Info } from 'lucide-react';
 import MonetaryInputRow from './MonetaryInputRow';
+import RateBuyDownInfoDialog from './RateBuyDownInfoDialog';
 import { type ThirdPartyCategory } from '../hooks/useThirdPartyServices';
 import { isVALoan, isFHALoan } from '../utils/loanCategoryHelpers';
 import { formatDecimalCurrency } from '../utils/formatters';
@@ -44,6 +47,9 @@ const RateBuyDownCard = ({
   const isFHA = isFHALoan(selectedLoanCategory);
   const showVAFHASection = isVA || isFHA;
 
+  // State for Rate Buy Down Info dialog
+  const [isRateBuyDownInfoOpen, setIsRateBuyDownInfoOpen] = useState(false);
+
   const handleRateBuyDownChange = (rateId: number, value: string) => {
     const newValues = [...rateBuyDownValues];
     newValues[rateId] = value;
@@ -85,6 +91,8 @@ const RateBuyDownCard = ({
           onChange={handleRateBuyDownChange}
           testIdPrefix="input-rate-buy-down"
           gridCols={gridCols}
+          showInfoIcon={true}
+          onInfoClick={() => setIsRateBuyDownInfoOpen(true)}
         />
 
         {/* VA Funding Fee / FHA Upfront MIP Section */}
@@ -235,6 +243,12 @@ const RateBuyDownCard = ({
           ))}
         </div>
       </CardContent>
+
+      {/* Rate Buy Down Info Dialog */}
+      <RateBuyDownInfoDialog
+        isOpen={isRateBuyDownInfoOpen}
+        onClose={() => setIsRateBuyDownInfoOpen(false)}
+      />
     </Card>
   );
 };

@@ -6,6 +6,10 @@ import ExistingLoanCard from './RateDetailsSection/components/ExistingLoanCard';
 import RateBuyDownCard from './RateDetailsSection/components/RateBuyDownCard';
 import PayOffInterestCard from './RateDetailsSection/components/PayOffInterestCard';
 import LoanAmountPaymentCard from './RateDetailsSection/components/LoanAmountPaymentCard';
+import EscrowInfoDialog from './RateDetailsSection/components/EscrowInfoDialog';
+import EstimatedNewLoanAmountDialog from './RateDetailsSection/components/EstimatedNewLoanAmountDialog';
+import NewMonthlyPaymentDialog from './RateDetailsSection/components/NewMonthlyPaymentDialog';
+import ExistingMonthlyPaymentsDialog from './RateDetailsSection/components/ExistingMonthlyPaymentsDialog';
 
 interface RateDetailsSectionProps {
     selectedRateIds: number[];
@@ -16,7 +20,7 @@ interface RateDetailsSectionProps {
 }
 
 export interface RateDetailsSectionRef {
-    getQuoteData: () => Partial<QuoteData['quotes']['rates']>;
+    getQuoteData: () => Partial<QuoteData['quotes']>;
 }
 
 export interface QuoteData {
@@ -39,6 +43,17 @@ export interface QuoteData {
         titleSellerCredit?: string;
         underwriting?: string;
 
+        // New Monthly Payment dialog fields
+        monthlyInsurance?: string;
+        monthlyPropertyTax?: string;
+        newLoanAmountMip?: string;
+        monthlyFhaMip?: string;
+
+        // Existing Monthly Payments dialog fields (Total Monthly Savings)
+        existingMortgagePayment?: string;
+        monthlyPaymentDebtsPayOff?: string;
+        monthlyPaymentOtherDebts?: string;
+
         // Nested rates object
         rates: {
             [key: string]: {
@@ -59,6 +74,9 @@ export interface QuoteData {
                 };
                 payOffInterest?: string;
                 newEscrowReserves?: string;
+                propertyInsurance?: string;
+                propertyTax?: string;
+                statementEscrowBalance?: string;
                 newEstLoanAmount?: string;
                 newMonthlyPayment?: string;
                 totalMonthlySavings?: string;
@@ -142,7 +160,43 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
     const [payOffInterestValues, setPayOffInterestValues] = useState<string[]>(Array(4).fill(''));
 
     // New Escrow Reserves state
-    const calculatedTotalMonthlyEscrow = 0; // This would be calculated based on tax and insurance inputs
+    const [isEscrowInfoOpen, setIsEscrowInfoOpen] = useState(false);
+    const [propertyInsurance, setPropertyInsurance] = useState('');
+    const [propertyTax, setPropertyTax] = useState('');
+    const [statementEscrowBalance, setStatementEscrowBalance] = useState('');
+
+    // Auto-calculate Total Monthly Escrow
+    const calculatedTotalMonthlyEscrow =
+        parseInt(propertyInsurance || '0', 10) + parseInt(propertyTax || '0', 10);
+
+    // State for Estimated New Loan Amount dialog
+    const [isEstLoanAmountInfoOpen, setIsEstLoanAmountInfoOpen] = useState(false);
+
+    // State for New Monthly Payment dialog
+    const [isNewPaymentInfoOpen, setIsNewPaymentInfoOpen] = useState(false);
+    const [monthlyInsurance, setMonthlyInsurance] = useState('');
+    const [monthlyPropertyTax, setMonthlyPropertyTax] = useState('');
+    const [newLoanAmountMip, setNewLoanAmountMip] = useState('');
+    const [monthlyFhaMip, setMonthlyFhaMip] = useState('');
+
+    // Auto-calculate Total Monthly Escrow for New Payment dialog
+    const calculatedNewPaymentEscrow =
+        parseInt(monthlyInsurance || '0', 10) + parseInt(monthlyPropertyTax || '0', 10);
+
+    // Check if loan is FHA
+    const isFHALoan = selectedLoanCategory?.startsWith('FHA - ');
+
+    // State for Existing Monthly Payments dialog (Total Monthly Savings)
+    const [isMonthlySavingsInfoOpen, setIsMonthlySavingsInfoOpen] = useState(false);
+    const [existingMortgagePayment, setExistingMortgagePayment] = useState('');
+    const [monthlyPaymentDebtsPayOff, setMonthlyPaymentDebtsPayOff] = useState('');
+    const [monthlyPaymentOtherDebts, setMonthlyPaymentOtherDebts] = useState('');
+
+    // Auto-calculate Total Existing Monthly Payments
+    const calculatedTotalExistingPayments =
+        parseInt(existingMortgagePayment || '0', 10) +
+        parseInt(monthlyPaymentDebtsPayOff || '0', 10) +
+        parseInt(monthlyPaymentOtherDebts || '0', 10);
 
     // New Est. Loan Amount & New Monthly Payment state
     const [newEstLoanAmountValues, setNewEstLoanAmountValues] = useState<string[]>(Array(4).fill(''));
@@ -169,7 +223,7 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
 
     // Expose getQuoteData method to parent components
     useImperativeHandle(ref, () => ({
-        getQuoteData: (): Partial<QuoteData['quotes']['rates']> => {
+        getQuoteData: (): Partial<QuoteData['quotes']> => {
             const rates: QuoteData['quotes']['rates'] = {};
 
             selectedRateIds.forEach((rateId, index) => {
@@ -193,13 +247,28 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                     },
                     payOffInterest: payOffInterestValues[rateId] || '',
                     newEscrowReserves: calculatedTotalMonthlyEscrow > 0 ? calculatedTotalMonthlyEscrow.toString() : '',
+                    propertyInsurance: propertyInsurance || '',
+                    propertyTax: propertyTax || '',
+                    statementEscrowBalance: statementEscrowBalance || '',
                     newEstLoanAmount: newEstLoanAmountValues[rateId] || '',
                     newMonthlyPayment: newMonthlyPaymentValues[rateId] || '',
                     totalMonthlySavings: totalMonthlySavingsValues[rateId] || '',
                 };
             });
 
-            return rates;
+            return {
+                // Top-level quote fields from New Monthly Payment dialog
+                monthlyInsurance: monthlyInsurance || '',
+                monthlyPropertyTax: monthlyPropertyTax || '',
+                newLoanAmountMip: newLoanAmountMip || '',
+                monthlyFhaMip: monthlyFhaMip || '',
+                // Top-level quote fields from Existing Monthly Payments dialog
+                existingMortgagePayment: existingMortgagePayment || '',
+                monthlyPaymentDebtsPayOff: monthlyPaymentDebtsPayOff || '',
+                monthlyPaymentOtherDebts: monthlyPaymentOtherDebts || '',
+                // Rates object
+                rates
+            };
         }
     }));
 
@@ -381,6 +450,7 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                 calculatedTotalMonthlyEscrow={calculatedTotalMonthlyEscrow}
                 columnWidth={columnWidth}
                 gridCols={gridCols}
+                onEscrowInfoClick={() => setIsEscrowInfoOpen(true)}
             />
 
             {/* New Est. Loan Amount & New Monthly Payment Card */}
@@ -398,6 +468,58 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                 setIsSavingsRowExpanded={setIsSavingsRowExpanded}
                 columnWidth={columnWidth}
                 gridCols={gridCols}
+                onEstLoanAmountInfoClick={() => setIsEstLoanAmountInfoOpen(true)}
+                onNewPaymentInfoClick={() => setIsNewPaymentInfoOpen(true)}
+                onMonthlySavingsInfoClick={() => setIsMonthlySavingsInfoOpen(true)}
+            />
+
+            {/* Escrow Information Dialog */}
+            <EscrowInfoDialog
+                isOpen={isEscrowInfoOpen}
+                onClose={() => setIsEscrowInfoOpen(false)}
+                propertyInsurance={propertyInsurance}
+                onPropertyInsuranceChange={setPropertyInsurance}
+                propertyTax={propertyTax}
+                onPropertyTaxChange={setPropertyTax}
+                statementEscrowBalance={statementEscrowBalance}
+                onStatementEscrowBalanceChange={setStatementEscrowBalance}
+                calculatedTotal={calculatedTotalMonthlyEscrow}
+            />
+
+            {/* Estimated New Loan Amount Dialog */}
+            <EstimatedNewLoanAmountDialog
+                isOpen={isEstLoanAmountInfoOpen}
+                onClose={() => setIsEstLoanAmountInfoOpen(false)}
+            />
+
+            {/* New Monthly Payment Dialog */}
+            <NewMonthlyPaymentDialog
+                isOpen={isNewPaymentInfoOpen}
+                onClose={() => setIsNewPaymentInfoOpen(false)}
+                monthlyInsurance={monthlyInsurance}
+                onMonthlyInsuranceChange={setMonthlyInsurance}
+                monthlyPropertyTax={monthlyPropertyTax}
+                onMonthlyPropertyTaxChange={setMonthlyPropertyTax}
+                newLoanAmountMip={newLoanAmountMip}
+                onNewLoanAmountMipChange={setNewLoanAmountMip}
+                monthlyFhaMip={monthlyFhaMip}
+                onMonthlyFhaMipChange={setMonthlyFhaMip}
+                calculatedEscrow={calculatedNewPaymentEscrow}
+                escrowReserves={escrowReserves}
+                isFHALoan={isFHALoan}
+            />
+
+            {/* Existing Monthly Payments Dialog */}
+            <ExistingMonthlyPaymentsDialog
+                isOpen={isMonthlySavingsInfoOpen}
+                onClose={() => setIsMonthlySavingsInfoOpen(false)}
+                existingMortgagePayment={existingMortgagePayment}
+                onExistingMortgagePaymentChange={setExistingMortgagePayment}
+                monthlyPaymentDebtsPayOff={monthlyPaymentDebtsPayOff}
+                onMonthlyPaymentDebtsPayOffChange={setMonthlyPaymentDebtsPayOff}
+                monthlyPaymentOtherDebts={monthlyPaymentOtherDebts}
+                onMonthlyPaymentOtherDebtsChange={setMonthlyPaymentOtherDebts}
+                calculatedTotal={calculatedTotalExistingPayments}
             />
         </div>
     );

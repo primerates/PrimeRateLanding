@@ -17,6 +17,9 @@ interface LoanAmountPaymentCardProps {
   setIsSavingsRowExpanded: (expanded: boolean) => void;
   columnWidth: string;
   gridCols: string;
+  onEstLoanAmountInfoClick?: () => void;
+  onNewPaymentInfoClick?: () => void;
+  onMonthlySavingsInfoClick?: () => void;
 }
 
 /**
@@ -35,7 +38,10 @@ const LoanAmountPaymentCard = ({
   isSavingsRowExpanded,
   setIsSavingsRowExpanded,
   columnWidth,
-  gridCols
+  gridCols,
+  onEstLoanAmountInfoClick,
+  onNewPaymentInfoClick,
+  onMonthlySavingsInfoClick
 }: LoanAmountPaymentCardProps) => {
   const handleLoanAmountChange = (rateId: number, value: string) => {
     const newValues = [...newEstLoanAmountValues];
@@ -76,6 +82,28 @@ const LoanAmountPaymentCard = ({
                 onClick={() => setIsMonthlyPaymentRowExpanded(true)}
                 data-testid="icon-expand-monthly-payment"
               />
+            )}
+            {onEstLoanAmountInfoClick && (
+              <button
+                type="button"
+                onClick={onEstLoanAmountInfoClick}
+                className="h-4 w-4 flex-shrink-0 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                data-testid="icon-info-loan-amount"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 16v-4" />
+                  <path d="M12 8h.01" />
+                </svg>
+              </button>
             )}
             <Label className="text-base font-bold text-right whitespace-nowrap">New Est. Loan Amount</Label>
           </div>
@@ -122,6 +150,28 @@ const LoanAmountPaymentCard = ({
                     data-testid="icon-expand-savings"
                   />
                 )}
+                {onNewPaymentInfoClick && (
+                  <button
+                    type="button"
+                    onClick={onNewPaymentInfoClick}
+                    className="h-4 w-4 flex-shrink-0 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                    data-testid="icon-info-monthly-payment"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 16v-4" />
+                      <path d="M12 8h.01" />
+                    </svg>
+                  </button>
+                )}
                 <Label className="text-base font-bold text-right whitespace-nowrap">New Monthly Payment</Label>
               </div>
               {selectedRateIds.map((rateId) => {
@@ -162,6 +212,8 @@ const LoanAmountPaymentCard = ({
               testIdPrefix="input-total-monthly-savings"
               gridCols={gridCols}
               labelClassName="text-base font-bold text-right whitespace-nowrap"
+              showInfoIcon={true}
+              onInfoClick={onMonthlySavingsInfoClick}
             />
           </div>
         )}

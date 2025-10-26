@@ -13,6 +13,7 @@ interface PayOffInterestCardProps {
   calculatedTotalMonthlyEscrow: number;
   columnWidth: string;
   gridCols: string;
+  onEscrowInfoClick?: () => void;
 }
 
 /**
@@ -27,7 +28,8 @@ const PayOffInterestCard = ({
   monthlyEscrow,
   calculatedTotalMonthlyEscrow,
   columnWidth,
-  gridCols
+  gridCols,
+  onEscrowInfoClick
 }: PayOffInterestCardProps) => {
   const handlePayOffInterestChange = (rateId: number, value: string) => {
     const newValues = [...payOffInterestValues];
@@ -83,6 +85,28 @@ const PayOffInterestCard = ({
             <div className="grid gap-4" style={{ gridTemplateColumns: gridCols }}>
               <div className="flex flex-col items-end justify-center pr-4">
                 <div className="flex items-center gap-2 flex-shrink-0">
+                  {onEscrowInfoClick && (
+                    <button
+                      type="button"
+                      onClick={onEscrowInfoClick}
+                      className="h-4 w-4 flex-shrink-0 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                      data-testid="icon-info-escrow-reserves"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4" />
+                        <path d="M12 8h.01" />
+                      </svg>
+                    </button>
+                  )}
                   <Label className="text-base font-bold text-right whitespace-nowrap">New Escrow Reserves</Label>
                 </div>
                 {monthlyEscrow && monthlyEscrow !== 'select' && (
