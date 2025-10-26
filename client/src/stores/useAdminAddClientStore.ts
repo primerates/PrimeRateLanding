@@ -87,6 +87,11 @@ interface AddAdminClientStore {
   removedBuiltInLenders: string[];
   customTitles: Array<{ id: string; name: string }>;
   removedBuiltInTitles: string[];
+  // Property Use/Type state
+  customPropertyUses: Array<{ id: string; name: string }>;
+  removedBuiltInPropertyUses: string[];
+  customPropertyTypes: Array<{ id: string; name: string }>;
+  removedBuiltInPropertyTypes: string[];
   setUnsavedChangesDialog: (dialog: { isOpen: boolean }) => void;
   setMaritalStatusDialog: (dialog: { isOpen: boolean }) => void;
   setIsShowingDMBatch: (isShowing: boolean) => void;
@@ -132,6 +137,11 @@ interface AddAdminClientStore {
   removeLender: (lenderId: string) => void;
   addTitle: (titleName: string) => void;
   removeTitle: (titleId: string) => void;
+  // Property Use/Type actions
+  addPropertyUse: (propertyUseName: string) => void;
+  removePropertyUse: (propertyUseId: string) => void;
+  addPropertyType: (propertyTypeName: string) => void;
+  removePropertyType: (propertyTypeId: string) => void;
 }
 
 export const useAdminAddClientStore = create<AddAdminClientStore>()(
@@ -202,6 +212,12 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
       removedBuiltInLenders: [],
       customTitles: [],
       removedBuiltInTitles: [],
+
+      // Property Use/Type state initialization
+      customPropertyUses: [],
+      removedBuiltInPropertyUses: [],
+      customPropertyTypes: [],
+      removedBuiltInPropertyTypes: [],
       
       setUnsavedChangesDialog: (dialog) =>
         set(() => ({
@@ -594,6 +610,59 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
             // Remove custom title
             return {
               customTitles: state.customTitles.filter(title => title.id !== titleId)
+            };
+          }
+        }),
+
+      // Property Use/Type actions
+      addPropertyUse: (propertyUseName) =>
+        set((state) => {
+          const propertyUseId = propertyUseName.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+          return {
+            customPropertyUses: [...state.customPropertyUses, { id: propertyUseId, name: propertyUseName }]
+          };
+        }),
+
+      removePropertyUse: (propertyUseId) =>
+        set((state) => {
+          // Check if it's a built-in property use
+          const BUILT_IN_PROPERTY_USES = ['primary-residence', 'second-home', 'investment-property', 'home-purchase', 'duplex', 'multi-family'];
+
+          if (BUILT_IN_PROPERTY_USES.includes(propertyUseId)) {
+            // Mark built-in property use as removed
+            return {
+              removedBuiltInPropertyUses: [...state.removedBuiltInPropertyUses, propertyUseId]
+            };
+          } else {
+            // Remove custom property use
+            return {
+              customPropertyUses: state.customPropertyUses.filter(propertyUse => propertyUse.id !== propertyUseId)
+            };
+          }
+        }),
+
+      addPropertyType: (propertyTypeName) =>
+        set((state) => {
+          const propertyTypeId = propertyTypeName.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+          return {
+            customPropertyTypes: [...state.customPropertyTypes, { id: propertyTypeId, name: propertyTypeName }]
+          };
+        }),
+
+      removePropertyType: (propertyTypeId) =>
+        set((state) => {
+          // Check if it's a built-in property type
+          const BUILT_IN_PROPERTY_TYPES = ['single-family', 'condo', 'townhouse', 'duplex', 'multi-family', 'other'];
+
+          if (BUILT_IN_PROPERTY_TYPES.includes(propertyTypeId)) {
+            // Mark built-in property type as removed
+            return {
+              removedBuiltInPropertyTypes: [...state.removedBuiltInPropertyTypes, propertyTypeId]
+            };
+          } else {
+            // Remove custom property type
+            return {
+              customPropertyTypes: state.customPropertyTypes.filter(propertyType => propertyType.id !== propertyTypeId)
             };
           }
         }),

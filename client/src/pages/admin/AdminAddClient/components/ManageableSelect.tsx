@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useState } from 'react';
 import AddOptionDialog from '../dialogs/AddOptionDialog';
 import RemoveOptionDialog from '../dialogs/RemoveOptionDialog';
+import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 
 interface OptionItem {
   value: string;
@@ -14,6 +15,7 @@ interface ManageableSelectProps {
   value: string;
   onValueChange: (value: string) => void;
   builtInOptions: OptionItem[];
+  optionType: 'propertyUse' | 'propertyType';
   testId?: string;
   className?: string;
   addDialogTitle?: string;
@@ -30,6 +32,7 @@ const ManageableSelect = ({
   value,
   onValueChange,
   builtInOptions,
+  optionType,
   testId = 'select-item',
   className = 'space-y-2 max-w-[75%]',
   addDialogTitle = 'Add New Item',
@@ -41,22 +44,33 @@ const ManageableSelect = ({
   selectLabel = 'Option to Remove'
 }: ManageableSelectProps) => {
 
-  const [removedOptions, setRemovedOptions] = useState<string[]>([]);
-  const [customOptions, setCustomOptions] = useState<{ id: string; name: string }[]>([]);
+  // Get state and actions from Zustand store based on optionType
+  const customOptions = useAdminAddClientStore((state) =>
+    optionType === 'propertyUse' ? state.customPropertyUses : state.customPropertyTypes
+  );
+  const removedOptions = useAdminAddClientStore((state) =>
+    optionType === 'propertyUse' ? state.removedBuiltInPropertyUses : state.removedBuiltInPropertyTypes
+  );
+  const addOption = useAdminAddClientStore((state) =>
+    optionType === 'propertyUse' ? state.addPropertyUse : state.addPropertyType
+  );
+  const removeOption = useAdminAddClientStore((state) =>
+    optionType === 'propertyUse' ? state.removePropertyUse : state.removePropertyType
+  );
+
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
 
   const handleAddOption = (optionName: string) => {
-    const optionId = optionName.toLowerCase().replace(/\s+/g, '-');
-    setCustomOptions(prev => [...prev, { id: optionId, name: optionName }]);
+    addOption(optionName);
   };
 
   const handleRemoveOption = (optionValue: string) => {
-    setRemovedOptions(prev => [...prev, optionValue]);
+    removeOption(optionValue);
   };
 
   const handleRemoveCustomOption = (optionId: string) => {
-    setCustomOptions(prev => prev.filter(option => option.id !== optionId));
+    removeOption(optionId);
   };
 
   return (
