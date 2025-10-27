@@ -1,59 +1,49 @@
 import { useState } from 'react';
+import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 
 export const useQuoteState = () => {
-    // UI State
+    // Get all quote form data from Zustand store to persist across tab switches
+    const quoteData = useAdminAddClientStore(state => state.quoteData);
+    const updateQuoteData = useAdminAddClientStore(state => state.updateQuoteData);
+
+    // Create setter functions for each field
+    const setSelectedLoanCategory = (value: string) => updateQuoteData({ selectedLoanCategory: value });
+    const setIsVAExempt = (value: boolean) => updateQuoteData({ isVAExempt: value });
+    const setIsVAJumboExempt = (value: boolean) => updateQuoteData({ isVAJumboExempt: value });
+    const setIsCustomTerm = (value: boolean) => updateQuoteData({ isCustomTerm: value });
+    const setLoanTerm = (value: string) => updateQuoteData({ loanTerm: value });
+    const setCustomTerm = (value: string) => updateQuoteData({ customTerm: value });
+    const setSelectedLoanProgram = (value: string) => updateQuoteData({ selectedLoanProgram: value });
+    const setSelectedPropertyUse = (value: string) => updateQuoteData({ selectedPropertyUse: value });
+    const setSelectedPropertyType = (value: string) => updateQuoteData({ selectedPropertyType: value });
+    const setSelectedRateIds = (ids: number[] | ((prev: number[]) => number[])) => {
+        const newIds = typeof ids === 'function' ? ids(quoteData.selectedRateIds) : ids;
+        updateQuoteData({ selectedRateIds: newIds });
+    };
+    const setSelectedState = (value: string) => updateQuoteData({ selectedState: value });
+    const setRateBuydown = (value: string) => updateQuoteData({ rateBuydown: value });
+    const setEscrowReserves = (value: string) => updateQuoteData({ escrowReserves: value });
+    const setMonthlyEscrow = (value: string) => updateQuoteData({ monthlyEscrow: value });
+    const setIsMidFicoEstimateMode = (value: boolean) => updateQuoteData({ isMidFicoEstimateMode: value });
+    const setEstimatedFicoValue = (value: string) => updateQuoteData({ estimatedFicoValue: value });
+    const setIsLtvEstimateMode = (value: boolean) => updateQuoteData({ isLtvEstimateMode: value });
+    const setEstimatedLtvValue = (value: string) => updateQuoteData({ estimatedLtvValue: value });
+    const setIsLenderCreditMode = (value: boolean) => updateQuoteData({ isLenderCreditMode: value });
+    const setSelectedLender = (value: string) => updateQuoteData({ selectedLender: value });
+    const setLenderCreditAmount = (value: string) => updateQuoteData({ lenderCreditAmount: value });
+    const setIsTitleSellerCreditMode = (value: boolean) => updateQuoteData({ isTitleSellerCreditMode: value });
+    const setSelectedTitle = (value: string) => updateQuoteData({ selectedTitle: value });
+    const setTitleSellerCreditAmount = (value: string) => updateQuoteData({ titleSellerCreditAmount: value });
+    const setIsProcessingMode = (value: boolean) => updateQuoteData({ isProcessingMode: value });
+    const setUnderwriting = (value: string) => updateQuoteData({ underwriting: value });
+
+    // UI State (not persisted)
     const [showPinPopup, setShowPinPopup] = useState(false);
     const [showPagePopup, setShowPagePopup] = useState(false);
     const [isStickyNotesOpen, setIsStickyNotesOpen] = useState(false);
     const [showLibraryDialog, setShowLibraryDialog] = useState(false);
     const [showCalculator, setShowCalculator] = useState(false);
     const [isQuoteCardsMinimized, setIsQuoteCardsMinimized] = useState(false);
-
-    // Loan Category state
-    const [selectedLoanCategory, setSelectedLoanCategory] = useState('');
-    const [isVAExempt, setIsVAExempt] = useState(false);
-    const [isVAJumboExempt, setIsVAJumboExempt] = useState(false);
-
-    // Property Use and Type state
-    const [selectedPropertyUse, setSelectedPropertyUse] = useState('');
-    const [selectedPropertyType, setSelectedPropertyType] = useState('');
-
-    // Loan Term state
-    const [isCustomTerm, setIsCustomTerm] = useState(false);
-    const [loanTerm, setLoanTerm] = useState('');
-    const [customTerm, setCustomTerm] = useState('');
-
-    // Loan Program state
-    const [selectedLoanProgram, setSelectedLoanProgram] = useState('select');
-
-    // Row 2 state - Quote, State, Rate Buydown, Escrow Reserves, Monthly Escrow
-    const [selectedRateIds, setSelectedRateIds] = useState<number[]>([]);
-    const [selectedState, setSelectedState] = useState('select');
-    const [rateBuydown, setRateBuydown] = useState('yes');
-    const [escrowReserves, setEscrowReserves] = useState('new-escrow-reserves');
-    const [monthlyEscrow, setMonthlyEscrow] = useState('includes-tax-insurance');
-
-    // Lender state
-    const [isLenderCreditMode, setIsLenderCreditMode] = useState(false);
-    const [selectedLender, setSelectedLender] = useState('');
-    const [lenderCreditAmount, setLenderCreditAmount] = useState('');
-
-    // Title state
-    const [isTitleSellerCreditMode, setIsTitleSellerCreditMode] = useState(false);
-    const [selectedTitle, setSelectedTitle] = useState('');
-    const [titleSellerCreditAmount, setTitleSellerCreditAmount] = useState('');
-
-    // Mid FICO state
-    const [isMidFicoEstimateMode, setIsMidFicoEstimateMode] = useState(false);
-    const [estimatedFicoValue, setEstimatedFicoValue] = useState('');
-
-    // LTV Ratio state
-    const [isLtvEstimateMode, setIsLtvEstimateMode] = useState(false);
-    const [estimatedLtvValue, setEstimatedLtvValue] = useState('');
-
-    // Underwriting/Processing state
-    const [isProcessingMode, setIsProcessingMode] = useState(false);
-    const [underwriting, setUnderwriting] = useState('financed');
 
     // Pin Reference state
     const [pinPopupPosition, setPinPopupPosition] = useState({ x: 250, y: 100 });
@@ -93,19 +83,19 @@ export const useQuoteState = () => {
     // Calculate if all fields are completed to enable Quote selection
     const getCompletedFieldsCount = () => {
         return [
-            !!selectedLoanCategory && selectedLoanCategory !== '',  // 1. Loan Category
-            (isCustomTerm && !!customTerm) || (!isCustomTerm && !!loanTerm && loanTerm !== 'select'),  // 2. Loan Term
+            !!quoteData.selectedLoanCategory && quoteData.selectedLoanCategory !== '',  // 1. Loan Category
+            (quoteData.isCustomTerm && !!quoteData.customTerm) || (!quoteData.isCustomTerm && !!quoteData.loanTerm && quoteData.loanTerm !== 'select'),  // 2. Loan Term
             true,  // 3. Loan Program (has default)
-            !!selectedPropertyUse && selectedPropertyUse !== 'select',  // 4. Property Use
-            !!selectedPropertyType && selectedPropertyType !== 'select',  // 5. Property Type
-            !!selectedState && selectedState !== 'select',  // 6. State
+            !!quoteData.selectedPropertyUse && quoteData.selectedPropertyUse !== 'select',  // 4. Property Use
+            !!quoteData.selectedPropertyType && quoteData.selectedPropertyType !== 'select',  // 5. Property Type
+            !!quoteData.selectedState && quoteData.selectedState !== 'select',  // 6. State
             true,  // 7. Rate Buydown (has default)
             true,  // 8. Escrow Reserves (has default)
             true,  // 9. Monthly Escrow (has default)
-            (isMidFicoEstimateMode && !!estimatedFicoValue) || (!isMidFicoEstimateMode),  // 10. Mid FICO
-            (isLtvEstimateMode && !!estimatedLtvValue) || (!isLtvEstimateMode),  // 11. LTV Ratio
-            (isLenderCreditMode && !!lenderCreditAmount) || (!isLenderCreditMode && !!selectedLender),  // 12. Lender
-            (isTitleSellerCreditMode && !!titleSellerCreditAmount) || (!isTitleSellerCreditMode && !!selectedTitle),  // 13. Title
+            (quoteData.isMidFicoEstimateMode && !!quoteData.estimatedFicoValue) || (!quoteData.isMidFicoEstimateMode),  // 10. Mid FICO
+            (quoteData.isLtvEstimateMode && !!quoteData.estimatedLtvValue) || (!quoteData.isLtvEstimateMode),  // 11. LTV Ratio
+            (quoteData.isLenderCreditMode && !!quoteData.lenderCreditAmount) || (!quoteData.isLenderCreditMode && !!quoteData.selectedLender && quoteData.selectedLender !== 'select'),  // 12. Lender
+            (quoteData.isTitleSellerCreditMode && !!quoteData.titleSellerCreditAmount) || (!quoteData.isTitleSellerCreditMode && !!quoteData.selectedTitle && quoteData.selectedTitle !== 'select'),  // 13. Title
             true,  // 14. Underwriting (has default)
         ].filter(Boolean).length;
     };
@@ -128,75 +118,75 @@ export const useQuoteState = () => {
         setIsQuoteCardsMinimized,
 
         // Loan Category
-        selectedLoanCategory,
+        selectedLoanCategory: quoteData.selectedLoanCategory,
         setSelectedLoanCategory,
-        isVAExempt,
+        isVAExempt: quoteData.isVAExempt,
         setIsVAExempt,
-        isVAJumboExempt,
+        isVAJumboExempt: quoteData.isVAJumboExempt,
         setIsVAJumboExempt,
 
         // Property
-        selectedPropertyUse,
+        selectedPropertyUse: quoteData.selectedPropertyUse,
         setSelectedPropertyUse,
-        selectedPropertyType,
+        selectedPropertyType: quoteData.selectedPropertyType,
         setSelectedPropertyType,
 
         // Loan Term
-        isCustomTerm,
+        isCustomTerm: quoteData.isCustomTerm,
         setIsCustomTerm,
-        loanTerm,
+        loanTerm: quoteData.loanTerm,
         setLoanTerm,
-        customTerm,
+        customTerm: quoteData.customTerm,
         setCustomTerm,
 
         // Loan Program
-        selectedLoanProgram,
+        selectedLoanProgram: quoteData.selectedLoanProgram,
         setSelectedLoanProgram,
 
         // Row 2
-        selectedRateIds,
+        selectedRateIds: quoteData.selectedRateIds,
         setSelectedRateIds,
-        selectedState,
+        selectedState: quoteData.selectedState,
         setSelectedState,
-        rateBuydown,
+        rateBuydown: quoteData.rateBuydown,
         setRateBuydown,
-        escrowReserves,
+        escrowReserves: quoteData.escrowReserves,
         setEscrowReserves,
-        monthlyEscrow,
+        monthlyEscrow: quoteData.monthlyEscrow,
         setMonthlyEscrow,
 
         // Lender
-        isLenderCreditMode,
+        isLenderCreditMode: quoteData.isLenderCreditMode,
         setIsLenderCreditMode,
-        selectedLender,
+        selectedLender: quoteData.selectedLender,
         setSelectedLender,
-        lenderCreditAmount,
+        lenderCreditAmount: quoteData.lenderCreditAmount,
         setLenderCreditAmount,
 
         // Title
-        isTitleSellerCreditMode,
+        isTitleSellerCreditMode: quoteData.isTitleSellerCreditMode,
         setIsTitleSellerCreditMode,
-        selectedTitle,
+        selectedTitle: quoteData.selectedTitle,
         setSelectedTitle,
-        titleSellerCreditAmount,
+        titleSellerCreditAmount: quoteData.titleSellerCreditAmount,
         setTitleSellerCreditAmount,
 
         // Mid FICO
-        isMidFicoEstimateMode,
+        isMidFicoEstimateMode: quoteData.isMidFicoEstimateMode,
         setIsMidFicoEstimateMode,
-        estimatedFicoValue,
+        estimatedFicoValue: quoteData.estimatedFicoValue,
         setEstimatedFicoValue,
 
         // LTV Ratio
-        isLtvEstimateMode,
+        isLtvEstimateMode: quoteData.isLtvEstimateMode,
         setIsLtvEstimateMode,
-        estimatedLtvValue,
+        estimatedLtvValue: quoteData.estimatedLtvValue,
         setEstimatedLtvValue,
 
         // Underwriting
-        isProcessingMode,
+        isProcessingMode: quoteData.isProcessingMode,
         setIsProcessingMode,
-        underwriting,
+        underwriting: quoteData.underwriting,
         setUnderwriting,
 
         // Pin Reference

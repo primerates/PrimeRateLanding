@@ -40,6 +40,17 @@ export interface LoanProgram {
   name: string;
 }
 
+export interface ThirdPartyService {
+  id: string;
+  serviceName: string;
+}
+
+export interface ThirdPartyCategory {
+  id: string;
+  categoryName: string;
+  services: ThirdPartyService[];
+}
+
 interface AddAdminClientStore {
   unsavedChangesDialog: {
     isOpen: boolean;
@@ -92,6 +103,75 @@ interface AddAdminClientStore {
   removedBuiltInPropertyUses: string[];
   customPropertyTypes: Array<{ id: string; name: string }>;
   removedBuiltInPropertyTypes: string[];
+  // Third Party Services state
+  thirdPartyServiceCategories: ThirdPartyCategory[];
+  // Quote Tab state
+  quoteData: {
+    // Form Row 1 fields
+    selectedLoanCategory: string;
+    isVAExempt: boolean;
+    isVAJumboExempt: boolean;
+    isCustomTerm: boolean;
+    loanTerm: string;
+    customTerm: string;
+    selectedLoanProgram: string;
+    selectedPropertyUse: string;
+    selectedPropertyType: string;
+    // Form Row 2 fields
+    selectedRateIds: number[];
+    selectedState: string;
+    rateBuydown: string;
+    escrowReserves: string;
+    monthlyEscrow: string;
+    // Form Row 3 fields
+    isMidFicoEstimateMode: boolean;
+    estimatedFicoValue: string;
+    isLtvEstimateMode: boolean;
+    estimatedLtvValue: string;
+    isLenderCreditMode: boolean;
+    selectedLender: string;
+    lenderCreditAmount: string;
+    isTitleSellerCreditMode: boolean;
+    selectedTitle: string;
+    titleSellerCreditAmount: string;
+    isProcessingMode: boolean;
+    underwriting: string;
+    // Rate details fields
+    quoteLoanProgram: string;
+    loanProgramFontSize: string;
+    loanProgramColor: string;
+    rateValues: string[];
+    existingLoanBalanceValues: string[];
+    isExistingLoanBalanceSameMode: boolean;
+    cashOutAmountValues: string[];
+    isCashOutSameMode: boolean;
+    rateBuyDownValues: string[];
+    vaFundingFeeValues: string[];
+    thirdPartyServiceValues: { [serviceId: string]: string[] };
+    categorySameModes: { [categoryId: string]: boolean };
+    payOffInterestValues: string[];
+    propertyInsurance: string;
+    propertyTax: string;
+    statementEscrowBalance: string;
+    monthlyInsurance: string;
+    monthlyPropertyTax: string;
+    newLoanAmountMip: string;
+    monthlyFhaMip: string;
+    existingMortgagePayment: string;
+    monthlyPaymentDebtsPayOff: string;
+    monthlyPaymentOtherDebts: string;
+    newEstLoanAmountValues: string[];
+    newMonthlyPaymentValues: string[];
+    totalMonthlySavingsValues: string[];
+    isMonthlyPaymentRowExpanded: boolean;
+    isSavingsRowExpanded: boolean;
+    vaFirstTimeCashOut: string;
+    vaSubsequentCashOut: string;
+    vaRateTerm: string;
+    vaIRRRL: string;
+    isVACalculated: boolean;
+    selectedVARow: 'firstTime' | 'subsequent' | 'rateTerm' | 'irrrl' | null;
+  };
   setUnsavedChangesDialog: (dialog: { isOpen: boolean }) => void;
   setMaritalStatusDialog: (dialog: { isOpen: boolean }) => void;
   setIsShowingDMBatch: (isShowing: boolean) => void;
@@ -142,6 +222,16 @@ interface AddAdminClientStore {
   removePropertyUse: (propertyUseId: string) => void;
   addPropertyType: (propertyTypeName: string) => void;
   removePropertyType: (propertyTypeId: string) => void;
+  // Third Party Services actions
+  setThirdPartyServiceCategories: (categories: ThirdPartyCategory[]) => void;
+  addThirdPartyCategory: (categoryName: string) => void;
+  addThirdPartyService: (categoryId: string, serviceName: string) => void;
+  editThirdPartyCategoryName: (categoryId: string, newName: string) => void;
+  removeThirdPartyCategory: (categoryId: string) => void;
+  removeThirdPartyService: (categoryId: string, serviceId: string) => void;
+  // Quote Data actions
+  updateQuoteData: (updates: Partial<AddAdminClientStore['quoteData']>) => void;
+  resetQuoteData: () => void;
 }
 
 export const useAdminAddClientStore = create<AddAdminClientStore>()(
@@ -218,7 +308,99 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
       removedBuiltInPropertyUses: [],
       customPropertyTypes: [],
       removedBuiltInPropertyTypes: [],
-      
+
+      // Third Party Services state initialization
+      thirdPartyServiceCategories: [
+        {
+          id: '1',
+          categoryName: 'Third Party Services',
+          services: [
+            { id: 's1', serviceName: 'VA Funding Fee' },
+            { id: 's4', serviceName: 'VA Underwriting Services' },
+            { id: 's8', serviceName: 'Processing Services' },
+            { id: 's9', serviceName: 'Credit Report Services' },
+            { id: 's5', serviceName: 'Title & Escrow Services' },
+            { id: 's7', serviceName: 'State Tax & Recording' },
+          ]
+        }
+      ],
+
+      // Quote Data state initialization
+      quoteData: {
+        // Form Row 1 fields
+        selectedLoanCategory: '',
+        isVAExempt: false,
+        isVAJumboExempt: false,
+        isCustomTerm: false,
+        loanTerm: 'select',
+        customTerm: '',
+        selectedLoanProgram: 'select',
+        selectedPropertyUse: 'select',
+        selectedPropertyType: 'select',
+        // Form Row 2 fields
+        selectedRateIds: [],
+        selectedState: 'select',
+        rateBuydown: 'yes',
+        escrowReserves: 'new-escrow-reserves',
+        monthlyEscrow: 'includes-tax-insurance',
+        // Form Row 3 fields
+        isMidFicoEstimateMode: false,
+        estimatedFicoValue: '',
+        isLtvEstimateMode: false,
+        estimatedLtvValue: '',
+        isLenderCreditMode: false,
+        selectedLender: 'select',
+        lenderCreditAmount: '',
+        isTitleSellerCreditMode: false,
+        selectedTitle: 'select',
+        titleSellerCreditAmount: '',
+        isProcessingMode: false,
+        underwriting: 'financed',
+        // Rate details fields
+        quoteLoanProgram: '',
+        loanProgramFontSize: 'text-2xl',
+        loanProgramColor: 'text-foreground',
+        rateValues: Array(4).fill(''),
+        existingLoanBalanceValues: Array(4).fill(''),
+        isExistingLoanBalanceSameMode: false,
+        cashOutAmountValues: Array(4).fill(''),
+        isCashOutSameMode: false,
+        rateBuyDownValues: Array(4).fill(''),
+        vaFundingFeeValues: Array(4).fill(''),
+        thirdPartyServiceValues: {
+          's1': Array(4).fill(''),
+          's4': Array(4).fill(''),
+          's8': Array(4).fill(''),
+          's9': Array(4).fill(''),
+          's5': Array(4).fill(''),
+          's6': Array(4).fill(''),
+          's7': Array(4).fill(''),
+        },
+        categorySameModes: { '1': false },
+        payOffInterestValues: Array(4).fill(''),
+        propertyInsurance: '',
+        propertyTax: '',
+        statementEscrowBalance: '',
+        monthlyInsurance: '',
+        monthlyPropertyTax: '',
+        newLoanAmountMip: '',
+        monthlyFhaMip: '',
+        existingMortgagePayment: '',
+        monthlyPaymentDebtsPayOff: '',
+        monthlyPaymentOtherDebts: '',
+        newEstLoanAmountValues: Array(4).fill(''),
+        newMonthlyPaymentValues: Array(4).fill(''),
+        totalMonthlySavingsValues: Array(4).fill(''),
+        isMonthlyPaymentRowExpanded: true,
+        isSavingsRowExpanded: true,
+        vaFirstTimeCashOut: '',
+        vaSubsequentCashOut: '',
+        vaRateTerm: '',
+        vaIRRRL: '',
+        isVACalculated: false,
+        selectedVARow: null,
+      },
+
       setUnsavedChangesDialog: (dialog) =>
         set(() => ({
           unsavedChangesDialog: dialog,
@@ -666,6 +848,148 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
             };
           }
         }),
+
+      // Third Party Services actions
+      setThirdPartyServiceCategories: (categories) =>
+        set(() => ({
+          thirdPartyServiceCategories: categories
+        })),
+
+      addThirdPartyCategory: (categoryName) =>
+        set((state) => {
+          const newCategory: ThirdPartyCategory = {
+            id: `custom-cat-${Date.now()}`,
+            categoryName,
+            services: []
+          };
+          return {
+            thirdPartyServiceCategories: [...state.thirdPartyServiceCategories, newCategory]
+          };
+        }),
+
+      addThirdPartyService: (categoryId, serviceName) =>
+        set((state) => {
+          const newService: ThirdPartyService = {
+            id: `custom-service-${Date.now()}`,
+            serviceName
+          };
+          return {
+            thirdPartyServiceCategories: state.thirdPartyServiceCategories.map(category =>
+              category.id === categoryId
+                ? { ...category, services: [...category.services, newService] }
+                : category
+            )
+          };
+        }),
+
+      editThirdPartyCategoryName: (categoryId, newName) =>
+        set((state) => ({
+          thirdPartyServiceCategories: state.thirdPartyServiceCategories.map(category =>
+            category.id === categoryId
+              ? { ...category, categoryName: newName }
+              : category
+          )
+        })),
+
+      removeThirdPartyCategory: (categoryId) =>
+        set((state) => ({
+          thirdPartyServiceCategories: state.thirdPartyServiceCategories.filter(
+            category => category.id !== categoryId
+          )
+        })),
+
+      removeThirdPartyService: (categoryId, serviceId) =>
+        set((state) => ({
+          thirdPartyServiceCategories: state.thirdPartyServiceCategories.map(category =>
+            category.id === categoryId
+              ? { ...category, services: category.services.filter(service => service.id !== serviceId) }
+              : category
+          )
+        })),
+
+      // Quote Data actions
+      updateQuoteData: (updates) =>
+        set((state) => ({
+          quoteData: { ...state.quoteData, ...updates }
+        })),
+
+      resetQuoteData: () =>
+        set(() => ({
+          quoteData: {
+            // Form Row 1 fields
+            selectedLoanCategory: '',
+            isVAExempt: false,
+            isVAJumboExempt: false,
+            isCustomTerm: false,
+            loanTerm: 'select',
+            customTerm: '',
+            selectedLoanProgram: 'select',
+            selectedPropertyUse: 'select',
+            selectedPropertyType: 'select',
+            // Form Row 2 fields
+            selectedRateIds: [],
+            selectedState: 'select',
+            rateBuydown: 'yes',
+            escrowReserves: 'new-escrow-reserves',
+            monthlyEscrow: 'includes-tax-insurance',
+            // Form Row 3 fields
+            isMidFicoEstimateMode: false,
+            estimatedFicoValue: '',
+            isLtvEstimateMode: false,
+            estimatedLtvValue: '',
+            isLenderCreditMode: false,
+            selectedLender: 'select',
+            lenderCreditAmount: '',
+            isTitleSellerCreditMode: false,
+            selectedTitle: 'select',
+            titleSellerCreditAmount: '',
+            isProcessingMode: false,
+            underwriting: 'financed',
+            // Rate details fields
+            quoteLoanProgram: '',
+            loanProgramFontSize: 'text-2xl',
+            loanProgramColor: 'text-foreground',
+            rateValues: Array(4).fill(''),
+            existingLoanBalanceValues: Array(4).fill(''),
+            isExistingLoanBalanceSameMode: false,
+            cashOutAmountValues: Array(4).fill(''),
+            isCashOutSameMode: false,
+            rateBuyDownValues: Array(4).fill(''),
+            vaFundingFeeValues: Array(4).fill(''),
+            thirdPartyServiceValues: {
+              's1': Array(4).fill(''),
+              's4': Array(4).fill(''),
+              's8': Array(4).fill(''),
+              's9': Array(4).fill(''),
+              's5': Array(4).fill(''),
+              's6': Array(4).fill(''),
+              's7': Array(4).fill(''),
+            },
+            categorySameModes: { '1': false },
+            payOffInterestValues: Array(4).fill(''),
+            propertyInsurance: '',
+            propertyTax: '',
+            statementEscrowBalance: '',
+            monthlyInsurance: '',
+            monthlyPropertyTax: '',
+            newLoanAmountMip: '',
+            monthlyFhaMip: '',
+            existingMortgagePayment: '',
+            monthlyPaymentDebtsPayOff: '',
+            monthlyPaymentOtherDebts: '',
+            newEstLoanAmountValues: Array(4).fill(''),
+            newMonthlyPaymentValues: Array(4).fill(''),
+            totalMonthlySavingsValues: Array(4).fill(''),
+            isMonthlyPaymentRowExpanded: true,
+            isSavingsRowExpanded: true,
+            vaFirstTimeCashOut: '',
+            vaSubsequentCashOut: '',
+            vaRateTerm: '',
+            vaIRRRL: '',
+            isVACalculated: false,
+            selectedVARow: null,
+          }
+        })),
     }),
     { name: 'add-client-store' }
   )

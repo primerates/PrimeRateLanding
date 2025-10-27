@@ -12,6 +12,7 @@ import NewMonthlyPaymentDialog from './RateDetailsSection/components/NewMonthlyP
 import ExistingMonthlyPaymentsDialog from './RateDetailsSection/components/ExistingMonthlyPaymentsDialog';
 import VAFundingFeeCalculatorDialog from './RateDetailsSection/components/VAFundingFeeCalculatorDialog';
 import CustomizeClosingCostsDialog from './RateDetailsSection/components/CustomizeClosingCostsDialog';
+import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 
 interface RateDetailsSectionProps {
     selectedRateIds: number[];
@@ -101,136 +102,48 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
     },
     ref
 ) => {
-    // Loan Program state
-    const [quoteLoanProgram, setQuoteLoanProgram] = useState('');
+    // Get quote data from Zustand store
+    const quoteData = useAdminAddClientStore(state => state.quoteData);
+    const updateQuoteData = useAdminAddClientStore(state => state.updateQuoteData);
+    const thirdPartyServiceCategories = useAdminAddClientStore(state => state.thirdPartyServiceCategories);
+    const setThirdPartyServiceCategories = useAdminAddClientStore(state => state.setThirdPartyServiceCategories);
+
+    // Local UI state (not persisted)
     const [showLoanProgramControls, setShowLoanProgramControls] = useState(false);
-    const [loanProgramFontSize, setLoanProgramFontSize] = useState('text-2xl');
-    const [loanProgramColor, setLoanProgramColor] = useState('text-foreground');
     const loanProgramTextareaRef = useRef<HTMLTextAreaElement>(null);
-
-    // Rate values state
-    const [rateValues, setRateValues] = useState<string[]>(Array(4).fill(''));
     const [editingRateIndex, setEditingRateIndex] = useState<number | null>(null);
-
-    // Existing Loan Balance state
-    const [existingLoanBalanceValues, setExistingLoanBalanceValues] = useState<string[]>(Array(4).fill(''));
-    const [isExistingLoanBalanceSameMode, setIsExistingLoanBalanceSameMode] = useState(false);
-
-    // Cash Out Amount state
-    const [cashOutAmountValues, setCashOutAmountValues] = useState<string[]>(Array(4).fill(''));
-    const [isCashOutSameMode, setIsCashOutSameMode] = useState(false);
-
-    // Rate Buy Down state
-    const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(Array(4).fill(''));
-
-    // VA Funding Fee / FHA MIP state
-    const [vaFundingFeeValues, setVaFundingFeeValues] = useState<string[]>(Array(4).fill(''));
-    const [fhaUpfrontMipValue] = useState('0');
-
-    // Third Party Services state
-    const [thirdPartyServiceValues, setThirdPartyServiceValues] = useState<{
-        [serviceId: string]: string[];
-    }>({
-        's1': Array(4).fill(''), // VA Funding Fee
-        's4': Array(4).fill(''), // Underwriting Services
-        's8': Array(4).fill(''), // Processing Services
-        's9': Array(4).fill(''), // Credit Report Services
-        's5': Array(4).fill(''), // Title & Escrow Services
-        's6': Array(4).fill(''), // Pay Off Interest
-        's7': Array(4).fill(''), // State Tax & Recording
-    });
-
-    const [categorySameModes, setCategorySameModes] = useState<{ [categoryId: string]: boolean }>({
-        '1': false, // Third Party Services
-    });
-
-    // Define Third Party Services structure
-    const currentThirdPartyServices = [
-        {
-            id: '1',
-            categoryName: 'Third Party Services',
-            services: [
-                { id: 's1', serviceName: 'VA Funding Fee' },
-                { id: 's4', serviceName: 'VA Underwriting Services' },
-                { id: 's8', serviceName: 'Processing Services' },
-                { id: 's9', serviceName: 'Credit Report Services' },
-                { id: 's5', serviceName: 'Title & Escrow Services' },
-                { id: 's7', serviceName: 'State Tax & Recording' },
-            ]
-        }
-    ];
-
-    // Pay Off Interest state
-    const [payOffInterestValues, setPayOffInterestValues] = useState<string[]>(Array(4).fill(''));
-
-    // New Escrow Reserves state
     const [isEscrowInfoOpen, setIsEscrowInfoOpen] = useState(false);
-    const [propertyInsurance, setPropertyInsurance] = useState('');
-    const [propertyTax, setPropertyTax] = useState('');
-    const [statementEscrowBalance, setStatementEscrowBalance] = useState('');
+    const [isEstLoanAmountInfoOpen, setIsEstLoanAmountInfoOpen] = useState(false);
+    const [isNewPaymentInfoOpen, setIsNewPaymentInfoOpen] = useState(false);
+    const [isMonthlySavingsInfoOpen, setIsMonthlySavingsInfoOpen] = useState(false);
+    const [showVAFundingFeeDialog, setShowVAFundingFeeDialog] = useState(false);
+    const [showCustomizeClosingCostsDialog, setShowCustomizeClosingCostsDialog] = useState(false);
+
+    const fhaUpfrontMipValue = '0';
 
     // Auto-calculate Total Monthly Escrow
     const calculatedTotalMonthlyEscrow =
-        parseInt(propertyInsurance || '0', 10) + parseInt(propertyTax || '0', 10);
-
-    // State for Estimated New Loan Amount dialog
-    const [isEstLoanAmountInfoOpen, setIsEstLoanAmountInfoOpen] = useState(false);
-
-    // State for New Monthly Payment dialog
-    const [isNewPaymentInfoOpen, setIsNewPaymentInfoOpen] = useState(false);
-    const [monthlyInsurance, setMonthlyInsurance] = useState('');
-    const [monthlyPropertyTax, setMonthlyPropertyTax] = useState('');
-    const [newLoanAmountMip, setNewLoanAmountMip] = useState('');
-    const [monthlyFhaMip, setMonthlyFhaMip] = useState('');
+        parseInt(quoteData.propertyInsurance || '0', 10) + parseInt(quoteData.propertyTax || '0', 10);
 
     // Auto-calculate Total Monthly Escrow for New Payment dialog
     const calculatedNewPaymentEscrow =
-        parseInt(monthlyInsurance || '0', 10) + parseInt(monthlyPropertyTax || '0', 10);
+        parseInt(quoteData.monthlyInsurance || '0', 10) + parseInt(quoteData.monthlyPropertyTax || '0', 10);
 
     // Check if loan is FHA
     const isFHALoan = selectedLoanCategory?.startsWith('FHA - ');
 
-    // State for Existing Monthly Payments dialog (Total Monthly Savings)
-    const [isMonthlySavingsInfoOpen, setIsMonthlySavingsInfoOpen] = useState(false);
-    const [existingMortgagePayment, setExistingMortgagePayment] = useState('');
-    const [monthlyPaymentDebtsPayOff, setMonthlyPaymentDebtsPayOff] = useState('');
-    const [monthlyPaymentOtherDebts, setMonthlyPaymentOtherDebts] = useState('');
-
     // Auto-calculate Total Existing Monthly Payments
     const calculatedTotalExistingPayments =
-        parseInt(existingMortgagePayment || '0', 10) +
-        parseInt(monthlyPaymentDebtsPayOff || '0', 10) +
-        parseInt(monthlyPaymentOtherDebts || '0', 10);
-
-    // New Est. Loan Amount & New Monthly Payment state
-    const [newEstLoanAmountValues, setNewEstLoanAmountValues] = useState<string[]>(Array(4).fill(''));
-    const [newMonthlyPaymentValues, setNewMonthlyPaymentValues] = useState<string[]>(Array(4).fill(''));
-
-    // Total Monthly Savings state
-    const [totalMonthlySavingsValues, setTotalMonthlySavingsValues] = useState<string[]>(Array(4).fill(''));
-
-    // State for row collapse/expand in New Est. Loan Amount & New Monthly Payment card
-    const [isMonthlyPaymentRowExpanded, setIsMonthlyPaymentRowExpanded] = useState(true);
-    const [isSavingsRowExpanded, setIsSavingsRowExpanded] = useState(true);
-
-    // VA Funding Fee Calculator state
-    const [showVAFundingFeeDialog, setShowVAFundingFeeDialog] = useState(false);
-    const [vaFirstTimeCashOut, setVaFirstTimeCashOut] = useState('');
-    const [vaSubsequentCashOut, setVaSubsequentCashOut] = useState('');
-    const [vaRateTerm, setVaRateTerm] = useState('');
-    const [vaIRRRL, setVaIRRRL] = useState('');
-    const [isVACalculated, setIsVACalculated] = useState(false);
-    const [selectedVARow, setSelectedVARow] = useState<'firstTime' | 'subsequent' | 'rateTerm' | 'irrrl' | null>(null);
-
-    // Customize Closing Costs Dialog state
-    const [showCustomizeClosingCostsDialog, setShowCustomizeClosingCostsDialog] = useState(false);
+        parseInt(quoteData.existingMortgagePayment || '0', 10) +
+        parseInt(quoteData.monthlyPaymentDebtsPayOff || '0', 10) +
+        parseInt(quoteData.monthlyPaymentOtherDebts || '0', 10);
 
     // Sync thirdPartyServiceValues['s1'] to vaFundingFeeValues
     useEffect(() => {
-        if (thirdPartyServiceValues['s1']) {
-            setVaFundingFeeValues(thirdPartyServiceValues['s1']);
+        if (quoteData.thirdPartyServiceValues['s1']) {
+            updateQuoteData({ vaFundingFeeValues: quoteData.thirdPartyServiceValues['s1'] });
         }
-    }, [thirdPartyServiceValues]);
+    }, [quoteData.thirdPartyServiceValues, updateQuoteData]);
 
     if (selectedRateIds.length === 0) return null;
 
@@ -253,41 +166,41 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                 const rateKey = `rate${index + 1}`;
 
                 rates[rateKey] = {
-                    loanProgram: quoteLoanProgram,
-                    rate: rateValues[rateId] || '',
-                    existingLoanBalance: existingLoanBalanceValues[rateId] || '',
-                    cashOutAmount: cashOutAmountValues[rateId] || '',
-                    rateBuyDown: rateBuyDownValues[rateId] || '',
-                    vaFundingFee: vaFundingFeeValues[rateId] || '',
+                    loanProgram: quoteData.quoteLoanProgram,
+                    rate: quoteData.rateValues[rateId] || '',
+                    existingLoanBalance: quoteData.existingLoanBalanceValues[rateId] || '',
+                    cashOutAmount: quoteData.cashOutAmountValues[rateId] || '',
+                    rateBuyDown: quoteData.rateBuyDownValues[rateId] || '',
+                    vaFundingFee: quoteData.vaFundingFeeValues[rateId] || '',
                     fhaUpfrontMip: fhaUpfrontMipValue,
                     thirdPartyServices: {
-                        underwritingServices: thirdPartyServiceValues['s4']?.[rateId] || '',
-                        processingServices: thirdPartyServiceValues['s8']?.[rateId] || '',
-                        creditReportServices: thirdPartyServiceValues['s9']?.[rateId] || '',
-                        titleEscrowServices: thirdPartyServiceValues['s5']?.[rateId] || '',
-                        stateTaxRecording: thirdPartyServiceValues['s7']?.[rateId] || '',
+                        underwritingServices: quoteData.thirdPartyServiceValues['s4']?.[rateId] || '',
+                        processingServices: quoteData.thirdPartyServiceValues['s8']?.[rateId] || '',
+                        creditReportServices: quoteData.thirdPartyServiceValues['s9']?.[rateId] || '',
+                        titleEscrowServices: quoteData.thirdPartyServiceValues['s5']?.[rateId] || '',
+                        stateTaxRecording: quoteData.thirdPartyServiceValues['s7']?.[rateId] || '',
                     },
-                    payOffInterest: payOffInterestValues[rateId] || '',
+                    payOffInterest: quoteData.payOffInterestValues[rateId] || '',
                     newEscrowReserves: calculatedTotalMonthlyEscrow > 0 ? calculatedTotalMonthlyEscrow.toString() : '',
-                    propertyInsurance: propertyInsurance || '',
-                    propertyTax: propertyTax || '',
-                    statementEscrowBalance: statementEscrowBalance || '',
-                    newEstLoanAmount: newEstLoanAmountValues[rateId] || '',
-                    newMonthlyPayment: newMonthlyPaymentValues[rateId] || '',
-                    totalMonthlySavings: totalMonthlySavingsValues[rateId] || '',
+                    propertyInsurance: quoteData.propertyInsurance || '',
+                    propertyTax: quoteData.propertyTax || '',
+                    statementEscrowBalance: quoteData.statementEscrowBalance || '',
+                    newEstLoanAmount: quoteData.newEstLoanAmountValues[rateId] || '',
+                    newMonthlyPayment: quoteData.newMonthlyPaymentValues[rateId] || '',
+                    totalMonthlySavings: quoteData.totalMonthlySavingsValues[rateId] || '',
                 };
             });
 
             return {
                 // Top-level quote fields from New Monthly Payment dialog
-                monthlyInsurance: monthlyInsurance || '',
-                monthlyPropertyTax: monthlyPropertyTax || '',
-                newLoanAmountMip: newLoanAmountMip || '',
-                monthlyFhaMip: monthlyFhaMip || '',
+                monthlyInsurance: quoteData.monthlyInsurance || '',
+                monthlyPropertyTax: quoteData.monthlyPropertyTax || '',
+                newLoanAmountMip: quoteData.newLoanAmountMip || '',
+                monthlyFhaMip: quoteData.monthlyFhaMip || '',
                 // Top-level quote fields from Existing Monthly Payments dialog
-                existingMortgagePayment: existingMortgagePayment || '',
-                monthlyPaymentDebtsPayOff: monthlyPaymentDebtsPayOff || '',
-                monthlyPaymentOtherDebts: monthlyPaymentOtherDebts || '',
+                existingMortgagePayment: quoteData.existingMortgagePayment || '',
+                monthlyPaymentDebtsPayOff: quoteData.monthlyPaymentDebtsPayOff || '',
+                monthlyPaymentOtherDebts: quoteData.monthlyPaymentOtherDebts || '',
                 // Rates object
                 rates
             };
@@ -305,12 +218,12 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                             <textarea
                                 ref={loanProgramTextareaRef}
                                 placeholder="Loan Type"
-                                value={quoteLoanProgram}
-                                onChange={(e) => setQuoteLoanProgram(e.target.value)}
+                                value={quoteData.quoteLoanProgram}
+                                onChange={(e) => updateQuoteData({ quoteLoanProgram: e.target.value })}
                                 onFocus={() => setShowLoanProgramControls(true)}
                                 onBlur={() => setTimeout(() => setShowLoanProgramControls(false), 200)}
                                 rows={2}
-                                className={`bg-transparent border-0 ${loanProgramFontSize} ${loanProgramColor} font-semibold text-center focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40 resize-none w-full`}
+                                className={`bg-transparent border-0 ${quoteData.loanProgramFontSize} ${quoteData.loanProgramColor} font-semibold text-center focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40 resize-none w-full`}
                                 data-testid="input-quote-loan-program"
                             />
 
@@ -323,9 +236,9 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                                     <div className="flex flex-col gap-1">
                                         <Label className="text-xs text-muted-foreground">Font Size</Label>
                                         <Select
-                                            value={loanProgramFontSize}
+                                            value={quoteData.loanProgramFontSize}
                                             onValueChange={(value) => {
-                                                setLoanProgramFontSize(value);
+                                                updateQuoteData({ loanProgramFontSize: value });
                                                 setTimeout(() => loanProgramTextareaRef.current?.focus(), 0);
                                             }}
                                         >
@@ -345,9 +258,9 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                                     <div className="flex flex-col gap-1">
                                         <Label className="text-xs text-muted-foreground">Font Color</Label>
                                         <Select
-                                            value={loanProgramColor}
+                                            value={quoteData.loanProgramColor}
                                             onValueChange={(value) => {
-                                                setLoanProgramColor(value);
+                                                updateQuoteData({ loanProgramColor: value });
                                                 setTimeout(() => loanProgramTextareaRef.current?.focus(), 0);
                                             }}
                                         >
@@ -377,12 +290,12 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                                 <div className="relative">
                                     <Input
                                         type="text"
-                                        value={rateValues[rateId]}
+                                        value={quoteData.rateValues[rateId]}
                                         onChange={(e) => {
                                             const value = e.target.value.replace(/[^\d.]/g, '');
-                                            const newValues = [...rateValues];
+                                            const newValues = [...quoteData.rateValues];
                                             newValues[rateId] = value;
-                                            setRateValues(newValues);
+                                            updateQuoteData({ rateValues: newValues });
                                         }}
                                         onBlur={() => setEditingRateIndex(null)}
                                         onKeyDown={(e) => {
@@ -416,7 +329,7 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                                     }}
                                     data-testid={`button-rate-circle-${rateId}`}
                                 >
-                                    {rateValues[rateId] ? `${rateValues[rateId]}%` : '%'}
+                                    {quoteData.rateValues[rateId] ? `${quoteData.rateValues[rateId]}%` : '%'}
                                 </button>
                             )}
                         </div>
@@ -428,14 +341,14 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
             {showExistingLoanBalance && (
                 <ExistingLoanCard
                     selectedRateIds={selectedRateIds}
-                    existingLoanBalanceValues={existingLoanBalanceValues}
-                    setExistingLoanBalanceValues={setExistingLoanBalanceValues}
-                    isExistingLoanBalanceSameMode={isExistingLoanBalanceSameMode}
-                    setIsExistingLoanBalanceSameMode={setIsExistingLoanBalanceSameMode}
-                    cashOutAmountValues={cashOutAmountValues}
-                    setCashOutAmountValues={setCashOutAmountValues}
-                    isCashOutSameMode={isCashOutSameMode}
-                    setIsCashOutSameMode={setIsCashOutSameMode}
+                    existingLoanBalanceValues={quoteData.existingLoanBalanceValues}
+                    setExistingLoanBalanceValues={(values) => updateQuoteData({ existingLoanBalanceValues: values })}
+                    isExistingLoanBalanceSameMode={quoteData.isExistingLoanBalanceSameMode}
+                    setIsExistingLoanBalanceSameMode={(mode) => updateQuoteData({ isExistingLoanBalanceSameMode: mode })}
+                    cashOutAmountValues={quoteData.cashOutAmountValues}
+                    setCashOutAmountValues={(values) => updateQuoteData({ cashOutAmountValues: values })}
+                    isCashOutSameMode={quoteData.isCashOutSameMode}
+                    setIsCashOutSameMode={(mode) => updateQuoteData({ isCashOutSameMode: mode })}
                     showCashOut={showCashOut}
                     columnWidth={columnWidth}
                     gridCols={gridCols}
@@ -447,15 +360,15 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                 <RateBuyDownCard
                     selectedRateIds={selectedRateIds}
                     selectedLoanCategory={selectedLoanCategory}
-                    rateBuyDownValues={rateBuyDownValues}
-                    setRateBuyDownValues={setRateBuyDownValues}
-                    vaFundingFeeValues={vaFundingFeeValues}
+                    rateBuyDownValues={quoteData.rateBuyDownValues}
+                    setRateBuyDownValues={(values) => updateQuoteData({ rateBuyDownValues: values })}
+                    vaFundingFeeValues={quoteData.vaFundingFeeValues}
                     fhaUpfrontMipValue={fhaUpfrontMipValue}
-                    thirdPartyServiceValues={thirdPartyServiceValues}
-                    setThirdPartyServiceValues={setThirdPartyServiceValues}
-                    categorySameModes={categorySameModes}
-                    setCategorySameModes={setCategorySameModes}
-                    currentThirdPartyServices={currentThirdPartyServices}
+                    thirdPartyServiceValues={quoteData.thirdPartyServiceValues}
+                    setThirdPartyServiceValues={(values) => updateQuoteData({ thirdPartyServiceValues: values })}
+                    categorySameModes={quoteData.categorySameModes}
+                    setCategorySameModes={(modes) => updateQuoteData({ categorySameModes: modes })}
+                    currentThirdPartyServices={thirdPartyServiceCategories}
                     columnWidth={columnWidth}
                     gridCols={gridCols}
                     onVAFundingFeeClick={() => setShowVAFundingFeeDialog(true)}
@@ -466,9 +379,9 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
             {/* Pay Off Interest & New Escrow Reserves Card */}
             <PayOffInterestCard
                 selectedRateIds={selectedRateIds}
-                payOffInterestValues={payOffInterestValues}
-                setPayOffInterestValues={setPayOffInterestValues}
-                setThirdPartyServiceValues={setThirdPartyServiceValues}
+                payOffInterestValues={quoteData.payOffInterestValues}
+                setPayOffInterestValues={(values) => updateQuoteData({ payOffInterestValues: values })}
+                setThirdPartyServiceValues={(values) => updateQuoteData({ thirdPartyServiceValues: values })}
                 escrowReserves={escrowReserves}
                 monthlyEscrow={monthlyEscrow}
                 calculatedTotalMonthlyEscrow={calculatedTotalMonthlyEscrow}
@@ -480,16 +393,16 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
             {/* New Est. Loan Amount & New Monthly Payment Card */}
             <LoanAmountPaymentCard
                 selectedRateIds={selectedRateIds}
-                newEstLoanAmountValues={newEstLoanAmountValues}
-                setNewEstLoanAmountValues={setNewEstLoanAmountValues}
-                newMonthlyPaymentValues={newMonthlyPaymentValues}
-                setNewMonthlyPaymentValues={setNewMonthlyPaymentValues}
-                totalMonthlySavingsValues={totalMonthlySavingsValues}
-                setTotalMonthlySavingsValues={setTotalMonthlySavingsValues}
-                isMonthlyPaymentRowExpanded={isMonthlyPaymentRowExpanded}
-                setIsMonthlyPaymentRowExpanded={setIsMonthlyPaymentRowExpanded}
-                isSavingsRowExpanded={isSavingsRowExpanded}
-                setIsSavingsRowExpanded={setIsSavingsRowExpanded}
+                newEstLoanAmountValues={quoteData.newEstLoanAmountValues}
+                setNewEstLoanAmountValues={(values) => updateQuoteData({ newEstLoanAmountValues: values })}
+                newMonthlyPaymentValues={quoteData.newMonthlyPaymentValues}
+                setNewMonthlyPaymentValues={(values) => updateQuoteData({ newMonthlyPaymentValues: values })}
+                totalMonthlySavingsValues={quoteData.totalMonthlySavingsValues}
+                setTotalMonthlySavingsValues={(values) => updateQuoteData({ totalMonthlySavingsValues: values })}
+                isMonthlyPaymentRowExpanded={quoteData.isMonthlyPaymentRowExpanded}
+                setIsMonthlyPaymentRowExpanded={(expanded) => updateQuoteData({ isMonthlyPaymentRowExpanded: expanded })}
+                isSavingsRowExpanded={quoteData.isSavingsRowExpanded}
+                setIsSavingsRowExpanded={(expanded) => updateQuoteData({ isSavingsRowExpanded: expanded })}
                 columnWidth={columnWidth}
                 gridCols={gridCols}
                 onEstLoanAmountInfoClick={() => setIsEstLoanAmountInfoOpen(true)}
@@ -501,12 +414,12 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
             <EscrowInfoDialog
                 isOpen={isEscrowInfoOpen}
                 onClose={() => setIsEscrowInfoOpen(false)}
-                propertyInsurance={propertyInsurance}
-                onPropertyInsuranceChange={setPropertyInsurance}
-                propertyTax={propertyTax}
-                onPropertyTaxChange={setPropertyTax}
-                statementEscrowBalance={statementEscrowBalance}
-                onStatementEscrowBalanceChange={setStatementEscrowBalance}
+                propertyInsurance={quoteData.propertyInsurance}
+                onPropertyInsuranceChange={(value) => updateQuoteData({ propertyInsurance: value })}
+                propertyTax={quoteData.propertyTax}
+                onPropertyTaxChange={(value) => updateQuoteData({ propertyTax: value })}
+                statementEscrowBalance={quoteData.statementEscrowBalance}
+                onStatementEscrowBalanceChange={(value) => updateQuoteData({ statementEscrowBalance: value })}
                 calculatedTotal={calculatedTotalMonthlyEscrow}
             />
 
@@ -520,14 +433,14 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
             <NewMonthlyPaymentDialog
                 isOpen={isNewPaymentInfoOpen}
                 onClose={() => setIsNewPaymentInfoOpen(false)}
-                monthlyInsurance={monthlyInsurance}
-                onMonthlyInsuranceChange={setMonthlyInsurance}
-                monthlyPropertyTax={monthlyPropertyTax}
-                onMonthlyPropertyTaxChange={setMonthlyPropertyTax}
-                newLoanAmountMip={newLoanAmountMip}
-                onNewLoanAmountMipChange={setNewLoanAmountMip}
-                monthlyFhaMip={monthlyFhaMip}
-                onMonthlyFhaMipChange={setMonthlyFhaMip}
+                monthlyInsurance={quoteData.monthlyInsurance}
+                onMonthlyInsuranceChange={(value) => updateQuoteData({ monthlyInsurance: value })}
+                monthlyPropertyTax={quoteData.monthlyPropertyTax}
+                onMonthlyPropertyTaxChange={(value) => updateQuoteData({ monthlyPropertyTax: value })}
+                newLoanAmountMip={quoteData.newLoanAmountMip}
+                onNewLoanAmountMipChange={(value) => updateQuoteData({ newLoanAmountMip: value })}
+                monthlyFhaMip={quoteData.monthlyFhaMip}
+                onMonthlyFhaMipChange={(value) => updateQuoteData({ monthlyFhaMip: value })}
                 calculatedEscrow={calculatedNewPaymentEscrow}
                 escrowReserves={escrowReserves}
                 isFHALoan={isFHALoan}
@@ -537,12 +450,12 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
             <ExistingMonthlyPaymentsDialog
                 isOpen={isMonthlySavingsInfoOpen}
                 onClose={() => setIsMonthlySavingsInfoOpen(false)}
-                existingMortgagePayment={existingMortgagePayment}
-                onExistingMortgagePaymentChange={setExistingMortgagePayment}
-                monthlyPaymentDebtsPayOff={monthlyPaymentDebtsPayOff}
-                onMonthlyPaymentDebtsPayOffChange={setMonthlyPaymentDebtsPayOff}
-                monthlyPaymentOtherDebts={monthlyPaymentOtherDebts}
-                onMonthlyPaymentOtherDebtsChange={setMonthlyPaymentOtherDebts}
+                existingMortgagePayment={quoteData.existingMortgagePayment}
+                onExistingMortgagePaymentChange={(value) => updateQuoteData({ existingMortgagePayment: value })}
+                monthlyPaymentDebtsPayOff={quoteData.monthlyPaymentDebtsPayOff}
+                onMonthlyPaymentDebtsPayOffChange={(value) => updateQuoteData({ monthlyPaymentDebtsPayOff: value })}
+                monthlyPaymentOtherDebts={quoteData.monthlyPaymentOtherDebts}
+                onMonthlyPaymentOtherDebtsChange={(value) => updateQuoteData({ monthlyPaymentOtherDebts: value })}
                 calculatedTotal={calculatedTotalExistingPayments}
             />
 
@@ -554,44 +467,44 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                 selectedRateIds={selectedRateIds}
                 isVAExempt={isVAExempt}
                 isVAJumboExempt={isVAJumboExempt}
-                vaFirstTimeCashOut={vaFirstTimeCashOut}
-                onVaFirstTimeCashOutChange={setVaFirstTimeCashOut}
-                vaSubsequentCashOut={vaSubsequentCashOut}
-                onVaSubsequentCashOutChange={setVaSubsequentCashOut}
-                vaRateTerm={vaRateTerm}
-                onVaRateTermChange={setVaRateTerm}
-                vaIRRRL={vaIRRRL}
-                onVaIRRRLChange={setVaIRRRL}
-                isVACalculated={isVACalculated}
-                onIsVACalculatedChange={setIsVACalculated}
-                selectedVARow={selectedVARow}
-                onSelectedVARowChange={setSelectedVARow}
-                newEstLoanAmount={parseFloat(newEstLoanAmountValues[selectedRateIds[0]]?.replace(/[^\d.]/g, '') || '0')}
-                vaFundingFeeValue={parseFloat(thirdPartyServiceValues['s1']?.[selectedRateIds[0]]?.replace(/[^\d.]/g, '') || '0')}
+                vaFirstTimeCashOut={quoteData.vaFirstTimeCashOut}
+                onVaFirstTimeCashOutChange={(value) => updateQuoteData({ vaFirstTimeCashOut: value })}
+                vaSubsequentCashOut={quoteData.vaSubsequentCashOut}
+                onVaSubsequentCashOutChange={(value) => updateQuoteData({ vaSubsequentCashOut: value })}
+                vaRateTerm={quoteData.vaRateTerm}
+                onVaRateTermChange={(value) => updateQuoteData({ vaRateTerm: value })}
+                vaIRRRL={quoteData.vaIRRRL}
+                onVaIRRRLChange={(value) => updateQuoteData({ vaIRRRL: value })}
+                isVACalculated={quoteData.isVACalculated}
+                onIsVACalculatedChange={(value) => updateQuoteData({ isVACalculated: value })}
+                selectedVARow={quoteData.selectedVARow}
+                onSelectedVARowChange={(value) => updateQuoteData({ selectedVARow: value })}
+                newEstLoanAmount={parseFloat(quoteData.newEstLoanAmountValues[selectedRateIds[0]]?.replace(/[^\d.]/g, '') || '0')}
+                vaFundingFeeValue={parseFloat(quoteData.thirdPartyServiceValues['s1']?.[selectedRateIds[0]]?.replace(/[^\d.]/g, '') || '0')}
                 onApplyToRate={(value) => {
                     // Apply selected VA category value to all selected rates
-                    setThirdPartyServiceValues(prev => {
-                        const newS1Values = [...(prev['s1'] || Array(4).fill(''))];
-                        selectedRateIds.forEach(rateId => {
-                            newS1Values[rateId] = value;
-                        });
-                        return {
-                            ...prev,
+                    const newS1Values = [...(quoteData.thirdPartyServiceValues['s1'] || Array(4).fill(''))];
+                    selectedRateIds.forEach(rateId => {
+                        newS1Values[rateId] = value;
+                    });
+                    updateQuoteData({
+                        thirdPartyServiceValues: {
+                            ...quoteData.thirdPartyServiceValues,
                             's1': newS1Values
-                        };
+                        }
                     });
                 }}
                 onClearAllValues={() => {
                     // Clear VA funding fee values in the table for selected rates
-                    setThirdPartyServiceValues(prev => {
-                        const newS1Values = [...(prev['s1'] || Array(4).fill(''))];
-                        selectedRateIds.forEach(rateId => {
-                            newS1Values[rateId] = '0.00';
-                        });
-                        return {
-                            ...prev,
+                    const newS1Values = [...(quoteData.thirdPartyServiceValues['s1'] || Array(4).fill(''))];
+                    selectedRateIds.forEach(rateId => {
+                        newS1Values[rateId] = '0.00';
+                    });
+                    updateQuoteData({
+                        thirdPartyServiceValues: {
+                            ...quoteData.thirdPartyServiceValues,
                             's1': newS1Values
-                        };
+                        }
                     });
                 }}
             />
@@ -600,11 +513,12 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
             <CustomizeClosingCostsDialog
                 isOpen={showCustomizeClosingCostsDialog}
                 onClose={() => setShowCustomizeClosingCostsDialog(false)}
-                thirdPartyServices={currentThirdPartyServices}
-                thirdPartyServiceValues={thirdPartyServiceValues}
-                onThirdPartyServiceValuesChange={setThirdPartyServiceValues}
+                thirdPartyServices={thirdPartyServiceCategories}
+                thirdPartyServiceValues={quoteData.thirdPartyServiceValues}
+                onThirdPartyServiceValuesChange={(values) => updateQuoteData({ thirdPartyServiceValues: values })}
                 selectedRateIds={selectedRateIds}
                 selectedLoanCategory={selectedLoanCategory}
+                onCategoriesChange={setThirdPartyServiceCategories}
             />
         </div>
     );
