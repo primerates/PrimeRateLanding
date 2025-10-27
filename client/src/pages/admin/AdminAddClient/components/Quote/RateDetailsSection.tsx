@@ -11,6 +11,7 @@ import EstimatedNewLoanAmountDialog from './RateDetailsSection/components/Estima
 import NewMonthlyPaymentDialog from './RateDetailsSection/components/NewMonthlyPaymentDialog';
 import ExistingMonthlyPaymentsDialog from './RateDetailsSection/components/ExistingMonthlyPaymentsDialog';
 import VAFundingFeeCalculatorDialog from './RateDetailsSection/components/VAFundingFeeCalculatorDialog';
+import CustomizeClosingCostsDialog from './RateDetailsSection/components/CustomizeClosingCostsDialog';
 
 interface RateDetailsSectionProps {
     selectedRateIds: number[];
@@ -131,7 +132,6 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
         [serviceId: string]: string[];
     }>({
         's1': Array(4).fill(''), // VA Funding Fee
-        's2': Array(4).fill(''), // Appraisal Inspection
         's4': Array(4).fill(''), // Underwriting Services
         's8': Array(4).fill(''), // Processing Services
         's9': Array(4).fill(''), // Credit Report Services
@@ -151,8 +151,7 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
             categoryName: 'Third Party Services',
             services: [
                 { id: 's1', serviceName: 'VA Funding Fee' },
-                { id: 's2', serviceName: 'Appraisal Inspection' },
-                { id: 's4', serviceName: 'Underwriting Services' },
+                { id: 's4', serviceName: 'VA Underwriting Services' },
                 { id: 's8', serviceName: 'Processing Services' },
                 { id: 's9', serviceName: 'Credit Report Services' },
                 { id: 's5', serviceName: 'Title & Escrow Services' },
@@ -223,6 +222,9 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
     const [isVACalculated, setIsVACalculated] = useState(false);
     const [selectedVARow, setSelectedVARow] = useState<'firstTime' | 'subsequent' | 'rateTerm' | 'irrrl' | null>(null);
 
+    // Customize Closing Costs Dialog state
+    const [showCustomizeClosingCostsDialog, setShowCustomizeClosingCostsDialog] = useState(false);
+
     // Sync thirdPartyServiceValues['s1'] to vaFundingFeeValues
     useEffect(() => {
         if (thirdPartyServiceValues['s1']) {
@@ -259,7 +261,6 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                     vaFundingFee: vaFundingFeeValues[rateId] || '',
                     fhaUpfrontMip: fhaUpfrontMipValue,
                     thirdPartyServices: {
-                        appraisalInspection: thirdPartyServiceValues['s2']?.[rateId] || '',
                         underwritingServices: thirdPartyServiceValues['s4']?.[rateId] || '',
                         processingServices: thirdPartyServiceValues['s8']?.[rateId] || '',
                         creditReportServices: thirdPartyServiceValues['s9']?.[rateId] || '',
@@ -458,6 +459,7 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                     columnWidth={columnWidth}
                     gridCols={gridCols}
                     onVAFundingFeeClick={() => setShowVAFundingFeeDialog(true)}
+                    onCustomizeClosingCostsClick={() => setShowCustomizeClosingCostsDialog(true)}
                 />
             )}
 
@@ -592,6 +594,17 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                         };
                     });
                 }}
+            />
+
+            {/* Customize Closing Costs Dialog */}
+            <CustomizeClosingCostsDialog
+                isOpen={showCustomizeClosingCostsDialog}
+                onClose={() => setShowCustomizeClosingCostsDialog(false)}
+                thirdPartyServices={currentThirdPartyServices}
+                thirdPartyServiceValues={thirdPartyServiceValues}
+                onThirdPartyServiceValuesChange={setThirdPartyServiceValues}
+                selectedRateIds={selectedRateIds}
+                selectedLoanCategory={selectedLoanCategory}
             />
         </div>
     );

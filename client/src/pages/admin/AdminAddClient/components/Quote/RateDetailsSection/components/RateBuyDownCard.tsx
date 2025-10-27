@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Star } from 'lucide-react';
+import { Star, Settings } from 'lucide-react';
 import MonetaryInputRow from './MonetaryInputRow';
 import RateBuyDownInfoDialog from './RateBuyDownInfoDialog';
 import { type ThirdPartyCategory } from '../hooks/useThirdPartyServices';
@@ -25,6 +25,7 @@ interface RateBuyDownCardProps {
   columnWidth: string;
   gridCols: string;
   onVAFundingFeeClick?: () => void;
+  onCustomizeClosingCostsClick?: () => void;
 }
 
 /**
@@ -44,7 +45,8 @@ const RateBuyDownCard = ({
   currentThirdPartyServices,
   columnWidth,
   gridCols,
-  onVAFundingFeeClick
+  onVAFundingFeeClick,
+  onCustomizeClosingCostsClick
 }: RateBuyDownCardProps) => {
   const isVA = isVALoan(selectedLoanCategory);
   const isFHA = isFHALoan(selectedLoanCategory);
@@ -191,6 +193,26 @@ const RateBuyDownCard = ({
               {/* Category Header */}
               <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: gridCols }}>
                 <div className="flex items-center justify-end pr-4 gap-2">
+                  {/* Settings icon for first category only (Third Party Services) */}
+                  {categoryIndex === 0 && onCustomizeClosingCostsClick && (() => {
+                    // Determine settings icon color based on whether all values are empty or zero
+                    const allValuesEmpty = Object.values(thirdPartyServiceValues).every(arr =>
+                      arr.every(val => !val || val === '0')
+                    );
+
+                    return (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={onCustomizeClosingCostsClick}
+                        data-testid="button-customize-third-party-services"
+                      >
+                        <Settings className={`h-4 w-4 ${allValuesEmpty ? 'text-red-500' : ''}`} />
+                      </Button>
+                    );
+                  })()}
                   <button
                     type="button"
                     onClick={() => handleCategoryToggle(category.id, category)}
