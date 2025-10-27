@@ -68,6 +68,7 @@ interface AddAdminClientStore {
   isRentalInfoDialogOpen: boolean;
   rentalInfoData: RentalInfoData;
   activeRentalSection: string;
+  isFhaMipDialogOpen: boolean;
   // County lookup state
   borrowerCountyOptions: CountyOptions[];
   coBorrowerCountyOptions: CountyOptions[];
@@ -171,6 +172,13 @@ interface AddAdminClientStore {
     vaIRRRL: string;
     isVACalculated: boolean;
     selectedVARow: 'firstTime' | 'subsequent' | 'rateTerm' | 'irrrl' | null;
+    // FHA Upfront MIP fields
+    fhaMipLoanStartMonthYear: string;
+    fhaMipStartingLoanBalance: string;
+    fhaMipCostFactor: string;
+    fhaMipRemainingMonths: string;
+    fhaNewLoanAmount: string;
+    fhaNewMipCostFactor: string;
   };
   setUnsavedChangesDialog: (dialog: { isOpen: boolean }) => void;
   setMaritalStatusDialog: (dialog: { isOpen: boolean }) => void;
@@ -186,6 +194,7 @@ interface AddAdminClientStore {
   setIsRentalInfoDialogOpen: (isOpen: boolean) => void;
   setRentalInfoData: (data: RentalInfoData) => void;
   setActiveRentalSection: (section: string) => void;
+  setIsFhaMipDialogOpen: (isOpen: boolean) => void;
   // County lookup setters
   setBorrowerCountyOptions: (options: CountyOptions[]) => void;
   setCoBorrowerCountyOptions: (options: CountyOptions[]) => void;
@@ -256,6 +265,7 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
         notes: ''
       },
       activeRentalSection: '',
+      isFhaMipDialogOpen: false,
       
       // County lookup state initialization
       borrowerCountyOptions: [],
@@ -399,6 +409,13 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
         vaIRRRL: '',
         isVACalculated: false,
         selectedVARow: null,
+        // FHA Upfront MIP fields
+        fhaMipLoanStartMonthYear: '',
+        fhaMipStartingLoanBalance: '',
+        fhaMipCostFactor: '1.75',
+        fhaMipRemainingMonths: '',
+        fhaNewLoanAmount: '',
+        fhaNewMipCostFactor: '1.75',
       },
 
       setUnsavedChangesDialog: (dialog) =>
@@ -470,7 +487,12 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
         set(() => ({
           activeRentalSection: section,
         })),
-      
+
+      setIsFhaMipDialogOpen: (isOpen) =>
+        set(() => ({
+          isFhaMipDialogOpen: isOpen,
+        })),
+
       // County lookup setters
       setBorrowerCountyOptions: (options) =>
         set(() => ({
@@ -988,6 +1010,13 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
             vaIRRRL: '',
             isVACalculated: false,
             selectedVARow: null,
+            // FHA Upfront MIP fields
+            fhaMipLoanStartMonthYear: '',
+            fhaMipStartingLoanBalance: '',
+            fhaMipCostFactor: '1.75',
+            fhaMipRemainingMonths: '',
+            fhaNewLoanAmount: '',
+            fhaNewMipCostFactor: '1.75',
           }
         })),
     }),

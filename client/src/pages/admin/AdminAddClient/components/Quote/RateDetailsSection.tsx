@@ -13,6 +13,7 @@ import ExistingMonthlyPaymentsDialog from './RateDetailsSection/components/Exist
 import VAFundingFeeCalculatorDialog from './RateDetailsSection/components/VAFundingFeeCalculatorDialog';
 import CustomizeClosingCostsDialog from './RateDetailsSection/components/CustomizeClosingCostsDialog';
 import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
+import { useFhaMipCalculations } from './RateDetailsSection/hooks/useFhaMipCalculations';
 
 interface RateDetailsSectionProps {
     selectedRateIds: number[];
@@ -119,7 +120,18 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
     const [showVAFundingFeeDialog, setShowVAFundingFeeDialog] = useState(false);
     const [showCustomizeClosingCostsDialog, setShowCustomizeClosingCostsDialog] = useState(false);
 
-    const fhaUpfrontMipValue = '0';
+    // Use FHA MIP calculations to get the adjusted value
+    const { calculatedAdjustedNewFhaMip } = useFhaMipCalculations({
+        fhaMipLoanStartMonthYear: quoteData.fhaMipLoanStartMonthYear,
+        fhaMipStartingLoanBalance: quoteData.fhaMipStartingLoanBalance,
+        fhaMipCostFactor: quoteData.fhaMipCostFactor,
+        fhaMipRemainingMonths: quoteData.fhaMipRemainingMonths,
+        fhaNewLoanAmount: quoteData.fhaNewLoanAmount,
+        fhaNewMipCostFactor: quoteData.fhaNewMipCostFactor,
+    });
+
+    // Convert calculatedAdjustedNewFhaMip to a number for calculations
+    const fhaUpfrontMipValue = calculatedAdjustedNewFhaMip.replace(/[^\d]/g, '') || '0';
 
     // Auto-calculate Total Monthly Escrow
     const calculatedTotalMonthlyEscrow =
@@ -538,7 +550,7 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                     rateBuyDownValues={quoteData.rateBuyDownValues}
                     setRateBuyDownValues={(values) => updateQuoteData({ rateBuyDownValues: values })}
                     vaFundingFeeValues={quoteData.vaFundingFeeValues}
-                    fhaUpfrontMipValue={fhaUpfrontMipValue}
+                    fhaUpfrontMipValue={calculatedAdjustedNewFhaMip}
                     thirdPartyServiceValues={quoteData.thirdPartyServiceValues}
                     setThirdPartyServiceValues={(valuesOrUpdater) => {
                         // Handle both direct values and updater functions

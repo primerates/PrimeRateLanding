@@ -3,12 +3,15 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Star, Settings } from 'lucide-react';
+import { Star, Settings, Home } from 'lucide-react';
 import MonetaryInputRow from './MonetaryInputRow';
 import RateBuyDownInfoDialog from './RateBuyDownInfoDialog';
+import FhaUpfrontMipDialog from './FhaUpfrontMipDialog';
 import { type ThirdPartyCategory } from '../hooks/useThirdPartyServices';
 import { isVALoan, isFHALoan } from '../utils/loanCategoryHelpers';
 import { formatDecimalCurrency } from '../utils/formatters';
+import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
+import { useFhaMipCalculations } from '../hooks/useFhaMipCalculations';
 
 interface RateBuyDownCardProps {
   selectedRateIds: number[];
@@ -55,6 +58,21 @@ const RateBuyDownCard = ({
   // State for Rate Buy Down Info dialog
   const [isRateBuyDownInfoOpen, setIsRateBuyDownInfoOpen] = useState(false);
 
+  // Get FHA MIP dialog state from store
+  const isFhaMipDialogOpen = useAdminAddClientStore((state) => state.isFhaMipDialogOpen);
+  const setIsFhaMipDialogOpen = useAdminAddClientStore((state) => state.setIsFhaMipDialogOpen);
+  const quoteData = useAdminAddClientStore((state) => state.quoteData);
+
+  // Use FHA MIP calculations to get the adjusted value
+  const { calculatedAdjustedNewFhaMip } = useFhaMipCalculations({
+    fhaMipLoanStartMonthYear: quoteData.fhaMipLoanStartMonthYear,
+    fhaMipStartingLoanBalance: quoteData.fhaMipStartingLoanBalance,
+    fhaMipCostFactor: quoteData.fhaMipCostFactor,
+    fhaMipRemainingMonths: quoteData.fhaMipRemainingMonths,
+    fhaNewLoanAmount: quoteData.fhaNewLoanAmount,
+    fhaNewMipCostFactor: quoteData.fhaNewMipCostFactor,
+  });
+
   const handleRateBuyDownChange = (rateId: number, value: string) => {
     const newValues = [...rateBuyDownValues];
     newValues[rateId] = value;
@@ -67,19 +85,21 @@ const RateBuyDownCard = ({
       // Copy first field value to all fields for ALL services in this category
       category.services.forEach(service => {
         const firstValue = thirdPartyServiceValues[service.id]?.[selectedRateIds[0]] || '';
-        const newValues = [...thirdPartyServiceValues[service.id]];
+        const newValues = [...(thirdPartyServiceValues[service.id] || Array(4).fill(''))];
         selectedRateIds.forEach(id => newValues[id] = firstValue);
-        setThirdPartyServiceValues(prev => ({
-          ...prev,
+        const updatedValues = {
+          ...thirdPartyServiceValues,
           [service.id]: newValues
-        }));
+        };
+        setThirdPartyServiceValues(updatedValues);
       });
     }
     // Toggle the mode
-    setCategorySameModes(prev => ({
-      ...prev,
+    const updatedModes = {
+      ...categorySameModes,
       [categoryId]: !isInSameMode
-    }));
+    };
+    setCategorySameModes(updatedModes);
   };
 
   return (
@@ -105,6 +125,19 @@ const RateBuyDownCard = ({
           <div className="border-t pt-6">
             <div className="grid gap-4 mb-6" style={{ gridTemplateColumns: gridCols }}>
               <div className="flex items-center justify-end pr-4 gap-2">
+                {/* Home icon for FHA loans */}
+                {isFHA && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsFhaMipDialogOpen(true)}
+                    className="h-6 w-6"
+                    data-testid="button-fha-upfront-mip-settings"
+                  >
+                    <Home className={`h-4 w-4 ${!calculatedAdjustedNewFhaMip || calculatedAdjustedNewFhaMip === '0' ? 'text-red-500' : ''}`} />
+                  </Button>
+                )}
                 {/* Star icon for VA loans only */}
                 {isVA && onVAFundingFeeClick && (() => {
                   // Determine star color based on VA Funding Fee values
@@ -163,8 +196,8 @@ const RateBuyDownCard = ({
                   );
                 }
 
-                // FHA Loan: disabled input showing calculated value
-                const displayValue = fhaUpfrontMipValue || '0';
+                // FHA Loan: disabled input showing calculated value from dialog
+                const displayValue = calculatedAdjustedNewFhaMip || '0';
 
                 return (
                   <div key={rateId} className="flex justify-center">
@@ -275,16 +308,14 @@ const RateBuyDownCard = ({
                               value={displayValue}
                               onChange={(e) => {
                                 const value = e.target.value.replace(/[^\d]/g, '');
-                                setThirdPartyServiceValues(prev => {
-                                  const newValues = { ...prev };
-                                  if (!newValues[service.id]) {
-                                    newValues[service.id] = Array(4).fill('');
-                                  }
-                                  const updatedArray = [...newValues[service.id]];
-                                  updatedArray[rateId] = value;
-                                  newValues[service.id] = updatedArray;
-                                  return newValues;
-                                });
+                                const newValues = { ...thirdPartyServiceValues };
+                                if (!newValues[service.id]) {
+                                  newValues[service.id] = Array(4).fill('');
+                                }
+                                const updatedArray = [...newValues[service.id]];
+                                updatedArray[rateId] = value;
+                                newValues[service.id] = updatedArray;
+                                setThirdPartyServiceValues(newValues);
                               }}
                               className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
                               data-testid={`input-service-${service.id}-${rateId}`}
@@ -305,6 +336,12 @@ const RateBuyDownCard = ({
       <RateBuyDownInfoDialog
         isOpen={isRateBuyDownInfoOpen}
         onClose={() => setIsRateBuyDownInfoOpen(false)}
+      />
+
+      {/* FHA Upfront MIP Dialog */}
+      <FhaUpfrontMipDialog
+        isOpen={isFhaMipDialogOpen}
+        onClose={() => setIsFhaMipDialogOpen(false)}
       />
     </Card>
   );
