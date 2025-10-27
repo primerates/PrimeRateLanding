@@ -3,7 +3,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Plus, Edit, Minus } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { type ThirdPartyCategory } from '../hooks/useThirdPartyServices';
 import AddCategoryDialog from './ClosingCostsDialogs/AddCategoryDialog';
 import AddServicesDialog from './ClosingCostsDialogs/AddServicesDialog';
@@ -20,6 +20,8 @@ interface CustomizeClosingCostsDialogProps {
   selectedRateIds: number[];
   selectedLoanCategory: string;
   onCategoriesChange: (categories: ThirdPartyCategory[]) => void;
+  onSaveToLibrary?: () => void;
+  onSeeLibrary?: () => void;
 }
 
 /**
@@ -33,7 +35,9 @@ const CustomizeClosingCostsDialog = ({
   onThirdPartyServiceValuesChange,
   selectedRateIds,
   selectedLoanCategory,
-  onCategoriesChange
+  onCategoriesChange,
+  onSaveToLibrary,
+  onSeeLibrary
 }: CustomizeClosingCostsDialogProps) => {
 
   // State for managing sub-dialog visibility
@@ -43,17 +47,34 @@ const CustomizeClosingCostsDialog = ({
   const [showRemoveCategory, setShowRemoveCategory] = useState(false);
   const [showRemoveServices, setShowRemoveServices] = useState(false);
 
-  const handleValueChange = (serviceId: string, value: string) => {
-    // Apply the value to ALL selected rates
-    const newValues = [...(thirdPartyServiceValues[serviceId] || Array(4).fill(''))];
-    selectedRateIds.forEach(rateId => {
-      newValues[rateId] = value;
-    });
+  // Temporary state for values - only applied when "Apply to Rate" is clicked
+  const [tempServiceValues, setTempServiceValues] = useState<{ [serviceId: string]: string }>({});
 
-    onThirdPartyServiceValuesChange({
-      ...thirdPartyServiceValues,
-      [serviceId]: newValues
-    });
+  // Initialize temp values when dialog opens
+  useEffect(() => {
+    if (isOpen) {
+      const firstRateId = selectedRateIds[0];
+      const initialTempValues: { [serviceId: string]: string } = {};
+
+      thirdPartyServices.forEach(category => {
+        category.services.forEach(service => {
+          const currentValue = firstRateId !== undefined
+            ? thirdPartyServiceValues[service.id]?.[firstRateId] || ''
+            : '';
+          initialTempValues[service.id] = currentValue;
+        });
+      });
+
+      setTempServiceValues(initialTempValues);
+    }
+  }, [isOpen, selectedRateIds, thirdPartyServices, thirdPartyServiceValues]);
+
+  const handleValueChange = (serviceId: string, value: string) => {
+    // Update temporary values only - don't apply to actual state yet
+    setTempServiceValues(prev => ({
+      ...prev,
+      [serviceId]: value
+    }));
   };
 
   // Helper to check if loan category is VA
@@ -65,6 +86,28 @@ const CustomizeClosingCostsDialog = ({
 
   // Get the first selected rate's values for display
   const firstRateId = selectedRateIds[0];
+
+  // Handler for Apply to Rate buttons - apply temp values to all selected rates
+  const handleApplyToRate = () => {
+    // Apply the temporary values to ALL selected rates
+    const updatedValues = { ...thirdPartyServiceValues };
+
+    thirdPartyServices.forEach(category => {
+      category.services.forEach(service => {
+        const tempValue = tempServiceValues[service.id] || '';
+        if (!updatedValues[service.id]) {
+          updatedValues[service.id] = Array(4).fill('');
+        }
+        // Apply temp value to all selected rates
+        selectedRateIds.forEach(rateId => {
+          updatedValues[service.id][rateId] = tempValue;
+        });
+      });
+    });
+
+    onThirdPartyServiceValuesChange(updatedValues);
+    onClose();
+  };
 
   // Handlers for category/service operations
   const handleAddCategory = (categoryName: string) => {
@@ -129,7 +172,7 @@ const CustomizeClosingCostsDialog = ({
         </DialogHeader>
 
         {/* Action Buttons Row */}
-        <div className="flex gap-2 px-6 pt-4 pb-2 border-b">
+        <div className="flex gap-2 px-6 pt-4">
           <Button
             type="button"
             variant="outline"
@@ -196,9 +239,8 @@ const CustomizeClosingCostsDialog = ({
                     // Skip Appraisal Inspection (s2)
                     if (service.id === 's2') return null;
 
-                    const currentValue = firstRateId !== undefined
-                      ? thirdPartyServiceValues[service.id]?.[firstRateId] || ''
-                      : '';
+                    // Use temp values instead of actual values
+                    const currentValue = tempServiceValues[service.id] || '';
 
                     // Rename "Underwriting Services" to "VA Underwriting Services" for VA loans
                     let displayName = service.serviceName;
@@ -239,25 +281,60 @@ const CustomizeClosingCostsDialog = ({
           </div>
         </div>
 
-        <DialogFooter className="gap-2 px-6 pb-6 border-t pt-4">
+        <DialogFooter className="grid grid-cols-5 gap-2 w-full px-6 pb-6 border-t pt-4">
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={handleClose}
-            className="hover:text-green-600"
-            data-testid="button-cancel-closing-costs"
+            className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-green-500 hover:bg-primary hover:border-primary"
+            data-testid="button-cancel-tps"
           >
             Cancel
           </Button>
           <Button
             type="button"
-            variant="default"
+            variant="outline"
             size="sm"
-            onClick={handleClose}
-            data-testid="button-save-closing-costs"
+            onClick={handleApplyToRate}
+            className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-green-500 hover:bg-primary hover:border-primary"
+            data-testid="button-apply-tps"
           >
-            Save
+            Apply to Rate
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleApplyToRate}
+            className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-green-500 hover:bg-primary hover:border-primary"
+            data-testid="button-copy-for-all-rates-tps"
+          >
+            Apply to Rate
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              onSaveToLibrary?.();
+            }}
+            className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-green-500 hover:bg-primary hover:border-primary"
+            data-testid="button-save-to-library-tps"
+          >
+            Save to Library
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              onSeeLibrary?.();
+            }}
+            className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-green-500 hover:bg-primary hover:border-primary"
+            data-testid="button-see-library-tps"
+          >
+            See Library
           </Button>
         </DialogFooter>
       </DialogContent>
