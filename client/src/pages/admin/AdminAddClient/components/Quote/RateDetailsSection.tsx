@@ -1,4 +1,4 @@
-import { useState, useRef, forwardRef, useImperativeHandle, useEffect } from 'react';
+import { useState, useRef, forwardRef, useImperativeHandle, useEffect, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -137,6 +137,181 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
         parseInt(quoteData.existingMortgagePayment || '0', 10) +
         parseInt(quoteData.monthlyPaymentDebtsPayOff || '0', 10) +
         parseInt(quoteData.monthlyPaymentOtherDebts || '0', 10);
+
+    // Calculate totals for each rate column (New Est. Loan Amount)
+    const rateColumnTotals = useMemo(() => {
+        return Array.from({ length: 4 }).map((_, index) => {
+            const values = [
+                quoteData.existingLoanBalanceValues[index],
+                quoteData.cashOutAmountValues[index],
+                quoteData.rateBuyDownValues[index],
+                quoteData.vaFundingFeeValues[index],
+                quoteData.thirdPartyServiceValues['s4']?.[index], // Underwriting Services
+                quoteData.thirdPartyServiceValues['s8']?.[index], // Processing Services
+                quoteData.thirdPartyServiceValues['s9']?.[index], // Credit Report Services
+                quoteData.thirdPartyServiceValues['s5']?.[index], // Title/Escrow Services
+                quoteData.payOffInterestValues[index],
+                quoteData.thirdPartyServiceValues['s7']?.[index], // State Tax/Recording
+                calculatedTotalMonthlyEscrow > 0 ? calculatedTotalMonthlyEscrow.toString() : '0',
+                fhaUpfrontMipValue
+            ];
+
+            const total = values.reduce((sum, val) => {
+                const cleanValue = (val || '0').replace(/[^\d.]/g, '');
+                const num = parseFloat(cleanValue) || 0;
+                return sum + num;
+            }, 0);
+
+            return total;
+        });
+    }, [
+        quoteData.existingLoanBalanceValues,
+        quoteData.cashOutAmountValues,
+        quoteData.rateBuyDownValues,
+        quoteData.vaFundingFeeValues,
+        quoteData.thirdPartyServiceValues,
+        quoteData.payOffInterestValues,
+        calculatedTotalMonthlyEscrow,
+        fhaUpfrontMipValue
+    ]);
+
+    // Calculate monthly mortgage payments for each rate using amortization formula
+    const calculatedMonthlyPayments = useMemo(() => {
+        return Array.from({ length: 4 }).map((_, index) => {
+            // Get the principal amount (loan amount)
+            const principal = rateColumnTotals[index];
+
+            // Get the interest rate from the circle
+            const rateStr = quoteData.rateValues[index];
+            const rate = parseFloat(rateStr || '0');
+
+            // Get the loan term in years
+            let years = 0;
+            if (quoteData.isCustomTerm && quoteData.customTerm) {
+                years = parseInt(quoteData.customTerm, 10);
+            } else if (quoteData.loanTerm && quoteData.loanTerm !== 'select') {
+                // Extract years from value like "30-years"
+                const match = quoteData.loanTerm.match(/^(\d+)-years$/);
+                if (match) {
+                    years = parseInt(match[1], 10);
+                }
+            }
+
+            // If any required data is missing, return empty string
+            if (!principal || principal <= 0 || !rate || rate <= 0 || !years || years <= 0) {
+                return '';
+            }
+
+            // Calculate monthly payment using amortization formula
+            // M = P * [r(1+r)^n] / [(1+r)^n - 1]
+            const monthlyRate = rate / 100 / 12;
+            const numberOfPayments = years * 12;
+            const onePlusR = 1 + monthlyRate;
+            const onePlusRToN = Math.pow(onePlusR, numberOfPayments);
+
+            const monthlyPayment = principal * (monthlyRate * onePlusRToN) / (onePlusRToN - 1);
+
+            // Add escrow values based on Monthly Escrow selection (only if Escrow Reserves is not "Escrow Not Included")
+            let escrowAmount = 0;
+            if (escrowReserves !== 'escrow-not-included') {
+                if (monthlyEscrow === 'includes-tax-insurance') {
+                    // Add Total Monthly Escrow (insurance + property tax)
+                    const insurance = parseFloat(quoteData.monthlyInsurance || '0');
+                    const propertyTax = parseFloat(quoteData.monthlyPropertyTax || '0');
+                    escrowAmount = insurance + propertyTax;
+                } else if (monthlyEscrow === 'includes-tax-only') {
+                    // Add only Monthly Property Tax
+                    escrowAmount = parseFloat(quoteData.monthlyPropertyTax || '0');
+                } else if (monthlyEscrow === 'includes-insurance-only') {
+                    // Add only Monthly Insurance
+                    escrowAmount = parseFloat(quoteData.monthlyInsurance || '0');
+                }
+            }
+
+            const totalPayment = monthlyPayment + escrowAmount;
+
+            // Round to nearest dollar and return as string
+            return Math.round(totalPayment).toString();
+        });
+    }, [
+        rateColumnTotals,
+        quoteData.rateValues,
+        quoteData.loanTerm,
+        quoteData.customTerm,
+        quoteData.isCustomTerm,
+        monthlyEscrow,
+        escrowReserves,
+        quoteData.monthlyInsurance,
+        quoteData.monthlyPropertyTax
+    ]);
+
+    // Calculate Total Monthly Savings for each rate column
+    const calculatedTotalMonthlySavings = useMemo(() => {
+        return Array.from({ length: 4 }).map((_, index) => {
+            const totalExisting = calculatedTotalExistingPayments;
+            const newPayment = parseInt(calculatedMonthlyPayments[index] || '0', 10);
+
+            // If either value is missing or zero, return empty string
+            if (!totalExisting || totalExisting <= 0 || !newPayment || newPayment <= 0) {
+                return '';
+            }
+
+            const savings = totalExisting - newPayment;
+            return savings > 0 ? savings.toString() : '';
+        });
+    }, [calculatedTotalExistingPayments, calculatedMonthlyPayments]);
+
+    // Sync calculated New Est. Loan Amount values to store
+    useEffect(() => {
+        const newValues = [...quoteData.newEstLoanAmountValues];
+        let hasChanges = false;
+
+        rateColumnTotals.forEach((total, index) => {
+            const formattedValue = total > 0 ? total.toFixed(2) : '';
+            if (newValues[index] !== formattedValue) {
+                newValues[index] = formattedValue;
+                hasChanges = true;
+            }
+        });
+
+        if (hasChanges) {
+            updateQuoteData({ newEstLoanAmountValues: newValues });
+        }
+    }, [rateColumnTotals, quoteData.newEstLoanAmountValues, updateQuoteData]);
+
+    // Sync calculated New Monthly Payment values to store
+    useEffect(() => {
+        const newValues = [...quoteData.newMonthlyPaymentValues];
+        let hasChanges = false;
+
+        calculatedMonthlyPayments.forEach((payment, index) => {
+            if (newValues[index] !== payment) {
+                newValues[index] = payment;
+                hasChanges = true;
+            }
+        });
+
+        if (hasChanges) {
+            updateQuoteData({ newMonthlyPaymentValues: newValues });
+        }
+    }, [calculatedMonthlyPayments, quoteData.newMonthlyPaymentValues, updateQuoteData]);
+
+    // Sync calculated Total Monthly Savings values to store
+    useEffect(() => {
+        const newValues = [...quoteData.totalMonthlySavingsValues];
+        let hasChanges = false;
+
+        calculatedTotalMonthlySavings.forEach((savings, index) => {
+            if (newValues[index] !== savings) {
+                newValues[index] = savings;
+                hasChanges = true;
+            }
+        });
+
+        if (hasChanges) {
+            updateQuoteData({ totalMonthlySavingsValues: newValues });
+        }
+    }, [calculatedTotalMonthlySavings, quoteData.totalMonthlySavingsValues, updateQuoteData]);
 
     // Sync thirdPartyServiceValues['s1'] to vaFundingFeeValues
     useEffect(() => {
@@ -365,7 +540,15 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                     vaFundingFeeValues={quoteData.vaFundingFeeValues}
                     fhaUpfrontMipValue={fhaUpfrontMipValue}
                     thirdPartyServiceValues={quoteData.thirdPartyServiceValues}
-                    setThirdPartyServiceValues={(values) => updateQuoteData({ thirdPartyServiceValues: values })}
+                    setThirdPartyServiceValues={(valuesOrUpdater) => {
+                        // Handle both direct values and updater functions
+                        if (typeof valuesOrUpdater === 'function') {
+                            const newValues = valuesOrUpdater(quoteData.thirdPartyServiceValues);
+                            updateQuoteData({ thirdPartyServiceValues: newValues });
+                        } else {
+                            updateQuoteData({ thirdPartyServiceValues: valuesOrUpdater });
+                        }
+                    }}
                     categorySameModes={quoteData.categorySameModes}
                     setCategorySameModes={(modes) => updateQuoteData({ categorySameModes: modes })}
                     currentThirdPartyServices={thirdPartyServiceCategories}
@@ -408,6 +591,9 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                 onEstLoanAmountInfoClick={() => setIsEstLoanAmountInfoOpen(true)}
                 onNewPaymentInfoClick={() => setIsNewPaymentInfoOpen(true)}
                 onMonthlySavingsInfoClick={() => setIsMonthlySavingsInfoOpen(true)}
+                calculatedNewEstLoanAmountValues={rateColumnTotals}
+                calculatedNewMonthlyPaymentValues={calculatedMonthlyPayments}
+                calculatedTotalMonthlySavingsValues={calculatedTotalMonthlySavings}
             />
 
             {/* Escrow Information Dialog */}
