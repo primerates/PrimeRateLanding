@@ -1,4 +1,4 @@
-import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
+import { useState, useRef, forwardRef, useImperativeHandle, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -10,6 +10,7 @@ import EscrowInfoDialog from './RateDetailsSection/components/EscrowInfoDialog';
 import EstimatedNewLoanAmountDialog from './RateDetailsSection/components/EstimatedNewLoanAmountDialog';
 import NewMonthlyPaymentDialog from './RateDetailsSection/components/NewMonthlyPaymentDialog';
 import ExistingMonthlyPaymentsDialog from './RateDetailsSection/components/ExistingMonthlyPaymentsDialog';
+import VAFundingFeeCalculatorDialog from './RateDetailsSection/components/VAFundingFeeCalculatorDialog';
 
 interface RateDetailsSectionProps {
     selectedRateIds: number[];
@@ -17,6 +18,8 @@ interface RateDetailsSectionProps {
     rateBuydown: string;
     escrowReserves?: string;
     monthlyEscrow?: string;
+    isVAExempt?: boolean;
+    isVAJumboExempt?: boolean;
 }
 
 export interface RateDetailsSectionRef {
@@ -91,7 +94,9 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
         selectedLoanCategory,
         rateBuydown,
         escrowReserves = 'escrow-not-included',
-        monthlyEscrow = 'select'
+        monthlyEscrow = 'select',
+        isVAExempt = false,
+        isVAJumboExempt = false
     },
     ref
 ) => {
@@ -118,7 +123,7 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
     const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(Array(4).fill(''));
 
     // VA Funding Fee / FHA MIP state
-    const [vaFundingFeeValues] = useState<string[]>(Array(4).fill(''));
+    const [vaFundingFeeValues, setVaFundingFeeValues] = useState<string[]>(Array(4).fill(''));
     const [fhaUpfrontMipValue] = useState('0');
 
     // Third Party Services state
@@ -208,6 +213,22 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
     // State for row collapse/expand in New Est. Loan Amount & New Monthly Payment card
     const [isMonthlyPaymentRowExpanded, setIsMonthlyPaymentRowExpanded] = useState(true);
     const [isSavingsRowExpanded, setIsSavingsRowExpanded] = useState(true);
+
+    // VA Funding Fee Calculator state
+    const [showVAFundingFeeDialog, setShowVAFundingFeeDialog] = useState(false);
+    const [vaFirstTimeCashOut, setVaFirstTimeCashOut] = useState('');
+    const [vaSubsequentCashOut, setVaSubsequentCashOut] = useState('');
+    const [vaRateTerm, setVaRateTerm] = useState('');
+    const [vaIRRRL, setVaIRRRL] = useState('');
+    const [isVACalculated, setIsVACalculated] = useState(false);
+    const [selectedVARow, setSelectedVARow] = useState<'firstTime' | 'subsequent' | 'rateTerm' | 'irrrl' | null>(null);
+
+    // Sync thirdPartyServiceValues['s1'] to vaFundingFeeValues
+    useEffect(() => {
+        if (thirdPartyServiceValues['s1']) {
+            setVaFundingFeeValues(thirdPartyServiceValues['s1']);
+        }
+    }, [thirdPartyServiceValues]);
 
     if (selectedRateIds.length === 0) return null;
 
@@ -436,6 +457,7 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                     currentThirdPartyServices={currentThirdPartyServices}
                     columnWidth={columnWidth}
                     gridCols={gridCols}
+                    onVAFundingFeeClick={() => setShowVAFundingFeeDialog(true)}
                 />
             )}
 
@@ -520,6 +542,56 @@ const RateDetailsSection = forwardRef<RateDetailsSectionRef, RateDetailsSectionP
                 monthlyPaymentOtherDebts={monthlyPaymentOtherDebts}
                 onMonthlyPaymentOtherDebtsChange={setMonthlyPaymentOtherDebts}
                 calculatedTotal={calculatedTotalExistingPayments}
+            />
+
+            {/* VA Funding Fee Calculator Dialog */}
+            <VAFundingFeeCalculatorDialog
+                isOpen={showVAFundingFeeDialog}
+                onClose={() => setShowVAFundingFeeDialog(false)}
+                selectedLoanCategory={selectedLoanCategory}
+                selectedRateIds={selectedRateIds}
+                isVAExempt={isVAExempt}
+                isVAJumboExempt={isVAJumboExempt}
+                vaFirstTimeCashOut={vaFirstTimeCashOut}
+                onVaFirstTimeCashOutChange={setVaFirstTimeCashOut}
+                vaSubsequentCashOut={vaSubsequentCashOut}
+                onVaSubsequentCashOutChange={setVaSubsequentCashOut}
+                vaRateTerm={vaRateTerm}
+                onVaRateTermChange={setVaRateTerm}
+                vaIRRRL={vaIRRRL}
+                onVaIRRRLChange={setVaIRRRL}
+                isVACalculated={isVACalculated}
+                onIsVACalculatedChange={setIsVACalculated}
+                selectedVARow={selectedVARow}
+                onSelectedVARowChange={setSelectedVARow}
+                newEstLoanAmount={parseFloat(newEstLoanAmountValues[selectedRateIds[0]]?.replace(/[^\d.]/g, '') || '0')}
+                vaFundingFeeValue={parseFloat(thirdPartyServiceValues['s1']?.[selectedRateIds[0]]?.replace(/[^\d.]/g, '') || '0')}
+                onApplyToRate={(value) => {
+                    // Apply selected VA category value to all selected rates
+                    setThirdPartyServiceValues(prev => {
+                        const newS1Values = [...(prev['s1'] || Array(4).fill(''))];
+                        selectedRateIds.forEach(rateId => {
+                            newS1Values[rateId] = value;
+                        });
+                        return {
+                            ...prev,
+                            's1': newS1Values
+                        };
+                    });
+                }}
+                onClearAllValues={() => {
+                    // Clear VA funding fee values in the table for selected rates
+                    setThirdPartyServiceValues(prev => {
+                        const newS1Values = [...(prev['s1'] || Array(4).fill(''))];
+                        selectedRateIds.forEach(rateId => {
+                            newS1Values[rateId] = '0.00';
+                        });
+                        return {
+                            ...prev,
+                            's1': newS1Values
+                        };
+                    });
+                }}
             />
         </div>
     );

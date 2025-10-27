@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Info } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Star } from 'lucide-react';
 import MonetaryInputRow from './MonetaryInputRow';
 import RateBuyDownInfoDialog from './RateBuyDownInfoDialog';
 import { type ThirdPartyCategory } from '../hooks/useThirdPartyServices';
@@ -23,6 +24,7 @@ interface RateBuyDownCardProps {
   currentThirdPartyServices: ThirdPartyCategory[];
   columnWidth: string;
   gridCols: string;
+  onVAFundingFeeClick?: () => void;
 }
 
 /**
@@ -41,7 +43,8 @@ const RateBuyDownCard = ({
   setCategorySameModes,
   currentThirdPartyServices,
   columnWidth,
-  gridCols
+  gridCols,
+  onVAFundingFeeClick
 }: RateBuyDownCardProps) => {
   const isVA = isVALoan(selectedLoanCategory);
   const isFHA = isFHALoan(selectedLoanCategory);
@@ -100,6 +103,38 @@ const RateBuyDownCard = ({
           <div className="border-t pt-6">
             <div className="grid gap-4 mb-6" style={{ gridTemplateColumns: gridCols }}>
               <div className="flex items-center justify-end pr-4 gap-2">
+                {/* Star icon for VA loans only */}
+                {isVA && onVAFundingFeeClick && (() => {
+                  // Determine star color based on VA Funding Fee values
+                  const vaFeeValues = thirdPartyServiceValues['s1'] || ['', '', '', ''];
+                  const hasAnyValue = vaFeeValues.some(val => val && val.trim() !== '');
+                  const allZero = vaFeeValues.every(val => !val || val.trim() === '' || val === '0' || val === '0.00');
+
+                  let starColor = '';
+                  if (!hasAnyValue) {
+                    // Red: No values entered
+                    starColor = 'text-red-600 fill-red-600';
+                  } else if (allZero) {
+                    // Green: All values are $0
+                    starColor = 'text-green-600 fill-green-600';
+                  } else {
+                    // Grey: Values entered (non-zero)
+                    starColor = 'text-gray-500 fill-gray-500';
+                  }
+
+                  return (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 hover:bg-amber-500 hover:text-white"
+                      onClick={onVAFundingFeeClick}
+                      data-testid="button-va-funding-fee"
+                    >
+                      <Star className={`h-4 w-4 ${starColor}`} />
+                    </Button>
+                  );
+                })()}
                 <Label className="text-base font-semibold text-right">
                   {isFHA ? 'New FHA Upfront MIP' : 'VA Funding Fee'}
                 </Label>
