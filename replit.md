@@ -57,7 +57,11 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Comments & Posts Management**: Manages client testimonials and internal posts with real-time preview and sortable tables.
 - **Loan Management System**: Manages client loan applications, supporting multiple loan categories, rate configurations, and quote generation.
 - **PDF Document Extraction System (Quote Tile)**: Supports drag-and-drop PDF upload for various document types using AWS Textract for OCR and Anthropic Claude for AI-powered structured data extraction.
-- **Draft Loan Status**: Dedicated sandbox tile on the main dashboard (Row 3) for developing and testing updated loan status codes and features. Distinguished by orange accent border (`border-l-orange-500`) and "SANDBOX" badge. Accessible at `/admin/draft-loan-status`.
+- **Draft Loan Status**: Dedicated sandbox tile on the main dashboard (Row 3) displaying a complete standalone loan status dashboard. Distinguished by orange accent border (`border-l-orange-500`) and "SANDBOX" badge. Accessible at `/admin/draft-loan-status`.
+    - **Implementation**: Full-screen iframe loading a standalone HTML dashboard (`public/loan-status-dashboard.html`, 13,326 lines)
+    - **Features**: Performance metrics, navigation pills with dropdowns (Documents, Vendors, Rate Lock, Figures, Team, Loan Details, Activity, Notes), document management, email inbox, timeline views, and interactive modals
+    - **Design**: Purple/pink gradient theme with glass-morphism effects, completely independent from main application styling
+    - **Purpose**: Sandbox environment for developing new loan status features without affecting production code
 - **Library/Testing Sandbox**: Testing environment featuring a theme settings system with 3 preset themes (Professional Dashboard, Cyberpunk, Sunset Blaze), theme preview cards, real-time application of selected themes, light/dark mode toggle, and brightness controls.
 - **Snapshot Analytics Dashboard**: Comprehensive dashboard for financial analytics, marketing campaign management, expense/revenue tracking, and data visualization.
     - **Key Features**: Interactive filters, real-time financial metrics, conditional card displays, customizable search cards with dynamic column systems for results tables, and transaction attachments system.
