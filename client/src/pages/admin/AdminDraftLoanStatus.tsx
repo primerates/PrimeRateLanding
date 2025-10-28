@@ -230,19 +230,6 @@ export default function AdminDraftLoanStatus() {
           </div>
         </div>
 
-        {/* Content Area - Placeholder for now */}
-        <div className="content-card">
-          <h2 className="card-title">
-            {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
-          </h2>
-          <div className="placeholder-text">
-            <p>Content for {activeTab} will be displayed here</p>
-            <p style={{ marginTop: '1rem', fontSize: '0.875rem' }}>
-              This is a working React sandbox - easy to edit and develop!
-            </p>
-          </div>
-        </div>
-
       </div>
     </div>
   );
