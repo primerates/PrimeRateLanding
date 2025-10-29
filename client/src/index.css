@@ -410,6 +410,26 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+
+  /* Prevent autofill white background - maintain theme background color */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
+    -webkit-text-fill-color: hsl(var(--foreground)) !important;
+    box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
+  }
+
+  /* Prevent autofill in dark mode */
+  .dark input:-webkit-autofill,
+  .dark input:-webkit-autofill:hover,
+  .dark input:-webkit-autofill:focus,
+  .dark input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
+    -webkit-text-fill-color: hsl(var(--foreground)) !important;
+    box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
+  }
 }
 
 /**
