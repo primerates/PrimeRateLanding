@@ -410,39 +410,6 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
-
-  /* Force all input fields to use theme background color - never white */
-  input[type="text"],
-  input[type="email"],
-  input[type="tel"],
-  input[type="number"],
-  input[type="password"],
-  input[type="search"],
-  input[type="url"],
-  input:not([type]) {
-    background-color: hsl(var(--background)) !important;
-    color: hsl(var(--foreground)) !important;
-  }
-
-  /* Prevent autofill white background - maintain theme background color */
-  input:-webkit-autofill,
-  input:-webkit-autofill:hover,
-  input:-webkit-autofill:focus,
-  input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
-    -webkit-text-fill-color: hsl(var(--foreground)) !important;
-    box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
-  }
-
-  /* Prevent autofill in dark mode */
-  .dark input:-webkit-autofill,
-  .dark input:-webkit-autofill:hover,
-  .dark input:-webkit-autofill:focus,
-  .dark input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
-    -webkit-text-fill-color: hsl(var(--foreground)) !important;
-    box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
-  }
 }
 
 /**
