@@ -410,6 +410,11 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+
+  /* Prevent inputs from turning white when they have a value */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]) {
+    background-color: hsl(var(--background));
+  }
 }
 
 /**
