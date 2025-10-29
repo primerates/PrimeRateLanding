@@ -411,9 +411,17 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 
-  /* Force input background to always use theme background color */
-  input.bg-background {
+  /* Force all input fields to use theme background color - never white */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  input[type="search"],
+  input[type="url"],
+  input:not([type]) {
     background-color: hsl(var(--background)) !important;
+    color: hsl(var(--foreground)) !important;
   }
 
   /* Prevent autofill white background - maintain theme background color */
