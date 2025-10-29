@@ -170,9 +170,9 @@ export default function AdminDashboard() {
   const getTileHoverClass = (itemId: string, rowNumber: number = 1) => {
     let baseHoverClass = '';
     
-    // Special styling for Draft Loan Status tile
+    // Draft Loan Status tile - no border highlight
     if (itemId === 'draft-loan-status') {
-      baseHoverClass = 'border-l-4 border-l-orange-500 hover:border-orange-500';
+      baseHoverClass = '';
     } else if (rowNumber === 1) {
       baseHoverClass = 'border-l-4 border-l-green-500 hover:border-green-500';
     } else if (rowNumber === 2) {
