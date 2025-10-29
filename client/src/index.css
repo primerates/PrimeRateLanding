@@ -411,6 +411,11 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 
+  /* Force input background to always use theme background color */
+  input.bg-background {
+    background-color: hsl(var(--background)) !important;
+  }
+
   /* Prevent autofill white background - maintain theme background color */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
