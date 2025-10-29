@@ -1,4 +1,10 @@
+import { useLocation } from 'wouter';
+import { Button } from '@/components/ui/button';
+import { LayoutDashboard } from 'lucide-react';
+
 export default function AdminDraftLoanStatus() {
+  const [, setLocation] = useLocation();
+
   return (
     <div style={{
       width: '100vw',
@@ -10,6 +16,18 @@ export default function AdminDraftLoanStatus() {
       left: 0,
       overflow: 'hidden'
     }}>
+      {/* Live Button - Fixed in top-right corner */}
+      <Button
+        onClick={() => setLocation('/admin/dashboard')}
+        className="fixed top-4 right-4 z-50 shadow-lg"
+        variant="default"
+        size="default"
+        data-testid="button-back-to-dashboard"
+      >
+        <LayoutDashboard className="mr-2 h-4 w-4" />
+        Dashboard
+      </Button>
+
       <iframe
         src="/loan-status-dashboard.html"
         style={{
