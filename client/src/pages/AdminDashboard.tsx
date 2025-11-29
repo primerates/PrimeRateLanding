@@ -22,7 +22,6 @@ import {
   CheckCircle,
   FolderOpen,
   ShieldCheck,
-  Archive,
   Lock,
   Plus,
   Minus
@@ -132,10 +131,9 @@ export default function AdminDashboard() {
     { id: 'loan-prep', label: 'Loan Prep', icon: FileText, path: '/admin/loan-prep' },
     { id: 'pipeline', label: 'Loan', icon: LayoutDashboard, path: '/admin/pipeline' },
     { id: 'funded', label: 'Funded', icon: CheckCircle, path: '/admin/funded' },
-    // Row 2 (items 5-6)
-    { id: 'records', label: 'Closed', icon: Archive, path: '/admin/records' },
+    // Row 2
     { id: 'reports', label: 'Dashboard', icon: BarChart3, path: '/admin/reports' },
-    // Row 3 (items 7+)
+    // Row 3
     { id: 'library', label: 'Library', icon: FolderOpen, path: '/admin/library' },
     { id: 'draft-loan-status', label: 'Draft Loan Status', icon: Lock, path: '/admin/draft-loan-status' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/add-comment' },
@@ -157,7 +155,7 @@ export default function AdminDashboard() {
   };
 
   const handleMenuClick = (path: string) => {
-    if (path === '/admin/funded' || path === '/admin/records') {
+    if (path === '/admin/funded') {
       toast({
         title: "Coming Soon",
         description: "This page is under development.",
