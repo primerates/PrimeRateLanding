@@ -20,7 +20,6 @@ import {
   Monitor,
   Settings,
   CheckCircle,
-  FolderOpen,
   ShieldCheck,
   Lock,
   Plus,
@@ -134,7 +133,6 @@ export default function AdminDashboard() {
     // Row 2
     { id: 'reports', label: 'Dashboard', icon: BarChart3, path: '/admin/reports' },
     // Row 3
-    { id: 'library', label: 'Library', icon: FolderOpen, path: '/admin/library' },
     { id: 'draft-loan-status', label: 'Draft Loan Status', icon: Lock, path: '/admin/draft-loan-status' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/add-comment' },
   ];
