@@ -69,7 +69,7 @@ export default function ServicesSection() {
             }`}
             data-testid="text-services-title"
           >
-            Prime Rates on VA, FHA, Conventional & Jumbo Loans
+            Prime Rates on VA, FHA, and Conventional Loans
           </h2>
         </div>
 
