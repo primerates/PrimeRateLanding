@@ -6,7 +6,6 @@ import { Separator } from '@/components/ui/separator';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { 
   Calculator, 
-  UserPlus, 
   MessageSquare, 
   Building2, 
   Search,
@@ -121,10 +120,9 @@ export default function AdminDashboard() {
 
   const menuItems = [
     // Row 1
-    { id: 'stats', label: 'Lead', icon: UserPlus, path: '/admin/add-client' },
     { id: 'reports', label: 'Dashboard', icon: BarChart3, path: '/admin/reports' },
-    // Row 2
     { id: 'quotes', label: 'Extract Docs', icon: Calculator, path: '/admin/quotes' },
+    // Row 2
     { id: 'settings', label: 'Client Post', icon: Settings, path: '/admin/add-comment' },
   ];
 
