@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { 
-  FileText, 
   Calculator, 
   UserPlus, 
   MessageSquare, 
@@ -124,7 +123,6 @@ export default function AdminDashboard() {
     // Row 1
     { id: 'stats', label: 'Lead', icon: UserPlus, path: '/admin/add-client' },
     { id: 'quotes', label: 'Quote', icon: Calculator, path: '/admin/quotes' },
-    { id: 'loan-prep', label: 'Loan Prep', icon: FileText, path: '/admin/loan-prep' },
     // Row 2
     { id: 'reports', label: 'Dashboard', icon: BarChart3, path: '/admin/reports' },
     { id: 'settings', label: 'Client Post', icon: Settings, path: '/admin/add-comment' },
