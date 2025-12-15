@@ -1,6 +1,15 @@
+import { useRef, useEffect } from 'react';
 import aerialVideo from '@assets/generated_videos/aerial_neighborhood_golden_hour.mp4';
 
 export default function TrustSection() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = 0.5;
+    }
+  }, []);
+
   return (
     <div>
       {/* Header above the video */}
@@ -19,6 +28,7 @@ export default function TrustSection() {
         {/* Video background with gradient overlay */}
         <div className="absolute inset-0 z-0">
           <video 
+            ref={videoRef}
             src={aerialVideo}
             autoPlay
             loop
