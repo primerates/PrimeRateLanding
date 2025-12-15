@@ -14,7 +14,6 @@ import AdminQuotes from "@/pages/admin/AdminQuotes";
 import AdminAddComment from "@/pages/admin/AdminAddComment";
 import AdminAddVendor from "@/pages/admin/AdminAddVendor";
 import AdminSearch from "@/pages/admin/AdminSearch";
-import AdminSnapshot from "@/pages/admin/AdminSnapshot";
 import AdminLibrary from "@/pages/admin/AdminLibrary";
 import AdminDraftLoanStatus from "@/pages/admin/AdminDraftLoanStatus";
 import NotFound from "@/pages/not-found";
@@ -58,11 +57,6 @@ function Router() {
       <Route path="/admin/search">
         <ProtectedRoute>
           <AdminSearch />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/admin/reports">
-        <ProtectedRoute>
-          <AdminSnapshot />
         </ProtectedRoute>
       </Route>
       <Route path="/admin/library">

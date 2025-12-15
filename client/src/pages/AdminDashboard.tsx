@@ -11,7 +11,6 @@ import {
   Search,
   LogOut,
   User,
-  BarChart3,
   UserCheck,
   Handshake,
   Monitor,
@@ -120,9 +119,7 @@ export default function AdminDashboard() {
 
   const menuItems = [
     // Row 1
-    { id: 'reports', label: 'Dashboard', icon: BarChart3, path: '/admin/reports' },
     { id: 'quotes', label: 'Extract Docs', icon: Calculator, path: '/admin/quotes' },
-    // Row 2
     { id: 'settings', label: 'Client Post', icon: Settings, path: '/admin/add-comment' },
   ];
 
