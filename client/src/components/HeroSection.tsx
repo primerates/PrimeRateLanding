@@ -311,9 +311,12 @@ export default function HeroSection() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <h2 className="text-2xl font-bold font-serif" data-testid="text-rate-tracker-title">
-                      Rate Tracker
-                    </h2>
+                    <div>
+                      <h2 className="text-2xl font-bold font-serif" data-testid="text-rate-tracker-title">
+                        Rate Tracker
+                      </h2>
+                      <p className="text-sm text-muted-foreground mt-1">Get notified when rates drop to your target</p>
+                    </div>
                     {rateTrackerSubmitted && (
                       <span className="text-green-600 font-medium text-sm bg-green-50 px-2 py-1 rounded" data-testid="status-rate-tracker-submitted">
                         Request Submitted
@@ -446,7 +449,7 @@ export default function HeroSection() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">Current Rate</label>
+                    <label className="block text-sm font-medium mb-2">Your Current Rate</label>
                     <Input
                       type="text"
                       value={rateTrackerData.currentRate}
@@ -459,7 +462,7 @@ export default function HeroSection() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">Target Interest Rate</label>
+                    <label className="block text-sm font-medium mb-2">Your Target Rate</label>
                     <Input
                       type="text"
                       value={rateTrackerData.trackInterestRate}
