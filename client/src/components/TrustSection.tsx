@@ -73,7 +73,7 @@ export default function TrustSection() {
                 style={{ textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}
                 data-testid="text-trust-title"
               >
-                Trusted by Thousands of Homeowners and Real Estate Professionals
+                Trusted by Thousands of Homeowners & Real Estate Professionals
               </h2>
             </div>
           </div>
