@@ -372,35 +372,6 @@ export default function HeroSection() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">Property Type</label>
-                    <Select value={rateTrackerData.propertyType} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, propertyType: value }))}>
-                      <SelectTrigger data-testid="select-rate-tracker-property-type" aria-invalid={rateTrackerErrors.propertyType || false}>
-                        <SelectValue placeholder="Select property type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="single-family">Single Family Home</SelectItem>
-                        <SelectItem value="condo">Condominium</SelectItem>
-                        <SelectItem value="townhouse">Townhouse</SelectItem>
-                        <SelectItem value="multi-family">Multi-Family</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Property Use</label>
-                    <Select value={rateTrackerData.propertyUse} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, propertyUse: value }))}>
-                      <SelectTrigger data-testid="select-rate-tracker-property-use" aria-invalid={rateTrackerErrors.propertyUse || false}>
-                        <SelectValue placeholder="Select property use" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="primary-residence">Primary Residence</SelectItem>
-                        <SelectItem value="second-home">Second Home</SelectItem>
-                        <SelectItem value="investment-property">Investment Property</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
                     <label className="block text-sm font-medium mb-2">State</label>
                     <Select value={rateTrackerData.state} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, state: value }))}>
                       <SelectTrigger data-testid="select-rate-tracker-state" aria-invalid={rateTrackerErrors.state || false}>
@@ -462,22 +433,6 @@ export default function HeroSection() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">Loan Type</label>
-                    <Select value={rateTrackerData.loanType} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, loanType: value }))}>
-                      <SelectTrigger data-testid="select-rate-tracker-loan-type" aria-invalid={rateTrackerErrors.loanType || false}>
-                        <SelectValue placeholder="Select loan type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="conventional">Conventional</SelectItem>
-                        <SelectItem value="fha">FHA</SelectItem>
-                        <SelectItem value="va">VA</SelectItem>
-                        <SelectItem value="jumbo">Jumbo</SelectItem>
-                        <SelectItem value="usda">USDA</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
                     <label className="block text-sm font-medium mb-2">Loan Purpose</label>
                     <Select value={rateTrackerData.loanPurpose} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, loanPurpose: value }))}>
                       <SelectTrigger data-testid="select-rate-tracker-loan-purpose" aria-invalid={rateTrackerErrors.loanPurpose || false}>
@@ -504,12 +459,12 @@ export default function HeroSection() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">Track Interest Rate Of</label>
+                    <label className="block text-sm font-medium mb-2">Target Interest Rate</label>
                     <Input
                       type="text"
                       value={rateTrackerData.trackInterestRate}
                       onChange={(e) => setRateTrackerData(prev => ({ ...prev, trackInterestRate: e.target.value }))}
-                      placeholder="e.g., 30-year fixed, 15-year fixed"
+                      placeholder="e.g., 5.5%, 6.0%"
                       data-testid="input-rate-tracker-interest-rate"
                       aria-invalid={rateTrackerErrors.trackInterestRate || false}
                       required
