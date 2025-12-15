@@ -332,7 +332,7 @@ export default function HeroSection() {
 
                   <form className="space-y-4" onSubmit={submitRateTracker} noValidate>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Full Name</label>
+                    <label className="block text-sm font-medium mb-2">Name</label>
                     <Input
                       type="text"
                       value={rateTrackerData.fullName}
@@ -358,7 +358,7 @@ export default function HeroSection() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">Phone Number</label>
+                    <label className="block text-sm font-medium mb-2">Phone</label>
                     <Input
                       type="tel"
                       value={rateTrackerData.phone}
