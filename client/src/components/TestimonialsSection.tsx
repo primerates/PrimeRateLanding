@@ -4,12 +4,39 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 
+const defaultTestimonials = [
+  {
+    name: 'Sarah Mitchell',
+    location: 'Phoenix, AZ',
+    rating: 5,
+    text: 'The team made our first home purchase so easy. They found us an incredible rate and walked us through every step. Highly recommend!'
+  },
+  {
+    name: 'Michael Chen',
+    location: 'Austin, TX',
+    rating: 5,
+    text: 'Refinancing was a breeze. They beat our bank\'s rate by half a percent and saved us thousands over the life of our loan.'
+  },
+  {
+    name: 'Jennifer Adams',
+    location: 'Denver, CO',
+    rating: 5,
+    text: 'Professional, responsive, and transparent. No hidden fees, no surprises. This is how mortgage lending should be done.'
+  },
+  {
+    name: 'David Thompson',
+    location: 'Seattle, WA',
+    rating: 5,
+    text: 'As a first-time buyer, I had so many questions. The team was patient and helped me understand every detail. Closed in 21 days!'
+  }
+];
+
 export default function TestimonialsSection() {
-  const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [testimonials, setTestimonials] = useState<any[]>(defaultTestimonials);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const testimonialsPerPage = 4;
   
-  // Load testimonials from localStorage
+  // Load testimonials from localStorage, merge with defaults
   useEffect(() => {
     const loadTestimonials = () => {
       const stored = localStorage.getItem('postedTestimonials');
@@ -22,7 +49,8 @@ export default function TestimonialsSection() {
           rating: parseInt(t.rating) || 5,
           text: t.comment
         }));
-        setTestimonials(formatted);
+        // Combine custom testimonials with defaults
+        setTestimonials([...formatted, ...defaultTestimonials]);
       }
     };
     
