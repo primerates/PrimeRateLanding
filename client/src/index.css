@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent layout shift when Radix Select opens and locks body scroll */
+body[data-scroll-locked] {
+  margin-right: 0 !important;
+}
+
 /* Entry animations for Add Client page */
 @keyframes roll-down {
   0% {
