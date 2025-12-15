@@ -11,8 +11,10 @@ import PreApprovalForm from './PreApprovalForm';
 
 export default function HeroSection() {
   const [location, setLocation] = useLocation();
-  const [loanAmount, setLoanAmount] = useState('400000');
-  const [downPayment, setDownPayment] = useState('80000');
+  const [calcLoanPurpose, setCalcLoanPurpose] = useState('refinance');
+  const [loanAmount, setLoanAmount] = useState('$400,000');
+  const [purchasePrice, setPurchasePrice] = useState('$500,000');
+  const [downPayment, setDownPayment] = useState('$100,000');
   const [interestRate, setInterestRate] = useState('6.5');
   const [loanTerm, setLoanTerm] = useState('30');
   const [showCalculator, setShowCalculator] = useState(false);
@@ -69,11 +71,35 @@ export default function HeroSection() {
     setRateTrackerData(prev => ({ ...prev, phone: formatted }));
   };
 
+  const formatDollarAmount = (value: string, previousValue: string) => {
+    const digits = value.replace(/\D/g, '');
+    const prevDigits = previousValue.replace(/\D/g, '');
+    
+    if (digits.length < prevDigits.length) {
+      if (digits.length === 0) return '';
+      return '$' + parseInt(digits).toLocaleString();
+    }
+    
+    if (digits.length === 0) return '';
+    return '$' + parseInt(digits).toLocaleString();
+  };
 
   const calculatePayment = () => {
-    const principal = parseFloat(loanAmount) - parseFloat(downPayment);
+    let principal;
+    if (calcLoanPurpose === 'purchase') {
+      const price = parseFloat(purchasePrice.replace(/[$,]/g, '')) || 0;
+      const down = parseFloat(downPayment.replace(/[$,]/g, '')) || 0;
+      principal = price - down;
+    } else {
+      principal = parseFloat(loanAmount.replace(/[$,]/g, '')) || 0;
+    }
+    
     const monthlyRate = parseFloat(interestRate) / 100 / 12;
     const numPayments = parseInt(loanTerm) * 12;
+    
+    if (principal <= 0 || monthlyRate <= 0 || numPayments <= 0) {
+      return '$0';
+    }
     
     const monthlyPayment = (principal * (monthlyRate * Math.pow(1 + monthlyRate, numPayments))) / 
                           (Math.pow(1 + monthlyRate, numPayments) - 1);
@@ -83,6 +109,13 @@ export default function HeroSection() {
       currency: 'USD',
       maximumFractionDigits: 0 
     });
+  };
+
+  const getCalculatedLoanAmount = () => {
+    const price = parseFloat(purchasePrice.replace(/[$,]/g, '')) || 0;
+    const down = parseFloat(downPayment.replace(/[$,]/g, '')) || 0;
+    const loan = price - down;
+    return loan > 0 ? '$' + loan.toLocaleString() : '$0';
   };
 
   // Form validation functions
@@ -223,14 +256,17 @@ export default function HeroSection() {
         {/* Mortgage Calculator Modal */}
         {showCalculator && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <Card className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto" data-testid="card-mortgage-calculator">
+            <Card className="bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto" data-testid="card-mortgage-calculator">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center">
-                  <Calculator className="w-6 h-6 text-primary mr-3" />
-                  <h2 className="text-2xl font-bold font-serif" data-testid="text-calculator-title">
-                    Mortgage Calculator
-                  </h2>
+                <div className="flex items-center gap-3">
+                  <Calculator className="w-6 h-6 text-primary" />
+                  <div>
+                    <h2 className="text-2xl font-bold font-serif" data-testid="text-calculator-title">
+                      Mortgage Calculator
+                    </h2>
+                    <p className="text-sm text-muted-foreground mt-1">See your estimated monthly payment</p>
+                  </div>
                 </div>
                 <Button
                   variant="ghost"
@@ -244,26 +280,65 @@ export default function HeroSection() {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Home Price</label>
-                  <Input
-                    type="number"
-                    value={loanAmount}
-                    onChange={(e) => setLoanAmount(e.target.value)}
-                    placeholder="400,000"
-                    data-testid="input-loan-amount"
-                  />
+                  <label className="block text-sm font-medium mb-2">Loan Purpose</label>
+                  <Select value={calcLoanPurpose} onValueChange={setCalcLoanPurpose}>
+                    <SelectTrigger data-testid="select-loan-purpose">
+                      <SelectValue placeholder="Select purpose" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="refinance">Refinance</SelectItem>
+                      <SelectItem value="purchase">Purchase</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2">Down Payment</label>
-                  <Input
-                    type="number"
-                    value={downPayment}
-                    onChange={(e) => setDownPayment(e.target.value)}
-                    placeholder="80,000"
-                    data-testid="input-down-payment"
-                  />
-                </div>
+                {calcLoanPurpose === 'refinance' ? (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Loan Amount</label>
+                    <Input
+                      type="text"
+                      value={loanAmount}
+                      onChange={(e) => setLoanAmount(formatDollarAmount(e.target.value, loanAmount))}
+                      placeholder="$400,000"
+                      data-testid="input-loan-amount"
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Purchase Price</label>
+                      <Input
+                        type="text"
+                        value={purchasePrice}
+                        onChange={(e) => setPurchasePrice(formatDollarAmount(e.target.value, purchasePrice))}
+                        placeholder="$500,000"
+                        data-testid="input-purchase-price"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Down Payment</label>
+                      <Input
+                        type="text"
+                        value={downPayment}
+                        onChange={(e) => setDownPayment(formatDollarAmount(e.target.value, downPayment))}
+                        placeholder="$100,000"
+                        data-testid="input-down-payment"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Loan Amount</label>
+                      <Input
+                        type="text"
+                        value={getCalculatedLoanAmount()}
+                        disabled
+                        className="bg-muted"
+                        data-testid="input-calculated-loan-amount"
+                      />
+                    </div>
+                  </>
+                )}
 
                 <div>
                   <label className="block text-sm font-medium mb-2">Interest Rate (%)</label>
@@ -284,9 +359,12 @@ export default function HeroSection() {
                       <SelectValue placeholder="Select term" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="15">15 years</SelectItem>
-                      <SelectItem value="20">20 years</SelectItem>
                       <SelectItem value="30">30 years</SelectItem>
+                      <SelectItem value="25">25 years</SelectItem>
+                      <SelectItem value="20">20 years</SelectItem>
+                      <SelectItem value="18">18 years</SelectItem>
+                      <SelectItem value="15">15 years</SelectItem>
+                      <SelectItem value="10">10 years</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -303,10 +381,10 @@ export default function HeroSection() {
                 <Button 
                   className="w-full" 
                   size="lg"
-                  data-testid="button-get-quote"
-                  onClick={() => console.log('Get My Quote clicked')}
+                  data-testid="button-get-pre-approved"
+                  onClick={() => { setShowCalculator(false); setShowPreApproval(true); }}
                 >
-                  Get My Quote
+                  Get Pre-Approved
                 </Button>
               </div>
             </CardContent>
