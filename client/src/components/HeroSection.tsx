@@ -40,9 +40,19 @@ export default function HeroSection() {
   // Form validation states
   const [rateTrackerErrors, setRateTrackerErrors] = useState<{[key: string]: boolean}>({});
 
-  const formatPhoneNumber = (value: string) => {
+  const formatPhoneNumber = (value: string, previousValue: string) => {
     // Remove all non-digits
     const digits = value.replace(/\D/g, '');
+    const prevDigits = previousValue.replace(/\D/g, '');
+    
+    // If user is deleting (backspace), allow free deletion
+    if (digits.length < prevDigits.length) {
+      // Just return the raw digits for easy re-entry
+      if (digits.length === 0) return '';
+      if (digits.length <= 3) return digits;
+      if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+    }
     
     // Format as (xxx) xxx-xxxx
     if (digits.length >= 6) {
@@ -55,7 +65,7 @@ export default function HeroSection() {
   };
 
   const handlePhoneChange = (value: string) => {
-    const formatted = formatPhoneNumber(value);
+    const formatted = formatPhoneNumber(value, rateTrackerData.phone);
     setRateTrackerData(prev => ({ ...prev, phone: formatted }));
   };
 
