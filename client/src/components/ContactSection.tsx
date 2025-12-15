@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Phone, Mail, MapPin, Clock, X, Send } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, X, Send, Check } from 'lucide-react';
 import PreApprovalForm from '@/components/PreApprovalForm';
 
 export default function ContactSection() {
@@ -461,35 +461,43 @@ export default function ContactSection() {
         {/* Pre-Approval Modal */}
         {showPreApproval && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <Card className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="card-pre-approval-contact">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <h2 className="text-2xl font-bold font-serif" data-testid="text-pre-approval-contact-title">
-                      Get Pre-Approved
-                    </h2>
-                    {preApprovalSubmitted && (
-                      <span className="text-green-600 font-medium text-sm bg-green-50 px-2 py-1 rounded" data-testid="status-pre-approval-contact-submitted">
-                        Request Submitted
-                      </span>
-                    )}
+            <Card className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl border-t-4 border-primary" data-testid="card-pre-approval-contact">
+              <CardContent className="p-0">
+                <div className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-6 pb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div>
+                        <h2 className="text-2xl font-bold font-serif tracking-tight" data-testid="text-pre-approval-contact-title">
+                          Get Pre-Approved
+                        </h2>
+                        <p className="text-sm text-muted-foreground mt-1">Start your home financing journey today</p>
+                      </div>
+                      {preApprovalSubmitted && (
+                        <span className="inline-flex items-center gap-1.5 text-green-600 font-medium text-sm bg-green-50 px-3 py-1.5 rounded-full border border-green-200" data-testid="status-pre-approval-contact-submitted">
+                          <Check className="w-4 h-4" />
+                          Request Submitted
+                        </span>
+                      )}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      data-testid="button-close-pre-approval-contact"
+                      onClick={() => setShowPreApproval(false)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    data-testid="button-close-pre-approval-contact"
-                    onClick={() => setShowPreApproval(false)}
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
                 </div>
 
-                <PreApprovalForm
-                  onSuccess={handlePreApprovalSuccess}
-                  onCancel={() => setShowPreApproval(false)}
-                  compactMode={false}
-                  contextLabel="contact"
-                />
+                <div className="p-6 pt-4">
+                  <PreApprovalForm
+                    onSuccess={handlePreApprovalSuccess}
+                    onCancel={() => setShowPreApproval(false)}
+                    compactMode={false}
+                    contextLabel="contact"
+                  />
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -498,144 +506,164 @@ export default function ContactSection() {
         {/* Schedule Call Modal */}
         {showScheduleCall && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <Card className="bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto" data-testid="card-schedule-call">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <h2 className="text-2xl font-bold font-serif" data-testid="text-schedule-call-title">
-                      Schedule Call
-                    </h2>
-                    {scheduleCallSubmitted && (
-                      <span className="text-green-600 font-medium text-sm bg-green-50 px-2 py-1 rounded" data-testid="status-schedule-call-submitted">
-                        Request Submitted
-                      </span>
-                    )}
+            <Card className="bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-xl border-t-4 border-primary" data-testid="card-schedule-call">
+              <CardContent className="p-0">
+                <div className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-6 pb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Clock className="w-6 h-6 text-primary" />
+                      <div>
+                        <h2 className="text-2xl font-bold font-serif tracking-tight" data-testid="text-schedule-call-title">
+                          Schedule Call
+                        </h2>
+                        <p className="text-sm text-muted-foreground mt-1">Book a time to speak with our team</p>
+                      </div>
+                      {scheduleCallSubmitted && (
+                        <span className="inline-flex items-center gap-1.5 text-green-600 font-medium text-sm bg-green-50 px-3 py-1.5 rounded-full border border-green-200" data-testid="status-schedule-call-submitted">
+                          <Check className="w-4 h-4" />
+                          Request Submitted
+                        </span>
+                      )}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      data-testid="button-close-schedule-call"
+                      onClick={() => setShowScheduleCall(false)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    data-testid="button-close-schedule-call"
-                    onClick={() => setShowScheduleCall(false)}
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
                 </div>
 
-                <form className="space-y-4" onSubmit={submitScheduleCall} noValidate>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Full Name</label>
-                    <Input
-                      type="text"
-                      value={scheduleCallData.name}
-                      onChange={(e) => setScheduleCallData(prev => ({ ...prev, name: e.target.value }))}
-                      placeholder="Enter your full name"
-                      data-testid="input-schedule-call-name"
-                      required
-                    />
-                  </div>
+                <div className="p-6 pt-4">
+                  <form className="space-y-6" onSubmit={submitScheduleCall} noValidate>
+                    <div className="bg-muted/40 rounded-lg p-4 space-y-4">
+                      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Contact Information</h3>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Full Name</label>
+                        <Input
+                          type="text"
+                          value={scheduleCallData.name}
+                          onChange={(e) => setScheduleCallData(prev => ({ ...prev, name: e.target.value }))}
+                          placeholder="Enter your full name"
+                          data-testid="input-schedule-call-name"
+                          className="transition-all focus:ring-2 focus:ring-primary/20"
+                          required
+                        />
+                      </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Email</label>
-                    <Input
-                      type="email"
-                      value={scheduleCallData.email}
-                      onChange={(e) => setScheduleCallData(prev => ({ ...prev, email: e.target.value }))}
-                      placeholder="Enter your email"
-                      data-testid="input-schedule-call-email"
-                      required
-                    />
-                  </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Email</label>
+                        <Input
+                          type="email"
+                          value={scheduleCallData.email}
+                          onChange={(e) => setScheduleCallData(prev => ({ ...prev, email: e.target.value }))}
+                          placeholder="Enter your email"
+                          data-testid="input-schedule-call-email"
+                          className="transition-all focus:ring-2 focus:ring-primary/20"
+                          required
+                        />
+                      </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Phone Number</label>
-                    <Input
-                      type="tel"
-                      value={scheduleCallData.phone}
-                      onChange={(e) => handleScheduleCallPhoneChange(e.target.value)}
-                      placeholder="(xxx) xxx-xxxx"
-                      data-testid="input-schedule-call-phone"
-                      required
-                      maxLength={14}
-                    />
-                  </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Phone Number</label>
+                        <Input
+                          type="tel"
+                          value={scheduleCallData.phone}
+                          onChange={(e) => handleScheduleCallPhoneChange(e.target.value)}
+                          placeholder="(xxx) xxx-xxxx"
+                          data-testid="input-schedule-call-phone"
+                          className="transition-all focus:ring-2 focus:ring-primary/20"
+                          required
+                          maxLength={14}
+                        />
+                      </div>
+                    </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Preferred Date</label>
-                    <Input
-                      type="date"
-                      value={scheduleCallData.preferredDate}
-                      onChange={(e) => setScheduleCallData(prev => ({ ...prev, preferredDate: e.target.value }))}
-                      data-testid="input-schedule-call-date"
-                      required
-                    />
-                  </div>
+                    <div className="bg-muted/40 rounded-lg p-4 space-y-4">
+                      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Schedule Preferences</h3>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Preferred Date</label>
+                        <Input
+                          type="date"
+                          value={scheduleCallData.preferredDate}
+                          onChange={(e) => setScheduleCallData(prev => ({ ...prev, preferredDate: e.target.value }))}
+                          data-testid="input-schedule-call-date"
+                          className="transition-all focus:ring-2 focus:ring-primary/20"
+                          required
+                        />
+                      </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Preferred Time</label>
-                    <Select value={scheduleCallData.preferredTime} onValueChange={(value) => setScheduleCallData(prev => ({ ...prev, preferredTime: value }))}>
-                      <SelectTrigger data-testid="select-schedule-call-time">
-                        <SelectValue placeholder="Select preferred time" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="morning">Morning (8AM-12PM)</SelectItem>
-                        <SelectItem value="afternoon">Afternoon (12PM-5PM)</SelectItem>
-                        <SelectItem value="evening">Evening (5PM-8PM)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Preferred Time</label>
+                        <Select value={scheduleCallData.preferredTime} onValueChange={(value) => setScheduleCallData(prev => ({ ...prev, preferredTime: value }))}>
+                          <SelectTrigger data-testid="select-schedule-call-time">
+                            <SelectValue placeholder="Select preferred time" />
+                          </SelectTrigger>
+                          <SelectContent sideOffset={4}>
+                            <SelectItem value="morning">Morning (8AM-12PM)</SelectItem>
+                            <SelectItem value="afternoon">Afternoon (12PM-5PM)</SelectItem>
+                            <SelectItem value="evening">Evening (5PM-8PM)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Time Zone</label>
-                    <Select value={scheduleCallData.timeZone} onValueChange={(value) => setScheduleCallData(prev => ({ ...prev, timeZone: value }))}>
-                      <SelectTrigger data-testid="select-schedule-call-timezone">
-                        <SelectValue placeholder="Select time zone" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="EST">Eastern (EST)</SelectItem>
-                        <SelectItem value="CST">Central (CST)</SelectItem>
-                        <SelectItem value="MST">Mountain (MST)</SelectItem>
-                        <SelectItem value="PST">Pacific (PST)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Time Zone</label>
+                        <Select value={scheduleCallData.timeZone} onValueChange={(value) => setScheduleCallData(prev => ({ ...prev, timeZone: value }))}>
+                          <SelectTrigger data-testid="select-schedule-call-timezone">
+                            <SelectValue placeholder="Select time zone" />
+                          </SelectTrigger>
+                          <SelectContent sideOffset={4}>
+                            <SelectItem value="EST">Eastern (EST)</SelectItem>
+                            <SelectItem value="CST">Central (CST)</SelectItem>
+                            <SelectItem value="MST">Mountain (MST)</SelectItem>
+                            <SelectItem value="PST">Pacific (PST)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Reason for Call</label>
-                    <Select value={scheduleCallData.callReason} onValueChange={(value) => setScheduleCallData(prev => ({ ...prev, callReason: value }))}>
-                      <SelectTrigger data-testid="select-schedule-call-reason">
-                        <SelectValue placeholder="Select reason" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="pre-approval">Pre-Approval Discussion</SelectItem>
-                        <SelectItem value="rates">Rate Information</SelectItem>
-                        <SelectItem value="loan-programs">Loan Programs</SelectItem>
-                        <SelectItem value="refinance">Refinancing Options</SelectItem>
-                        <SelectItem value="general">General Questions</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Reason for Call</label>
+                        <Select value={scheduleCallData.callReason} onValueChange={(value) => setScheduleCallData(prev => ({ ...prev, callReason: value }))}>
+                          <SelectTrigger data-testid="select-schedule-call-reason">
+                            <SelectValue placeholder="Select reason" />
+                          </SelectTrigger>
+                          <SelectContent sideOffset={4}>
+                            <SelectItem value="pre-approval">Pre-Approval Discussion</SelectItem>
+                            <SelectItem value="rates">Rate Information</SelectItem>
+                            <SelectItem value="loan-programs">Loan Programs</SelectItem>
+                            <SelectItem value="refinance">Refinancing Options</SelectItem>
+                            <SelectItem value="general">General Questions</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Message (Optional)</label>
-                    <Textarea
-                      value={scheduleCallData.message}
-                      onChange={(e) => setScheduleCallData(prev => ({ ...prev, message: e.target.value }))}
-                      placeholder="Any specific topics you'd like to discuss..."
-                      rows={4}
-                      data-testid="textarea-schedule-call-message"
-                    />
-                  </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Message (Optional)</label>
+                        <Textarea
+                          value={scheduleCallData.message}
+                          onChange={(e) => setScheduleCallData(prev => ({ ...prev, message: e.target.value }))}
+                          placeholder="Any specific topics you'd like to discuss..."
+                          rows={4}
+                          data-testid="textarea-schedule-call-message"
+                          className="transition-all focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+                    </div>
 
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
-                    size="lg"
-                    data-testid="button-submit-schedule-call"
-                    disabled={scheduleCallSubmitting}
-                  >
-                    {scheduleCallSubmitting ? 'Scheduling...' : 'Schedule Call'}
-                  </Button>
-                </form>
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      size="lg"
+                      data-testid="button-submit-schedule-call"
+                      disabled={scheduleCallSubmitting}
+                    >
+                      {scheduleCallSubmitting ? 'Scheduling...' : 'Schedule Call'}
+                    </Button>
+                  </form>
+                </div>
               </CardContent>
             </Card>
           </div>

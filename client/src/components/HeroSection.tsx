@@ -256,139 +256,153 @@ export default function HeroSection() {
         {/* Mortgage Calculator Modal */}
         {showCalculator && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <Card className="bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto" data-testid="card-mortgage-calculator">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <Calculator className="w-6 h-6 text-primary" />
-                  <div>
-                    <h2 className="text-2xl font-bold font-serif" data-testid="text-calculator-title">
-                      Mortgage Calculator
-                    </h2>
-                    <p className="text-sm text-muted-foreground mt-1">See your estimated monthly payment</p>
-                  </div>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  data-testid="button-close-calculator"
-                  onClick={() => setShowCalculator(false)}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Loan Purpose</label>
-                  <Select value={calcLoanPurpose} onValueChange={setCalcLoanPurpose}>
-                    <SelectTrigger data-testid="select-loan-purpose">
-                      <SelectValue placeholder="Select purpose" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="refinance">Refinance</SelectItem>
-                      <SelectItem value="purchase">Purchase</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {calcLoanPurpose === 'refinance' ? (
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Loan Amount</label>
-                    <Input
-                      type="text"
-                      value={loanAmount}
-                      onChange={(e) => setLoanAmount(formatDollarAmount(e.target.value, loanAmount))}
-                      placeholder="$400,000"
-                      data-testid="input-loan-amount"
-                    />
-                  </div>
-                ) : (
-                  <>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Purchase Price</label>
-                      <Input
-                        type="text"
-                        value={purchasePrice}
-                        onChange={(e) => setPurchasePrice(formatDollarAmount(e.target.value, purchasePrice))}
-                        placeholder="$500,000"
-                        data-testid="input-purchase-price"
-                      />
+            <Card className="bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-xl border-t-4 border-primary" data-testid="card-mortgage-calculator">
+              <CardContent className="p-0">
+                <div className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-6 pb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Calculator className="w-6 h-6 text-primary" />
+                      <div>
+                        <h2 className="text-2xl font-bold font-serif tracking-tight" data-testid="text-calculator-title">
+                          Mortgage Calculator
+                        </h2>
+                        <p className="text-sm text-muted-foreground mt-1">See your estimated monthly payment</p>
+                      </div>
                     </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Down Payment</label>
-                      <Input
-                        type="text"
-                        value={downPayment}
-                        onChange={(e) => setDownPayment(formatDollarAmount(e.target.value, downPayment))}
-                        placeholder="$100,000"
-                        data-testid="input-down-payment"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Loan Amount</label>
-                      <Input
-                        type="text"
-                        value={getCalculatedLoanAmount()}
-                        disabled
-                        className="bg-muted"
-                        data-testid="input-calculated-loan-amount"
-                      />
-                    </div>
-                  </>
-                )}
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">Interest Rate (%)</label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={interestRate}
-                    onChange={(e) => setInterestRate(e.target.value)}
-                    placeholder="6.5"
-                    data-testid="input-interest-rate"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">Loan Term</label>
-                  <Select value={loanTerm} onValueChange={setLoanTerm}>
-                    <SelectTrigger data-testid="select-loan-term">
-                      <SelectValue placeholder="Select term" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="30">30 years</SelectItem>
-                      <SelectItem value="25">25 years</SelectItem>
-                      <SelectItem value="20">20 years</SelectItem>
-                      <SelectItem value="18">18 years</SelectItem>
-                      <SelectItem value="15">15 years</SelectItem>
-                      <SelectItem value="10">10 years</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="bg-primary/10 p-4 rounded-md">
-                  <div className="text-center">
-                    <p className="text-sm text-muted-foreground mb-1">Estimated Monthly Payment</p>
-                    <p className="text-3xl font-bold text-primary" data-testid="text-monthly-payment">
-                      {calculatePayment()}
-                    </p>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      data-testid="button-close-calculator"
+                      onClick={() => setShowCalculator(false)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
 
-                <Button 
-                  className="w-full" 
-                  size="lg"
-                  data-testid="button-get-pre-approved"
-                  onClick={() => { setShowCalculator(false); setShowPreApproval(true); }}
-                >
-                  Get Pre-Approved
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                <div className="p-6 pt-4">
+                  <div className="space-y-6">
+                    <div className="bg-muted/40 rounded-lg p-4 space-y-4">
+                      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Loan Details</h3>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Loan Purpose</label>
+                        <Select value={calcLoanPurpose} onValueChange={setCalcLoanPurpose}>
+                          <SelectTrigger data-testid="select-loan-purpose">
+                            <SelectValue placeholder="Select purpose" />
+                          </SelectTrigger>
+                          <SelectContent sideOffset={4}>
+                            <SelectItem value="refinance">Refinance</SelectItem>
+                            <SelectItem value="purchase">Purchase</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {calcLoanPurpose === 'refinance' ? (
+                        <div>
+                          <label className="block text-sm font-medium mb-2">Loan Amount</label>
+                          <Input
+                            type="text"
+                            value={loanAmount}
+                            onChange={(e) => setLoanAmount(formatDollarAmount(e.target.value, loanAmount))}
+                            placeholder="$400,000"
+                            data-testid="input-loan-amount"
+                            className="transition-all focus:ring-2 focus:ring-primary/20"
+                          />
+                        </div>
+                      ) : (
+                        <>
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Purchase Price</label>
+                            <Input
+                              type="text"
+                              value={purchasePrice}
+                              onChange={(e) => setPurchasePrice(formatDollarAmount(e.target.value, purchasePrice))}
+                              placeholder="$500,000"
+                              data-testid="input-purchase-price"
+                              className="transition-all focus:ring-2 focus:ring-primary/20"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Down Payment</label>
+                            <Input
+                              type="text"
+                              value={downPayment}
+                              onChange={(e) => setDownPayment(formatDollarAmount(e.target.value, downPayment))}
+                              placeholder="$100,000"
+                              data-testid="input-down-payment"
+                              className="transition-all focus:ring-2 focus:ring-primary/20"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Loan Amount</label>
+                            <Input
+                              type="text"
+                              value={getCalculatedLoanAmount()}
+                              disabled
+                              className="bg-muted"
+                              data-testid="input-calculated-loan-amount"
+                            />
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    <div className="bg-muted/40 rounded-lg p-4 space-y-4">
+                      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Rate & Term</h3>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Interest Rate (%)</label>
+                        <Input
+                          type="number"
+                          step="0.1"
+                          value={interestRate}
+                          onChange={(e) => setInterestRate(e.target.value)}
+                          placeholder="6.5"
+                          data-testid="input-interest-rate"
+                          className="transition-all focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Loan Term</label>
+                        <Select value={loanTerm} onValueChange={setLoanTerm}>
+                          <SelectTrigger data-testid="select-loan-term">
+                            <SelectValue placeholder="Select term" />
+                          </SelectTrigger>
+                          <SelectContent sideOffset={4}>
+                            <SelectItem value="30">30 years</SelectItem>
+                            <SelectItem value="25">25 years</SelectItem>
+                            <SelectItem value="20">20 years</SelectItem>
+                            <SelectItem value="18">18 years</SelectItem>
+                            <SelectItem value="15">15 years</SelectItem>
+                            <SelectItem value="10">10 years</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="bg-primary/10 p-4 rounded-lg">
+                      <div className="text-center">
+                        <p className="text-sm text-muted-foreground mb-1">Estimated Monthly Payment</p>
+                        <p className="text-3xl font-bold text-primary" data-testid="text-monthly-payment">
+                          {calculatePayment()}
+                        </p>
+                      </div>
+                    </div>
+
+                    <Button 
+                      className="w-full" 
+                      size="lg"
+                      data-testid="button-get-pre-approved"
+                      onClick={() => { setShowCalculator(false); setShowPreApproval(true); }}
+                    >
+                      Get Pre-Approved
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
 
@@ -608,35 +622,43 @@ export default function HeroSection() {
         {/* Pre-Approval Modal */}
         {showPreApproval && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <Card className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="card-pre-approval">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <h2 className="text-2xl font-bold font-serif" data-testid="text-pre-approval-title">
-                      Get Pre-Approved
-                    </h2>
-                    {preApprovalSubmitted && (
-                      <span className="text-green-600 font-medium text-sm bg-green-50 px-2 py-1 rounded" data-testid="status-pre-approval-submitted">
-                        Request Submitted
-                      </span>
-                    )}
+            <Card className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl border-t-4 border-primary" data-testid="card-pre-approval">
+              <CardContent className="p-0">
+                <div className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-6 pb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div>
+                        <h2 className="text-2xl font-bold font-serif tracking-tight" data-testid="text-pre-approval-title">
+                          Get Pre-Approved
+                        </h2>
+                        <p className="text-sm text-muted-foreground mt-1">Start your home financing journey today</p>
+                      </div>
+                      {preApprovalSubmitted && (
+                        <span className="inline-flex items-center gap-1.5 text-green-600 font-medium text-sm bg-green-50 px-3 py-1.5 rounded-full border border-green-200" data-testid="status-pre-approval-submitted">
+                          <Check className="w-4 h-4" />
+                          Request Submitted
+                        </span>
+                      )}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      data-testid="button-close-pre-approval"
+                      onClick={() => setShowPreApproval(false)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    data-testid="button-close-pre-approval"
-                    onClick={() => setShowPreApproval(false)}
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
                 </div>
 
-                <PreApprovalForm
-                  onSuccess={handlePreApprovalSuccess}
-                  onCancel={() => setShowPreApproval(false)}
-                  compactMode={true}
-                  contextLabel="hero"
-                />
+                <div className="p-6 pt-4">
+                  <PreApprovalForm
+                    onSuccess={handlePreApprovalSuccess}
+                    onCancel={() => setShowPreApproval(false)}
+                    compactMode={true}
+                    contextLabel="hero"
+                  />
+                </div>
               </CardContent>
             </Card>
           </div>
