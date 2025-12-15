@@ -480,7 +480,7 @@ export default function HeroSection() {
                           <SelectTrigger data-testid="select-rate-tracker-state" aria-invalid={rateTrackerErrors.state || false}>
                             <SelectValue placeholder="Select state" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="max-h-[200px]" sideOffset={4}>
                             <SelectItem value="AL">Alabama</SelectItem>
                             <SelectItem value="AK">Alaska</SelectItem>
                             <SelectItem value="AZ">Arizona</SelectItem>
@@ -541,7 +541,7 @@ export default function HeroSection() {
                           <SelectTrigger data-testid="select-rate-tracker-loan-purpose" aria-invalid={rateTrackerErrors.loanPurpose || false}>
                             <SelectValue placeholder="Select loan purpose" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent sideOffset={4}>
                             <SelectItem value="home-purchase">Home Purchase</SelectItem>
                             <SelectItem value="refinance">Refinance</SelectItem>
                           </SelectContent>
