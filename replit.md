@@ -69,6 +69,14 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - **Vendor Management**: Includes dedicated cards for adding and searching vendors, with comprehensive search fields, dynamic results tables, and sortable columns.
     - **Workflow Automation**: Implements auto-minimizing and mutual exclusivity logic for various cards and forms to optimize user workflow.
 
+## Saved Assets
+
+### Replaced Images
+- **Happy Family Outside Home** (previously used in Trust Section, replaced with aerial video):
+  - Path: `attached_assets/generated_images/Happy_family_outside_home_374959f2.png`
+  - Import: `import heroImage from '@assets/generated_images/Happy_family_outside_home_374959f2.png'`
+  - Description: AI-generated image of a happy family standing outside their beautiful home
+
 ## External Dependencies
 
 - **Email Service**: SendGrid for transactional emails.
