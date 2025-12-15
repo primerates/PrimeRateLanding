@@ -1,9 +1,9 @@
-import heroImage from '@assets/generated_images/Happy_family_outside_home_374959f2.png';
+import aerialVideo from '@assets/generated_videos/aerial_neighborhood_golden_hour.mp4';
 
 export default function TrustSection() {
   return (
     <div>
-      {/* Header above the photo */}
+      {/* Header above the video */}
       <div className="py-8 bg-background">
         <div className="container mx-auto px-6">
           <div className="text-center">
@@ -14,16 +14,20 @@ export default function TrustSection() {
         </div>
       </div>
 
-      {/* Full-size photo section matching homepage */}
-      <section className="relative min-h-screen flex items-center">
-        {/* Hero background with gradient overlay */}
+      {/* Full-size video section */}
+      <section className="relative min-h-screen flex items-center overflow-hidden">
+        {/* Video background with gradient overlay */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src={heroImage} 
-            alt="Happy family standing outside their beautiful home"
+          <video 
+            src={aerialVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
             className="w-full h-full object-cover"
+            data-testid="video-trust-background"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/15 to-black/10"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/20 to-black/15"></div>
         </div>
         
         <div className="relative z-10 container mx-auto px-6">
