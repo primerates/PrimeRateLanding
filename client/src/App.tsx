@@ -10,7 +10,6 @@ import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import AdminPipeline from "@/pages/admin/AdminPipeline";
 import AdminLoanPrep from "@/pages/admin/AdminLoanPrep";
-import AdminQuotes from "@/pages/admin/AdminQuotes";
 import AdminAddComment from "@/pages/admin/AdminAddComment";
 import AdminAddVendor from "@/pages/admin/AdminAddVendor";
 import AdminSearch from "@/pages/admin/AdminSearch";
@@ -37,11 +36,6 @@ function Router() {
       <Route path="/admin/loan-prep">
         <ProtectedRoute>
           <AdminLoanPrep />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/admin/quotes">
-        <ProtectedRoute>
-          <AdminQuotes />
         </ProtectedRoute>
       </Route>
       <Route path="/admin/add-comment">

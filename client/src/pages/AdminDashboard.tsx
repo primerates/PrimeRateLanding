@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { 
-  Calculator, 
   MessageSquare, 
   Building2, 
   Search,
@@ -119,7 +118,6 @@ export default function AdminDashboard() {
 
   const menuItems = [
     // Row 1
-    { id: 'quotes', label: 'Extract Docs', icon: Calculator, path: '/admin/quotes' },
     { id: 'settings', label: 'Client Post', icon: Settings, path: '/admin/add-comment' },
   ];
 
