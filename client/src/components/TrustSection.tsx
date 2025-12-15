@@ -65,7 +65,7 @@ export default function TrustSection() {
           <div className="container mx-auto px-6">
             <div className="text-center">
               <h2 
-                className={`text-3xl lg:text-5xl font-bold font-serif text-white drop-shadow-lg transition-all duration-1000 ease-out ${
+                className={`text-3xl lg:text-5xl xl:whitespace-nowrap font-bold font-serif text-white drop-shadow-lg transition-all duration-1000 ease-out ${
                   titleVisible 
                     ? 'opacity-100 translate-y-0' 
                     : 'opacity-0 -translate-y-8'
