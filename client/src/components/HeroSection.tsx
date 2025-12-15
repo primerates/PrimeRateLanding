@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calculator, X } from 'lucide-react';
+import { Calculator, X, Check } from 'lucide-react';
 import heroImage from '@assets/generated_images/Bright_white_family_room_4f4419e6.png';
 import PreApprovalForm from './PreApprovalForm';
 
@@ -395,194 +395,211 @@ export default function HeroSection() {
         {/* Rate Tracker Modal */}
         {showRateTracker && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <Card className="bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto" data-testid="card-rate-tracker">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div>
-                      <h2 className="text-2xl font-bold font-serif" data-testid="text-rate-tracker-title">
-                        Rate Tracker
-                      </h2>
-                      <p className="text-sm text-muted-foreground mt-1">Get notified when rates drop to your target</p>
+            <Card className="bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-xl border-t-4 border-primary" data-testid="card-rate-tracker">
+              <CardContent className="p-0">
+                <div className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-6 pb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div>
+                        <h2 className="text-2xl font-bold font-serif tracking-tight" data-testid="text-rate-tracker-title">
+                          Rate Tracker
+                        </h2>
+                        <p className="text-sm text-muted-foreground mt-1">Get notified when rates drop to your target</p>
+                      </div>
+                      {rateTrackerSubmitted && (
+                        <span className="inline-flex items-center gap-1.5 text-green-600 font-medium text-sm bg-green-50 px-3 py-1.5 rounded-full border border-green-200" data-testid="status-rate-tracker-submitted">
+                          <Check className="w-4 h-4" />
+                          Request Submitted
+                        </span>
+                      )}
                     </div>
-                    {rateTrackerSubmitted && (
-                      <span className="text-green-600 font-medium text-sm bg-green-50 px-2 py-1 rounded" data-testid="status-rate-tracker-submitted">
-                        Request Submitted
-                      </span>
-                    )}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      data-testid="button-close-rate-tracker"
+                      onClick={() => setShowRateTracker(false)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    data-testid="button-close-rate-tracker"
-                    onClick={() => setShowRateTracker(false)}
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
                 </div>
 
-                  <form className="space-y-4" onSubmit={submitRateTracker} noValidate>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Name</label>
-                    <Input
-                      type="text"
-                      value={rateTrackerData.fullName}
-                      onChange={(e) => setRateTrackerData(prev => ({ ...prev, fullName: e.target.value }))}
-                      placeholder="Enter your full name"
-                      data-testid="input-rate-tracker-name"
-                      aria-invalid={rateTrackerErrors.fullName || false}
-                      required
-                    />
-                  </div>
+                <div className="p-6 pt-4">
+                  <form className="space-y-6" onSubmit={submitRateTracker} noValidate>
+                    <div className="bg-muted/40 rounded-lg p-4 space-y-4">
+                      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Contact Information</h3>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Name</label>
+                        <Input
+                          type="text"
+                          value={rateTrackerData.fullName}
+                          onChange={(e) => setRateTrackerData(prev => ({ ...prev, fullName: e.target.value }))}
+                          placeholder="Enter your full name"
+                          data-testid="input-rate-tracker-name"
+                          aria-invalid={rateTrackerErrors.fullName || false}
+                          className="transition-all focus:ring-2 focus:ring-primary/20"
+                          required
+                        />
+                      </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Email</label>
-                    <Input
-                      type="email"
-                      value={rateTrackerData.email}
-                      onChange={(e) => setRateTrackerData(prev => ({ ...prev, email: e.target.value }))}
-                      placeholder="Enter your email"
-                      data-testid="input-rate-tracker-email"
-                      aria-invalid={rateTrackerErrors.email || false}
-                      required
-                    />
-                  </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Email</label>
+                        <Input
+                          type="email"
+                          value={rateTrackerData.email}
+                          onChange={(e) => setRateTrackerData(prev => ({ ...prev, email: e.target.value }))}
+                          placeholder="Enter your email"
+                          data-testid="input-rate-tracker-email"
+                          aria-invalid={rateTrackerErrors.email || false}
+                          className="transition-all focus:ring-2 focus:ring-primary/20"
+                          required
+                        />
+                      </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Phone</label>
-                    <Input
-                      type="tel"
-                      value={rateTrackerData.phone}
-                      onChange={(e) => handlePhoneChange(e.target.value)}
-                      placeholder="(xxx) xxx-xxxx"
-                      data-testid="input-rate-tracker-phone"
-                      aria-invalid={rateTrackerErrors.phone || false}
-                      required
-                      maxLength={14}
-                    />
-                  </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Phone</label>
+                        <Input
+                          type="tel"
+                          value={rateTrackerData.phone}
+                          onChange={(e) => handlePhoneChange(e.target.value)}
+                          placeholder="(xxx) xxx-xxxx"
+                          data-testid="input-rate-tracker-phone"
+                          aria-invalid={rateTrackerErrors.phone || false}
+                          className="transition-all focus:ring-2 focus:ring-primary/20"
+                          required
+                          maxLength={14}
+                        />
+                      </div>
+                    </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">State</label>
-                    <Select value={rateTrackerData.state} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, state: value }))}>
-                      <SelectTrigger data-testid="select-rate-tracker-state" aria-invalid={rateTrackerErrors.state || false}>
-                        <SelectValue placeholder="Select state" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="AL">Alabama</SelectItem>
-                        <SelectItem value="AK">Alaska</SelectItem>
-                        <SelectItem value="AZ">Arizona</SelectItem>
-                        <SelectItem value="AR">Arkansas</SelectItem>
-                        <SelectItem value="CA">California</SelectItem>
-                        <SelectItem value="CO">Colorado</SelectItem>
-                        <SelectItem value="CT">Connecticut</SelectItem>
-                        <SelectItem value="DE">Delaware</SelectItem>
-                        <SelectItem value="FL">Florida</SelectItem>
-                        <SelectItem value="GA">Georgia</SelectItem>
-                        <SelectItem value="HI">Hawaii</SelectItem>
-                        <SelectItem value="ID">Idaho</SelectItem>
-                        <SelectItem value="IL">Illinois</SelectItem>
-                        <SelectItem value="IN">Indiana</SelectItem>
-                        <SelectItem value="IA">Iowa</SelectItem>
-                        <SelectItem value="KS">Kansas</SelectItem>
-                        <SelectItem value="KY">Kentucky</SelectItem>
-                        <SelectItem value="LA">Louisiana</SelectItem>
-                        <SelectItem value="ME">Maine</SelectItem>
-                        <SelectItem value="MD">Maryland</SelectItem>
-                        <SelectItem value="MA">Massachusetts</SelectItem>
-                        <SelectItem value="MI">Michigan</SelectItem>
-                        <SelectItem value="MN">Minnesota</SelectItem>
-                        <SelectItem value="MS">Mississippi</SelectItem>
-                        <SelectItem value="MO">Missouri</SelectItem>
-                        <SelectItem value="MT">Montana</SelectItem>
-                        <SelectItem value="NE">Nebraska</SelectItem>
-                        <SelectItem value="NV">Nevada</SelectItem>
-                        <SelectItem value="NH">New Hampshire</SelectItem>
-                        <SelectItem value="NJ">New Jersey</SelectItem>
-                        <SelectItem value="NM">New Mexico</SelectItem>
-                        <SelectItem value="NY">New York</SelectItem>
-                        <SelectItem value="NC">North Carolina</SelectItem>
-                        <SelectItem value="ND">North Dakota</SelectItem>
-                        <SelectItem value="OH">Ohio</SelectItem>
-                        <SelectItem value="OK">Oklahoma</SelectItem>
-                        <SelectItem value="OR">Oregon</SelectItem>
-                        <SelectItem value="PA">Pennsylvania</SelectItem>
-                        <SelectItem value="RI">Rhode Island</SelectItem>
-                        <SelectItem value="SC">South Carolina</SelectItem>
-                        <SelectItem value="SD">South Dakota</SelectItem>
-                        <SelectItem value="TN">Tennessee</SelectItem>
-                        <SelectItem value="TX">Texas</SelectItem>
-                        <SelectItem value="UT">Utah</SelectItem>
-                        <SelectItem value="VT">Vermont</SelectItem>
-                        <SelectItem value="VA">Virginia</SelectItem>
-                        <SelectItem value="WA">Washington</SelectItem>
-                        <SelectItem value="WV">West Virginia</SelectItem>
-                        <SelectItem value="WI">Wisconsin</SelectItem>
-                        <SelectItem value="WY">Wyoming</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                    <div className="bg-muted/40 rounded-lg p-4 space-y-4">
+                      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Track New Rate</h3>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">State</label>
+                        <Select value={rateTrackerData.state} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, state: value }))}>
+                          <SelectTrigger data-testid="select-rate-tracker-state" aria-invalid={rateTrackerErrors.state || false}>
+                            <SelectValue placeholder="Select state" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="AL">Alabama</SelectItem>
+                            <SelectItem value="AK">Alaska</SelectItem>
+                            <SelectItem value="AZ">Arizona</SelectItem>
+                            <SelectItem value="AR">Arkansas</SelectItem>
+                            <SelectItem value="CA">California</SelectItem>
+                            <SelectItem value="CO">Colorado</SelectItem>
+                            <SelectItem value="CT">Connecticut</SelectItem>
+                            <SelectItem value="DE">Delaware</SelectItem>
+                            <SelectItem value="FL">Florida</SelectItem>
+                            <SelectItem value="GA">Georgia</SelectItem>
+                            <SelectItem value="HI">Hawaii</SelectItem>
+                            <SelectItem value="ID">Idaho</SelectItem>
+                            <SelectItem value="IL">Illinois</SelectItem>
+                            <SelectItem value="IN">Indiana</SelectItem>
+                            <SelectItem value="IA">Iowa</SelectItem>
+                            <SelectItem value="KS">Kansas</SelectItem>
+                            <SelectItem value="KY">Kentucky</SelectItem>
+                            <SelectItem value="LA">Louisiana</SelectItem>
+                            <SelectItem value="ME">Maine</SelectItem>
+                            <SelectItem value="MD">Maryland</SelectItem>
+                            <SelectItem value="MA">Massachusetts</SelectItem>
+                            <SelectItem value="MI">Michigan</SelectItem>
+                            <SelectItem value="MN">Minnesota</SelectItem>
+                            <SelectItem value="MS">Mississippi</SelectItem>
+                            <SelectItem value="MO">Missouri</SelectItem>
+                            <SelectItem value="MT">Montana</SelectItem>
+                            <SelectItem value="NE">Nebraska</SelectItem>
+                            <SelectItem value="NV">Nevada</SelectItem>
+                            <SelectItem value="NH">New Hampshire</SelectItem>
+                            <SelectItem value="NJ">New Jersey</SelectItem>
+                            <SelectItem value="NM">New Mexico</SelectItem>
+                            <SelectItem value="NY">New York</SelectItem>
+                            <SelectItem value="NC">North Carolina</SelectItem>
+                            <SelectItem value="ND">North Dakota</SelectItem>
+                            <SelectItem value="OH">Ohio</SelectItem>
+                            <SelectItem value="OK">Oklahoma</SelectItem>
+                            <SelectItem value="OR">Oregon</SelectItem>
+                            <SelectItem value="PA">Pennsylvania</SelectItem>
+                            <SelectItem value="RI">Rhode Island</SelectItem>
+                            <SelectItem value="SC">South Carolina</SelectItem>
+                            <SelectItem value="SD">South Dakota</SelectItem>
+                            <SelectItem value="TN">Tennessee</SelectItem>
+                            <SelectItem value="TX">Texas</SelectItem>
+                            <SelectItem value="UT">Utah</SelectItem>
+                            <SelectItem value="VT">Vermont</SelectItem>
+                            <SelectItem value="VA">Virginia</SelectItem>
+                            <SelectItem value="WA">Washington</SelectItem>
+                            <SelectItem value="WV">West Virginia</SelectItem>
+                            <SelectItem value="WI">Wisconsin</SelectItem>
+                            <SelectItem value="WY">Wyoming</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Loan Purpose</label>
-                    <Select value={rateTrackerData.loanPurpose} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, loanPurpose: value }))}>
-                      <SelectTrigger data-testid="select-rate-tracker-loan-purpose" aria-invalid={rateTrackerErrors.loanPurpose || false}>
-                        <SelectValue placeholder="Select loan purpose" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="home-purchase">Home Purchase</SelectItem>
-                        <SelectItem value="refinance">Refinance</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Loan Purpose</label>
+                        <Select value={rateTrackerData.loanPurpose} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, loanPurpose: value }))}>
+                          <SelectTrigger data-testid="select-rate-tracker-loan-purpose" aria-invalid={rateTrackerErrors.loanPurpose || false}>
+                            <SelectValue placeholder="Select loan purpose" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="home-purchase">Home Purchase</SelectItem>
+                            <SelectItem value="refinance">Refinance</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Your Current Rate</label>
-                    <Input
-                      type="text"
-                      value={rateTrackerData.currentRate}
-                      onChange={(e) => setRateTrackerData(prev => ({ ...prev, currentRate: e.target.value }))}
-                      placeholder="e.g., 6.25%, 7.0%"
-                      data-testid="input-rate-tracker-current-rate"
-                      aria-invalid={rateTrackerErrors.currentRate || false}
-                      required
-                    />
-                  </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Your Current Rate</label>
+                        <Input
+                          type="text"
+                          value={rateTrackerData.currentRate}
+                          onChange={(e) => setRateTrackerData(prev => ({ ...prev, currentRate: e.target.value }))}
+                          placeholder="e.g., 6.25%, 7.0%"
+                          data-testid="input-rate-tracker-current-rate"
+                          aria-invalid={rateTrackerErrors.currentRate || false}
+                          className="transition-all focus:ring-2 focus:ring-primary/20"
+                          required
+                        />
+                      </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Your Target Rate</label>
-                    <Input
-                      type="text"
-                      value={rateTrackerData.trackInterestRate}
-                      onChange={(e) => setRateTrackerData(prev => ({ ...prev, trackInterestRate: e.target.value }))}
-                      placeholder="e.g., 5.5%, 6.0%"
-                      data-testid="input-rate-tracker-interest-rate"
-                      aria-invalid={rateTrackerErrors.trackInterestRate || false}
-                      required
-                    />
-                  </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Your Target Rate</label>
+                        <Input
+                          type="text"
+                          value={rateTrackerData.trackInterestRate}
+                          onChange={(e) => setRateTrackerData(prev => ({ ...prev, trackInterestRate: e.target.value }))}
+                          placeholder="e.g., 5.5%, 6.0%"
+                          data-testid="input-rate-tracker-interest-rate"
+                          aria-invalid={rateTrackerErrors.trackInterestRate || false}
+                          className="transition-all focus:ring-2 focus:ring-primary/20"
+                          required
+                        />
+                      </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Message</label>
-                    <Textarea
-                      value={rateTrackerData.message}
-                      onChange={(e) => setRateTrackerData(prev => ({ ...prev, message: e.target.value }))}
-                      placeholder="Additional details about your rate tracking needs..."
-                      rows={4}
-                      data-testid="textarea-rate-tracker-message"
-                    />
-                  </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Message</label>
+                        <Textarea
+                          value={rateTrackerData.message}
+                          onChange={(e) => setRateTrackerData(prev => ({ ...prev, message: e.target.value }))}
+                          placeholder="Additional details about your rate tracking needs..."
+                          rows={4}
+                          data-testid="textarea-rate-tracker-message"
+                          className="transition-all focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+                    </div>
 
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
-                    size="lg"
-                    data-testid="button-submit-rate-tracker"
-                    disabled={rateTrackerSubmitting}
-                  >
-                    {rateTrackerSubmitting ? 'Sending...' : 'Send Message'}
-                  </Button>
-                </form>
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      size="lg"
+                      data-testid="button-submit-rate-tracker"
+                      disabled={rateTrackerSubmitting}
+                    >
+                      {rateTrackerSubmitting ? 'Sending...' : 'Send Message'}
+                    </Button>
+                  </form>
+                </div>
               </CardContent>
             </Card>
           </div>
