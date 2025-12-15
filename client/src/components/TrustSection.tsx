@@ -12,19 +12,8 @@ export default function TrustSection() {
 
   return (
     <div>
-      {/* Header above the video */}
-      <div className="py-8 bg-background">
-        <div className="container mx-auto px-6">
-          <div className="text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold font-serif" data-testid="text-trust-title">
-              Trusted by Thousands of Homeowners and Real Estate Professionals
-            </h2>
-          </div>
-        </div>
-      </div>
-
-      {/* Full-size video section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
+      {/* Full-size video section with overlay title */}
+      <section className="relative min-h-screen flex flex-col overflow-hidden">
         {/* Video background with gradient overlay */}
         <div className="absolute inset-0 z-0">
           <video 
@@ -37,12 +26,25 @@ export default function TrustSection() {
             className="w-full h-full object-cover"
             data-testid="video-trust-background"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/20 to-black/15"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/10"></div>
         </div>
         
-        <div className="relative z-10 container mx-auto px-6">
-          {/* Content can be added here if needed */}
+        {/* Title positioned at top of video */}
+        <div className="relative z-10 pt-16 pb-8">
+          <div className="container mx-auto px-6">
+            <div className="text-center">
+              <h2 
+                className="text-3xl lg:text-5xl font-bold font-serif text-white drop-shadow-lg"
+                style={{ textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}
+                data-testid="text-trust-title"
+              >
+                Trusted by Thousands of Homeowners and Real Estate Professionals
+              </h2>
+            </div>
+          </div>
         </div>
+
+        <div className="flex-1"></div>
       </section>
     </div>
   );
